@@ -1,0 +1,61 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+
+	<name>Spring MVC to RAML Synchronizer</name>
+
+	<groupId>com.phoenixnap.oss</groupId>
+	<artifactId>springmvc-raml-parent</artifactId>
+	<version>0.0.1</version>
+	<packaging>pom</packaging> 
+
+	<developers>
+		<developer>
+			<name>Kurt Paris</name>
+			<email>kurtpa@phoenixnap.com</email>
+		</developer>
+	</developers>
+		
+	<modules>
+		<module>springmvc-raml-annotations</module>
+		<module>springmvc-raml-parser</module>
+		<module>springmvc-raml-plugin</module>
+	</modules>
+  
+	<build>
+		<pluginManagement>
+			<plugins>
+				<plugin>
+					<groupId>org.apache.maven.plugins</groupId>
+					<artifactId>maven-compiler-plugin</artifactId>
+					<version>3.0</version>
+					<configuration>
+						<source>1.8</source>
+						<target>1.8</target>
+						<compilerArgument>-parameters</compilerArgument>
+					</configuration>
+				</plugin>
+			</plugins>
+		</pluginManagement>
+  </build>
+   
+  <dependencyManagement>
+  
+    <dependencies>
+		<dependency>
+			<groupId>io.spring.platform</groupId>
+			<artifactId>platform-bom</artifactId>
+			<version>1.1.4.RELEASE</version>
+			<type>pom</type>
+			<scope>import</scope>
+		</dependency>
+		<dependency>
+			<groupId>com.google.guava</groupId>
+			<artifactId>guava</artifactId>
+			<version>18.0</version>
+		</dependency>
+	</dependencies>
+  </dependencyManagement>
+
+</project>
+
