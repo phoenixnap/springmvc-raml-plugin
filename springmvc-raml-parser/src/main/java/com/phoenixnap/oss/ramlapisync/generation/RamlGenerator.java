@@ -212,4 +212,8 @@ public class RamlGenerator {
 		return file;
 	}
 
+	public Raml getRaml() {
+		return raml;
+	}
+
 }

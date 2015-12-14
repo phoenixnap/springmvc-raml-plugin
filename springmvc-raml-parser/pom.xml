@@ -1,22 +1,33 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
-	<artifactId>springmvc-raml-parser</artifactId>
-  
+	  
   	<parent>
 		<groupId>com.phoenixnap.oss</groupId>
 		<artifactId>springmvc-raml-parent</artifactId>
 		<version>0.0.2</version>
 	</parent>
-
+	
+	<artifactId>springmvc-raml-parser</artifactId>
+	
+	<name>Spring MVC to RAML Synchronizer Parser</name>
+	<description>Components including the parsing of RAML documents and Spring MVC Annotations to create RAML models</description>
+	<url>https://github.com/phoenixnap/springmvc-raml-plugin/tree/master/springmvc-raml-parser</url>
+  	
 	<developers>
 		<developer>
 			<name>Kurt Paris</name>
 			<email>kurtpa@phoenixnap.com</email>
 		</developer>
 	</developers>
-	<name>Spring MVC to RAML Synchronizer Parser</name>
-  	
+	
+	<licenses>
+	  <license>
+		<name>The Apache License, Version 2.0</name>
+		<url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
+	  </license>
+	</licenses>
+	
   	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<powermock.version>1.6.2</powermock.version>

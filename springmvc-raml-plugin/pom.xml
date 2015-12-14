@@ -2,17 +2,19 @@
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 
-	<name>Spring MVC to RAML Synchronizer Maven Plugin</name>
-
-	<artifactId>springmvc-raml-plugin</artifactId>
-	<packaging>maven-plugin</packaging>
-
 	<parent>
 		<groupId>com.phoenixnap.oss</groupId>
 		<artifactId>springmvc-raml-parent</artifactId>
 		<version>0.0.2</version>
 	</parent>
-
+	
+	<artifactId>springmvc-raml-plugin</artifactId>
+	
+	<name>Spring MVC to RAML Synchronizer Maven Plugin</name>
+	<description>Maven Plugin offering RAML verification and generation functions</description>
+	<url>https://github.com/phoenixnap/springmvc-raml-plugin/tree/master/springmvc-raml-plugin</url>	
+	<packaging>maven-plugin</packaging>
+	
 	<developers>
 		<developer>
 			<name>Kurt Paris</name>
@@ -20,6 +22,12 @@
 		</developer>
 	</developers>
 
+	<licenses>
+	  <license>
+		<name>The Apache License, Version 2.0</name>
+		<url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
+	  </license>
+	</licenses>
 
 
 	<properties>

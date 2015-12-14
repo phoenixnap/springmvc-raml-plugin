@@ -18,85 +18,93 @@ import java.nio.file.Files;
 import java.nio.file.LinkOption;
 import java.nio.file.Paths;
 
-import org.apache.commons.lang.ArrayUtils;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
 import org.apache.maven.plugins.annotations.ResolutionScope;
+import org.raml.model.Raml;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.phoenixnap.oss.ramlapisync.generation.RamlGenerator;
+import com.phoenixnap.oss.ramlapisync.generation.RamlVerifier;
 import com.phoenixnap.oss.ramlapisync.parser.ResourceParser;
 import com.phoenixnap.oss.ramlapisync.parser.SpringMvcResourceParser;
+import com.phoenixnap.oss.ramlapisync.verification.Issue;
 
 /**
- * Maven Plugin MOJO specific to Spring MVC Projects.
+ * Maven Plugin MOJO specific to verification of RAML from implementations in Spring MVC Projects.
  * 
  * @author Kurt Paris
  * @author Micheal Schembri Wismayer
  * @since 0.0.1
  */
-@Mojo(name = "generate-springmvc-api-docs", requiresDependencyResolution = ResolutionScope.COMPILE_PLUS_RUNTIME, threadSafe = true)
-public class SpringMvcRamlApiSyncMojo extends CommonApiSyncMojo {
+@Mojo(name = "verify-springmvc-api-docs", requiresDependencyResolution = ResolutionScope.COMPILE_PLUS_RUNTIME, threadSafe = true)
+public class SpringMvcRamlVerifierMojo extends CommonApiSyncMojo {
 
 	/**
-	 * Relative file path where the RAML document will be saved to
+	 * Default media Type to be used in returns/consumes where these are not specified in the code
 	 */
-	@Parameter(required = true, readonly = true)
-	protected String outputRamlFilePath;
-
+	@Parameter(required = true, readonly = true, defaultValue = "application/json")
+	protected String ramlToVerifyPath;
+	
 	/**
-	 * Base URL relative to the generated RAML file for the APIs to be accessed at runtime
-	 */
-	@Parameter(required = true, readonly = true)
-	protected String restBasePath;
-
-	/**
-	 * TODO filter that allows the plugin to ignore packages other than the ones included
-	 */
-	@Parameter(readonly = true)
-	protected String[] exposedPackages = ArrayUtils.EMPTY_STRING_ARRAY;
-
-	/**
-	 * IF this is set to true, we will only parse methods that consume, produce or accept the requested defaultMediaType
+	 * TODO
 	 */
 	@Parameter(required = false, readonly = true, defaultValue = "false")
-	protected Boolean restrictOnMediaType;
-
+	protected Boolean breakBuildOnWarnings;
+	
+	/**
+	 * TODO
+	 */
+	@Parameter(required = false, readonly = true, defaultValue = "true")
+	protected Boolean logWarnings;
+	
+	/**
+	 * TODO
+	 */
+	@Parameter(required = false, readonly = true, defaultValue = "true")
+	protected Boolean logErrors;
+	
 	@SuppressWarnings("unchecked")
 	@Override
 	protected Class<? extends Annotation>[] getSupportedClassAnnotations() {
 		return new Class[] { Controller.class, RestController.class };
 	}
 
-	protected void generateRaml() throws MojoExecutionException, MojoFailureException, IOException {
+	protected void verifyRaml() throws MojoExecutionException, MojoFailureException, IOException {
 
 		super.prepareRaml();
 
 		Class<?>[] classArray = new Class[annotatedClasses.size()];
 		classArray = this.annotatedClasses.toArray(classArray);
 		ResourceParser scanner = new SpringMvcResourceParser(project.getBasedir().getParentFile() != null ? project
-				.getBasedir().getParentFile() : project.getBasedir(), version, defaultMediaType, restrictOnMediaType);
+				.getBasedir().getParentFile() : project.getBasedir(), version, defaultMediaType, false);
 		RamlGenerator ramlGenerator = new RamlGenerator(scanner);
 		// Process the classes selected and build Raml model
-		ramlGenerator
-				.generateRamlForClasses(project.getArtifactId(), version, restBasePath, classArray, this.documents);
-
-		// Extract RAML as a string and save to file
-		ramlGenerator.outputRamlToFile(this.getFullRamlOutputPath());
+		ramlGenerator.generateRamlForClasses(project.getArtifactId(), version, "/", classArray, this.documents);
+		Raml implementedRaml = ramlGenerator.getRaml();
+		
+		RamlVerifier verifier = new RamlVerifier(RamlVerifier.loadRamlFromFile(ramlToVerifyPath), implementedRaml, null, null);
+		if (verifier.hasWarnings() && logWarnings) {
+				for (Issue issue : verifier.getWarnings()) {
+					this.getLog().warn(issue.toString());
+				}
+			}
+		if (verifier.hasErrors()) {
+			if (logErrors) {
+				for (Issue issue : verifier.getErrors()) {
+					this.getLog().error(issue.toString());
+				}
+			}
+			throw new IllegalStateException("Errors found when comparing RAML to Spring MVC Implementation");
+		}
+		if(verifier.hasWarnings() && breakBuildOnWarnings) {
+			throw new IllegalStateException("Warnings found when comparing RAML to Spring MVC Implementation and build is set to break on Warnings");
+		}
 	}
 	
-	/**
-	 * Converts the relative path to the absolute path
-	 * @return
-	 */
-	public String getFullRamlOutputPath() {
-		// must get basedir from project to ensure that correct basedir is used when building from parent
-		return project.getBasedir() + this.outputRamlFilePath;
-	}
-
 	public void execute() throws MojoExecutionException, MojoFailureException {
 		long startTime = System.currentTimeMillis();
 		if (project.getPackaging().equals("pom")) {
@@ -110,7 +118,7 @@ public class SpringMvcRamlApiSyncMojo extends CommonApiSyncMojo {
 
 		} else {
 			try {
-				generateRaml();
+				verifyRaml();
 			} catch (IOException e) {
 				ClassLoaderUtils.restoreOriginalClassLoader();
 				throw new MojoExecutionException(e, "Unexpected exception while executing security enforcer.",
@@ -119,6 +127,5 @@ public class SpringMvcRamlApiSyncMojo extends CommonApiSyncMojo {
 		}
 		this.getLog().info("Raml Generation Complete in:" + (System.currentTimeMillis() - startTime) + "ms");
 	}
-	
 
 }

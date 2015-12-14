@@ -2,11 +2,13 @@
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 
-	<name>Spring MVC to RAML Synchronizer</name>
-
 	<groupId>com.phoenixnap.oss</groupId>
 	<artifactId>springmvc-raml-parent</artifactId>
 	<version>0.0.2</version>
+	
+	<name>Spring MVC to RAML Synchronizer</name>
+	<description>Parent pom to the SpringMVC RAML Generation/Verification Project</description>
+	<url>https://github.com/phoenixnap/springmvc-raml-plugin/</url>
 	<packaging>pom</packaging> 
 
 	<developers>
@@ -15,6 +17,13 @@
 			<email>kurtpa@phoenixnap.com</email>
 		</developer>
 	</developers>
+	
+	<licenses>
+	  <license>
+		<name>The Apache License, Version 2.0</name>
+		<url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
+	  </license>
+	</licenses>
 		
 	<modules>
 		<module>springmvc-raml-annotations</module>

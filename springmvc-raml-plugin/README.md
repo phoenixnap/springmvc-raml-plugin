@@ -1,5 +1,5 @@
-## Spring MVC-to-RAML Generator
-The Spring MVC-to-RAML Generator project aims to provide a live representation of the endpoints exposed in a project by using the Spring MVC Annotation in that project as the single source of truth
+## Spring MVC-RAML Synchronizer Plugin
+The Spring MVC-RAML Synchronizer project aims to provide a live representation of the endpoints exposed in a project by using the Spring MVC Annotation in that project as the single source of truth. This can be used to either generate RAML code from Spring annotations, or to keep hand-written RAML files in sync with the Spring MVC implementation by cross-checking the contract with the implementation
 
 The project will extract information using reflection and source inspection (for JavaDoc) so as to expose all information available to it.
 

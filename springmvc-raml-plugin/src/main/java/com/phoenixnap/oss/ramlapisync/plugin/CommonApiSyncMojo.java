@@ -14,24 +14,20 @@ package com.phoenixnap.oss.ramlapisync.plugin;
 
 import java.io.IOException;
 import java.lang.annotation.Annotation;
-import java.nio.file.Files;
-import java.nio.file.LinkOption;
-import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
 
-import org.apache.commons.lang.ArrayUtils;
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
 import org.apache.maven.plugins.annotations.Parameter;
 import org.apache.maven.project.MavenProject;
 
-import com.phoenixnap.oss.ramlapisync.data.ApiDocumentMetadata;
 import com.google.common.base.Strings;
 import com.google.common.reflect.ClassPath;
+import com.phoenixnap.oss.ramlapisync.data.ApiDocumentMetadata;
 
 /**
  * Common Functionality between Spring MVC and Other RAML Syncronizers
@@ -41,12 +37,6 @@ import com.google.common.reflect.ClassPath;
  *
  */
 public abstract class CommonApiSyncMojo extends AbstractMojo {
-
-	/**
-	 * Maven project - required for class scanning
-	 */
-	@Parameter(defaultValue = "${project}", required = true, readonly = true)
-	protected MavenProject project;
 
 	/**
 	 * Version of the API being represented in this generation
@@ -59,44 +49,33 @@ public abstract class CommonApiSyncMojo extends AbstractMojo {
 	 */
 	@Parameter(required = false, readonly = true, defaultValue = "application/json")
 	protected String defaultMediaType;
+	
+	/**
+	 * Maven project - required for class scanning
+	 */
+	@Parameter(defaultValue = "${project}", required = true, readonly = true)
+	protected MavenProject project;
 
 	/**
-	 * Relative file path where the RAML document will be saved to
+	 * Holder for documents matching the suffix
 	 */
-	@Parameter(required = true, readonly = true)
-	protected String outputRamlFilePath;
-
-	/**
-	 * Base URL relative to the generated RAML file for the APIs to be accessed at runtime
-	 */
-	@Parameter(required = true, readonly = true)
-	protected String restBasePath;
-
-	/**
-	 * TODO filter that allows the plugin to ignore packages other than the ones included
-	 */
-	@Parameter(readonly = true)
-	protected String[] exposedPackages = ArrayUtils.EMPTY_STRING_ARRAY;
-
+	protected Set<ApiDocumentMetadata> documents = new LinkedHashSet<>();
+	
+	private static final String DEFAULT_RESOURCE_DOC_SUFFIX = "-doc.md";
+	
 	/**
 	 * The file extension that will be used to determine files that should be included as documents and linked to the
 	 * generated RAML file
 	 */
 	@Parameter(required = false, readonly = true, defaultValue = DEFAULT_RESOURCE_DOC_SUFFIX)
 	protected String documentationSuffix;
-
-	private static final String DEFAULT_RESOURCE_DOC_SUFFIX = "-doc.md";
-
+	
 	/**
 	 * Holder for classes matching the annotations which identify them as resources
 	 */
 	protected List<Class<?>> annotatedClasses = new ArrayList<>();
 
-	/**
-	 * Holder for documents matching the suffix
-	 */
-	protected Set<ApiDocumentMetadata> documents = new LinkedHashSet<>();
-
+	
 	/**
 	 * The annotations which identify a class as an API Resource. These could change based on the technology being
 	 * parsed
@@ -109,7 +88,7 @@ public abstract class CommonApiSyncMojo extends AbstractMojo {
 	 * @throws MojoFailureException
 	 * @throws IOException
 	 */
-	protected void generateRaml() throws MojoExecutionException, MojoFailureException, IOException {
+	protected void prepareRaml() throws MojoExecutionException, MojoFailureException, IOException {
 		ClassLoaderUtils.addLocationsToClassLoader(project);
 		List<String> targetPacks = ClassLoaderUtils.loadPackages(project);
 		List<String> targetClasses = ClassLoaderUtils.loadClasses(project);
@@ -131,6 +110,18 @@ public abstract class CommonApiSyncMojo extends AbstractMojo {
 		}
 
 		ClassLoaderUtils.restoreOriginalClassLoader();
+	}
+	
+	/**
+	 * Checks if a class has at least one of the required annotations for mapping
+	 * @param c
+	 */
+	protected final void scanClass(Class<?> c) {
+		for (Class<? extends Annotation> cAnnotation : supportedClassAnnotations) {
+			if (c.isAnnotationPresent(cAnnotation)) {
+				annotatedClasses.add(c);
+			}
+		}
 	}
 
 	protected void scanPack(String pack, List<String> targetClasses, ClassPath classPath)
@@ -156,53 +147,10 @@ public abstract class CommonApiSyncMojo extends AbstractMojo {
 
 	}
 
-	public void execute() throws MojoExecutionException, MojoFailureException {
-		long startTime = System.currentTimeMillis();
-		if (project.getPackaging().equals("pom")) {
-			this.getLog().info("Skipping [pom] project: " + project.getName());
-
-		} else if (project.getPackaging().equals("maven-plugin")) {
-			this.getLog().info("Skipping [maven-plugin] project: " + project.getName());
-
-		} else if (!Files.isDirectory(Paths.get(project.getBuild().getSourceDirectory()), LinkOption.NOFOLLOW_LINKS)) {
-			this.getLog().info("Skipping project with missing src folder: " + project.getName());
-
-		} else {
-			try {
-				generateRaml();
-			} catch (IOException e) {
-				ClassLoaderUtils.restoreOriginalClassLoader();
-				throw new MojoExecutionException(e, "Unexpected exception while executing security enforcer.",
-						e.toString());
-			}
-		}
-		this.getLog().info("Raml Generation Complete in:" + (System.currentTimeMillis() - startTime) + "ms");
-	}
-
 	@SuppressWarnings("unchecked")
 	protected Class<? extends Annotation>[] getSupportedClassAnnotations() {
 		return new Class[0];
 	}
 
-	/**
-	 * Converts the relative path to the absolute path
-	 * @return
-	 */
-	public String getFullRamlOutputPath() {
-		// must get basedir from project to ensure that correct basedir is used when building from parent
-		return project.getBasedir() + this.outputRamlFilePath;
-	}
-
-	/**
-	 * Checks if a class has at least one of the required annotations for mapping
-	 * @param c
-	 */
-	protected final void scanClass(Class<?> c) {
-		for (Class<? extends Annotation> cAnnotation : supportedClassAnnotations) {
-			if (c.isAnnotationPresent(cAnnotation)) {
-				annotatedClasses.add(c);
-			}
-		}
-	}
 
 }
