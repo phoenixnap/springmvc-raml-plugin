@@ -4,6 +4,7 @@ The Spring MVC-RAML Synchronizer project aims to provide a live representation o
 The project will extract information using reflection and source inspection (for JavaDoc) so as to expose all information available to it.
 
 The project provides two artifacts - A maven plugin designed to be run on Java 8 code which has been compiled with argument name information. A seperate project is also supplied that allows the use of custom annotations such as @Example which can be used to embed example inputs or outputs.
+![PhoenixNAP Logo](https://phoenixnap.com/wp-content/themes/phoenixnap-v2/img/v2/logo.svg)
 
 ## Documentation & Getting Support
 Usage and documentation are available in the Javadoc and README.md (this file). Kindly contact the developers via email (available in the pom files) if required or open an [Issue][] in our tracking system.

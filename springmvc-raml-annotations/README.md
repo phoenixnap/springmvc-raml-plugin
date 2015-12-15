@@ -1,3 +1,5 @@
+![PhoenixNAP Logo](https://phoenixnap.com/wp-content/themes/phoenixnap-v2/img/v2/logo.svg)
+
 ## Spring MVC-RAML Synchroniser
 The Spring MVC-RAML Synchronizer annotations project allows the use of custom annotations such as @Example which can be used to embed example inputs or outputs.
 
