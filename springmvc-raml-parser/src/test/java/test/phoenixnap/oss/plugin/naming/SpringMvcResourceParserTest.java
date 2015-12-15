@@ -40,6 +40,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.MediaType;
 
+import test.phoenixnap.oss.plugin.naming.testclasses.BugController;
 import test.phoenixnap.oss.plugin.naming.testclasses.TestController;
 
 import com.phoenixnap.oss.ramlapisync.javadoc.JavaDocEntry;
@@ -285,7 +286,6 @@ public class SpringMvcResourceParserTest {
 	public void test_simpleGetWithMiscCasesAndPathVariable() {
 		Resource testResource = baseResourceTestController.getResource("/base").getResource("/miscCases")
 				.getResource("/{pathVariable}");
-		assertEquals("Assert resources size", 1, testResource.getUriParameters().size());
 		UriParameter uriParameter = testResource.getUriParameters().get("pathVariable");
 		assertEquals("Check that parameter was placed in query", ParamType.INTEGER, uriParameter.getType());
 		assertEquals("Check that uriparametersare required", true, uriParameter.isRequired());
@@ -375,6 +375,13 @@ public class SpringMvcResourceParserTest {
 		assertEquals("Assert resources size", 1, nestedResource.getActions().size());
 		assertEquals("Assert description", "Stuff Resource", nestedResource.getDescription());
 
+	}
+	
+	@Test
+	public void test_bug1_IndexOutOfBounds_PostWithNoBody() { 
+		Resource resourceInfo = parser.extractResourceInfo(BugController.class);
+		Resource testResource = resourceInfo.getResource("/forgotStuff").getResource("/{somethingID}").getResource("/resendStuff");
+		assertNotNull(testResource);
 	}
 
 }

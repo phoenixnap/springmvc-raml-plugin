@@ -177,6 +177,10 @@ public abstract class ResourceParser {
 
 		String comment = null;
 		List<ApiParameterMetadata> apiParameters = getApiParameters(method, false, true);
+		if (apiParameters.size() == 0) {
+			//We only have url params it seems
+			return Collections.emptyMap();
+		}
 		Pair<String, MimeType> schemaAndMime = extractRequestBody(method, parameterComments, comment, apiParameters);
 
 		return Collections.singletonMap(schemaAndMime.getFirst(), schemaAndMime.getSecond());

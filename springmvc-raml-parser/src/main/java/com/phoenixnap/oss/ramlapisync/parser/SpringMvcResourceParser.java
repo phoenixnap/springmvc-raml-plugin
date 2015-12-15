@@ -81,8 +81,12 @@ public class SpringMvcResourceParser extends ResourceParser {
 			String comment, List<ApiParameterMetadata> apiParameters) {
 		MimeType mimeType = new MimeType();
 		String type;
-		// Handle Plain Text parameters
-		if (apiParameters != null && apiParameters.size() == 1 && String.class.equals(apiParameters.get(0).getType())
+		//Handle empty body
+		if (apiParameters != null && apiParameters.size() == 0) {
+			// do nothing here
+			return null;
+		} else if (apiParameters != null && apiParameters.size() == 1 && String.class.equals(apiParameters.get(0).getType())
+			// Handle Plain Text parameters
 				&& apiParameters.get(0).isAnnotationPresent(RequestBody.class)) {
 			ApiParameterMetadata apiParameterMetadata = apiParameters.get(0);
 			type = "text/plain";
@@ -106,8 +110,8 @@ public class SpringMvcResourceParser extends ResourceParser {
 			}
 			return new Pair<>(type, mimeType);
 		} else if (apiParameters != null
-				&& (apiParameters.size() > 1 || (!apiParameters.get(0).isAnnotationPresent(RequestBody.class) && String.class
-						.equals(apiParameters.get(0).getType())))) {
+				&& (apiParameters.size() > 1 
+						|| (!apiParameters.get(0).isAnnotationPresent(RequestBody.class) && String.class.equals(apiParameters.get(0).getType())))) {
 			type = "application/x-www-form-urlencoded";
 			for (ApiParameterMetadata param : apiParameters) {
 				FormParameter formParameter = new FormParameter();
@@ -427,6 +431,10 @@ public class SpringMvcResourceParser extends ResourceParser {
 			Action action = new Action();
 			ActionType apiAction = methodAction.getKey();
 			String apiName = methodAction.getValue();
+			//Method assumes that the name starts with /
+			if (apiName != null && !apiName.startsWith("/")) {
+				apiName = "/" + apiName;
+			}
 			Map<String, String> pathDescriptions = getPathDescriptionsForMethod(method);
 			logger.info("Added call: " + apiName + " " +apiAction  + " from method: " + method.getName()  );
 
