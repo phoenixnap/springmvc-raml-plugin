@@ -18,6 +18,8 @@
 		<developer>
 			<name>Kurt Paris</name>
 			<email>kurtpa@phoenixnap.com</email>
+			<organization>PhoenixNAP</organization>
+      		<organizationUrl>http://www.phoenixnap.com</organizationUrl>
 		</developer>
 	</developers>
 	
@@ -27,6 +29,12 @@
 		<url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
 	  </license>
 	</licenses>
+	
+	<scm>
+	  <connection>scm:git:git@github.com:phoenixnap/springmvc-raml-plugin.git</connection>
+	  <developerConnection>scm:git:git@github.com:phoenixnap/springmvc-raml-plugin.git</developerConnection>
+	  <url>git@github.com:phoenixnap/springmvc-raml-plugin.git</url>
+	</scm>
 	
   	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -97,6 +105,12 @@
 			<groupId>com.fasterxml.jackson.module</groupId>
 			<artifactId>jackson-module-jsonSchema</artifactId>
 			<version>2.5.3</version>
+		</dependency>
+		
+		<dependency>
+		    <groupId>org.atteo</groupId>
+		    <artifactId>evo-inflector</artifactId>
+		    <version>1.2.1</version>
 		</dependency>
 
 		<!-- Test Dependencies -->

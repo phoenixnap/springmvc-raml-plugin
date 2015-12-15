@@ -1,11 +1,8 @@
 ## Spring MVC-RAML Synchronizer Parser
 The Spring MVC-RAML Synchronizer project aims to provide a live representation of the endpoints exposed in a project by using the Spring MVC Annotation in that project as the single source of truth. This can be used to either generate RAML code from Spring annotations, or to keep hand-written RAML files in sync with the Spring MVC implementation by cross-checking the contract with the implementation
 
-## Documentation
-See the current [Javadoc][] and [reference docs][].
-
-## Getting Support
-Usage and documentation are available in the Javadoc and this file. Kindly contact the developers via email (available in the pom files) if required or open an issue in our tracking system.
+## Documentation & Getting Support
+Usage and documentation are available in the Javadoc and README.md of the child projects. Kindly contact the developers via email (available in the pom files) if required or open an [Issue][] in our tracking system.
 
 ### Prerequisites
 
@@ -38,3 +35,13 @@ Raml computed = generator.generateRamlForClasses("test", "0.0.1", "/", classesTo
 RamlVerifier verifier = new RamlVerifier(published, computed);
 assertFalse("Check that there are no errors since the missing resource will get marked as a warning", verifier.hasErrors());
 ```
+
+## Contributing
+[Pull requests][] are welcome; Be a good citizen and create unit tests for any bugs squished or features added
+
+[Pull requests]: http://help.github.com/send-pull-requests
+[Apache License]: http://www.apache.org/licenses/LICENSE-2.0
+[Git]: http://help.github.com/set-up-git-redirect
+[JDK8 build]: http://www.oracle.com/technetwork/java/javase/downloads
+[Maven]: http://maven.apache.org/
+[Issue]: https://github.com/phoenixnap/springmvc-raml-plugin/issues

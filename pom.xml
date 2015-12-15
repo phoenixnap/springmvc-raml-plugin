@@ -15,6 +15,8 @@
 		<developer>
 			<name>Kurt Paris</name>
 			<email>kurtpa@phoenixnap.com</email>
+			<organization>PhoenixNAP</organization>
+      		<organizationUrl>http://www.phoenixnap.com</organizationUrl>
 		</developer>
 	</developers>
 	
@@ -30,6 +32,12 @@
 		<module>springmvc-raml-parser</module>
 		<module>springmvc-raml-plugin</module>
 	</modules>
+	
+	<scm>
+	  <connection>scm:git:git@github.com:phoenixnap/springmvc-raml-plugin.git</connection>
+	  <developerConnection>scm:git:git@github.com:phoenixnap/springmvc-raml-plugin.git</developerConnection>
+	  <url>git@github.com:phoenixnap/springmvc-raml-plugin.git</url>
+	</scm>
   
 	<build>
 		<pluginManagement>
