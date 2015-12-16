@@ -29,6 +29,10 @@ import com.phoenixnap.oss.ramlapisync.verification.RamlChecker;
  */
 public class ResourceExistenceChecker implements RamlChecker {
 	
+	public static String RESOURCE_MISSING = "Missing Resource.";
+	public static String CONTRACT_MISSING = "Completely Missing RAML file";
+	public static String IMPLEMENTATION_MISSING = "Completely Missing Implementation for RAML file";
+	public static String RESOURCE_WITH_DISCREPANCY = "Resource declared with case, spacing or special character differences.";
 	
 	/**
 	 * Class Logger
@@ -43,9 +47,9 @@ public class ResourceExistenceChecker implements RamlChecker {
 	public Pair<Set<Issue>, Set<Issue>> check(Raml published, Raml implemented) {
 		logger.info("Performing Resource Existence Checks");
 		if (published != null && implemented == null) {
-			errors.add(new Issue(IssueSeverity.ERROR, IssueLocation.CONTRACT, IssueType.MISSING, "Completely Missing Implementation for RAML file", "/"));
+			errors.add(new Issue(IssueSeverity.ERROR, IssueLocation.CONTRACT, IssueType.MISSING, IMPLEMENTATION_MISSING, "/"));
 		} else if (published == null && implemented != null) {
-			errors.add(new Issue(IssueSeverity.ERROR, IssueLocation.SOURCE, IssueType.MISSING, "Completely Missing RAML file", "/"));
+			errors.add(new Issue(IssueSeverity.ERROR, IssueLocation.SOURCE, IssueType.MISSING, CONTRACT_MISSING, "/"));
 		} else {
 			logger.debug("Checking for any missing resources in implementation");
 			// First Check for missing in implementation
@@ -76,7 +80,7 @@ public class ResourceExistenceChecker implements RamlChecker {
 				if (implementedCleanedResources.keySet().contains(cleanedResource) && !exact){			
 					logger.debug("Expecting resource " + resource + " and found with minor differences: "+ cleanedResource);
 					//Discrepancies in spacing or special chars - issue warning;
-					warnings.add(new Issue(IssueSeverity.WARNING, location, IssueType.MISSING, "Resource declared with case, spacing or special character differences" , referenceResourcesMap.get(resource), null));
+					warnings.add(new Issue(IssueSeverity.WARNING, location, IssueType.MISSING, RESOURCE_WITH_DISCREPANCY , referenceResourcesMap.get(resource), null));
 					check(referenceResourcesMap.get(resource).getResources(), implementedCleanedResources.get(cleanedResource).getResources(), location, severity, exact);
 				} else {
 					boolean foundAlternateUriParam = false;
@@ -89,12 +93,12 @@ public class ResourceExistenceChecker implements RamlChecker {
 					}
 					
 					//Resource (and all children) missing - Log it
-					Issue issue = new Issue(severity, location, IssueType.MISSING, "Missing Resource." , referenceResourcesMap.get(resource), null);
+					Issue issue = new Issue(severity, location, IssueType.MISSING, RESOURCE_MISSING , referenceResourcesMap.get(resource), null);
 					if (severity.equals(IssueSeverity.ERROR) && !foundAlternateUriParam) {
-						logger.error("Expected resource missing: "+ resource);
+						logger.error("Expected resource missing: "+ resource + " in " + location.name());
 						errors.add(issue);
 					} else {
-						logger.warn("Expected resource missing: "+ resource);
+						logger.warn("Expected resource missing: "+ resource + " in " + location.name());
 						warnings.add(issue);
 					}
 				}

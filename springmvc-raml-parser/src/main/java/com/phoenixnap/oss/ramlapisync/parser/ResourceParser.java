@@ -339,6 +339,8 @@ public abstract class ResourceParser {
 			if (resource.getResources().containsKey(relativeUri)) {
 				resource.getResource(relativeUri).getActions().putAll(cResource.getActions());
 			} else {
+				cResource.setParentResource(resource);
+				cResource.setParentUri(resource.getUri());
 				resource.getResources().put(relativeUri, cResource);
 			}
 		}

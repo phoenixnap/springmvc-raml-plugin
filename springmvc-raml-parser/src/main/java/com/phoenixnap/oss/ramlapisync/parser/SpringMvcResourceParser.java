@@ -516,6 +516,13 @@ public class SpringMvcResourceParser extends ResourceParser {
 					idResource.setDisplayName(displayName); // TODO allow the Api annotation to specify this shit
 					idResource.setDescription(resourceDescription); // TODO allow the Api annotation to specify this shit
 					idResource.setParentResource(leafResource);
+					if(leafResource.getUri() != null) {
+						String targetUri = leafResource.getUri();
+						if(targetUri.startsWith("null/")) {
+							targetUri = targetUri.substring(5);
+						}
+						idResource.setParentUri(targetUri);
+					}
 					leafResource.getResources().put(resourceName, idResource);
 				}
 			}
@@ -530,6 +537,7 @@ public class SpringMvcResourceParser extends ResourceParser {
 				actionTargetResource = parentResource;
 			}
 			action.setResource(actionTargetResource);
+			action.setType(apiAction);
 			actionTargetResource.getActions().putIfAbsent(apiAction, action);
 		}
 

@@ -54,7 +54,7 @@ public class Issue {
 	 */
 	public static String buildRamlLocation(Resource resource, Action action) {
 		String outLocation = resource.getUri();
-		if (action != null) {
+		if (action != null && action.getType() != null) {
 			outLocation = action.getType().name() + " " + outLocation;
 		}
 		return outLocation;
@@ -77,11 +77,10 @@ public class Issue {
 	}
 
 	public String getRamlLocation() {
-		if (ramlLocation != null) {
-			return ramlLocation;
-		} else {
-			return buildRamlLocation(resourceLocation, action);
-		}
+		if (ramlLocation == null) {
+			ramlLocation = buildRamlLocation(resourceLocation, action);
+		} 
+		return ramlLocation;
 	}
 
 	public Resource getResourceLocation() {
@@ -96,16 +95,15 @@ public class Issue {
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
-		result = prime * result + ((action == null) ? 0 : action.hashCode());
+
 		result = prime * result
 				+ ((description == null) ? 0 : description.hashCode());
 		result = prime * result
 				+ ((location == null) ? 0 : location.hashCode());
+		String ramlLocation = getRamlLocation();
 		result = prime * result
 				+ ((ramlLocation == null) ? 0 : ramlLocation.hashCode());
-		result = prime
-				* result
-				+ ((resourceLocation == null || resourceLocation.getUri() == null) ? 0 : resourceLocation.getUri().hashCode());
+		
 		result = prime * result
 				+ ((severity == null) ? 0 : severity.hashCode());
 		result = prime * result + ((type == null) ? 0 : type.hashCode());
@@ -120,12 +118,7 @@ public class Issue {
 			return false;
 		if (getClass() != obj.getClass())
 			return false;
-		Issue other = (Issue) obj;
-		if (action == null) {
-			if (other.action != null)
-				return false;
-		} else if (!action.getType().equals(other.action.getType()))
-			return false;
+		Issue other = (Issue) obj;		
 		if (description == null) {
 			if (other.description != null)
 				return false;
@@ -133,15 +126,12 @@ public class Issue {
 			return false;
 		if (location != other.location)
 			return false;
+		String ramlLocation = getRamlLocation();
+		String otherRamlLocation = other.getRamlLocation();
 		if (ramlLocation == null) {
-			if (other.ramlLocation != null)
+			if (otherRamlLocation != null)
 				return false;
-		} else if (!ramlLocation.equals(other.ramlLocation))
-			return false;
-		if (resourceLocation == null) {
-			if (other.resourceLocation != null)
-				return false;
-		} else if (!resourceLocation.getUri().equals(other.resourceLocation.getUri()))
+		} else if (!ramlLocation.equals(otherRamlLocation))
 			return false;
 		if (severity != other.severity)
 			return false;
@@ -149,6 +139,14 @@ public class Issue {
 			return false;
 		return true;
 	}
+
+	@Override
+	public String toString() {
+		return "Issue [severity=" + severity + ", location=" + location
+				+ ", type=" + type + ", description=" + description
+				+ ", ramlLocation=" + getRamlLocation() + "]";
+	}
+	
 	
 	
 

@@ -86,7 +86,7 @@ public class RamlCheckerResourceVisitorCoordinator implements RamlChecker {
 		
 		for (String resource : referenceResources) {			
 			if (targetResources.contains(resource)) {
-				logger.debug("Expecting and found resource: "+ resource); 
+				logger.debug("Visiting resource: "+ resource + " in " + (location.equals(IssueLocation.SOURCE) ? IssueLocation.CONTRACT : IssueLocation.SOURCE)); 
 				Resource reference = referenceResourcesMap.get(resource);
 				Resource target = targetResourcesMap.get(resource);
 				for (RamlResourceVisitorCheck resourceCheck : resourceCheckers) {
@@ -105,6 +105,7 @@ public class RamlCheckerResourceVisitorCoordinator implements RamlChecker {
 					for (Entry<ActionType, Action> action : referenceActions.entrySet()) {
 						Action targetAction = targetActions.get(action.getKey());
 						if (targetAction != null) {
+							logger.debug("Visiting action: "+ action.getKey());
 							for (RamlActionVisitorCheck actionCheck : actionCheckers) {
 								Pair<Set<Issue>, Set<Issue>> check = actionCheck.check(action.getKey(), action.getValue(), targetAction);
 								if (check != null && check.getFirst() != null) {
