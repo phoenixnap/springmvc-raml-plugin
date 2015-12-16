@@ -26,7 +26,7 @@ import test.phoenixnap.oss.plugin.naming.testclasses.VerifierTestController;
 import com.phoenixnap.oss.ramlapisync.generation.RamlGenerator;
 import com.phoenixnap.oss.ramlapisync.generation.RamlVerifier;
 import com.phoenixnap.oss.ramlapisync.parser.SpringMvcResourceParser;
-import com.phoenixnap.oss.ramlapisync.verification.ResourceExistenceChecker;
+import com.phoenixnap.oss.ramlapisync.verification.checkers.ResourceExistenceChecker;
 
 /**
  * Unit tests for the RamlVerifier class and associated Checkers

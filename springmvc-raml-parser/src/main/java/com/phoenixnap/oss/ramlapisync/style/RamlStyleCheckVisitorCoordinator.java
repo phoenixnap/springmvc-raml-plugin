@@ -20,8 +20,14 @@ import com.phoenixnap.oss.ramlapisync.verification.IssueSeverity;
 import com.phoenixnap.oss.ramlapisync.verification.IssueType;
 import com.phoenixnap.oss.ramlapisync.verification.RamlChecker;
 
-
-public class RamlStyleCheckCoordinator implements RamlChecker {
+/**
+ * Provides a Vistor pattern approach to Style Checks. Iterates through the model and invokes callbacks on specific checkers.
+ * 
+ * @author Kurt Paris
+ * @since 0.0.2
+ *
+ */
+public class RamlStyleCheckVisitorCoordinator implements RamlChecker {
 	
 	/**
 	 * Boolean flag to enable style checking of code too. Sicne RAML and code should be in sync this could be kept off to improve performance
@@ -32,7 +38,7 @@ public class RamlStyleCheckCoordinator implements RamlChecker {
 	
 	private List<RamlStyleChecker> checkers;
 	
-	public RamlStyleCheckCoordinator (List<RamlStyleChecker> styleChecks) {		
+	public RamlStyleCheckVisitorCoordinator (List<RamlStyleChecker> styleChecks) {		
 		checkers = new ArrayList<>();
 		checkers.addAll(styleChecks);	
 	}

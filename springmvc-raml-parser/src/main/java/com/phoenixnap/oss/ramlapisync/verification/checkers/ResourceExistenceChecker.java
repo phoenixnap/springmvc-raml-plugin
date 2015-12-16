@@ -1,4 +1,4 @@
-package com.phoenixnap.oss.ramlapisync.verification;
+package com.phoenixnap.oss.ramlapisync.verification.checkers;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -15,6 +15,11 @@ import org.slf4j.LoggerFactory;
 
 import com.phoenixnap.oss.ramlapisync.naming.NamingHelper;
 import com.phoenixnap.oss.ramlapisync.naming.Pair;
+import com.phoenixnap.oss.ramlapisync.verification.Issue;
+import com.phoenixnap.oss.ramlapisync.verification.IssueLocation;
+import com.phoenixnap.oss.ramlapisync.verification.IssueSeverity;
+import com.phoenixnap.oss.ramlapisync.verification.IssueType;
+import com.phoenixnap.oss.ramlapisync.verification.RamlChecker;
 
 /**
  * Raml checker that cross checks the existence of Resources 

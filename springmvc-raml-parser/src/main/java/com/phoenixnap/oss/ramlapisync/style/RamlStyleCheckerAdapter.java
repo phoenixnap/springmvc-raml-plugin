@@ -11,7 +11,7 @@ import org.raml.model.parameter.AbstractParam;
 import com.phoenixnap.oss.ramlapisync.verification.IssueLocation;
 
 /**
- * Adapter pattern Raml Style Checkers.
+ * Adapter pattern for Raml Style Checkers.
  * 
  * @author Kurt Paris
  * @since 0.0.2

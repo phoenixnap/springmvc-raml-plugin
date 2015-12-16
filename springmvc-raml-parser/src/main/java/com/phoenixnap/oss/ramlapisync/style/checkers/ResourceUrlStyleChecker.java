@@ -1,4 +1,4 @@
-package com.phoenixnap.oss.ramlapisync.style;
+package com.phoenixnap.oss.ramlapisync.style.checkers;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -8,8 +8,17 @@ import org.apache.commons.lang.CharUtils;
 import org.raml.model.Resource;
 
 import com.phoenixnap.oss.ramlapisync.naming.NamingHelper;
+import com.phoenixnap.oss.ramlapisync.style.RamlStyleCheckerAdapter;
+import com.phoenixnap.oss.ramlapisync.style.StyleIssue;
 import com.phoenixnap.oss.ramlapisync.verification.IssueLocation;
 
+/**
+ * Style checker that ensures that certain characters are not used in resource URLs
+ * 
+ * @author Kurt Paris
+ * @since 0.0.2
+ *
+ */
 public class ResourceUrlStyleChecker extends RamlStyleCheckerAdapter {
 
 	private static String CHARS_NOT_ALLOWED_REGEX = "(-|:|%)+";
@@ -27,7 +36,7 @@ public class ResourceUrlStyleChecker extends RamlStyleCheckerAdapter {
 		if (CharUtils.isAsciiAlphaUpper(name.charAt(0))) {
 			issues.add(new StyleIssue(location, "Resource URLs Should not be capitalized", resource, null));
 		}
-		return super.checkResourceStyle(name, resource, location);
+		return issues;
 	}
 	
 	

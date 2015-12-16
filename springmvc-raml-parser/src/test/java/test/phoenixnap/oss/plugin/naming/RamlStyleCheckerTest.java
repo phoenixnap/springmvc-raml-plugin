@@ -12,20 +12,19 @@
  */
 package test.phoenixnap.oss.plugin.naming;
 
-import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.*;
 
 import java.util.Collections;
 
 import org.junit.Test;
 import org.raml.model.Raml;
 
-import test.phoenixnap.oss.plugin.naming.testclasses.SecondVerifierTestController;
-import test.phoenixnap.oss.plugin.naming.testclasses.VerifierTestController;
-
 import com.phoenixnap.oss.ramlapisync.generation.RamlGenerator;
 import com.phoenixnap.oss.ramlapisync.generation.RamlVerifier;
 import com.phoenixnap.oss.ramlapisync.parser.SpringMvcResourceParser;
-import com.phoenixnap.oss.ramlapisync.style.ResourceUrlStyleChecker;
+import com.phoenixnap.oss.ramlapisync.style.checkers.ActionSecurityResponseChecker;
+import com.phoenixnap.oss.ramlapisync.style.checkers.ResourceCollectionPluralisationChecker;
+import com.phoenixnap.oss.ramlapisync.style.checkers.ResourceUrlStyleChecker;
 
 /**
  * Unit tests for the Style Checkers
@@ -40,17 +39,54 @@ public class RamlStyleCheckerTest {
 	RamlGenerator generator = new RamlGenerator(parser);
 	
 	@Test
-	public void test_ResourceExistenceChecker_Success() {
+	public void test_UrlStyleChecker_Success() {
 		Raml published = RamlVerifier.loadRamlFromFile("test-style-success.raml");
-		Class<?>[] classesToGenerate = new Class[] {VerifierTestController.class, SecondVerifierTestController.class};
-		Raml computed = generator.generateRamlForClasses("test", "0.0.1", "/", classesToGenerate, Collections.emptySet()).getRaml();
 		
-		RamlVerifier verifier = new RamlVerifier(published, computed, Collections.emptyList(), Collections.singletonList(new ResourceUrlStyleChecker()));
+		RamlVerifier verifier = new RamlVerifier(published, null, Collections.emptyList(), Collections.singletonList(new ResourceUrlStyleChecker()));
 		assertFalse("Check that raml passes rules", verifier.hasErrors());
 		assertFalse("Check that implementation matches rules", verifier.hasWarnings());
 		
 	}
 	
+	@Test
+	public void test_PluralChecker_Success() {
+		Raml published = RamlVerifier.loadRamlFromFile("test-style-pluralised-success.raml");
+		
+		RamlVerifier verifier = new RamlVerifier(published, null, Collections.emptyList(), Collections.singletonList(new ResourceCollectionPluralisationChecker()));
+		assertFalse("Check that raml passes rules", verifier.hasErrors());
+		assertFalse("Check that implementation matches rules", verifier.hasWarnings());
+		
+	}
+	
+	@Test
+	public void test_PluralChecker_Fails() {
+		Raml published = RamlVerifier.loadRamlFromFile("test-style-pluralised-singularcollection.raml");
+		
+		RamlVerifier verifier = new RamlVerifier(published, null, Collections.emptyList(), Collections.singletonList(new ResourceCollectionPluralisationChecker()));
+		assertFalse("Check that raml passes rules", verifier.hasErrors());
+		assertTrue("Check that implementation matches rules", verifier.hasWarnings());
+		assertEquals("Check that implementation shuld have 1 warning", 1, verifier.getWarnings().size());
+	}
+	
+	@Test
+	public void test_ActionSecurityResponseCheck_Success() {
+		Raml published = RamlVerifier.loadRamlFromFile("test-style-actionsecurity-success.raml");
+		
+		RamlVerifier verifier = new RamlVerifier(published, null, Collections.emptyList(), Collections.singletonList(new ActionSecurityResponseChecker()));
+		assertFalse("Check that raml passes rules", verifier.hasErrors());
+		assertFalse("Check that implementation matches rules", verifier.hasWarnings());
+	}
+	
+	@Test
+	public void test_ActionSecurityResponseCheck_Fails() {
+		Raml published = RamlVerifier.loadRamlFromFile("test-style-actionsecurity-fails.raml");
+		
+		RamlVerifier verifier = new RamlVerifier(published, null, Collections.emptyList(), Collections.singletonList(new ActionSecurityResponseChecker()));
+		assertFalse("Check that raml passes rules", verifier.hasErrors());
+		assertTrue("Check that implementation matches rules", verifier.hasWarnings());
+		assertEquals("Check that implementation shuld have 2 warnings", 2, verifier.getWarnings().size());
+		
+	}
 	
 
 }

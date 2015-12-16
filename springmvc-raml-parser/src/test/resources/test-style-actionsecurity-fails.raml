@@ -1,0 +1,53 @@
+#%RAML 0.8
+title: myapi
+baseUri: /
+version: 1
+securitySchemes:
+  - oauth_2_0:
+      description: |
+          Dropbox supports OAuth 2.0 for authenticating all API requests.
+      type: OAuth 2.0
+      describedBy:
+        headers:
+          Authorization:
+            description: |
+               Used to send a valid OAuth 2 access token. Do not use
+               with the "access_token" query string parameter.
+            type: string
+/ignored:
+  /thisShouldBeIgnored:
+    get:
+  /alsoIgnored:
+    /{ignoreMeId}:
+      get:
+  /books:
+    get:
+      securedBy: [null]
+      responses:
+        200:
+          body:
+            application/json:
+              example: |
+                {
+                  "status" : "UP"
+                }
+    post:
+    /{bookId}:
+      get:
+  /houses:
+    get:
+      securedBy: [oauth_2_0]
+      responses:
+        403:
+        200:
+          body:
+            application/json:
+              example: |
+                {
+                  "status" : "UP"
+                }
+    post:
+    /{houseId}:
+      get:
+        securedBy: [null, oauth_2_0]
+        responses:

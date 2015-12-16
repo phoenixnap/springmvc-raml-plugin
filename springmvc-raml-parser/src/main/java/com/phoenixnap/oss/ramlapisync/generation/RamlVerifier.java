@@ -9,11 +9,11 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.phoenixnap.oss.ramlapisync.naming.Pair;
-import com.phoenixnap.oss.ramlapisync.style.RamlStyleCheckCoordinator;
+import com.phoenixnap.oss.ramlapisync.style.RamlStyleCheckVisitorCoordinator;
 import com.phoenixnap.oss.ramlapisync.style.RamlStyleChecker;
 import com.phoenixnap.oss.ramlapisync.verification.Issue;
 import com.phoenixnap.oss.ramlapisync.verification.RamlChecker;
-import com.phoenixnap.oss.ramlapisync.verification.ResourceExistenceChecker;
+import com.phoenixnap.oss.ramlapisync.verification.checkers.ResourceExistenceChecker;
 
 /**
  * Engine that aims to compare RAML as loaded from a raml file that is published as our API contract with RAML generated from the Spring MVC implementation
@@ -57,7 +57,7 @@ public class RamlVerifier {
 			this.checkers.addAll(checkers);
 		}
 		if (styleChecks != null) {
-			this.checkers.add(new RamlStyleCheckCoordinator(styleChecks));			
+			this.checkers.add(new RamlStyleCheckVisitorCoordinator(styleChecks));			
 		}
 		validate();
 	}
