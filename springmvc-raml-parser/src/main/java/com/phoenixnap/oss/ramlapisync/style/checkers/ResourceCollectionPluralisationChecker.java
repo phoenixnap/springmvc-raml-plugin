@@ -1,8 +1,8 @@
 package com.phoenixnap.oss.ramlapisync.style.checkers;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.LinkedHashSet;
 import java.util.Map.Entry;
+import java.util.Set;
 import java.util.regex.Pattern;
 
 import org.raml.model.ActionType;
@@ -26,9 +26,9 @@ public class ResourceCollectionPluralisationChecker extends RamlStyleCheckerAdap
 	private static Pattern ID_RESOURCE_PATTERN = Pattern.compile(ID_RESOURCE_REGEX); 
 	
 	@Override
-	public List<StyleIssue> checkResourceStyle(String name, Resource resource,
+	public Set<StyleIssue> checkResourceStyle(String name, Resource resource,
 			IssueLocation location) {
-		List<StyleIssue> issues = new ArrayList<>();
+		Set<StyleIssue> issues = new LinkedHashSet<>();
 		
 		
 		//Lets check if this is a plural collection

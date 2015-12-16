@@ -1,7 +1,7 @@
 package com.phoenixnap.oss.ramlapisync.style.checkers;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.LinkedHashSet;
+import java.util.Set;
 import java.util.regex.Pattern;
 
 import org.apache.commons.lang.CharUtils;
@@ -25,9 +25,9 @@ public class ResourceUrlStyleChecker extends RamlStyleCheckerAdapter {
 	private static Pattern CHARS_NOT_ALLOWED = Pattern.compile(CHARS_NOT_ALLOWED_REGEX); 
 	
 	@Override
-	public List<StyleIssue> checkResourceStyle(String name, Resource resource,
+	public Set<StyleIssue> checkResourceStyle(String name, Resource resource,
 			IssueLocation location) {
-		List<StyleIssue> issues = new ArrayList<>();
+		Set<StyleIssue> issues = new LinkedHashSet<>();
 		
 		if (!NamingHelper.isUriParamResource(name) && CHARS_NOT_ALLOWED.matcher(name).find()) {
 			issues.add(new StyleIssue(location, "Special Characters in regex: " + CHARS_NOT_ALLOWED_REGEX + " not allowed in URL", resource, null));

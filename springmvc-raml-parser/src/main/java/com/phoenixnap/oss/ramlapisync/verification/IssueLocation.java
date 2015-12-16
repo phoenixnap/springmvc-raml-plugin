@@ -1,7 +1,7 @@
 package com.phoenixnap.oss.ramlapisync.verification;
 
 /**
- * Different Levels of severity associated with an Issue
+ * The Source locations of the Issue
  * 
  * @author Kurt Paris
  * @since 0.0.2

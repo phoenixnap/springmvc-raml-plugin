@@ -1,6 +1,6 @@
 package com.phoenixnap.oss.ramlapisync.style;
 
-import java.util.List;
+import java.util.Set;
 
 import org.raml.model.Action;
 import org.raml.model.ActionType;
@@ -25,7 +25,7 @@ public interface RamlStyleChecker {
 	 * @param param
 	 * @return A list of style issues or an Empty List if none are found. This method must not return null.
 	 */
-	public List<StyleIssue> checkParameterStyle(String name, AbstractParam param);
+	public Set<StyleIssue> checkParameterStyle(String name, AbstractParam param);
 	
 	/**
 	 * Check the style of a particular action
@@ -35,7 +35,7 @@ public interface RamlStyleChecker {
 	 * @param location
 	 * @return A list of style issues or an Empty List if none are found. This method must not return null.
 	 */
-	public List<StyleIssue> checkActionStyle(ActionType key, Action value, IssueLocation location);
+	public Set<StyleIssue> checkActionStyle(ActionType key, Action value, IssueLocation location);
 
 	/**
 	 * Check the style of a particular resource. This will be called on all child resources by the coordinator.
@@ -45,6 +45,6 @@ public interface RamlStyleChecker {
 	 * @param location
 	 * @return A list of style issues or an Empty List if none are found. This method must not return null.
 	 */
-	public List<StyleIssue> checkResourceStyle(String name, Resource resource, IssueLocation location);
+	public Set<StyleIssue> checkResourceStyle(String name, Resource resource, IssueLocation location);
 
 }

@@ -1,7 +1,7 @@
 package com.phoenixnap.oss.ramlapisync.style;
 
 import java.util.Collections;
-import java.util.List;
+import java.util.Set;
 
 import org.raml.model.Action;
 import org.raml.model.ActionType;
@@ -20,20 +20,20 @@ import com.phoenixnap.oss.ramlapisync.verification.IssueLocation;
 public class RamlStyleCheckerAdapter implements RamlStyleChecker {
 
 	@Override
-	public List<StyleIssue> checkParameterStyle(String name, AbstractParam param) {
-		return Collections.emptyList();
+	public Set<StyleIssue> checkParameterStyle(String name, AbstractParam param) {
+		return Collections.emptySet();
 	}
 
 	@Override
-	public List<StyleIssue> checkActionStyle(ActionType key, Action value,
+	public Set<StyleIssue> checkActionStyle(ActionType key, Action value,
 			IssueLocation location) {
-		return Collections.emptyList();
+		return Collections.emptySet();
 	}
 
 	@Override
-	public List<StyleIssue> checkResourceStyle(String name, Resource resource,
+	public Set<StyleIssue> checkResourceStyle(String name, Resource resource,
 			IssueLocation location) {
-		return Collections.emptyList();
+		return Collections.emptySet();
 	}
 
 }

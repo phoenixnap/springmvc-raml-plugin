@@ -1,6 +1,6 @@
 package com.phoenixnap.oss.ramlapisync.verification;
 
-import java.util.List;
+import java.util.Set;
 
 import org.raml.model.Raml;
 
@@ -20,8 +20,8 @@ public interface RamlChecker {
 	 * 
 	 * @param published The Raml as published in the contract
 	 * @param implemented The Raml as generated from the implementation
-	 * @return A pair containing a list of Warnings and Errors (as first and second respectively)
+	 * @return A pair containing a set of Warnings and Errors (as first and second respectively)
 	 */
-	public Pair<List<Issue>, List<Issue>> check (Raml published, Raml implemented);
+	public Pair<Set<Issue>, Set<Issue>> check (Raml published, Raml implemented);
 
 }

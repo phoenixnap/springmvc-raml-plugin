@@ -42,7 +42,7 @@ public class RamlStyleCheckerTest {
 	public void test_UrlStyleChecker_Success() {
 		Raml published = RamlVerifier.loadRamlFromFile("test-style-success.raml");
 		
-		RamlVerifier verifier = new RamlVerifier(published, null, Collections.emptyList(), Collections.singletonList(new ResourceUrlStyleChecker()));
+		RamlVerifier verifier = new RamlVerifier(published, null, Collections.emptyList(), null, null, Collections.singletonList(new ResourceUrlStyleChecker()));
 		assertFalse("Check that raml passes rules", verifier.hasErrors());
 		assertFalse("Check that implementation matches rules", verifier.hasWarnings());
 		
@@ -52,7 +52,7 @@ public class RamlStyleCheckerTest {
 	public void test_PluralChecker_Success() {
 		Raml published = RamlVerifier.loadRamlFromFile("test-style-pluralised-success.raml");
 		
-		RamlVerifier verifier = new RamlVerifier(published, null, Collections.emptyList(), Collections.singletonList(new ResourceCollectionPluralisationChecker()));
+		RamlVerifier verifier = new RamlVerifier(published, null, Collections.emptyList(), null, null, Collections.singletonList(new ResourceCollectionPluralisationChecker()));
 		assertFalse("Check that raml passes rules", verifier.hasErrors());
 		assertFalse("Check that implementation matches rules", verifier.hasWarnings());
 		
@@ -62,7 +62,7 @@ public class RamlStyleCheckerTest {
 	public void test_PluralChecker_Fails() {
 		Raml published = RamlVerifier.loadRamlFromFile("test-style-pluralised-singularcollection.raml");
 		
-		RamlVerifier verifier = new RamlVerifier(published, null, Collections.emptyList(), Collections.singletonList(new ResourceCollectionPluralisationChecker()));
+		RamlVerifier verifier = new RamlVerifier(published, null, Collections.emptyList(), null, null, Collections.singletonList(new ResourceCollectionPluralisationChecker()));
 		assertFalse("Check that raml passes rules", verifier.hasErrors());
 		assertTrue("Check that implementation matches rules", verifier.hasWarnings());
 		assertEquals("Check that implementation shuld have 1 warning", 1, verifier.getWarnings().size());
@@ -72,7 +72,7 @@ public class RamlStyleCheckerTest {
 	public void test_ActionSecurityResponseCheck_Success() {
 		Raml published = RamlVerifier.loadRamlFromFile("test-style-actionsecurity-success.raml");
 		
-		RamlVerifier verifier = new RamlVerifier(published, null, Collections.emptyList(), Collections.singletonList(new ActionSecurityResponseChecker()));
+		RamlVerifier verifier = new RamlVerifier(published, null, Collections.emptyList(), null, null, Collections.singletonList(new ActionSecurityResponseChecker()));
 		assertFalse("Check that raml passes rules", verifier.hasErrors());
 		assertFalse("Check that implementation matches rules", verifier.hasWarnings());
 	}
@@ -81,7 +81,7 @@ public class RamlStyleCheckerTest {
 	public void test_ActionSecurityResponseCheck_Fails() {
 		Raml published = RamlVerifier.loadRamlFromFile("test-style-actionsecurity-fails.raml");
 		
-		RamlVerifier verifier = new RamlVerifier(published, null, Collections.emptyList(), Collections.singletonList(new ActionSecurityResponseChecker()));
+		RamlVerifier verifier = new RamlVerifier(published, null, Collections.emptyList(), null, null, Collections.singletonList(new ActionSecurityResponseChecker()));
 		assertFalse("Check that raml passes rules", verifier.hasErrors());
 		assertTrue("Check that implementation matches rules", verifier.hasWarnings());
 		assertEquals("Check that implementation shuld have 2 warnings", 2, verifier.getWarnings().size());

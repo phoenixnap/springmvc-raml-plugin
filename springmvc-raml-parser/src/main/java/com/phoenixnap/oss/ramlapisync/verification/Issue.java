@@ -92,4 +92,64 @@ public class Issue {
 		return action;
 	}
 
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + ((action == null) ? 0 : action.hashCode());
+		result = prime * result
+				+ ((description == null) ? 0 : description.hashCode());
+		result = prime * result
+				+ ((location == null) ? 0 : location.hashCode());
+		result = prime * result
+				+ ((ramlLocation == null) ? 0 : ramlLocation.hashCode());
+		result = prime
+				* result
+				+ ((resourceLocation == null || resourceLocation.getUri() == null) ? 0 : resourceLocation.getUri().hashCode());
+		result = prime * result
+				+ ((severity == null) ? 0 : severity.hashCode());
+		result = prime * result + ((type == null) ? 0 : type.hashCode());
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		Issue other = (Issue) obj;
+		if (action == null) {
+			if (other.action != null)
+				return false;
+		} else if (!action.getType().equals(other.action.getType()))
+			return false;
+		if (description == null) {
+			if (other.description != null)
+				return false;
+		} else if (!description.equals(other.description))
+			return false;
+		if (location != other.location)
+			return false;
+		if (ramlLocation == null) {
+			if (other.ramlLocation != null)
+				return false;
+		} else if (!ramlLocation.equals(other.ramlLocation))
+			return false;
+		if (resourceLocation == null) {
+			if (other.resourceLocation != null)
+				return false;
+		} else if (!resourceLocation.getUri().equals(other.resourceLocation.getUri()))
+			return false;
+		if (severity != other.severity)
+			return false;
+		if (type != other.type)
+			return false;
+		return true;
+	}
+	
+	
+
 }

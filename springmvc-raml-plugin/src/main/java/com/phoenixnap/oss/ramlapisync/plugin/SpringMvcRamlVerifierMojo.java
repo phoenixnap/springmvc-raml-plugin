@@ -86,7 +86,7 @@ public class SpringMvcRamlVerifierMojo extends CommonApiSyncMojo {
 		ramlGenerator.generateRamlForClasses(project.getArtifactId(), version, "/", classArray, this.documents);
 		Raml implementedRaml = ramlGenerator.getRaml();
 		
-		RamlVerifier verifier = new RamlVerifier(RamlVerifier.loadRamlFromFile(ramlToVerifyPath), implementedRaml, null, null);
+		RamlVerifier verifier = new RamlVerifier(RamlVerifier.loadRamlFromFile(ramlToVerifyPath), implementedRaml, null, null, null, null);
 		if (verifier.hasWarnings() && logWarnings) {
 				for (Issue issue : verifier.getWarnings()) {
 					this.getLog().warn(issue.toString());

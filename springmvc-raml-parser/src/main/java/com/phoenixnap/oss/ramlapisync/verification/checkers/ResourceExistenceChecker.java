@@ -1,9 +1,8 @@
 package com.phoenixnap.oss.ramlapisync.verification.checkers;
 
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.List;
+import java.util.LinkedHashSet;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
@@ -37,11 +36,11 @@ public class ResourceExistenceChecker implements RamlChecker {
 	protected static final Logger logger = LoggerFactory.getLogger(ResourceExistenceChecker.class);
 	
 	
-	private List<Issue> errors = new ArrayList<>();
-	private List<Issue> warnings = new ArrayList<>();
+	private Set<Issue> errors = new LinkedHashSet<>();
+	private Set<Issue> warnings = new LinkedHashSet<>();
 
 	@Override
-	public Pair<List<Issue>, List<Issue>> check(Raml published, Raml implemented) {
+	public Pair<Set<Issue>, Set<Issue>> check(Raml published, Raml implemented) {
 		logger.info("Performing Resource Existence Checks");
 		if (published != null && implemented == null) {
 			errors.add(new Issue(IssueSeverity.ERROR, IssueLocation.CONTRACT, IssueType.MISSING, "Completely Missing Implementation for RAML file", "/"));
@@ -57,18 +56,18 @@ public class ResourceExistenceChecker implements RamlChecker {
 			check(implemented.getResources(), published.getResources(), IssueLocation.CONTRACT, IssueSeverity.WARNING, false);
 		}
 		
-		return new Pair<List<Issue>, List<Issue>>(warnings, errors);
+		return new Pair<Set<Issue>, Set<Issue>>(warnings, errors);
 		
 	}
 
 	private void check(Map<String, Resource> referenceResourcesMap, Map<String, Resource> targetResourcesMap, IssueLocation location, IssueSeverity severity, boolean exact) {
-		Set<String> publishedResources = referenceResourcesMap != null ? referenceResourcesMap.keySet() : Collections.<String>emptySet() ;
-		Set<String> implementedResources = targetResourcesMap != null ? targetResourcesMap.keySet() : Collections.<String>emptySet();
+		Set<String> referenceResources = referenceResourcesMap != null ? referenceResourcesMap.keySet() : Collections.<String>emptySet() ;
+		Set<String> targetResources = targetResourcesMap != null ? targetResourcesMap.keySet() : Collections.<String>emptySet();
 		
 		Map<String, Resource> implementedCleanedResources = clean(targetResourcesMap);
 		
-		for (String resource : publishedResources) {			
-			if (implementedResources.contains(resource)) {
+		for (String resource : referenceResources) {			
+			if (targetResources.contains(resource)) {
 				logger.debug("Expecting and found resource: "+ resource);
 				//Happy Days Exact Match - recurse to check children
 				check(referenceResourcesMap.get(resource).getResources(), targetResourcesMap.get(resource).getResources(), location, severity, exact);
@@ -82,7 +81,7 @@ public class ResourceExistenceChecker implements RamlChecker {
 				} else {
 					boolean foundAlternateUriParam = false;
 					if (NamingHelper.isUriParamResource(resource)) {
-						for (String potentialUriParam : implementedResources) {
+						for (String potentialUriParam : targetResources) {
 							if (NamingHelper.isUriParamResource(potentialUriParam)) {
 								foundAlternateUriParam = true;
 							}

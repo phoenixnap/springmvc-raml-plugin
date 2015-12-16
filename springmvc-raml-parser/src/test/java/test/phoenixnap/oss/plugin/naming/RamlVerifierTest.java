@@ -46,7 +46,7 @@ public class RamlVerifierTest {
 		Class<?>[] classesToGenerate = new Class[] {VerifierTestController.class, SecondVerifierTestController.class};
 		Raml computed = generator.generateRamlForClasses("test", "0.0.1", "/", classesToGenerate, Collections.emptySet()).getRaml();
 		
-		RamlVerifier verifier = new RamlVerifier(published, computed, Collections.singletonList(new ResourceExistenceChecker()));
+		RamlVerifier verifier = new RamlVerifier(published, computed, Collections.singletonList(new ResourceExistenceChecker()), null, null);
 		assertFalse("Check that there are no errors and implementation matches raml", verifier.hasErrors());
 		assertFalse("Check that there are no warnings and implementation matches raml", verifier.hasWarnings());
 		
@@ -58,7 +58,7 @@ public class RamlVerifierTest {
 		Class<?>[] classesToGenerate = new Class[] {VerifierTestController.class, SecondVerifierTestController.class, ThirdVerifierTestController.class};
 		Raml computed = generator.generateRamlForClasses("test", "0.0.1", "/", classesToGenerate, Collections.emptySet()).getRaml();
 		
-		RamlVerifier verifier = new RamlVerifier(published, computed, Collections.singletonList(new ResourceExistenceChecker()));
+		RamlVerifier verifier = new RamlVerifier(published, computed, Collections.singletonList(new ResourceExistenceChecker()), null, null);
 		assertFalse("Check that there are no errors since the missing resource will get marked as a warning", verifier.hasErrors());
 		assertTrue("Check that there are warnings since there are more resources implemented than declared in raml", verifier.hasWarnings());
 		
@@ -70,7 +70,7 @@ public class RamlVerifierTest {
 		Class<?>[] classesToGenerate = new Class[] {VerifierTestController.class};
 		Raml computed = generator.generateRamlForClasses("test", "0.0.1", "/", classesToGenerate, Collections.emptySet()).getRaml();
 		
-		RamlVerifier verifier = new RamlVerifier(published, computed, Collections.singletonList(new ResourceExistenceChecker()));
+		RamlVerifier verifier = new RamlVerifier(published, computed, Collections.singletonList(new ResourceExistenceChecker()), null, null);
 		assertTrue("Check that there are errors since there is part of our contract not implemented", verifier.hasErrors());
 		assertFalse("Check that there are no warnings", verifier.hasWarnings());
 		
@@ -82,7 +82,7 @@ public class RamlVerifierTest {
 		Class<?>[] classesToGenerate = new Class[] {SecondVerifierTestController.class};
 		Raml computed = generator.generateRamlForClasses("test", "0.0.1", "/", classesToGenerate, Collections.emptySet()).getRaml();
 		
-		RamlVerifier verifier = new RamlVerifier(published, computed, Collections.singletonList(new ResourceExistenceChecker()));
+		RamlVerifier verifier = new RamlVerifier(published, computed, Collections.singletonList(new ResourceExistenceChecker()), null, null);
 		assertFalse("Check that there are no errors", verifier.hasErrors());
 		assertTrue("Check that there is warning for UriParam", verifier.hasWarnings());
 		

@@ -1,7 +1,7 @@
 package com.phoenixnap.oss.ramlapisync.style.checkers;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.LinkedHashSet;
+import java.util.Set;
 
 import org.raml.model.Action;
 import org.raml.model.ActionType;
@@ -22,9 +22,9 @@ public class ActionSecurityResponseChecker extends RamlStyleCheckerAdapter {
 	
 	
 	@Override
-	public List<StyleIssue> checkActionStyle(ActionType key, Action value,
+	public Set<StyleIssue> checkActionStyle(ActionType key, Action value,
 			IssueLocation location) {
-		List<StyleIssue> issues = new ArrayList<>();
+		Set<StyleIssue> issues = new LinkedHashSet<>();
 		
 		//check if we have a security scheme defined for this action
 		if (value.getSecuredBy() != null 

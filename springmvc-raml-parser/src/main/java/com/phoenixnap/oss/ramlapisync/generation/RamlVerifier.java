@@ -1,7 +1,10 @@
 package com.phoenixnap.oss.ramlapisync.generation;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Set;
 
 import org.raml.model.Raml;
 import org.raml.parser.visitor.RamlDocumentBuilder;
@@ -12,7 +15,10 @@ import com.phoenixnap.oss.ramlapisync.naming.Pair;
 import com.phoenixnap.oss.ramlapisync.style.RamlStyleCheckVisitorCoordinator;
 import com.phoenixnap.oss.ramlapisync.style.RamlStyleChecker;
 import com.phoenixnap.oss.ramlapisync.verification.Issue;
+import com.phoenixnap.oss.ramlapisync.verification.RamlActionVisitorCheck;
 import com.phoenixnap.oss.ramlapisync.verification.RamlChecker;
+import com.phoenixnap.oss.ramlapisync.verification.RamlResourceVisitorCheck;
+import com.phoenixnap.oss.ramlapisync.verification.checkers.RamlCheckerResourceVisitorCoordinator;
 import com.phoenixnap.oss.ramlapisync.verification.checkers.ResourceExistenceChecker;
 
 /**
@@ -32,8 +38,8 @@ public class RamlVerifier {
 	private Raml published;
 	private Raml implemented;
 	
-	private List<Issue> errors = new ArrayList<>();
-	private List<Issue> warnings = new ArrayList<>();
+	private Set<Issue> errors = new LinkedHashSet<>();
+	private Set<Issue> warnings = new LinkedHashSet<>();
 	
 	private List<RamlChecker> checkers;
 	
@@ -45,12 +51,16 @@ public class RamlVerifier {
 	 * @param published The RAML model from the published RAML file
 	 * @param implemented The RAML model built from the Spring MVC
 	 * @param checkers Checkers that will be applied to the models
+	 * @param actionCheckers Checker Visitors that will trigger to compare individual actions
+	 * @param resourceCheckers Checker Visitors that will trigger to compare individual resources
 	 * @param styleChecks Style Checks that will be applied to the models
 	 */
-	public RamlVerifier(Raml published, Raml implemented, List<RamlChecker> checkers, List<RamlStyleChecker> styleChecks) {
+	public RamlVerifier(Raml published, Raml implemented, List<RamlChecker> checkers, List<RamlActionVisitorCheck> actionCheckers, List<RamlResourceVisitorCheck> resourceCheckers, List<RamlStyleChecker> styleChecks) {
 		this.published = published;
 		this.implemented = implemented;
 		this.checkers = new ArrayList<>();
+		
+		this.checkers.add(new RamlCheckerResourceVisitorCoordinator(actionCheckers == null ? Collections.emptyList() : actionCheckers, resourceCheckers == null ? Collections.emptyList() : resourceCheckers));
 		if (checkers == null) {			
 			this.checkers.add(new ResourceExistenceChecker());
 		} else {
@@ -69,9 +79,11 @@ public class RamlVerifier {
 	 * @param published The RAML model from the published RAML file
 	 * @param implemented The RAML model built from the Spring MVC
 	 * @param checkers Checkers that will be applied to the models
+	 * @param actionCheckers Checker Visitors that will trigger to compare individual actions
+	 * @param resourceCheckers Checker Visitors that will trigger to compare individual resources
 	 */
-	public RamlVerifier(Raml published, Raml implemented, List<RamlChecker> checkers) {
-		this (published, implemented, checkers, null);
+	public RamlVerifier(Raml published, Raml implemented, List<RamlChecker> checkers, List<RamlActionVisitorCheck> actionCheckers, List<RamlResourceVisitorCheck> resourceCheckers) {
+		this (published, implemented, checkers, actionCheckers, resourceCheckers, null);
 	}
 	
 	/**
@@ -106,7 +118,7 @@ public class RamlVerifier {
 	private void validate() {
 		if (checkers != null) {
 			for (RamlChecker checker : checkers) {
-				Pair<List<Issue>,List<Issue>> check = checker.check(published, implemented);
+				Pair<Set<Issue>,Set<Issue>> check = checker.check(published, implemented);
 				warnings.addAll(check.getFirst());
 				errors.addAll(check.getSecond());
 			}
@@ -130,11 +142,11 @@ public class RamlVerifier {
 		}
 	}
 
-	public List<Issue> getErrors() {
+	public Set<Issue> getErrors() {
 		return errors;
 	}
 
-	public List<Issue> getWarnings() {
+	public Set<Issue> getWarnings() {
 		return warnings;
 	}
 

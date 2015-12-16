@@ -2,9 +2,11 @@ package com.phoenixnap.oss.ramlapisync.style;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Set;
 
 import org.raml.model.Action;
 import org.raml.model.ActionType;
@@ -34,7 +36,7 @@ public class RamlStyleCheckVisitorCoordinator implements RamlChecker {
 	 */
 	private boolean ignoreCodeStyle = true;
 	
-	private List<Issue> warnings = new ArrayList<>();
+	private Set<Issue> warnings = new LinkedHashSet<>();
 	
 	private List<RamlStyleChecker> checkers;
 	
@@ -50,14 +52,14 @@ public class RamlStyleCheckVisitorCoordinator implements RamlChecker {
 	 * @param implemented The Raml as generated from the implementation
 	 * @return A pair containing a list of Warnings and an empty list of Errors (as first and second respectively)
 	 */
-	public Pair<List<Issue>, List<Issue>> check (Raml published, Raml implemented) {
+	public Pair<Set<Issue>, Set<Issue>> check (Raml published, Raml implemented) {
 		
 		checkChildren(published.getResources(), IssueLocation.CONTRACT);
 		if (!ignoreCodeStyle) {
 			checkChildren(implemented.getResources(), IssueLocation.SOURCE);
 		}
 		
-		return new Pair<List<Issue>, List<Issue>>(warnings, Collections.emptyList());		
+		return new Pair<Set<Issue>, Set<Issue>>(warnings, Collections.emptySet());		
 	}
 
 
