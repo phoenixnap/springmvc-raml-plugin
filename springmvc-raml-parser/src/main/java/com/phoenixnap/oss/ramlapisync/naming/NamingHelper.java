@@ -28,9 +28,30 @@ public class NamingHelper {
 
 	private static final Pattern CLASS_SUFFIXES_TO_CLEAN = Pattern.compile(
 			"^(.+)(services|service|impl|class|controller)", Pattern.CASE_INSENSITIVE);
+	
+	/**
+	 * Checks if a Resource URI fragment is a URI Parameter. URI parameters are defined as {myParameter}
+	 * 
+	 * @param resource The Resource key/ relative URL
+	 * @return If true this URI is a frament containing a URI parameter
+	 */
+	public static boolean isUriParamResource(String resource) {
+		if (resource == null) {
+			return false;
+		}
+		resource = NamingHelper.cleanLeadingAndTrailingNewLineAndChars(resource.toLowerCase());
+		if (resource.startsWith("{") && resource.endsWith("}")) {
+			return true;
+		} else {
+			return false;
+		}
+	}
 
 	/**
 	 * Utility method to clean New Line,Spaces and other highly useless characters found (mainly in javadoc)
+	 * 
+	 * @param input The string to be cleaned
+	 * @return Cleaned String
 	 */
 	public static String cleanLeadingAndTrailingNewLineAndChars(String input) {
 
@@ -56,8 +77,8 @@ public class NamingHelper {
 	 *
 	 * eg. MonitorServiceImpl becomes Monitor
 	 *
-	 * @param clazz
-	 * @return
+	 * @param clazz The Class to name
+	 * @return The name for this class
 	 */
 	public static String convertClassName(Class<?> clazz) {
 		String convertedName = clazz.getSimpleName();

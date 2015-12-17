@@ -73,9 +73,9 @@ public class ApiParameterMetadata {
 
 	/**
 	 * Simple method to prefer a string (which usually is specified by annotation)
-	 * @param preferredOption
-	 * @param fallback
-	 * @return
+	 * @param preferredOption The first choice for the parameter name
+	 * @param fallback if the preferred sources is empty use this string
+	 * @return the better choice between these two strings 
 	 */
 	private String resolveParameterName(String preferredOption, Parameter fallback) {
 		if (StringUtils.hasText(preferredOption)) {
@@ -86,12 +86,9 @@ public class ApiParameterMetadata {
 	}
 
 	/**
+	 * Default constructor that creates a metadata object from a Java parameter
 	 * 
-	 * @param name The name of the parameter, if this is not supplied we will infer it from the java method
 	 * @param param Java Parameter representation
-	 * @param nullable Can this parameter be passed in as null
-	 * @param resourceId Is this parameter the identifying parameter to the rest resource. If true then this parameter
-	 * should end up as part of the URL
 	 */
 	public ApiParameterMetadata(Parameter param) {
 		super();
@@ -137,7 +134,7 @@ public class ApiParameterMetadata {
 	/**
 	 * The Java Type of the parameter
 	 * 
-	 * @return
+	 * @return The Java Type of the parameter
 	 */
 	public Class<?> getType() {
 		return type;
@@ -145,7 +142,8 @@ public class ApiParameterMetadata {
 
 	/**
 	 * The Java Type of the generic portion of the parameter
-	 * @return
+	 * 
+	 * @return The Java Type of the generic portion of the parameter
 	 */
 	public Class<?> getGenericType() {
 		return genericType;
@@ -153,7 +151,8 @@ public class ApiParameterMetadata {
 
 	/**
 	 * Can this parameter be passed in as null
-	 * @return
+	 * 
+	 * @return boolean which if false means this parameter cannot be null
 	 */
 	public boolean isNullable() {
 		return nullable;
@@ -163,19 +162,26 @@ public class ApiParameterMetadata {
 	 * Is this parameter the identifying parameter to the rest resource. If true then this parameter should end up as
 	 * part of the URL
 	 * 
-	 * @return
+	 * @return a boolean which if true implies that this parameter is part of the url/id of the resource
 	 */
 	public boolean isResourceId() {
 		return resourceId;
 	}
 
+	/**
+	 * The Parameter Name in RAML
+	 * 
+	 * @return String with the parameter name
+	 * 
+	 */
 	public String getName() {
 		return name;
 	}
 
 	/**
 	 * Gets the name of the parameter as specified in Java (ignores any annotations)
-	 * @return
+	 * 
+	 * @return string with the variable name of this parameter
 	 */
 	public String getJavaName() {
 		return param.getName();
@@ -183,12 +189,19 @@ public class ApiParameterMetadata {
 
 	/**
 	 * Checks if the param is annotated by a particular annotation
-	 * @return
+	 * 
+	 * @param annotationClass The type of the Annotation required
+	 * @return true if this parameter has the annotation required 
 	 */
 	public boolean isAnnotationPresent(Class<? extends Annotation> annotationClass) {
 		return param.isAnnotationPresent(annotationClass);
 	}
 
+	/**
+	 * The example which is set with this parameter
+	 * 
+	 * @return String showing example usage of this parameter
+	 */
 	public String getExample() {
 		return example;
 	}

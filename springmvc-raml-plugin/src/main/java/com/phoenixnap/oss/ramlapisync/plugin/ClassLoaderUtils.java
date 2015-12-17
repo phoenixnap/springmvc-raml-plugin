@@ -31,7 +31,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.google.common.collect.Lists;
-import com.phoenixnap.oss.ramlapisync.javadoc.JavaDocExtractor;
 
 /**
  * Class containing utility methods for loading different sets of classes during Plugin runtime

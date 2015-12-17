@@ -32,9 +32,9 @@ public class FileSearcher {
 	/**
 	 * Simple java file search method. Speeds up by reducing search space
 	 * 
-	 * @param file
-	 * @param clazz
-	 * @return
+	 * @param file The File representing the directory/file to start searching from 
+	 * @param clazz The Target class we are looking for
+	 * @return The file representing the file or null if not found
 	 */
 	public static File fileSearch(File file, Class<?> clazz) {
 		logger.debug("Searching in: " + file == null ? null : file.getAbsolutePath());

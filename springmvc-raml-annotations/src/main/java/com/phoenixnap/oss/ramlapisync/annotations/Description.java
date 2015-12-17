@@ -20,6 +20,7 @@ public @interface Description {
 	/**
 	 * Description string for parts of the URL
 	 * 
+	 * @return An Array of Path Descriptions which each describe a part of the URL
 	 */
 	PathDescription[] pathDescriptions() default {};
 

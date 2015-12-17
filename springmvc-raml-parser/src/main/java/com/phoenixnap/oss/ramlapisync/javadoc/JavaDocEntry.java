@@ -83,7 +83,7 @@ public class JavaDocEntry {
 	 * Constructor which accepts a raw unprocessed chunk of javadoc and extracts meaningful portions which are stored
 	 * for RAML generation
 	 * 
-	 * @param rawJavaDoc
+	 * @param rawJavaDoc The String representing an raw chunck of javadoc for a class or method
 	 */
 	public JavaDocEntry(String rawJavaDoc) {
 		rawJavaDoc = cleanLinks(rawJavaDoc);
@@ -161,7 +161,7 @@ public class JavaDocEntry {
 
 	/**
 	 * Returns the Main comment
-	 * @return
+	 * @return String
 	 */
 	public String getComment() {
 		return comment;
@@ -169,7 +169,7 @@ public class JavaDocEntry {
 
 	/**
 	 * Returns the Parameter Comments
-	 * @return
+	 * @return Map of Parameter comments keyed by Parameter name
 	 */
 	public Map<String, String> getParameterComments() {
 		return parameterComments;
@@ -177,7 +177,7 @@ public class JavaDocEntry {
 
 	/**
 	 * returns the comment for the return type
-	 * @return
+	 * @return String with comment for return type
 	 */
 	public String getReturnTypeComment() {
 		return returnTypeComment;
@@ -185,7 +185,7 @@ public class JavaDocEntry {
 
 	/**
 	 * Gets the Exception comments //TODO
-	 * @return
+	 * @return Empty Map for now
 	 */
 	public Map<Integer, String> getErrorComments() {
 		return errorComments;
@@ -208,8 +208,8 @@ public class JavaDocEntry {
 	 * meaningful content it contains. this score is returned as a numeric value where higher numbers mean more
 	 * meaningful content
 	 * 
-	 * @param comment
-	 * @return
+	 * @param comment The comment to evaluate
+	 * @return The score of the comment. Higher scores imply more semantic value.
 	 */
 	private int getStringScore(String comment) {
 		// Empty strings are not really meaningful.
@@ -256,9 +256,9 @@ public class JavaDocEntry {
 	 * We'll check the string scores of both strings and if the newer scores higher we will return true so that the
 	 * proposed string will replace the current one
 	 * 
-	 * @param current
-	 * @param proposed
-	 * @return
+	 * @param current The string we currently reference in the Doc Store
+	 * @param proposed The proposed string 
+	 * @return If true, then the new string is semantically better than the current and should be replaced
 	 */
 	private boolean shouldReplace(String current, String proposed) {
 		if (getStringScore(current) > getStringScore(proposed)) {
@@ -270,8 +270,9 @@ public class JavaDocEntry {
 	
 	/**
 	 * Removes {@link or other {@ notation from the javadoc and retains the enclosed data
-	 * @param target
-	 * @return
+	 * 
+	 * @param target The target comment to clean
+	 * @return The comment cleaned from the target characters
 	 */
 	private String cleanLinks(String target) {
 		Matcher linkMatcher = LINK_BLOCK.matcher(target);
@@ -293,7 +294,7 @@ public class JavaDocEntry {
 	 * Different areas of javadoc (comment, parameter comment, etc) are evaluated seperately so that we keep the most
 	 * meaningful fragment.
 	 * 
-	 * @param entry
+	 * @param entry The JavaDocEntry to be used and integrated into this entry
 	 */
 	public void merge(JavaDocEntry entry) {
 		if (entry != null) {

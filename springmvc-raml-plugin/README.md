@@ -1,15 +1,13 @@
-## Spring MVC-to-RAML Generator
-The Spring MVC-to-RAML Generator project aims to provide a live representation of the endpoints exposed in a project by using the Spring MVC Annotation in that project as the single source of truth
+## Spring MVC-RAML Synchronizer Plugin
+The Spring MVC-RAML Synchronizer project aims to provide a live representation of the endpoints exposed in a project by using the Spring MVC Annotation in that project as the single source of truth. This can be used to either generate RAML code from Spring annotations, or to keep hand-written RAML files in sync with the Spring MVC implementation by cross-checking the contract with the implementation
 
 The project will extract information using reflection and source inspection (for JavaDoc) so as to expose all information available to it.
 
 The project provides two artifacts - A maven plugin designed to be run on Java 8 code which has been compiled with argument name information. A seperate project is also supplied that allows the use of custom annotations such as @Example which can be used to embed example inputs or outputs.
+![PhoenixNAP Logo](https://phoenixnap.com/wp-content/themes/phoenixnap-v2/img/v2/logo.svg)
 
-## Documentation
-See the current [Javadoc][] and [reference docs][].
-
-## Getting Support
-Usage and documentation are available in the Javadoc and this file. Kindly contact the developers via email (available in the pom files) if required or open an issue in our tracking system.
+## Documentation & Getting Support
+Usage and documentation are available in the Javadoc and README.md (this file). Kindly contact the developers via email (available in the pom files) if required or open an [Issue][] in our tracking system.
 
 ### Prerequisites
 
@@ -70,3 +68,14 @@ Then simply include the following code in the POM of the project you wish to gen
 
 ### documentationSuffix
 (optional, default: -doc.md) The file extension that will be used to determine files that should be included as documents and linked to the generated RAML file
+
+
+## Contributing
+[Pull requests][] are welcome; Be a good citizen and create unit tests for any bugs squished or features added
+
+[Pull requests]: http://help.github.com/send-pull-requests
+[Apache License]: http://www.apache.org/licenses/LICENSE-2.0
+[Git]: http://help.github.com/set-up-git-redirect
+[JDK8 build]: http://www.oracle.com/technetwork/java/javase/downloads
+[Maven]: http://maven.apache.org/
+[Issue]: https://github.com/phoenixnap/springmvc-raml-plugin/issues

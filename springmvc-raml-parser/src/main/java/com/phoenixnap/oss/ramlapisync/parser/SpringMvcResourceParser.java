@@ -81,8 +81,12 @@ public class SpringMvcResourceParser extends ResourceParser {
 			String comment, List<ApiParameterMetadata> apiParameters) {
 		MimeType mimeType = new MimeType();
 		String type;
-		// Handle Plain Text parameters
-		if (apiParameters != null && apiParameters.size() == 1 && String.class.equals(apiParameters.get(0).getType())
+		//Handle empty body
+		if (apiParameters != null && apiParameters.size() == 0) {
+			// do nothing here
+			return null;
+		} else if (apiParameters != null && apiParameters.size() == 1 && String.class.equals(apiParameters.get(0).getType())
+			// Handle Plain Text parameters
 				&& apiParameters.get(0).isAnnotationPresent(RequestBody.class)) {
 			ApiParameterMetadata apiParameterMetadata = apiParameters.get(0);
 			type = "text/plain";
@@ -106,8 +110,8 @@ public class SpringMvcResourceParser extends ResourceParser {
 			}
 			return new Pair<>(type, mimeType);
 		} else if (apiParameters != null
-				&& (apiParameters.size() > 1 || (!apiParameters.get(0).isAnnotationPresent(RequestBody.class) && String.class
-						.equals(apiParameters.get(0).getType())))) {
+				&& (apiParameters.size() > 1 
+						|| (!apiParameters.get(0).isAnnotationPresent(RequestBody.class) && String.class.equals(apiParameters.get(0).getType())))) {
 			type = "application/x-www-form-urlencoded";
 			for (ApiParameterMetadata param : apiParameters) {
 				FormParameter formParameter = new FormParameter();
@@ -132,6 +136,7 @@ public class SpringMvcResourceParser extends ResourceParser {
 			}
 			return new Pair<>(type, mimeType);
 		} else {
+			
 			return super.extractRequestBody(method, parameterComments, comment, apiParameters);
 		}
 	}
@@ -252,8 +257,8 @@ public class SpringMvcResourceParser extends ResourceParser {
 	/**
 	 * Checks if a parameter has any metadata that has been attached using the RequestParam data which identifies it as
 	 * an API request parameter
-	 * @param param
-	 * @return
+	 * @param param The Parameter to be checked
+	 * @return If true the parameter should be added to the api
 	 */
 	protected boolean shouldAddParameter(Parameter param) {
 		for (Annotation annotation : param.getAnnotations()) {
@@ -301,8 +306,8 @@ public class SpringMvcResourceParser extends ResourceParser {
 	
 	/**
 	 * Checks for instances of @Description annotations in 
-	 * @param method
-	 * @return
+	 * @param method The method to Inspect
+	 * @return a Map of Description and Partial URL Keys
 	 */
 	protected Map<String, String> getPathDescriptionsForMethod(Method method) {
 		Map<String, String> outDescriptions = new HashMap<>();
@@ -383,7 +388,7 @@ public class SpringMvcResourceParser extends ResourceParser {
 	}
 
 	@Override
-	protected boolean isActionOnResourceWithoutCommand(Method method, String apiName) {
+	protected boolean isActionOnResourceWithoutCommand(Method method) {
 		if (!method.isAnnotationPresent(RequestMapping.class)) {
 			return true;
 		} else {
@@ -427,6 +432,10 @@ public class SpringMvcResourceParser extends ResourceParser {
 			Action action = new Action();
 			ActionType apiAction = methodAction.getKey();
 			String apiName = methodAction.getValue();
+			//Method assumes that the name starts with /
+			if (apiName != null && !apiName.startsWith("/")) {
+				apiName = "/" + apiName;
+			}
 			Map<String, String> pathDescriptions = getPathDescriptionsForMethod(method);
 			logger.info("Added call: " + apiName + " " +apiAction  + " from method: " + method.getName()  );
 
@@ -508,6 +517,13 @@ public class SpringMvcResourceParser extends ResourceParser {
 					idResource.setDisplayName(displayName); // TODO allow the Api annotation to specify this shit
 					idResource.setDescription(resourceDescription); // TODO allow the Api annotation to specify this shit
 					idResource.setParentResource(leafResource);
+					if(leafResource.getUri() != null) {
+						String targetUri = leafResource.getUri();
+						if(targetUri.startsWith("null/")) {
+							targetUri = targetUri.substring(5);
+						}
+						idResource.setParentUri(targetUri);
+					}
 					leafResource.getResources().put(resourceName, idResource);
 				}
 			}
@@ -522,6 +538,7 @@ public class SpringMvcResourceParser extends ResourceParser {
 				actionTargetResource = parentResource;
 			}
 			action.setResource(actionTargetResource);
+			action.setType(apiAction);
 			actionTargetResource.getActions().putIfAbsent(apiAction, action);
 		}
 

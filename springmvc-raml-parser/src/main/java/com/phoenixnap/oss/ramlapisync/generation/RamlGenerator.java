@@ -123,6 +123,9 @@ public class RamlGenerator {
 
 	/**
 	 * Parses the list of document models and adds them as RAML documentItem nodes in the RAML document.
+	
+	 * @param documents A set of metadata identifying the documents to be included
+	 * @return A List of RAML document items containing the supplied documents
 	 */
 	protected List<DocumentationItem> generateDocuments(Set<ApiDocumentMetadata> documents) {
 		List<DocumentationItem> documentInfos = new ArrayList<>();
@@ -141,9 +144,10 @@ public class RamlGenerator {
 
 	/**
 	 * Raml post-processor that will be run before the final RAML string is output to overcome a limitation due to
-	 * character escaping
-	 * @param preRaml
-	 * @return
+	 * character escaping.
+	 * 
+	 * @param preRaml The raw RAML as a string before processing has been applied
+	 * @return  The RAML document as a String after post processing has been applied
 	 */
 	protected String postProcessRaml(String preRaml) {
 		Matcher fixIncludes = INCLUDE_FIXER_PATTERN.matcher(preRaml);
@@ -162,8 +166,7 @@ public class RamlGenerator {
 	/**
 	 * Emits the RAML model into its string representation
 	 * 
-	 * @param raml
-	 * @return
+	 * @return The RAML document as a String
 	 */
 	public String outputRamlToString() {
 		if (this.raml == null) {
@@ -176,8 +179,9 @@ public class RamlGenerator {
 	/**
 	 * Emits the RAML model into its string representation and saves it as a file in the specified path
 	 * 
-	 * @param raml
-	 * @return
+	 * @param path The path to which the RAML document will be saved
+	 * @return A file handle to the created document file
+	 * @throws FileNotFoundException if the supplied path does not exist
 	 */
 	public File outputRamlToFile(String path) throws FileNotFoundException {
 		if (this.raml == null) {
@@ -210,6 +214,15 @@ public class RamlGenerator {
 			}
 		}
 		return file;
+	}
+
+	/**
+	 * Returns the RAML Model
+	 * 
+	 * @return the RAML model
+	 */
+	public Raml getRaml() {
+		return raml;
 	}
 
 }

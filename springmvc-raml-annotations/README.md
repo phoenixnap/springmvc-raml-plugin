@@ -1,14 +1,13 @@
-## Spring MVC-to-RAML Generator
-The Spring MVC-to-RAML Generator annotations project allows the use of custom annotations such as @Example which can be used to embed example inputs or outputs.
+![PhoenixNAP Logo](https://phoenixnap.com/wp-content/themes/phoenixnap-v2/img/v2/logo.svg)
 
-## Documentation
-See the current [Javadoc][] and [reference docs][].
+## Spring MVC-RAML Synchroniser
+The Spring MVC-RAML Synchronizer annotations project allows the use of custom annotations such as @Example which can be used to embed example inputs or outputs.
 
-## Getting Support
-Usage and documentation are available in the Javadoc and README.md of the childe projects. Kindly contact the developers via email (available in the pom files) if required or open an issue in our tracking system.
+## Documentation & Getting Support
+Usage and documentation are available in the Javadoc and README.md of the child projects. Kindly contact the developers via email (available in the pom files) if required or open an [Issue][] in our tracking system.
 
 ## Building from Source
-The SpringMVC-To-RAML plugin uses a [Maven][]-based build system.
+The SpringMVC-RAML plugin uses a [Maven][]-based build system.
 
 ## Prerequisites
 [Git][] and [JDK 8 update 20 or later][JDK8 build]
@@ -32,3 +31,13 @@ extracted from the JDK download.
 
 ## License
 The SpringMVC-To-RAML plugin  is released under version 2.0 of the [Apache License][].
+
+## Contributing
+[Pull requests][] are welcome; Be a good citizen and create unit tests for any bugs squished or features added
+
+[Pull requests]: http://help.github.com/send-pull-requests
+[Apache License]: http://www.apache.org/licenses/LICENSE-2.0
+[Git]: http://help.github.com/set-up-git-redirect
+[JDK8 build]: http://www.oracle.com/technetwork/java/javase/downloads
+[Maven]: http://maven.apache.org/
+[Issue]: https://github.com/phoenixnap/springmvc-raml-plugin/issues

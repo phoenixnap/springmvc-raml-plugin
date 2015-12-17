@@ -18,8 +18,8 @@ package com.phoenixnap.oss.ramlapisync.naming;
  * @author Kurt Paris
  * @since 0.0.1
  *
- * @param <K>
- * @param <Y>
+ * @param <K> The type of the first portion of the pair
+ * @param <Y> The type of the second portion of the pair
  */
 public class Pair<K, Y> {
 

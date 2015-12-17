@@ -26,9 +26,9 @@ import java.lang.reflect.Type;
 public class TypeHelper {
 
 	/**
-	 * attempts to infer the type in the generic part of the declaration of the type
-	 * @param param
-	 * @return
+	 * Attempts to infer the type in the generic part of the declaration of the type
+	 * @param param The parameter to inspect
+	 * @return The Class in the generic portrion of the typ
 	 */
 	public static Type getGenericType(Parameter param) {
 		Type parameterizedType = param.getParameterizedType();
@@ -38,6 +38,11 @@ public class TypeHelper {
 		return parameterizedType;
 	}
 
+	/**
+	 * Attempts to infer the type in the generic part of the declaration of the type
+	 * @param clazz The type to inspect
+	 * @return The Class in the generic portrion of the type or null if unavailable
+	 */
 	public static Type inferGenericType(Type clazz) {
 		if (clazz != null && clazz instanceof ParameterizedType) {
 			ParameterizedType pType = (ParameterizedType) clazz;

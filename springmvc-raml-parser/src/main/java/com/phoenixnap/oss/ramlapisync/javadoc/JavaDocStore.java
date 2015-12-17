@@ -32,8 +32,8 @@ public class JavaDocStore {
 	}
 
 	/**
-	 * Merges a Java Doc Sotre with this one. Only keys with higher semantic content will be absorbed into the store
-	 * @param javaDocStore
+	 * Merges a Java Doc Store with this one. Only keys with higher semantic content will be absorbed into the store
+	 * @param javaDocStore The JavaDocStore that will be used to extract data from and merge with ours. Preference will be given to current in case of equal semantic value
 	 */
 	public void merge(JavaDocStore javaDocStore) {
 		if (javaDocStore != null) {

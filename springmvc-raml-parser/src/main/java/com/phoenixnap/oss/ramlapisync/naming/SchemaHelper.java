@@ -49,9 +49,10 @@ public class SchemaHelper {
 
 	/**
 	 * Converts a simple parameter, ie String, or Boxed Primitive into
-	 * @param param
-	 * @param paramComment
-	 * @return
+	 * 
+	 * @param param The Java Parameter to convert
+	 * @param paramComment The associated Javadoc if any
+	 * @return A map of query parameters that map into the supplied type
 	 */
 	public static Map<String, QueryParameter> convertParameterToQueryParameter(final Parameter param,
 			final String paramComment) {
@@ -86,10 +87,9 @@ public class SchemaHelper {
 	 * Breaks down a class into component fields which are mapped as Query Parameters. If Javadoc is supplied, this will
 	 * be injected as comments
 	 * 
-	 * @param param
-	 * @param responseDescription
-	 * @param javaDocStore
-	 * @return
+	 * @param param The Parameter representing the class to be converted into query parameters
+	 * @param javaDocStore The associated JavaDoc (if any)
+	 * @return a Map of Parameter RAML models keyed by parameter name
 	 */
 	public static Map<String, QueryParameter> convertClassToQueryParameters(final Parameter param,
 			final JavaDocStore javaDocStore) {
@@ -144,10 +144,10 @@ public class SchemaHelper {
 	 * Uses Jackson object mappers to convert an ajaxcommandparameter annotated type into its JSONSchema representation.
 	 * If Javadoc is supplied, this will be injected as comments
 	 * 
-	 * @param clazz
-	 * @param responseDescription
-	 * @param javaDocStore
-	 * @return
+	 * @param clazz The Class to convert
+	 * @param responseDescription The javadoc description supplied if available
+	 * @param javaDocStore The Entire java doc store available
+	 * @return A string containing the Json Schema
 	 */
 	public static String convertClassToJsonSchema(ApiParameterMetadata clazz, String responseDescription,
 			JavaDocStore javaDocStore) {
@@ -170,10 +170,10 @@ public class SchemaHelper {
 	 * Uses Jackson object mappers to convert a Pojo into its JSONSchema representation. If Javadoc is supplied, this
 	 * will be injected as comments
 	 * 
-	 * @param clazz
-	 * @param responseDescription
-	 * @param javaDocStore
-	 * @return
+	 * @param clazz The Class to be inspected
+	 * @param responseDescription The description to be embedded in the response
+	 * @param javaDocStore Associated JavaDoc for this class that can be embedded in the schema
+	 * @return Json Schema representing the class in string format
 	 */
 	public static String convertClassToJsonSchema(Type clazz, String responseDescription, JavaDocStore javaDocStore) {
 		if (clazz == null || clazz.equals(Void.class)) {
@@ -224,8 +224,9 @@ public class SchemaHelper {
 
 	/**
 	 * Maps primitives and other simple Java types into simple types supported by RAML
-	 * @param targetClazz
-	 * @return
+	 * 
+	 * @param clazz The Class to map
+	 * @return The Simple RAML ParamType which maps to this class or null if one is not found
 	 */
 	public static ParamType mapSimpleType(Class<?> clazz) {
 		Class<?> targetClazz = clazz;

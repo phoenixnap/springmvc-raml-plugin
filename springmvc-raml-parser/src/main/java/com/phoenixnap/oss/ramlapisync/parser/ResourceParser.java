@@ -88,7 +88,7 @@ public abstract class ResourceParser {
 	/**
 	 * Update JavaDoc extractor
 	 * 
-	 * @param javaDocs
+	 * @param javaDocs The java doc extractor to use (if any)
 	 */
 	public void setJavaDocs(JavaDocExtractor javaDocs) {
 		this.javaDocs = javaDocs;
@@ -97,27 +97,27 @@ public abstract class ResourceParser {
 	/**
 	 * Method to check if a specific action type supports payloads in the body of the request
 	 * 
-	 * @param target
-	 * @return
+	 * @param target The target Verb to check
+	 * @return If true, the verb supports a payload in the request body
 	 */
-	protected boolean doesActionTypeSupportRequestBody(ActionType target) {
+	public static boolean doesActionTypeSupportRequestBody(ActionType target) {
 		return target.equals(ActionType.POST) || target.equals(ActionType.PUT);
 	}
 
 	/**
 	 * Allows child Scanners to add their own logic on whether a method should be treated as an API or ignored
-	 * @param method
-	 * @return
+	 * @param method The method to inspect
+	 * @return If true the method is annotated in such a way that it should be included in the raml
 	 */
 	protected abstract boolean shouldAddMethodToApi(Method method);
 
 	/**
 	 * Extracts parameters from a method call and attaches these with the comments extracted from the javadoc
 	 * 
-	 * @param apiAction
-	 * @param method
-	 * @param parameterComments
-	 * @return
+	 * @param apiAction The Verb of the action containing these parametes
+	 * @param method The method to inspect
+	 * @param parameterComments The parameter comments associated with these parameters
+	 * @return A collection of parameters keyed by name
 	 */
 	protected Map<String, QueryParameter> extractQueryParameters(ActionType apiAction, Method method,
 			Map<String, String> parameterComments) {
@@ -146,27 +146,30 @@ public abstract class ResourceParser {
 
 	/**
 	 * Allows children to specify whether a parameter should be included when generating query parameters for a method
-	 * @param param
-	 * @return
+	 * @param param The the Parameter to be checked
+	 * @return IF true this is a parameter that shuold be appended in the query string
 	 */
 	protected abstract boolean isQueryParameter(Parameter param);
 
 	/**
 	 * Allows children to specify which parameters within a method should be included in API generation
-	 * @param method
-	 * @param includeUrlParameters
-	 * @param includeNonUrlParameters
-	 * @return
+	 * 
+	 * @param method The method to inspect
+	 * @param includeUrlParameters If true this will include URL parameters
+	 * @param includeNonUrlParameters If true this will include query and body params
+	 * @return A list of request parameters for this API
 	 */
 	protected abstract List<ApiParameterMetadata> getApiParameters(Method method, boolean includeUrlParameters,
 			boolean includeNonUrlParameters);
 
 	/**
 	 * Extracts the TOs and other parameters from a method and will convert into JsonSchema for inclusion in the body
+	 * TODO refactor this code structure
 	 * 
-	 * @param apiAction
-	 * @param method
-	 * @return
+	 * @param apiAction The Verb of the action to be added
+	 * @param method The method to be inspected
+	 * @param parameterComments The parameter comments associated with these parameters
+	 * @return A map of supported mime types for the request
 	 */
 	protected Map<String, MimeType> extractRequestBodyFromMethod(ActionType apiAction, Method method,
 			Map<String, String> parameterComments) {
@@ -177,18 +180,24 @@ public abstract class ResourceParser {
 
 		String comment = null;
 		List<ApiParameterMetadata> apiParameters = getApiParameters(method, false, true);
+		if (apiParameters.size() == 0) {
+			//We only have url params it seems
+			return Collections.emptyMap();
+		}
 		Pair<String, MimeType> schemaAndMime = extractRequestBody(method, parameterComments, comment, apiParameters);
 
 		return Collections.singletonMap(schemaAndMime.getFirst(), schemaAndMime.getSecond());
 	}
 
 	/**
-	 * Converts a method body into a request json schema and a mime type
-	 * @param method
-	 * @param parameterComments
-	 * @param comment
-	 * @param apiParameters
-	 * @return
+	 * Converts a method body into a request json schema and a mime type.
+	 * TODO refactor this code structure
+	 * 
+	 * @param method The method to be used to get the request object
+	 * @param parameterComments Associated JavaDoc for Parameters (if any)
+	 * @param comment Main Method Javadoc Comment (if any)
+	 * @param apiParameters The Parameters identifed from this method
+	 * @return The Request Body as a schema and the associated mime type
 	 */
 	protected Pair<String, MimeType> extractRequestBody(Method method, Map<String, String> parameterComments,
 			String comment, List<ApiParameterMetadata> apiParameters) {
@@ -231,47 +240,50 @@ public abstract class ResourceParser {
 
 	/**
 	 * Allows children to add common headers to API methods (eg CSRF, Authorization)
-	 * @param action
-	 * @param actionType
-	 * @param method
+	 * 
+	 * @param action The action to be modified
+	 * @param actionType The verb of the Action
+	 * @param method The method to inspect for headers
 	 */
 	protected abstract void addHeadersForMethod(Action action, ActionType actionType, Method method);
 
 	/**
 	 * Queries the parameters in the Method and checks for an AjaxParameter Annotation with the resource Id flag enabled
-	 * @param method
-	 * @return
+	 * @param method The Method to be inspected
+	 * @return A list of parameters that are exposed in the API 
 	 */
 	protected abstract ApiParameterMetadata[] extractResourceIdParameter(Method method);
 
 	/**
 	 * Extracts the http method (verb) as well as the name of the api call
-	 * @param method
-	 * @return
+	 * @param method The Method to inspect
+	 * @return The Verb and Name (partial url if a resource needs to be created) of this method
 	 */
 	protected abstract Map<ActionType, String> getHttpMethodAndName(Method method);
 
 	/**
 	 * Extracts relevant info from a Java method and converts it into a RAML resource
 	 * 
-	 * @param method
-	 * @return
+	 * @param method The Java method to introspect
+	 * @param docEntry The associated JavaDoc (may be null)
+	 * @param parentResource The Resource which contains this method
 	 */
 	protected abstract void extractAndAppendResourceInfo(Method method, JavaDocEntry docEntry, Resource parentResource);
 
 	/**
 	 * Checks is this api call is made directly on a resource without a trailing command in the URL. eg: POST on
 	 * /myResource/
-	 * @param method
-	 * @param apiName
-	 * @return
+	 * 
+	 * @param method The method to check
+	 * @return If true then this is an Action/Verb on a resource collection
 	 */
-	protected abstract boolean isActionOnResourceWithoutCommand(Method method, String apiName);
+	protected abstract boolean isActionOnResourceWithoutCommand(Method method);
 
 	/**
 	 * Checks the annotations and return type that the method returns and the mime it corresponds to
-	 * @param method
-	 * @return
+	 * 
+	 * @param method The method to inspect
+	 * @return The mime type as string
 	 */
 	protected String extractMimeTypeFromMethod(Method method) {
 		return defaultMediaType;
@@ -279,8 +291,8 @@ public abstract class ResourceParser {
 
 	/**
 	 * Checks the annotations and return type that the method returns and the mime it corresponds to
-	 * @param method
-	 * @return
+	 * @param method The method to inspect
+	 * @return The mime type this method can work on
 	 */
 	protected String extractExpectedMimeTypeFromMethod(Method method) {
 		return defaultMediaType;
@@ -289,8 +301,9 @@ public abstract class ResourceParser {
 	/**
 	 * Extracts the Response Body from a method in JsonSchema Format and embeds it into a response object based on the
 	 * defaultMediaType
-	 * @param method
-	 * @return
+	 * @param method The method to inspect
+	 * @param responseComment The JavaDoc (if any) for this response
+	 * @return The response RAML model for this method (success only)
 	 */
 	protected Response extractResponseFromMethod(Method method, String responseComment) {
 		Response response = new Response();
@@ -314,8 +327,8 @@ public abstract class ResourceParser {
 	 * 
 	 * Extracts class information from a (believe it or not) java class as well as the contained methods.
 	 * 
-	 * @param clazz
-	 * @return
+	 * @param clazz The Class to be inspected
+	 * @return The RAML Resource model for this class
 	 */
 	public Resource extractResourceInfo(Class<?> clazz) {
 		logger.info("Parsing resource: " + clazz.getSimpleName() + " ");
@@ -335,6 +348,8 @@ public abstract class ResourceParser {
 			if (resource.getResources().containsKey(relativeUri)) {
 				resource.getResource(relativeUri).getActions().putAll(cResource.getActions());
 			} else {
+				cResource.setParentResource(resource);
+				cResource.setParentUri(resource.getUri());
 				resource.getResources().put(relativeUri, cResource);
 			}
 		}
@@ -344,8 +359,9 @@ public abstract class ResourceParser {
 
 	/**
 	 * Extracts the name of the resource that this class manages
-	 * @param clazz
-	 * @return
+	 * 
+	 * @param clazz The Class to inspect
+	 * @return The name of the resource this class maps to
 	 */
 	protected abstract String getResourceName(Class<?> clazz);
 
