@@ -20,6 +20,7 @@ import com.phoenixnap.oss.ramlapisync.verification.IssueLocation;
  */
 public class ActionSecurityResponseChecker extends RamlStyleCheckerAdapter {
 	
+	public static String DESCRIPTION = "Secured Resources should define 401 and 403 responses";
 	
 	@Override
 	public Set<StyleIssue> checkActionStyle(ActionType key, Action value,
@@ -35,7 +36,7 @@ public class ActionSecurityResponseChecker extends RamlStyleCheckerAdapter {
 			if (value.getResponses() == null
 					|| !value.getResponses().containsKey("401")
 					|| !value.getResponses().containsKey("403")) {
-				issues.add(new StyleIssue(location, "Secured Resources should define 401 and 403 responses", value.getResource(), value));
+				issues.add(new StyleIssue(location, DESCRIPTION, value.getResource(), value));
 			} 
 		}
 		

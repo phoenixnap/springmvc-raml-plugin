@@ -20,9 +20,11 @@ import com.phoenixnap.oss.ramlapisync.verification.IssueLocation;
  *
  */
 public class ResourceUrlStyleChecker extends RamlStyleCheckerAdapter {
-
 	private static String CHARS_NOT_ALLOWED_REGEX = "(-|:|%)+";
 	private static Pattern CHARS_NOT_ALLOWED = Pattern.compile(CHARS_NOT_ALLOWED_REGEX); 
+	
+	public static String SPECIAL_CHARS_IN_URL =  "Special Characters in regex: " + CHARS_NOT_ALLOWED_REGEX + " not allowed in URL";
+	public static String CAPITALISED_RESOURCE = "Resource URLs Should not be capitalized";
 	
 	@Override
 	public Set<StyleIssue> checkResourceStyle(String name, Resource resource,
@@ -30,11 +32,11 @@ public class ResourceUrlStyleChecker extends RamlStyleCheckerAdapter {
 		Set<StyleIssue> issues = new LinkedHashSet<>();
 		
 		if (!NamingHelper.isUriParamResource(name) && CHARS_NOT_ALLOWED.matcher(name).find()) {
-			issues.add(new StyleIssue(location, "Special Characters in regex: " + CHARS_NOT_ALLOWED_REGEX + " not allowed in URL", resource, null));
+			issues.add(new StyleIssue(location, SPECIAL_CHARS_IN_URL , resource, null));
 		}
 		
 		if (CharUtils.isAsciiAlphaUpper(name.charAt(0))) {
-			issues.add(new StyleIssue(location, "Resource URLs Should not be capitalized", resource, null));
+			issues.add(new StyleIssue(location, CAPITALISED_RESOURCE, resource, null));
 		}
 		return issues;
 	}

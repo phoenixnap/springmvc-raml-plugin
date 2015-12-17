@@ -25,6 +25,11 @@ import com.phoenixnap.oss.ramlapisync.parser.SpringMvcResourceParser;
 import com.phoenixnap.oss.ramlapisync.style.checkers.ActionSecurityResponseChecker;
 import com.phoenixnap.oss.ramlapisync.style.checkers.ResourceCollectionPluralisationChecker;
 import com.phoenixnap.oss.ramlapisync.style.checkers.ResourceUrlStyleChecker;
+import com.phoenixnap.oss.ramlapisync.verification.Issue;
+import com.phoenixnap.oss.ramlapisync.verification.IssueLocation;
+import com.phoenixnap.oss.ramlapisync.verification.IssueSeverity;
+import com.phoenixnap.oss.ramlapisync.verification.IssueType;
+import com.phoenixnap.oss.ramlapisync.verification.checkers.ActionExistenceChecker;
 
 /**
  * Unit tests for the Style Checkers
@@ -66,6 +71,9 @@ public class RamlStyleCheckerTest {
 		assertFalse("Check that raml passes rules", verifier.hasErrors());
 		assertTrue("Check that implementation matches rules", verifier.hasWarnings());
 		assertEquals("Check that implementation shuld have 1 warning", 1, verifier.getWarnings().size());
+		Issue errorIssue = verifier.getWarnings().iterator().next();
+		TestHelper.verifyIssue(IssueLocation.CONTRACT, IssueSeverity.WARNING, IssueType.STYLE, ResourceCollectionPluralisationChecker.DESCRIPTION, "/ignored/house", errorIssue);
+		
 	}
 	
 	@Test
@@ -85,7 +93,9 @@ public class RamlStyleCheckerTest {
 		assertFalse("Check that raml passes rules", verifier.hasErrors());
 		assertTrue("Check that implementation matches rules", verifier.hasWarnings());
 		assertEquals("Check that implementation shuld have 2 warnings", 2, verifier.getWarnings().size());
-		
+		TestHelper.verifyIssuesUnordered(verifier.getWarnings(), new Issue[] {
+			new Issue(IssueSeverity.WARNING, IssueLocation.CONTRACT, IssueType.STYLE, ActionSecurityResponseChecker.DESCRIPTION, "GET /ignored/houses/{houseId}"),
+			new Issue(IssueSeverity.WARNING, IssueLocation.CONTRACT, IssueType.STYLE, ActionSecurityResponseChecker.DESCRIPTION, "GET /ignored/houses")});
 	}
 	
 

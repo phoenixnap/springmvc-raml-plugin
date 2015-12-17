@@ -21,6 +21,8 @@ import com.phoenixnap.oss.ramlapisync.verification.IssueLocation;
  *
  */
 public class ResourceCollectionPluralisationChecker extends RamlStyleCheckerAdapter {
+	
+	public static String DESCRIPTION = "Collections of Resources should be Pluralised in the URL";
 
 	public static String ID_RESOURCE_REGEX = "[/]{0,1}\\{([^\\}]*)\\}";
 	private static Pattern ID_RESOURCE_PATTERN = Pattern.compile(ID_RESOURCE_REGEX); 
@@ -49,7 +51,7 @@ public class ResourceCollectionPluralisationChecker extends RamlStyleCheckerAdap
 		
 		if (hasIdSubresource && hasVerb) {
 			if (Inflector.singularize(name).equals(name) && !Inflector.pluralize(name).equals(name)) {
-				issues.add(new StyleIssue(location, "Collections of Resources should be Pluralised in the URL", resource, null));
+				issues.add(new StyleIssue(location, DESCRIPTION , resource, null));
 			}
 		}
 		

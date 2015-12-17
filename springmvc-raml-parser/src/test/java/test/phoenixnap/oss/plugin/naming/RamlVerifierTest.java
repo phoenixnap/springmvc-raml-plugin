@@ -88,7 +88,8 @@ public class RamlVerifierTest {
 		
 		assertTrue("Check that there are no warnings and implementation matches raml", verifier.hasWarnings());
 		assertEquals("Check that implementation shuld have 2 warnings", 2, verifier.getWarnings().size());
-		TestHelper.verifyIssuesUnordered(verifier.getWarnings(), new Issue[] {new Issue(IssueSeverity.WARNING, IssueLocation.CONTRACT, IssueType.MISSING, ActionExistenceChecker.ACTION_MISSING, "GET /base/endpointWithGetAndPost"),
+		TestHelper.verifyIssuesUnordered(verifier.getWarnings(), new Issue[] {
+			new Issue(IssueSeverity.WARNING, IssueLocation.CONTRACT, IssueType.MISSING, ActionExistenceChecker.ACTION_MISSING, "GET /base/endpointWithGetAndPost"),
 			new Issue(IssueSeverity.WARNING, IssueLocation.CONTRACT, IssueType.MISSING, ActionExistenceChecker.ACTION_MISSING, "POST /base/endpointWithGetAndPost")});
 		
 	}
@@ -116,6 +117,9 @@ public class RamlVerifierTest {
 		
 		RamlVerifier verifier = new RamlVerifier(published, computed, Collections.singletonList(new ResourceExistenceChecker()), null, null);
 		assertTrue("Check that there are errors since there is part of our contract not implemented", verifier.hasErrors());
+		assertEquals("Check that implementation should have 1 error", 1, verifier.getErrors().size());
+		Iterator<Issue> iterator = verifier.getErrors().iterator();
+		TestHelper.verifyIssue(IssueLocation.SOURCE, IssueSeverity.ERROR, IssueType.MISSING, ResourceExistenceChecker.RESOURCE_MISSING, "/secondBase", iterator.next());
 		assertFalse("Check that there are no warnings", verifier.hasWarnings());
 		
 	}
@@ -129,7 +133,10 @@ public class RamlVerifierTest {
 		RamlVerifier verifier = new RamlVerifier(published, computed, Collections.singletonList(new ResourceExistenceChecker()), null, null);
 		assertFalse("Check that there are no errors", verifier.hasErrors());
 		assertTrue("Check that there is warning for UriParam", verifier.hasWarnings());
-		
+		assertEquals("Check that implementation should have 2 warnings", 2, verifier.getWarnings().size());
+		TestHelper.verifyIssuesUnordered(verifier.getWarnings(), new Issue[] {
+			new Issue(IssueSeverity.WARNING, IssueLocation.SOURCE, IssueType.MISSING, ResourceExistenceChecker.RESOURCE_MISSING, "/secondBase/endpointWithURIParam/{differentNameParam}"),
+			new Issue(IssueSeverity.WARNING, IssueLocation.CONTRACT, IssueType.MISSING, ResourceExistenceChecker.RESOURCE_MISSING, "/secondBase/endpointWithURIParam/{uriParam}")});
 	}
 
 }

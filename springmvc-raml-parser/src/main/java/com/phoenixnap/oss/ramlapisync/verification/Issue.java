@@ -116,7 +116,7 @@ public class Issue {
 			return true;
 		if (obj == null)
 			return false;
-		if (getClass() != obj.getClass())
+		if (!Issue.class.isAssignableFrom(obj.getClass()))
 			return false;
 		Issue other = (Issue) obj;		
 		if (description == null) {
