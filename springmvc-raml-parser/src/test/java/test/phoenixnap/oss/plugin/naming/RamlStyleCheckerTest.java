@@ -12,7 +12,9 @@
  */
 package test.phoenixnap.oss.plugin.naming;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
 import java.util.Collections;
 
@@ -29,7 +31,6 @@ import com.phoenixnap.oss.ramlapisync.verification.Issue;
 import com.phoenixnap.oss.ramlapisync.verification.IssueLocation;
 import com.phoenixnap.oss.ramlapisync.verification.IssueSeverity;
 import com.phoenixnap.oss.ramlapisync.verification.IssueType;
-import com.phoenixnap.oss.ramlapisync.verification.checkers.ActionExistenceChecker;
 
 /**
  * Unit tests for the Style Checkers

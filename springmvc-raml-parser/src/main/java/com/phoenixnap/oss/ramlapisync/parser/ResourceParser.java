@@ -100,7 +100,7 @@ public abstract class ResourceParser {
 	 * @param target The target Verb to check
 	 * @return If true, the verb supports a payload in the request body
 	 */
-	protected boolean doesActionTypeSupportRequestBody(ActionType target) {
+	public static boolean doesActionTypeSupportRequestBody(ActionType target) {
 		return target.equals(ActionType.POST) || target.equals(ActionType.PUT);
 	}
 

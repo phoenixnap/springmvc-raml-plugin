@@ -85,9 +85,10 @@ public class RamlCheckerResourceVisitorCoordinator implements RamlChecker {
 		
 		
 		for (String resource : referenceResources) {			
+			Resource reference = referenceResourcesMap.get(resource);
+			String resourceLocation = Issue.buildRamlLocation(reference, null, null);
 			if (targetResources.contains(resource)) {
-				logger.debug("Visiting resource: "+ resource + " in " + (location.equals(IssueLocation.SOURCE) ? IssueLocation.CONTRACT : IssueLocation.SOURCE)); 
-				Resource reference = referenceResourcesMap.get(resource);
+				logger.debug("Visiting resource: "+ resourceLocation + " in " + (location.equals(IssueLocation.SOURCE) ? IssueLocation.CONTRACT : IssueLocation.SOURCE)); 
 				Resource target = targetResourcesMap.get(resource);
 				for (RamlResourceVisitorCheck resourceCheck : resourceCheckers) {
 					Pair<Set<Issue>, Set<Issue>> check = resourceCheck.check(resource, reference, target, location, severity);
@@ -104,8 +105,9 @@ public class RamlCheckerResourceVisitorCoordinator implements RamlChecker {
 				if (referenceActions != null && referenceActions.size() > 0 && targetActions != null && targetActions.size() > 0) {
 					for (Entry<ActionType, Action> action : referenceActions.entrySet()) {
 						Action targetAction = targetActions.get(action.getKey());
+						String actionLocation = Issue.buildRamlLocation(reference, referenceActions.get(action.getKey()), null);
 						if (targetAction != null) {
-							logger.debug("Visiting action: "+ action.getKey());
+							logger.debug("Visiting action: "+ actionLocation);
 							for (RamlActionVisitorCheck actionCheck : actionCheckers) {
 								Pair<Set<Issue>, Set<Issue>> check = actionCheck.check(action.getKey(), action.getValue(), targetAction, location, severity);
 								if (check != null && check.getFirst() != null) {
@@ -115,13 +117,17 @@ public class RamlCheckerResourceVisitorCoordinator implements RamlChecker {
 									errors.addAll(check.getSecond());
 								}
 							}
+						} else {
+							logger.debug("Skipping visiting action "+ actionLocation + " in " + (location.equals(IssueLocation.SOURCE) ? IssueLocation.CONTRACT : IssueLocation.SOURCE));
 						}
 					}
 				}
 				
 				//Happy Days Exact Match - recurse to check children
 				check(referenceResourcesMap.get(resource).getResources(), targetResourcesMap.get(resource).getResources(), location, severity);
-			} 
+			} else {
+				logger.debug("Skipping visiting resource "+ resourceLocation + " in " + (location.equals(IssueLocation.SOURCE) ? IssueLocation.CONTRACT : IssueLocation.SOURCE));
+			}
 		}
 		
 	}

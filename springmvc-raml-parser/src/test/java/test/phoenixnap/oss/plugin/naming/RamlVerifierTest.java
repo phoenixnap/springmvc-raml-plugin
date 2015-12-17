@@ -22,6 +22,10 @@ import java.util.Iterator;
 import org.junit.Test;
 import org.raml.model.Raml;
 
+import test.phoenixnap.oss.plugin.naming.testclasses.ParamTestController;
+import test.phoenixnap.oss.plugin.naming.testclasses.ParamTestControllerDowngradeToWarning;
+import test.phoenixnap.oss.plugin.naming.testclasses.ParamTestControllerPostMissing;
+import test.phoenixnap.oss.plugin.naming.testclasses.ParamTestControllerPostWarning;
 import test.phoenixnap.oss.plugin.naming.testclasses.SecondVerifierTestController;
 import test.phoenixnap.oss.plugin.naming.testclasses.ThirdVerifierTestController;
 import test.phoenixnap.oss.plugin.naming.testclasses.VerifierTestController;
@@ -34,6 +38,7 @@ import com.phoenixnap.oss.ramlapisync.verification.IssueLocation;
 import com.phoenixnap.oss.ramlapisync.verification.IssueSeverity;
 import com.phoenixnap.oss.ramlapisync.verification.IssueType;
 import com.phoenixnap.oss.ramlapisync.verification.checkers.ActionExistenceChecker;
+import com.phoenixnap.oss.ramlapisync.verification.checkers.ActionQueryParameterChecker;
 import com.phoenixnap.oss.ramlapisync.verification.checkers.ResourceExistenceChecker;
 
 /**
@@ -57,6 +62,96 @@ public class RamlVerifierTest {
 		RamlVerifier verifier = new RamlVerifier(published, computed, Collections.singletonList(new ResourceExistenceChecker()), null, null);
 		assertFalse("Check that there are no errors and implementation matches raml", verifier.hasErrors());
 		assertFalse("Check that there are no warnings and implementation matches raml", verifier.hasWarnings());
+		
+	}
+	
+	@Test
+	public void test_ActionQueryParameterChecker_Success() {
+		Raml published = RamlVerifier.loadRamlFromFile("test-queryparam-success.raml");
+		Class<?>[] classesToGenerate = new Class[] {ParamTestController.class};
+		Raml computed = generator.generateRamlForClasses("test", "0.0.1", "/", classesToGenerate, Collections.emptySet()).getRaml();
+		
+		RamlVerifier verifier = new RamlVerifier(published, computed, Collections.emptyList(), Collections.singletonList(new ActionQueryParameterChecker()), null);
+		assertFalse("Check that there are no errors and implementation matches raml", verifier.hasErrors());
+		assertFalse("Check that there are no warnings and implementation matches raml", verifier.hasWarnings());
+		
+	}
+	
+	@Test
+	public void test_ActionQueryParameterChecker_SuccessWithPostWarning() {
+		Raml published = RamlVerifier.loadRamlFromFile("test-queryparam-success.raml");
+		Class<?>[] classesToGenerate = new Class[] {ParamTestController.class, ParamTestControllerPostWarning.class};
+		Raml computed = generator.generateRamlForClasses("test", "0.0.1", "/", classesToGenerate, Collections.emptySet()).getRaml();
+		
+		RamlVerifier verifier = new RamlVerifier(published, computed, Collections.emptyList(), Collections.singletonList(new ActionQueryParameterChecker()), null);
+		assertFalse("Check that there are no errors and implementation matches raml", verifier.hasErrors());
+		assertTrue("Check that there are warnings", verifier.hasWarnings());
+		assertEquals("Check that implementation shuld have 2 warnings", 2, verifier.getWarnings().size());
+		TestHelper.verifyIssuesUnordered(verifier.getWarnings(), new Issue[] {
+			new Issue(IssueSeverity.WARNING, IssueLocation.SOURCE, IssueType.MISSING, ActionQueryParameterChecker.QUERY_PARAMETER_FOUND_IN_FORM, "param5 : POST /base/endpointWithURIParam/{uriParam}"),
+			new Issue(IssueSeverity.WARNING, IssueLocation.SOURCE, IssueType.MISSING, ActionQueryParameterChecker.QUERY_PARAMETER_FOUND_IN_FORM, "param6 : POST /base/endpointWithURIParam/{uriParam}")});
+		
+		
+	}
+	
+	
+	
+	@Test
+	public void test_ActionQueryParameterChecker_MissingParamsInContract() {
+		Raml published = RamlVerifier.loadRamlFromFile("test-queryparam-missing.raml");
+		Class<?>[] classesToGenerate = new Class[] {ParamTestController.class};
+		Raml computed = generator.generateRamlForClasses("test", "0.0.1", "/", classesToGenerate, Collections.emptySet()).getRaml();
+		
+		RamlVerifier verifier = new RamlVerifier(published, computed, Collections.emptyList(), Collections.singletonList(new ActionQueryParameterChecker()), null);
+		assertTrue("Check that there are errors", verifier.hasErrors());
+		assertTrue("Check that there are warnings", verifier.hasWarnings());
+		assertEquals("Check that implementation should have 1 warnings", 1, verifier.getWarnings().size());
+		assertEquals("Check that implementation should have 1 errors", 1, verifier.getErrors().size());
+		
+		Issue warnIssue = verifier.getWarnings().iterator().next();
+		TestHelper.verifyIssue(IssueLocation.CONTRACT, IssueSeverity.WARNING, IssueType.MISSING, ActionQueryParameterChecker.QUERY_PARAMETER_MISSING, "param4 : GET /base/endpointWithURIParam/{uriParam}", warnIssue);
+		
+		Issue errorIssue = verifier.getErrors().iterator().next();
+		TestHelper.verifyIssue(IssueLocation.CONTRACT, IssueSeverity.ERROR, IssueType.MISSING, ActionQueryParameterChecker.QUERY_PARAMETER_MISSING, "param3 : GET /base/endpointWithURIParam/{uriParam}", errorIssue);
+		
+	}
+	
+	@Test
+	public void test_ActionQueryParameterChecker_MissingParamsInSource() {
+		Raml published = RamlVerifier.loadRamlFromFile("test-queryparam-success.raml");
+		Class<?>[] classesToGenerate = new Class[] {ParamTestController.class, ParamTestControllerPostMissing.class};
+		Raml computed = generator.generateRamlForClasses("test", "0.0.1", "/", classesToGenerate, Collections.emptySet()).getRaml();
+		
+		RamlVerifier verifier = new RamlVerifier(published, computed, Collections.emptyList(), Collections.singletonList(new ActionQueryParameterChecker()), null);
+		assertTrue("Check that there are errors", verifier.hasErrors());
+		assertFalse("Check that there are no warnings and implementation matches raml", verifier.hasWarnings());
+		assertEquals("Check that implementation should have 2 errors", 2, verifier.getErrors().size());
+		TestHelper.verifyIssuesUnordered(verifier.getErrors(), new Issue[] {
+			new Issue(IssueSeverity.ERROR, IssueLocation.SOURCE, IssueType.MISSING, ActionQueryParameterChecker.QUERY_PARAMETER_MISSING, "param5 : POST /base/endpointWithURIParam/{uriParam}"),
+			new Issue(IssueSeverity.ERROR, IssueLocation.SOURCE, IssueType.MISSING, ActionQueryParameterChecker.QUERY_PARAMETER_MISSING, "param6 : POST /base/endpointWithURIParam/{uriParam}")});
+		
+		
+	}
+	
+	@Test
+	public void test_ActionQueryParameterChecker_MissingParamsNotRequiredDowngradeToWarning() {
+		Raml published = RamlVerifier.loadRamlFromFile("test-queryparam-success.raml");
+		Class<?>[] classesToGenerate = new Class[] {ParamTestController.class, ParamTestControllerDowngradeToWarning.class};
+		Raml computed = generator.generateRamlForClasses("test", "0.0.1", "/", classesToGenerate, Collections.emptySet()).getRaml();
+		
+		RamlVerifier verifier = new RamlVerifier(published, computed, Collections.emptyList(), Collections.singletonList(new ActionQueryParameterChecker()), null);
+		assertTrue("Check that there are errors", verifier.hasErrors());
+		assertTrue("Check that there are warnings", verifier.hasWarnings());
+		assertEquals("Check that implementation should have 2 errors", 3, verifier.getErrors().size());
+		assertEquals("Check that implementation should have 1 warning", 1, verifier.getWarnings().size());
+		TestHelper.verifyIssuesUnordered(verifier.getErrors(), new Issue[] {
+			new Issue(IssueSeverity.ERROR, IssueLocation.SOURCE, IssueType.MISSING, ActionQueryParameterChecker.QUERY_PARAMETER_MISSING, "param5 : POST /base/endpointWithURIParam/{uriParam}"),
+			new Issue(IssueSeverity.ERROR, IssueLocation.SOURCE, IssueType.MISSING, ActionQueryParameterChecker.QUERY_PARAMETER_MISSING, "param6 : POST /base/endpointWithURIParam/{uriParam}"),
+			new Issue(IssueSeverity.ERROR, IssueLocation.SOURCE, IssueType.MISSING, ActionQueryParameterChecker.QUERY_PARAMETER_MISSING, "param3 : GET /base/endpointWithURIParam/{uriParam}")});
+		
+		Issue warnIssue = verifier.getWarnings().iterator().next();
+		TestHelper.verifyIssue(IssueLocation.SOURCE, IssueSeverity.WARNING, IssueType.MISSING, ActionQueryParameterChecker.QUERY_PARAMETER_MISSING, "param4 : GET /base/endpointWithURIParam/{uriParam}", warnIssue);
+		
 		
 	}
 	

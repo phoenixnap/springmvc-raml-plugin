@@ -1,16 +1,20 @@
 package com.phoenixnap.oss.ramlapisync.verification.checkers;
 
 import java.util.LinkedHashSet;
+import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 
 import org.raml.model.Action;
 import org.raml.model.ActionType;
+import org.raml.model.MimeType;
 import org.raml.model.parameter.QueryParameter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.http.MediaType;
 
 import com.phoenixnap.oss.ramlapisync.naming.Pair;
+import com.phoenixnap.oss.ramlapisync.parser.ResourceParser;
 import com.phoenixnap.oss.ramlapisync.verification.Issue;
 import com.phoenixnap.oss.ramlapisync.verification.IssueLocation;
 import com.phoenixnap.oss.ramlapisync.verification.IssueSeverity;
@@ -27,6 +31,7 @@ import com.phoenixnap.oss.ramlapisync.verification.RamlActionVisitorCheck;
 public class ActionQueryParameterChecker implements RamlActionVisitorCheck {
 	
 	public static String QUERY_PARAMETER_MISSING = "Missing Query Parameter.";
+	public static String QUERY_PARAMETER_FOUND_IN_FORM = "Missing Query Parameter but found in Form Parameters";
 	public static String INCOMPATIBLE_TYPES = "Incompatible data types";
 	public static String INCOMPATIBLE_VALIDATION = "Incompatible validation parameters";
 	public static String REQUIRED_PARAM_HIDDEN = "Target requires parameter that is marked not required in reference.";
@@ -38,21 +43,40 @@ public class ActionQueryParameterChecker implements RamlActionVisitorCheck {
 
 	@Override
 	public Pair<Set<Issue>, Set<Issue>> check(ActionType name, Action reference, Action target, IssueLocation location, IssueSeverity maxSeverity) {
+		
 		Set<Issue> errors = new LinkedHashSet<>();
 		Set<Issue> warnings = new LinkedHashSet<>();
 		//Resource (and all children) missing - Log it
 		Issue issue;
 		if (reference.getQueryParameters() != null && !reference.getQueryParameters().isEmpty()) {
 			for(Entry<String, QueryParameter> cParam : reference.getQueryParameters().entrySet()) {
+				logger.debug("ActionQueryParameterChecker Checking param " + cParam.getKey());
 				IssueSeverity targetSeverity = maxSeverity;
 				if (target.getQueryParameters() == null 
-						|| reference.getQueryParameters().isEmpty()
-						|| !reference.getQueryParameters().containsKey(cParam.getKey())) {
+						|| target.getQueryParameters().isEmpty()
+						|| !target.getQueryParameters().containsKey(cParam.getKey())) {
+					//we have a missing param, in case of required parameters this could break - upgrade severity
+					
 					if (!cParam.getValue().isRequired()) {
 						targetSeverity = IssueSeverity.WARNING; //downgrade to warning for non required parameters
+					} else {
+						targetSeverity = IssueSeverity.ERROR;
 					}
-					issue = new Issue(targetSeverity, location, IssueType.MISSING, QUERY_PARAMETER_MISSING , reference.getResource(), reference, cParam.getKey());					
-					addIssue(errors, warnings, issue, "Expected query parameter missing: "+ cParam.getKey() + " in " + location.name());
+					
+					//lets check if they are defined as form parameters since spring does not distinguish this. Do so only if we are checking the contract
+					Map<String, MimeType> targetBody = target.getBody();
+					if (location == IssueLocation.SOURCE 
+							&& targetBody != null 
+							&& targetBody.containsKey(MediaType.APPLICATION_FORM_URLENCODED_VALUE)
+							&& targetBody.get(MediaType.APPLICATION_FORM_URLENCODED_VALUE) != null
+							&& targetBody.get(MediaType.APPLICATION_FORM_URLENCODED_VALUE).getFormParameters() != null
+							&& targetBody.get(MediaType.APPLICATION_FORM_URLENCODED_VALUE).getFormParameters().containsKey(cParam.getKey())
+							&& ResourceParser.doesActionTypeSupportRequestBody(reference.getType())) {
+					   issue = new Issue(IssueSeverity.WARNING, location, IssueType.MISSING, QUERY_PARAMETER_FOUND_IN_FORM , reference.getResource(), reference, cParam.getKey());
+					} else {
+					   issue = new Issue(targetSeverity, location, IssueType.MISSING, QUERY_PARAMETER_MISSING , reference.getResource(), reference, cParam.getKey());
+					}
+					addIssue(errors, warnings, issue, issue.getDescription() + "  "+ cParam.getKey() + " in " + location.name());
 				} else {
 					QueryParameter referenceParameter = cParam.getValue();
 					QueryParameter targetParameter = target.getQueryParameters().get(cParam.getKey());

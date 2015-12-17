@@ -2,7 +2,6 @@ package com.phoenixnap.oss.ramlapisync.verification;
 
 import org.raml.model.Action;
 import org.raml.model.Resource;
-import org.raml.model.parameter.AbstractParam;
 import org.springframework.util.StringUtils;
 
 /**
