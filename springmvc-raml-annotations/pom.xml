@@ -5,7 +5,7 @@
 	<parent>
 		<groupId>com.phoenixnap.oss</groupId>
 		<artifactId>springmvc-raml-parent</artifactId>
-		<version>0.0.2</version>
+		<version>0.1.0</version>
 	</parent>	
 	
 	<artifactId>springmvc-raml-annotations</artifactId>
