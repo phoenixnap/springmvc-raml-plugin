@@ -19,12 +19,14 @@ public @interface PathDescription {
 	/**
 	 * The Partial url this will applied to
 	 * 
+	 * @return the partial url that the description with be applied to
 	 */
 	String key();
 	
 	/**
 	 * Description that will be applied to the resource
 	 * 
+	 * @return String description that will be applied to the resource
 	 */
 	String value();
 	

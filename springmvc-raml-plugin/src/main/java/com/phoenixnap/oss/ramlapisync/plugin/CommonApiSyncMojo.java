@@ -30,7 +30,7 @@ import com.google.common.reflect.ClassPath;
 import com.phoenixnap.oss.ramlapisync.data.ApiDocumentMetadata;
 
 /**
- * Common Functionality between Spring MVC and Other RAML Syncronizers
+ * Common Functionality between Spring MVC and Other RAML Synchronizers
  * 
  * @author Kurt Paris
  * @since 0.0.1
@@ -84,9 +84,9 @@ public abstract class CommonApiSyncMojo extends AbstractMojo {
 
 	/**
 	 * Main entrypoint for raml generation
-	 * @throws MojoExecutionException
-	 * @throws MojoFailureException
-	 * @throws IOException
+	 * @throws MojoExecutionException Kaboom.
+	 * @throws MojoFailureException Kaboom.
+	 * @throws IOException Kaboom.
 	 */
 	protected void prepareRaml() throws MojoExecutionException, MojoFailureException, IOException {
 		ClassLoaderUtils.addLocationsToClassLoader(project);
@@ -114,7 +114,7 @@ public abstract class CommonApiSyncMojo extends AbstractMojo {
 	
 	/**
 	 * Checks if a class has at least one of the required annotations for mapping
-	 * @param c
+	 * @param c The class to be scanned
 	 */
 	protected final void scanClass(Class<?> c) {
 		for (Class<? extends Annotation> cAnnotation : supportedClassAnnotations) {

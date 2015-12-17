@@ -2,6 +2,8 @@ package com.phoenixnap.oss.ramlapisync.verification;
 
 import org.raml.model.Action;
 import org.raml.model.Resource;
+import org.raml.model.parameter.AbstractParam;
+import org.springframework.util.StringUtils;
 
 /**
  * Data object which identifies a discrepancy between two RAML models
@@ -20,9 +22,10 @@ public class Issue {
 	private String ramlLocation;
 	private Resource resourceLocation;
 	private Action action;
-
+	private String parameter;
+	
 	public Issue(IssueSeverity severity, IssueLocation location, IssueType type,
-			String description, Resource resource, Action action) {
+			String description, Resource resource, Action action, String parameter) {
 		super();
 		this.severity = severity;
 		this.location = location;
@@ -30,6 +33,12 @@ public class Issue {
 		this.description = description;
 		this.resourceLocation = resource;
 		this.action = action;
+		this.parameter = parameter;
+	}
+
+	public Issue(IssueSeverity severity, IssueLocation location, IssueType type,
+			String description, Resource resource, Action action) {
+		this(severity, location, type, description, resource, action, null);
 	}
 
 	public Issue(IssueSeverity severity, IssueLocation location, IssueType type,
@@ -42,24 +51,30 @@ public class Issue {
 		this.ramlLocation = ramlLocation;
 		this.resourceLocation = null;
 		this.action = null;
+		this.parameter = null;
 	}
 
 	/**
 	 * Uniform way of identifying a location in the Raml file based on the
 	 * Resource and Action
 	 * 
-	 * @param resource
-	 * @param action
-	 * @return
+	 * @param resource The Resource that this Issue relates to
+	 * @param action The Action that this Issue relates to
+	 * @param parameter The parameter name that this Issue Relates to
+	 * @return String identifying the location of this issue
 	 */
-	public static String buildRamlLocation(Resource resource, Action action) {
+	public static String buildRamlLocation(Resource resource, Action action, String parameter) {
 		String outLocation = resource.getUri();
 		if (action != null && action.getType() != null) {
 			outLocation = action.getType().name() + " " + outLocation;
 		}
+		if (StringUtils.hasText(parameter)) {
+			outLocation = parameter + " : " + outLocation;
+		}
 		return outLocation;
 	}
 
+	
 	public IssueType getType() {
 		return type;
 	}
@@ -76,9 +91,14 @@ public class Issue {
 		return description;
 	}
 
+	/**
+	 * Gets the location of the Issue as a string, or builds it from the Resource/Action/Parameter info stored.
+	 * 
+	 * @return The location as a string
+	 */
 	public String getRamlLocation() {
 		if (ramlLocation == null) {
-			ramlLocation = buildRamlLocation(resourceLocation, action);
+			ramlLocation = buildRamlLocation(resourceLocation, action, parameter);
 		} 
 		return ramlLocation;
 	}

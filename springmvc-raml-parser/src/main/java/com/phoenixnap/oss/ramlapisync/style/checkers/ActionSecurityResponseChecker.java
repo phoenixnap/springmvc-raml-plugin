@@ -12,7 +12,7 @@ import com.phoenixnap.oss.ramlapisync.verification.IssueLocation;
 
 
 /**
- * Action style checker that enforces that 401 & 403 responses are defined when a security scheme is defined for an API
+ * Action style checker that enforces that 401 and 403 responses are defined when a security scheme is defined for an API
  * 
  * @author Kurt Paris
  * @since 0.0.2

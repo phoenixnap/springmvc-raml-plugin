@@ -10,7 +10,12 @@ package com.phoenixnap.oss.ramlapisync.verification;
 public enum IssueType {
 	
 	/**
-	 * The item was not found as expected
+	 * The item was found but with different data/config that could cause API failure
+	 */
+	DIFFERENT,
+	
+	/**
+	 * The item was not found
 	 */
 	MISSING,	
 	

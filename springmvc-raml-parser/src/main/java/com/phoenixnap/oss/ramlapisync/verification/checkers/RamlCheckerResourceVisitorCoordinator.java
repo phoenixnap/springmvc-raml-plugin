@@ -107,7 +107,7 @@ public class RamlCheckerResourceVisitorCoordinator implements RamlChecker {
 						if (targetAction != null) {
 							logger.debug("Visiting action: "+ action.getKey());
 							for (RamlActionVisitorCheck actionCheck : actionCheckers) {
-								Pair<Set<Issue>, Set<Issue>> check = actionCheck.check(action.getKey(), action.getValue(), targetAction);
+								Pair<Set<Issue>, Set<Issue>> check = actionCheck.check(action.getKey(), action.getValue(), targetAction, location, severity);
 								if (check != null && check.getFirst() != null) {
 									warnings.addAll(check.getFirst());
 								}

@@ -136,6 +136,7 @@ public class SpringMvcResourceParser extends ResourceParser {
 			}
 			return new Pair<>(type, mimeType);
 		} else {
+			
 			return super.extractRequestBody(method, parameterComments, comment, apiParameters);
 		}
 	}
@@ -256,8 +257,8 @@ public class SpringMvcResourceParser extends ResourceParser {
 	/**
 	 * Checks if a parameter has any metadata that has been attached using the RequestParam data which identifies it as
 	 * an API request parameter
-	 * @param param
-	 * @return
+	 * @param param The Parameter to be checked
+	 * @return If true the parameter should be added to the api
 	 */
 	protected boolean shouldAddParameter(Parameter param) {
 		for (Annotation annotation : param.getAnnotations()) {
@@ -305,8 +306,8 @@ public class SpringMvcResourceParser extends ResourceParser {
 	
 	/**
 	 * Checks for instances of @Description annotations in 
-	 * @param method
-	 * @return
+	 * @param method The method to Inspect
+	 * @return a Map of Description and Partial URL Keys
 	 */
 	protected Map<String, String> getPathDescriptionsForMethod(Method method) {
 		Map<String, String> outDescriptions = new HashMap<>();
@@ -387,7 +388,7 @@ public class SpringMvcResourceParser extends ResourceParser {
 	}
 
 	@Override
-	protected boolean isActionOnResourceWithoutCommand(Method method, String apiName) {
+	protected boolean isActionOnResourceWithoutCommand(Method method) {
 		if (!method.isAnnotationPresent(RequestMapping.class)) {
 			return true;
 		} else {

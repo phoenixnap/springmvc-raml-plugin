@@ -90,7 +90,7 @@ public class SpringMvcRamlApiSyncMojo extends CommonApiSyncMojo {
 	
 	/**
 	 * Converts the relative path to the absolute path
-	 * @return
+	 * @return The absolute path for the Raml file to be saved
 	 */
 	public String getFullRamlOutputPath() {
 		// must get basedir from project to ensure that correct basedir is used when building from parent

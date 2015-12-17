@@ -56,8 +56,8 @@ public class JavaDocExtractor {
 	 * Extracts the Java Doc for a specific class from its Source code as well as any superclasses or implemented
 	 * interfaces.
 	 * 
-	 * @param clazz
-	 * @return
+	 * @param clazz The Class for which to get javadoc
+	 * @return A parsed documentation store with the class's Javadoc or empty if none is found.
 	 */
 	public JavaDocStore getJavaDoc(Class<?> clazz) {
 

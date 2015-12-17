@@ -17,7 +17,8 @@ public @interface Example {
 	
 	/**
 	 * The String that will be displayed. currently only static strings are supported - this will be enhanced to support spring boot property file integration
-	 * @return
+	 * 
+	 * @return The String example that will be displayed.
 	 */
 	String value() default "";
 

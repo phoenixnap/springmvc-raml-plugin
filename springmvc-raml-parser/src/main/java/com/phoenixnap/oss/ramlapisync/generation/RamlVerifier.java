@@ -89,7 +89,7 @@ public class RamlVerifier {
 	/**
 	 * Checks if there are any errors generated during the comparison
 	 * 
-	 * @return
+	 * @return If true the verification process has found errors
 	 */
 	public boolean hasErrors() {
 		if (errors.size() > 0) {
@@ -102,7 +102,7 @@ public class RamlVerifier {
 	/**
 	 * Checks if there are any warnings generated during the comparison
 	 * 
-	 * @return
+	 * @return If true the verification process has found warnings
 	 */
 	public boolean hasWarnings() {
 		if (warnings.size() > 0) {
@@ -126,12 +126,10 @@ public class RamlVerifier {
 	}
 	
 	/**
-	 * Loads a RAML document from a file. This file can either be a resource on the class path
-	 * (in which case the classpath: prefix should be omitted) or a file on disk (in which case
-	 * the file: prefix should be included)
+	 * Loads a RAML document from a file. 
 	 * 
-	 * @param ramlFileUrl
-	 * @return Build Raml model
+	 * @param ramlFileUrl The path to the file, this can either be a resource on the class path (in which case the classpath: prefix should be omitted) or a file on disk (in which case the file: prefix should be included)
+	 * @return Built Raml model
 	 */
 	public static Raml loadRamlFromFile(String ramlFileUrl) {
 		try {
@@ -142,10 +140,20 @@ public class RamlVerifier {
 		}
 	}
 
+	/**
+	 * Retrieve the Errors identified
+	 * 
+	 * @return A set of unique Error-Level Issues
+	 */
 	public Set<Issue> getErrors() {
 		return errors;
 	}
 
+	/**
+	 * Retrieve the Warnings identified
+	 * 
+	 * @return A set of unique Warning-Level Issues
+	 */
 	public Set<Issue> getWarnings() {
 		return warnings;
 	}
