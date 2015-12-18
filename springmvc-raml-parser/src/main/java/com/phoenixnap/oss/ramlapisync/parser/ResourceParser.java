@@ -55,6 +55,8 @@ public abstract class ResourceParser {
 			"^(equals|hashCode|clone|finalize|getClass|notify|notifyAll|toString|wait)", Pattern.CASE_INSENSITIVE);
 
 	protected static final String CSRF_HEADER = "X-CSRF-TOKEN";
+	
+	public static final String CATCH_ALL_MEDIA_TYPE = "application/everything";
 
 	protected JavaDocExtractor javaDocs;
 

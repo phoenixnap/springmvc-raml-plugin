@@ -122,6 +122,9 @@ Then simply include the following code in the POM of the project you wish to gen
 ### checkForActionExistence
 (optional, default: true) Flag that will enable or disable Checks for existence of Actions/Verbs
 
+### checkForActionContentType
+(optional, default: true) Flag that will enable or disable Checks for content type in request/response of Actions/Verbs
+
 ### checkForQueryParameterExistence
 (optional, default: true) Flag that will enable or disable checks for existence of query parameters
 

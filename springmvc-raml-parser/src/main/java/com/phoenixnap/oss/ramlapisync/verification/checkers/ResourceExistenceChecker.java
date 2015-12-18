@@ -94,13 +94,7 @@ public class ResourceExistenceChecker implements RamlChecker {
 					
 					//Resource (and all children) missing - Log it
 					Issue issue = new Issue(foundAlternateUriParam ? IssueSeverity.WARNING : severity, location, IssueType.MISSING, RESOURCE_MISSING , referenceResourcesMap.get(resource), null);
-					if (issue.getSeverity().equals(IssueSeverity.ERROR)) {
-						logger.error("Expected resource missing: "+ resource + " in " + location.name());
-						errors.add(issue);
-					} else {
-						logger.warn("Expected resource missing: "+ resource + " in " + location.name());
-						warnings.add(issue);
-					}
+					RamlCheckerResourceVisitorCoordinator.addIssue(errors, warnings, issue, "Expected resource missing: "+ resource + " in " + location.name());
 				}
 			}
 		}

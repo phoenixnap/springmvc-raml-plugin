@@ -76,19 +76,19 @@ public class ActionQueryParameterChecker implements RamlActionVisitorCheck {
 					} else {
 					   issue = new Issue(targetSeverity, location, IssueType.MISSING, QUERY_PARAMETER_MISSING , reference.getResource(), reference, cParam.getKey());
 					}
-					addIssue(errors, warnings, issue, issue.getDescription() + "  "+ cParam.getKey() + " in " + location.name());
+					RamlCheckerResourceVisitorCoordinator.addIssue(errors, warnings, issue, issue.getDescription() + "  "+ cParam.getKey() + " in " + location.name());
 				} else {
 					QueryParameter referenceParameter = cParam.getValue();
 					QueryParameter targetParameter = target.getQueryParameters().get(cParam.getKey());
 					
 					if (referenceParameter.isRequired() == false && targetParameter.isRequired()) {
 						issue = new Issue(maxSeverity, location, IssueType.DIFFERENT, REQUIRED_PARAM_HIDDEN , reference.getResource(), reference, cParam.getKey());					
-						addIssue(errors, warnings, issue, REQUIRED_PARAM_HIDDEN + " "+ cParam.getKey() + " in " + location.name());
+						RamlCheckerResourceVisitorCoordinator.addIssue(errors, warnings, issue, REQUIRED_PARAM_HIDDEN + " "+ cParam.getKey() + " in " + location.name());
 					}
 					
 					if (referenceParameter.getType() != null && !referenceParameter.getType().equals(targetParameter.getType())) {
 						issue = new Issue(IssueSeverity.WARNING, location, IssueType.DIFFERENT, INCOMPATIBLE_TYPES , reference.getResource(), reference, cParam.getKey());					
-						addIssue(errors, warnings, issue, INCOMPATIBLE_TYPES + " "+ cParam.getKey() + " in " + location.name());
+						RamlCheckerResourceVisitorCoordinator.addIssue(errors, warnings, issue, INCOMPATIBLE_TYPES + " "+ cParam.getKey() + " in " + location.name());
 					}
 					
 					if ( (referenceParameter.getMinLength() != null && !referenceParameter.getMinLength().equals(targetParameter.getMinLength()))
@@ -97,7 +97,7 @@ public class ActionQueryParameterChecker implements RamlActionVisitorCheck {
 							|| (referenceParameter.getMinimum() != null && !referenceParameter.getMinimum().equals(targetParameter.getMinimum()))
 							|| (referenceParameter.getPattern() != null && !referenceParameter.getPattern().equals(targetParameter.getPattern()))) {
 						issue = new Issue(IssueSeverity.WARNING, location, IssueType.DIFFERENT, INCOMPATIBLE_VALIDATION , reference.getResource(), reference, cParam.getKey());					
-						addIssue(errors, warnings, issue, INCOMPATIBLE_VALIDATION + " "+ cParam.getKey() + " in " + location.name());
+						RamlCheckerResourceVisitorCoordinator.addIssue(errors, warnings, issue, INCOMPATIBLE_VALIDATION + " "+ cParam.getKey() + " in " + location.name());
 					}
 					
 				}								
@@ -106,15 +106,5 @@ public class ActionQueryParameterChecker implements RamlActionVisitorCheck {
 		return new Pair<>(warnings, errors);
 	}
 	
-
-	private void addIssue(Set<Issue> errors, Set<Issue> warnings, Issue issue, String logDescription) {
-		if (issue.getSeverity().equals(IssueSeverity.ERROR)) {
-			logger.error(logDescription);
-			errors.add(issue);
-		} else {
-			logger.warn(logDescription);
-			warnings.add(issue);
-		}
-	}
 	
 }

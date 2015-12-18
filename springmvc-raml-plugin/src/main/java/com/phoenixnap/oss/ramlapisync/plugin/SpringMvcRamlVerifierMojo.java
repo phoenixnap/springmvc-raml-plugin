@@ -41,6 +41,7 @@ import com.phoenixnap.oss.ramlapisync.verification.Issue;
 import com.phoenixnap.oss.ramlapisync.verification.RamlActionVisitorCheck;
 import com.phoenixnap.oss.ramlapisync.verification.RamlChecker;
 import com.phoenixnap.oss.ramlapisync.verification.RamlResourceVisitorCheck;
+import com.phoenixnap.oss.ramlapisync.verification.checkers.ActionContentTypeChecker;
 import com.phoenixnap.oss.ramlapisync.verification.checkers.ActionExistenceChecker;
 import com.phoenixnap.oss.ramlapisync.verification.checkers.ActionQueryParameterChecker;
 import com.phoenixnap.oss.ramlapisync.verification.checkers.ResourceExistenceChecker;
@@ -78,6 +79,12 @@ public class SpringMvcRamlVerifierMojo extends CommonApiSyncMojo {
 	 */
 	@Parameter(required = false, readonly = true, defaultValue = "true")
 	protected Boolean checkForActionExistence;
+	
+	/**
+	 * Flag that will enable or disable Checks for compatibility in the type of Actions/Verbs
+	 */
+	@Parameter(required = false, readonly = true, defaultValue = "true")
+	protected Boolean checkForActionContentType;
 	
 	/**
 	 *  that will enable or disable checks for existence of query parameters
@@ -136,7 +143,7 @@ public class SpringMvcRamlVerifierMojo extends CommonApiSyncMojo {
 		Class<?>[] classArray = new Class[annotatedClasses.size()];
 		classArray = this.annotatedClasses.toArray(classArray);
 		ResourceParser scanner = new SpringMvcResourceParser(project.getBasedir().getParentFile() != null ? project
-				.getBasedir().getParentFile() : project.getBasedir(), version, defaultMediaType, false);
+				.getBasedir().getParentFile() : project.getBasedir(), version, ResourceParser.CATCH_ALL_MEDIA_TYPE, false);
 		RamlGenerator ramlGenerator = new RamlGenerator(scanner);
 		// Process the classes selected and build Raml model
 		ramlGenerator.generateRamlForClasses(project.getArtifactId(), version, "/", classArray, this.documents);
@@ -155,6 +162,9 @@ public class SpringMvcRamlVerifierMojo extends CommonApiSyncMojo {
 		}
 		if (checkForQueryParameterExistence) {
 			actionCheckers.add(new ActionQueryParameterChecker());
+		}
+		if (checkForActionContentType) {
+			actionCheckers.add(new ActionContentTypeChecker());
 		}
 		
 		if (performStyleChecks) {

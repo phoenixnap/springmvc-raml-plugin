@@ -50,13 +50,7 @@ public class ActionExistenceChecker implements RamlResourceVisitorCheck {
 				if (targetAction == null) {
 					//Resource (and all children) missing - Log it
 					Issue issue = new Issue(maxSeverity, location, IssueType.MISSING, ACTION_MISSING , reference, action.getValue());
-					if (maxSeverity.equals(IssueSeverity.ERROR)) {
-						logger.error("Expected action missing: "+ action.getKey() + " in " + location.name());
-						errors.add(issue);
-					} else {
-						logger.warn("Expected action missing: "+ action.getKey() + " in " + location.name());
-						warnings.add(issue);
-					}
+					RamlCheckerResourceVisitorCoordinator.addIssue(errors, warnings, issue, "Expected action missing: "+ action.getKey() + " in " + location.name());
 				}
 			}
 		}

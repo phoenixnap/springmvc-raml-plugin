@@ -52,6 +52,24 @@ public class RamlCheckerResourceVisitorCoordinator implements RamlChecker {
 		this.actionCheckers.addAll(actionCheckers);
 		this.resourceCheckers.addAll(resourceCheckers);	
 	}
+	
+	/**
+	 * Adds an issue to the respective set according to issue severity and logs at the appropriate log level
+	 * 
+	 * @param errors Set of Errors to add to
+	 * @param warnings Set of Warnings to add to
+	 * @param issue The issue to be added
+	 * @param logDescription The string to be logged
+	 */
+	public static void addIssue(Set<Issue> errors, Set<Issue> warnings, Issue issue, String logDescription) {
+		if (issue.getSeverity().equals(IssueSeverity.ERROR)) {
+			logger.error(logDescription);
+			errors.add(issue);
+		} else {
+			logger.warn(logDescription);
+			warnings.add(issue);
+		}
+	}
 
 	@Override
 	public Pair<Set<Issue>, Set<Issue>> check(Raml published, Raml implemented) {
