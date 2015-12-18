@@ -6,6 +6,8 @@ import java.util.regex.Pattern;
 
 import org.apache.commons.lang.CharUtils;
 import org.raml.model.Resource;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.phoenixnap.oss.ramlapisync.naming.NamingHelper;
 import com.phoenixnap.oss.ramlapisync.style.RamlStyleCheckerAdapter;
@@ -20,6 +22,11 @@ import com.phoenixnap.oss.ramlapisync.verification.IssueLocation;
  *
  */
 public class ResourceUrlStyleChecker extends RamlStyleCheckerAdapter {
+	/**
+	 * Class Logger
+	 */
+	protected static final Logger logger = LoggerFactory.getLogger(ResourceUrlStyleChecker.class);
+	
 	private static String CHARS_NOT_ALLOWED_REGEX = "(-|:|%)+";
 	private static Pattern CHARS_NOT_ALLOWED = Pattern.compile(CHARS_NOT_ALLOWED_REGEX); 
 	
@@ -29,6 +36,7 @@ public class ResourceUrlStyleChecker extends RamlStyleCheckerAdapter {
 	@Override
 	public Set<StyleIssue> checkResourceStyle(String name, Resource resource,
 			IssueLocation location) {
+		logger.debug("Checking resource " + name);
 		Set<StyleIssue> issues = new LinkedHashSet<>();
 		
 		if (!NamingHelper.isUriParamResource(name) && CHARS_NOT_ALLOWED.matcher(name).find()) {

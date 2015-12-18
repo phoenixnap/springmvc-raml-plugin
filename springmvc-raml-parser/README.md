@@ -33,8 +33,13 @@ Verifying RAML with Spring MVC Implementation
 Raml published = RamlVerifier.loadRamlFromFile("test-simple.raml");
 Class<?>[] classesToGenerate = new Class[] {VerifierTestController.class, SecondVerifierTestController.class, ThirdVerifierTestController.class};
 Raml computed = generator.generateRamlForClasses("test", "0.0.1", "/", classesToGenerate, Collections.emptySet()).getRaml();
+
+List<RamlChecker> checkers = new ArrayList<>();
+List<RamlActionVisitorCheck> actionCheckers = new ArrayList<>();
+List<RamlResourceVisitorCheck> resourceCheckers = new ArrayList<>();
+List<RamlStyleChecker> styleCheckers = new ArrayList<>();
 		
-RamlVerifier verifier = new RamlVerifier(published, computed);
+RamlVerifier verifier = new RamlVerifier(published, computed, checkers, actionCheckers, resourceCheckers, styleCheckers);
 assertFalse("Check that there are no errors since the missing resource will get marked as a warning", verifier.hasErrors());
 ```
 

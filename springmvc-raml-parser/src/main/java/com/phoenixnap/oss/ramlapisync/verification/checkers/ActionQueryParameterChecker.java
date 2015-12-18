@@ -43,7 +43,7 @@ public class ActionQueryParameterChecker implements RamlActionVisitorCheck {
 
 	@Override
 	public Pair<Set<Issue>, Set<Issue>> check(ActionType name, Action reference, Action target, IssueLocation location, IssueSeverity maxSeverity) {
-		
+		logger.debug("Checking Action " + name);
 		Set<Issue> errors = new LinkedHashSet<>();
 		Set<Issue> warnings = new LinkedHashSet<>();
 		//Resource (and all children) missing - Log it

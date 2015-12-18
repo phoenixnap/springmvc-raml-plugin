@@ -17,6 +17,8 @@ import java.lang.annotation.Annotation;
 import java.nio.file.Files;
 import java.nio.file.LinkOption;
 import java.nio.file.Paths;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
@@ -31,7 +33,17 @@ import com.phoenixnap.oss.ramlapisync.generation.RamlGenerator;
 import com.phoenixnap.oss.ramlapisync.generation.RamlVerifier;
 import com.phoenixnap.oss.ramlapisync.parser.ResourceParser;
 import com.phoenixnap.oss.ramlapisync.parser.SpringMvcResourceParser;
+import com.phoenixnap.oss.ramlapisync.style.RamlStyleChecker;
+import com.phoenixnap.oss.ramlapisync.style.checkers.ActionSecurityResponseChecker;
+import com.phoenixnap.oss.ramlapisync.style.checkers.ResourceCollectionPluralisationChecker;
+import com.phoenixnap.oss.ramlapisync.style.checkers.ResourceUrlStyleChecker;
 import com.phoenixnap.oss.ramlapisync.verification.Issue;
+import com.phoenixnap.oss.ramlapisync.verification.RamlActionVisitorCheck;
+import com.phoenixnap.oss.ramlapisync.verification.RamlChecker;
+import com.phoenixnap.oss.ramlapisync.verification.RamlResourceVisitorCheck;
+import com.phoenixnap.oss.ramlapisync.verification.checkers.ActionExistenceChecker;
+import com.phoenixnap.oss.ramlapisync.verification.checkers.ActionQueryParameterChecker;
+import com.phoenixnap.oss.ramlapisync.verification.checkers.ResourceExistenceChecker;
 
 /**
  * Maven Plugin MOJO specific to verification of RAML from implementations in Spring MVC Projects.
@@ -44,25 +56,69 @@ import com.phoenixnap.oss.ramlapisync.verification.Issue;
 public class SpringMvcRamlVerifierMojo extends CommonApiSyncMojo {
 
 	/**
-	 * Default media Type to be used in returns/consumes where these are not specified in the code
+	 * Path to the raml document to be verified
 	 */
-	@Parameter(required = true, readonly = true, defaultValue = "application/json")
+	@Parameter(required = true, readonly = true, defaultValue = "")
 	protected String ramlToVerifyPath;
 	
 	/**
 	 * TODO
 	 */
+	@Parameter(required = false, readonly = true, defaultValue = "true")
+	protected Boolean performStyleChecks;
+	
+	/**
+	 * Flag that will enable or disable Checks for existence of Resources 
+	 */
+	@Parameter(required = false, readonly = true, defaultValue = "true")
+	protected Boolean checkForResourceExistence;
+	
+	/**
+	 * Flag that will enable or disable Checks for existence of Actions/Verbs
+	 */
+	@Parameter(required = false, readonly = true, defaultValue = "true")
+	protected Boolean checkForActionExistence;
+	
+	/**
+	 *  that will enable or disable checks for existence of query parameters
+	 */
+	@Parameter(required = false, readonly = true, defaultValue = "true")
+	protected Boolean checkForQueryParameterExistence;
+	
+	
+	/**
+	 * Flag that will enable or disable checks for plural resources names
+	 */
+	@Parameter(required = false, readonly = true, defaultValue = "true")
+	protected Boolean checkForPluralisedResourceNames;
+	
+	/**
+	 * Flag that will enable or disable checks for special characters in URLs
+	 */
+	@Parameter(required = false, readonly = true, defaultValue = "true")
+	protected Boolean checkForSpecialCharactersInResourceNames;
+	
+	/**
+	 * Flag that will enable or disable checks for 401 and 403 responses for secured resources
+	 */
+	@Parameter(required = false, readonly = true, defaultValue = "true")
+	protected Boolean checkForDefinitionOf40xResponseInSecuredResource;
+	
+	
+	/**
+	 * Flag that will enable or disable braking of the build if Warnings are found
+	 */
 	@Parameter(required = false, readonly = true, defaultValue = "false")
 	protected Boolean breakBuildOnWarnings;
 	
 	/**
-	 * TODO
+	 * Flag that will enable or disable logging of warning level issues to standard out if found
 	 */
 	@Parameter(required = false, readonly = true, defaultValue = "true")
 	protected Boolean logWarnings;
 	
 	/**
-	 * TODO
+	 * Flag that will enable or disable logging of error level Issues to standard out if found
 	 */
 	@Parameter(required = false, readonly = true, defaultValue = "true")
 	protected Boolean logErrors;
@@ -86,7 +142,34 @@ public class SpringMvcRamlVerifierMojo extends CommonApiSyncMojo {
 		ramlGenerator.generateRamlForClasses(project.getArtifactId(), version, "/", classArray, this.documents);
 		Raml implementedRaml = ramlGenerator.getRaml();
 		
-		RamlVerifier verifier = new RamlVerifier(RamlVerifier.loadRamlFromFile(ramlToVerifyPath), implementedRaml, null, null, null, null);
+		List<RamlChecker> checkers = new ArrayList<>();
+		List<RamlActionVisitorCheck> actionCheckers = new ArrayList<>();
+		List<RamlResourceVisitorCheck> resourceCheckers = new ArrayList<>();
+		List<RamlStyleChecker> styleCheckers = new ArrayList<>();
+		
+		if (checkForResourceExistence) {
+			checkers.add(new ResourceExistenceChecker());
+		}
+		if (checkForActionExistence) {
+			resourceCheckers.add(new ActionExistenceChecker());
+		}
+		if (checkForQueryParameterExistence) {
+			actionCheckers.add(new ActionQueryParameterChecker());
+		}
+		
+		if (performStyleChecks) {
+			if (checkForPluralisedResourceNames) {
+				styleCheckers.add(new ResourceCollectionPluralisationChecker());
+			}
+			if (checkForDefinitionOf40xResponseInSecuredResource) {
+				styleCheckers.add(new ActionSecurityResponseChecker());
+			}
+			if (checkForSpecialCharactersInResourceNames) {
+				styleCheckers.add(new ResourceUrlStyleChecker());
+			}
+		}
+		
+		RamlVerifier verifier = new RamlVerifier(RamlVerifier.loadRamlFromFile(ramlToVerifyPath), implementedRaml, checkers, actionCheckers, resourceCheckers, styleCheckers);
 		if (verifier.hasWarnings() && logWarnings) {
 				for (Issue issue : verifier.getWarnings()) {
 					this.getLog().warn(issue.toString());

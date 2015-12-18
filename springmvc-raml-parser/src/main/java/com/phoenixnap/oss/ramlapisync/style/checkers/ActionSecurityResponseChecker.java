@@ -5,6 +5,8 @@ import java.util.Set;
 
 import org.raml.model.Action;
 import org.raml.model.ActionType;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.phoenixnap.oss.ramlapisync.style.RamlStyleCheckerAdapter;
 import com.phoenixnap.oss.ramlapisync.style.StyleIssue;
@@ -20,11 +22,17 @@ import com.phoenixnap.oss.ramlapisync.verification.IssueLocation;
  */
 public class ActionSecurityResponseChecker extends RamlStyleCheckerAdapter {
 	
+	/**
+	 * Class Logger
+	 */
+	protected static final Logger logger = LoggerFactory.getLogger(ActionSecurityResponseChecker.class);
+	
 	public static String DESCRIPTION = "Secured Resources should define 401 and 403 responses";
 	
 	@Override
 	public Set<StyleIssue> checkActionStyle(ActionType key, Action value,
 			IssueLocation location) {
+		logger.debug("Checking Action: " + key);
 		Set<StyleIssue> issues = new LinkedHashSet<>();
 		
 		//check if we have a security scheme defined for this action

@@ -37,6 +37,7 @@ public class ActionExistenceChecker implements RamlResourceVisitorCheck {
 	@Override
 	public Pair<Set<Issue>, Set<Issue>> check(String name, Resource reference,
 			Resource target, IssueLocation location, IssueSeverity maxSeverity) {
+		logger.debug("Checking Action " + name);
 		Set<Issue> errors = new LinkedHashSet<>();
 		Set<Issue> warnings = new LinkedHashSet<>();
 		
