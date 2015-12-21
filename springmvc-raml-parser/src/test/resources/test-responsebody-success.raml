@@ -1,0 +1,27 @@
+#%RAML 0.8
+title: myapi
+baseUri: /
+version: 1
+
+/base:
+  /endpointWithResponseType:
+    post:      
+      responses:
+        200:
+          body:
+            application/test+json:
+              schema: |
+                {
+                  "type":"object",
+                  "properties": {
+                    "element1": {
+                      "type": "integer"
+                    },
+                    "element2": {
+                      "type": "integer"
+                    },
+                    "element3": {
+                      "type": "string"
+                    }
+                  }
+                }
