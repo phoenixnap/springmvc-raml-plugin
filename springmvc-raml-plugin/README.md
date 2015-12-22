@@ -39,6 +39,10 @@ Then simply include the following code in the POM of the project you wish to gen
     <restBasePath>/</restBasePath>
     <version>0.0.1</version>
     <restrictOnMediaType>false</restrictOnMediaType>
+	<ignoredList>
+	   <param>com.package.to.ignore</param>
+	   <param>com.specificClass.to.ignore.ClassName</param>
+	</ignoredList>
   </configuration>
   <executions>
     <execution>
@@ -66,6 +70,9 @@ Then simply include the following code in the POM of the project you wish to gen
 
 ### restrictOnMediaType
 (optional, default: false) If this is set to true, we will only parse methods that consume, produce or accept the requested defaultMediaType
+
+### ignoredList
+(optional, default: empty) If classes or packages are included in this list, they will not be included in the generated model
 
 ### documentationSuffix
 (optional, default: -doc.md) The file extension that will be used to determine files that should be included as documents and linked to the generated RAML file
@@ -97,6 +104,10 @@ Then simply include the following code in the POM of the project you wish to gen
 	<breakBuildOnWarnings>false</breakBuildOnWarnings>
     <logWarnings>true</logWarnings>
     <logErrors>true</logErrors>
+	<ignoredList>
+	   <param>com.package.to.ignore</param>
+	   <param>com.specificClass.to.ignore.ClassName</param>
+	</ignoredList>
   </configuration>
   <executions>
     <execution>
@@ -136,6 +147,9 @@ Then simply include the following code in the POM of the project you wish to gen
 
 ### checkForDefinitionOf40xResponseInSecuredResource
 (optional, default: true) Flag that will enable or disable checks for 401 and 403 responses for secured resources
+
+### ignoredList
+(optional, default: empty) If classes or packages are included in this list, they will not be included in the generated model
 
 ### breakBuildOnWarnings
 (optional, default: false) Flag that will enable or disable braking of the build if Warnings are found
