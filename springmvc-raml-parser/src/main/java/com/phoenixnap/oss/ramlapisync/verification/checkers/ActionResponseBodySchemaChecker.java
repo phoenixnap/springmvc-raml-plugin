@@ -1,3 +1,15 @@
+/*
+ * Copyright 2002-2015 the original author or authors.
+ * 
+ * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with
+ * the License. You may obtain a copy of the License at
+ * 
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on
+ * an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the
+ * specific language governing permissions and limitations under the License.
+ */
 package com.phoenixnap.oss.ramlapisync.verification.checkers;
 
 import java.io.IOException;
@@ -27,7 +39,6 @@ import com.phoenixnap.oss.ramlapisync.verification.IssueSeverity;
 import com.phoenixnap.oss.ramlapisync.verification.IssueType;
 import com.phoenixnap.oss.ramlapisync.verification.RamlActionVisitorCheck;
 import com.sun.codemodel.JCodeModel;
-import com.sun.codemodel.JDefinedClass;
 import com.sun.codemodel.JFieldVar;
 
 /**
@@ -40,9 +51,11 @@ import com.sun.codemodel.JFieldVar;
 public class ActionResponseBodySchemaChecker implements RamlActionVisitorCheck {
 	
 	public static String RESPONSE_BODY_DIFFERENTSIZE = "Response Body in target has a different number of fields to reference";
-	public static String RESPONSE_BODY_FIELDDIFFERENTORMISSING = "Response Body has a missing field or type is different: ";
+	public static String RESPONSE_BODY_FIELDMISSING = "Response Body field type is missing";
 	public static String RESPONSE_BODY_MISSING = "Response Body required but not found in target";
 
+	public static String RESPONSE_BODY_FIELDDIFFERENT = "Response Body field type is different";
+	
 	/**
 	 * Class Logger
 	 */
@@ -111,20 +124,34 @@ public class ActionResponseBodySchemaChecker implements RamlActionVisitorCheck {
 							Map<String, JFieldVar> referenceResponseFields = referenceCodeModel._getClass("com.response.Reference").fields();
 							Map<String, JFieldVar> targetResponseClassFields = targetCodeModel._getClass("com.response.Target").fields();
 							
-							if (referenceResponseFields.size() != targetResponseClassFields.size()) {
-								issue = new Issue(maxSeverity, location, IssueType.MISSING, RESPONSE_BODY_DIFFERENTSIZE, reference.getResource(), reference);
-								RamlCheckerResourceVisitorCoordinator.addIssue(errors, warnings, issue, RESPONSE_BODY_DIFFERENTSIZE + " " + responseBodyMime.getKey());
-							}
 							
 							for (Entry<String, JFieldVar> referenceField : referenceResponseFields.entrySet()) {
 								String fieldKey = referenceField.getKey();
 								JFieldVar targetField = targetResponseClassFields.get(fieldKey);
-								if (targetField == null 
-										|| !referenceField.getValue().type().fullName().equals(targetField.type().fullName())) {
-									issue = new Issue(maxSeverity, location, IssueType.MISSING, RESPONSE_BODY_FIELDDIFFERENTORMISSING + " " + fieldKey, reference.getResource(), reference);
-									RamlCheckerResourceVisitorCoordinator.addIssue(errors, warnings, issue, RESPONSE_BODY_FIELDDIFFERENTORMISSING + " " + fieldKey);
-								} 								
+								if (targetField == null) {
+									issue = new Issue(maxSeverity, location, IssueType.MISSING, RESPONSE_BODY_FIELDMISSING, reference.getResource(), reference, fieldKey);
+									RamlCheckerResourceVisitorCoordinator.addIssue(errors, warnings, issue, RESPONSE_BODY_FIELDMISSING + " " + fieldKey);
+								} else if (!referenceField.getValue().type().fullName().equals(targetField.type().fullName())) {
+									issue = new Issue(IssueSeverity.WARNING, location, IssueType.DIFFERENT, RESPONSE_BODY_FIELDDIFFERENT, reference.getResource(), reference, fieldKey);
+									RamlCheckerResourceVisitorCoordinator.addIssue(errors, warnings, issue, RESPONSE_BODY_FIELDDIFFERENT + " " + fieldKey);
+								}
 							}
+							
+							if (referenceResponseFields.size() != targetResponseClassFields.size()) {
+								for (Entry<String, JFieldVar> targetField : targetResponseClassFields.entrySet()) {
+									String fieldKey = targetField.getKey();
+									JFieldVar referenceField = referenceResponseFields.get(fieldKey);
+									if (referenceField == null) {
+										issue = new Issue(maxSeverity, IssueLocation.CONTRACT, IssueType.MISSING, RESPONSE_BODY_FIELDMISSING, reference.getResource(), reference, fieldKey);
+										RamlCheckerResourceVisitorCoordinator.addIssue(errors, warnings, issue, RESPONSE_BODY_FIELDMISSING + " " + fieldKey);
+									} else if (!targetField.getValue().type().fullName().equals(referenceField.type().fullName())) {
+										issue = new Issue(IssueSeverity.WARNING, IssueLocation.CONTRACT, IssueType.DIFFERENT, RESPONSE_BODY_FIELDDIFFERENT, reference.getResource(), reference, fieldKey);
+										RamlCheckerResourceVisitorCoordinator.addIssue(errors, warnings, issue, RESPONSE_BODY_FIELDDIFFERENT + " " + fieldKey);
+									}
+								}
+							}
+							
+							
 							
 							
 						} catch (IOException ex) {
