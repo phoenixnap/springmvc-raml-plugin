@@ -1,3 +1,15 @@
+/*
+ * Copyright 2002-2015 the original author or authors.
+ * 
+ * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with
+ * the License. You may obtain a copy of the License at
+ * 
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on
+ * an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the
+ * specific language governing permissions and limitations under the License.
+ */
 package com.phoenixnap.oss.ramlapisync.style.checkers;
 
 import java.util.LinkedHashSet;
@@ -5,6 +17,8 @@ import java.util.Set;
 
 import org.raml.model.Action;
 import org.raml.model.ActionType;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.phoenixnap.oss.ramlapisync.style.RamlStyleCheckerAdapter;
 import com.phoenixnap.oss.ramlapisync.style.StyleIssue;
@@ -20,11 +34,17 @@ import com.phoenixnap.oss.ramlapisync.verification.IssueLocation;
  */
 public class ActionSecurityResponseChecker extends RamlStyleCheckerAdapter {
 	
+	/**
+	 * Class Logger
+	 */
+	protected static final Logger logger = LoggerFactory.getLogger(ActionSecurityResponseChecker.class);
+	
 	public static String DESCRIPTION = "Secured Resources should define 401 and 403 responses";
 	
 	@Override
 	public Set<StyleIssue> checkActionStyle(ActionType key, Action value,
 			IssueLocation location) {
+		logger.debug("Checking Action: " + key);
 		Set<StyleIssue> issues = new LinkedHashSet<>();
 		
 		//check if we have a security scheme defined for this action

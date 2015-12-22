@@ -1,3 +1,15 @@
+/*
+ * Copyright 2002-2015 the original author or authors.
+ * 
+ * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with
+ * the License. You may obtain a copy of the License at
+ * 
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on
+ * an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the
+ * specific language governing permissions and limitations under the License.
+ */
 package com.phoenixnap.oss.ramlapisync.verification.checkers;
 
 import java.util.LinkedHashSet;
@@ -37,6 +49,7 @@ public class ActionExistenceChecker implements RamlResourceVisitorCheck {
 	@Override
 	public Pair<Set<Issue>, Set<Issue>> check(String name, Resource reference,
 			Resource target, IssueLocation location, IssueSeverity maxSeverity) {
+		logger.debug("Checking Action " + name);
 		Set<Issue> errors = new LinkedHashSet<>();
 		Set<Issue> warnings = new LinkedHashSet<>();
 		
@@ -49,13 +62,7 @@ public class ActionExistenceChecker implements RamlResourceVisitorCheck {
 				if (targetAction == null) {
 					//Resource (and all children) missing - Log it
 					Issue issue = new Issue(maxSeverity, location, IssueType.MISSING, ACTION_MISSING , reference, action.getValue());
-					if (maxSeverity.equals(IssueSeverity.ERROR)) {
-						logger.error("Expected action missing: "+ action.getKey() + " in " + location.name());
-						errors.add(issue);
-					} else {
-						logger.warn("Expected action missing: "+ action.getKey() + " in " + location.name());
-						warnings.add(issue);
-					}
+					RamlCheckerResourceVisitorCoordinator.addIssue(errors, warnings, issue, "Expected action missing: "+ action.getKey() + " in " + location.name());
 				}
 			}
 		}

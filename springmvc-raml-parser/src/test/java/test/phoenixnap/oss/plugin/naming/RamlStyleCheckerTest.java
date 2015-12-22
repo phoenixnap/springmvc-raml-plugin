@@ -71,9 +71,10 @@ public class RamlStyleCheckerTest {
 		RamlVerifier verifier = new RamlVerifier(published, null, Collections.emptyList(), null, null, Collections.singletonList(new ResourceCollectionPluralisationChecker()));
 		assertFalse("Check that raml passes rules", verifier.hasErrors());
 		assertTrue("Check that implementation matches rules", verifier.hasWarnings());
-		assertEquals("Check that implementation shuld have 1 warning", 1, verifier.getWarnings().size());
-		Issue errorIssue = verifier.getWarnings().iterator().next();
-		TestHelper.verifyIssue(IssueLocation.CONTRACT, IssueSeverity.WARNING, IssueType.STYLE, ResourceCollectionPluralisationChecker.DESCRIPTION, "/ignored/house", errorIssue);
+		assertEquals("Check that implementation shuld have 2 warnings", 2, verifier.getWarnings().size());
+		TestHelper.verifyIssuesUnordered(verifier.getWarnings(), new Issue[] {
+			new Issue(IssueSeverity.WARNING, IssueLocation.CONTRACT, IssueType.STYLE, ResourceCollectionPluralisationChecker.DESCRIPTION, "/ignored/house"),
+			new Issue(IssueSeverity.WARNING, IssueLocation.CONTRACT, IssueType.STYLE, ResourceCollectionPluralisationChecker.DESCRIPTION, "/ignored/ball")});
 		
 	}
 	

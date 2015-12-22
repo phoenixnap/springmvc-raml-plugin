@@ -22,23 +22,29 @@ import java.util.Iterator;
 import org.junit.Test;
 import org.raml.model.Raml;
 
+import test.phoenixnap.oss.plugin.naming.testclasses.ContentTypeTestController;
 import test.phoenixnap.oss.plugin.naming.testclasses.ParamTestController;
 import test.phoenixnap.oss.plugin.naming.testclasses.ParamTestControllerDowngradeToWarning;
 import test.phoenixnap.oss.plugin.naming.testclasses.ParamTestControllerPostMissing;
 import test.phoenixnap.oss.plugin.naming.testclasses.ParamTestControllerPostWarning;
+import test.phoenixnap.oss.plugin.naming.testclasses.ResponseBodyTestController;
+import test.phoenixnap.oss.plugin.naming.testclasses.ResponseBodyTestControllerError;
 import test.phoenixnap.oss.plugin.naming.testclasses.SecondVerifierTestController;
 import test.phoenixnap.oss.plugin.naming.testclasses.ThirdVerifierTestController;
 import test.phoenixnap.oss.plugin.naming.testclasses.VerifierTestController;
 
 import com.phoenixnap.oss.ramlapisync.generation.RamlGenerator;
 import com.phoenixnap.oss.ramlapisync.generation.RamlVerifier;
+import com.phoenixnap.oss.ramlapisync.parser.ResourceParser;
 import com.phoenixnap.oss.ramlapisync.parser.SpringMvcResourceParser;
 import com.phoenixnap.oss.ramlapisync.verification.Issue;
 import com.phoenixnap.oss.ramlapisync.verification.IssueLocation;
 import com.phoenixnap.oss.ramlapisync.verification.IssueSeverity;
 import com.phoenixnap.oss.ramlapisync.verification.IssueType;
+import com.phoenixnap.oss.ramlapisync.verification.checkers.ActionContentTypeChecker;
 import com.phoenixnap.oss.ramlapisync.verification.checkers.ActionExistenceChecker;
 import com.phoenixnap.oss.ramlapisync.verification.checkers.ActionQueryParameterChecker;
+import com.phoenixnap.oss.ramlapisync.verification.checkers.ActionResponseBodySchemaChecker;
 import com.phoenixnap.oss.ramlapisync.verification.checkers.ResourceExistenceChecker;
 
 /**
@@ -50,7 +56,7 @@ import com.phoenixnap.oss.ramlapisync.verification.checkers.ResourceExistenceChe
  */
 public class RamlVerifierTest {
 
-	SpringMvcResourceParser parser = new SpringMvcResourceParser(null, "0.0.1", "test-type", false);
+	SpringMvcResourceParser parser = new SpringMvcResourceParser(null, "0.0.1", ResourceParser.CATCH_ALL_MEDIA_TYPE, false);
 	RamlGenerator generator = new RamlGenerator(parser);
 	
 	@Test
@@ -76,6 +82,79 @@ public class RamlVerifierTest {
 		assertFalse("Check that there are no warnings and implementation matches raml", verifier.hasWarnings());
 		
 	}
+	
+	@Test
+	public void test_ActionContentTypeChecker_Success() {
+		Raml published = RamlVerifier.loadRamlFromFile("test-contenttype-success.raml");
+		Class<?>[] classesToGenerate = new Class[] {ContentTypeTestController.class};
+		Raml computed = generator.generateRamlForClasses("test", "0.0.1", "/", classesToGenerate, Collections.emptySet()).getRaml();
+		
+		RamlVerifier verifier = new RamlVerifier(published, computed, Collections.emptyList(), Collections.singletonList(new ActionContentTypeChecker()), null);
+		assertFalse("Check that there are no errors and implementation matches raml", verifier.hasErrors());
+		assertFalse("Check that there are no warnings and implementation matches raml", verifier.hasWarnings());
+		
+	}
+	
+	@Test
+	public void test_ActionResponseBodySchemaChecker_Success() {
+		Raml published = RamlVerifier.loadRamlFromFile("test-responsebody-success.raml");
+		Class<?>[] classesToGenerate = new Class[] {ResponseBodyTestController.class};
+		Raml computed = generator.generateRamlForClasses("test", "0.0.1", "/", classesToGenerate, Collections.emptySet()).getRaml();
+		
+		RamlVerifier verifier = new RamlVerifier(published, computed, Collections.emptyList(), Collections.singletonList(new ActionResponseBodySchemaChecker()), null);
+		assertFalse("Check that there are no errors and implementation matches raml", verifier.hasErrors());
+		assertFalse("Check that there are no warnings and implementation matches raml", verifier.hasWarnings());
+		
+	}
+	
+	@Test
+	public void test_ActionContentTypeChecker_WarningDifferentType() {
+		Raml published = RamlVerifier.loadRamlFromFile("test-responsebody-differenttype.raml");
+		Class<?>[] classesToGenerate = new Class[] {ResponseBodyTestController.class};
+		Raml computed = generator.generateRamlForClasses("test", "0.0.1", "/", classesToGenerate, Collections.emptySet()).getRaml();
+		
+		RamlVerifier verifier = new RamlVerifier(published, computed, Collections.emptyList(), Collections.singletonList(new ActionResponseBodySchemaChecker()), null);
+		assertFalse("Check that there are errors", verifier.hasErrors());
+		assertTrue("Check that there are warnings", verifier.hasWarnings());
+		assertEquals("Check that implementation should have 1 warnings", 1, verifier.getWarnings().size());
+		
+		Issue warnIssue = verifier.getWarnings().iterator().next();
+		TestHelper.verifyIssue(IssueLocation.SOURCE, IssueSeverity.WARNING, IssueType.DIFFERENT, ActionResponseBodySchemaChecker.RESPONSE_BODY_FIELDDIFFERENT, "element2 : POST /base/endpointWithResponseType", warnIssue);
+		
+	}
+	
+	@Test
+	public void test_ActionContentTypeChecker_ErrorMissingFieldInRaml() {
+		Raml published = RamlVerifier.loadRamlFromFile("test-responsebody-missing.raml");
+		Class<?>[] classesToGenerate = new Class[] {ResponseBodyTestController.class};
+		Raml computed = generator.generateRamlForClasses("test", "0.0.1", "/", classesToGenerate, Collections.emptySet()).getRaml();
+		
+		RamlVerifier verifier = new RamlVerifier(published, computed, Collections.emptyList(), Collections.singletonList(new ActionResponseBodySchemaChecker()), null);
+		assertTrue("Check that there are errors", verifier.hasErrors());
+		assertFalse("Check that there are warnings", verifier.hasWarnings());
+		assertEquals("Check that implementation should have 1 errors", 1, verifier.getErrors().size());
+		
+		Issue errorIssue = verifier.getErrors().iterator().next();
+		TestHelper.verifyIssue(IssueLocation.CONTRACT, IssueSeverity.ERROR, IssueType.MISSING, ActionResponseBodySchemaChecker.RESPONSE_BODY_FIELDMISSING, "element3 : POST /base/endpointWithResponseType", errorIssue);
+		
+	}
+	
+	@Test
+	public void test_ActionContentTypeChecker_ErrorMissingFieldInSource() {
+		Raml published = RamlVerifier.loadRamlFromFile("test-responsebody-success.raml");
+		Class<?>[] classesToGenerate = new Class[] {ResponseBodyTestControllerError.class};
+		Raml computed = generator.generateRamlForClasses("test", "0.0.1", "/", classesToGenerate, Collections.emptySet()).getRaml();
+		
+		RamlVerifier verifier = new RamlVerifier(published, computed, Collections.emptyList(), Collections.singletonList(new ActionResponseBodySchemaChecker()), null);
+		assertTrue("Check that there are errors", verifier.hasErrors());
+		assertFalse("Check that there are warnings", verifier.hasWarnings());
+		assertEquals("Check that implementation should have 1 errors", 1, verifier.getErrors().size());
+		
+		Issue errorIssue = verifier.getErrors().iterator().next();
+		TestHelper.verifyIssue(IssueLocation.SOURCE, IssueSeverity.ERROR, IssueType.MISSING, ActionResponseBodySchemaChecker.RESPONSE_BODY_FIELDMISSING, "element3 : POST /base/endpointWithResponseType", errorIssue);
+		
+	}
+	
 	
 	@Test
 	public void test_ActionQueryParameterChecker_SuccessWithPostWarning() {

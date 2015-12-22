@@ -355,7 +355,7 @@ public class SpringMvcResourceParser extends ResourceParser {
 		}
 		String name = "";
 
-		if (classMapping != null && classMapping.value() != null) {
+		if (classMapping != null && classMapping.value() != null && classMapping.value().length > 0) {
 			name += classMapping.value()[0];
 		}
 		if (classRestController != null && classRestController.value() != null) {

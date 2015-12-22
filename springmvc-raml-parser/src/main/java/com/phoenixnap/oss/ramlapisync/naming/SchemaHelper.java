@@ -23,11 +23,10 @@ import java.util.TreeMap;
 
 import org.raml.model.ParamType;
 import org.raml.model.parameter.QueryParameter;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.util.StringUtils;
 
-import com.phoenixnap.oss.ramlapisync.data.ApiParameterMetadata;
-import com.phoenixnap.oss.ramlapisync.javadoc.JavaDocEntry;
-import com.phoenixnap.oss.ramlapisync.javadoc.JavaDocStore;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.module.jsonSchema.JsonSchema;
@@ -35,6 +34,9 @@ import com.fasterxml.jackson.module.jsonSchema.factories.SchemaFactoryWrapper;
 import com.fasterxml.jackson.module.jsonSchema.types.ArraySchema;
 import com.fasterxml.jackson.module.jsonSchema.types.ObjectSchema;
 import com.fasterxml.jackson.module.jsonSchema.types.ValueTypeSchema;
+import com.phoenixnap.oss.ramlapisync.data.ApiParameterMetadata;
+import com.phoenixnap.oss.ramlapisync.javadoc.JavaDocEntry;
+import com.phoenixnap.oss.ramlapisync.javadoc.JavaDocStore;
 
 /**
  * Class containing convenience methods relating to the extracting of information from Java types for use as Parameters.
@@ -47,6 +49,8 @@ import com.fasterxml.jackson.module.jsonSchema.types.ValueTypeSchema;
  */
 public class SchemaHelper {
 
+	protected static final Logger logger = LoggerFactory.getLogger(SchemaHelper.class);
+	
 	/**
 	 * Converts a simple parameter, ie String, or Boxed Primitive into
 	 * 
@@ -195,9 +199,17 @@ public class SchemaHelper {
 			JavaDocStore javaDocStore, ObjectMapper m) throws JsonMappingException {
 		SchemaFactoryWrapper visitor = new SchemaFactoryWrapper();
 		if (genericType != null) {
-			m.acceptJsonFormatVisitor(m.constructType(genericType), visitor);
+			try {
+				m.acceptJsonFormatVisitor(m.constructType(genericType), visitor);
+			} catch (Exception ex) {
+				logger.error("Unable to add JSON visitor for " + genericType.toString());
+			}
 		}
-		m.acceptJsonFormatVisitor(m.constructType(clazz), visitor);
+		try {
+			m.acceptJsonFormatVisitor(m.constructType(clazz), visitor);
+		} catch (Exception ex) {
+			logger.error("Unable to add JSON visitor for " + clazz.toString());
+		}
 
 		JsonSchema jsonSchema = visitor.finalSchema();
 		if (jsonSchema instanceof ObjectSchema && javaDocStore != null) {

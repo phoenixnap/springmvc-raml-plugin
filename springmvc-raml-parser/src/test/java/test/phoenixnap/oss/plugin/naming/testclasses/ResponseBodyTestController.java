@@ -10,25 +10,27 @@
  * an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the
  * specific language governing permissions and limitations under the License.
  */
-package com.phoenixnap.oss.ramlapisync.verification;
+package test.phoenixnap.oss.plugin.naming.testclasses;
+
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.RestController;
 
 /**
- * The Source locations of the Issue
+ * 
+ * Test Class
  * 
  * @author Kurt Paris
- * @since 0.0.2
+ * @since 0.1.1
  *
  */
-public enum IssueLocation {
-	
-	/**
-	 * The item was not found in the implementation but was exposed in the contract
-	 */
-	SOURCE,	
-	
-	
-	/**
-	 * The item was not found in the contract but was implemented, causing this issue
-	 */
-	CONTRACT;
+@RestController
+public class ResponseBodyTestController {
+		
+	@RequestMapping(value = "/base/endpointWithResponseType", method = { RequestMethod.POST}, produces={"application/test+json"})
+	public @ResponseBody ThreeElementClass endpointWithResponseType() {
+		return null;
+	}
+
 }

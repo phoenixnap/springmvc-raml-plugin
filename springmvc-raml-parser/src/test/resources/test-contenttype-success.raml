@@ -1,0 +1,58 @@
+#%RAML 0.8
+title: myapi
+baseUri: /
+version: 1
+
+/base:
+  /endpointWithNoContentType:
+    get:
+      queryParameters:
+        param1:
+          required: true
+        param2:
+  /endpointWithRequestType:
+    post:
+      body:
+        application/json:
+          schema: |
+            {
+              "type": "object",
+              "$schema": "http://json-schema.org/draft-03/schema",
+              "id": "http://jsonschema.net",
+              "required": true
+            }
+  /endpointWithRequestAndResponseType:
+    post:
+      body:
+        application/json:
+          schema: |
+            {
+              "type": "object",
+              "$schema": "http://json-schema.org/draft-03/schema",
+              "id": "http://jsonschema.net",
+              "required": true
+            }
+      responses:
+        200:
+          body:
+            application/everything:
+              schema: |
+                {
+                  "type": "object",
+                  "$schema": "http://json-schema.org/draft-03/schema",
+                  "id": "http://jsonschema.net",
+                  "required": true
+                }
+  /endpointWithResponseType:
+    post:      
+      responses:
+        200:
+          body:
+            application/everything:
+              schema: |
+                {
+                  "type": "object",
+                  "$schema": "http://json-schema.org/draft-03/schema",
+                  "id": "http://jsonschema.net",
+                  "required": true
+                }

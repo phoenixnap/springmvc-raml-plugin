@@ -15,6 +15,7 @@ package com.phoenixnap.oss.ramlapisync.plugin;
 import java.io.IOException;
 import java.lang.annotation.Annotation;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
@@ -69,6 +70,12 @@ public abstract class CommonApiSyncMojo extends AbstractMojo {
 	 */
 	@Parameter(required = false, readonly = true, defaultValue = DEFAULT_RESOURCE_DOC_SUFFIX)
 	protected String documentationSuffix;
+	
+	/**
+	 * Filter that allows the plugin to ignore packages or classes in the list.
+	 */
+	@Parameter(readonly = true)
+	protected List<String> ignoredList = Collections.emptyList();
 	
 	/**
 	 * Holder for classes matching the annotations which identify them as resources
@@ -137,7 +144,7 @@ public abstract class CommonApiSyncMojo extends AbstractMojo {
 
 			try {
 				Class<?> c = classInfo.load();
-				if (targetClasses.contains(c.getSimpleName())) {
+				if (targetClasses.contains(c.getSimpleName()) && !ignoredList.contains(c.getPackage().getName()) && !ignoredList.contains(c.getName())) {
 					scanClass(c);
 				}
 			} catch (Throwable ex) {

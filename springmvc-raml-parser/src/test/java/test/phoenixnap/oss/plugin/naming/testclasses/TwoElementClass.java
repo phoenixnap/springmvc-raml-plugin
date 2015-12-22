@@ -10,25 +10,45 @@
  * an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the
  * specific language governing permissions and limitations under the License.
  */
-package com.phoenixnap.oss.ramlapisync.verification;
+package test.phoenixnap.oss.plugin.naming.testclasses;
 
 /**
- * The Source locations of the Issue
+ * 
+ * Test Class
  * 
  * @author Kurt Paris
- * @since 0.0.2
+ * @since 0.0.1
  *
  */
-public enum IssueLocation {
-	
-	/**
-	 * The item was not found in the implementation but was exposed in the contract
-	 */
-	SOURCE,	
-	
-	
-	/**
-	 * The item was not found in the contract but was implemented, causing this issue
-	 */
-	CONTRACT;
+public class TwoElementClass {
+
+	private byte element1;
+	private Integer element2;
+
+	public TwoElementClass() {
+
+	}
+
+	public TwoElementClass(byte element1, Integer element2) {
+		super();
+		this.element1 = element1;
+		this.element2 = element2;
+	}
+
+	public byte getElement1() {
+		return element1;
+	}
+
+	public void setElement1(byte element1) {
+		this.element1 = element1;
+	}
+
+	public Integer getElement2() {
+		return element2;
+	}
+
+	public void setElement2(Integer element2) {
+		this.element2 = element2;
+	}
+
 }

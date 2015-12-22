@@ -1,3 +1,15 @@
+/*
+ * Copyright 2002-2015 the original author or authors.
+ * 
+ * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with
+ * the License. You may obtain a copy of the License at
+ * 
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on
+ * an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the
+ * specific language governing permissions and limitations under the License.
+ */
 package com.phoenixnap.oss.ramlapisync.verification.checkers;
 
 import java.util.ArrayList;
@@ -51,6 +63,24 @@ public class RamlCheckerResourceVisitorCoordinator implements RamlChecker {
 		this.resourceCheckers = new ArrayList<>();
 		this.actionCheckers.addAll(actionCheckers);
 		this.resourceCheckers.addAll(resourceCheckers);	
+	}
+	
+	/**
+	 * Adds an issue to the respective set according to issue severity and logs at the appropriate log level
+	 * 
+	 * @param errors Set of Errors to add to
+	 * @param warnings Set of Warnings to add to
+	 * @param issue The issue to be added
+	 * @param logDescription The string to be logged
+	 */
+	public static void addIssue(Set<Issue> errors, Set<Issue> warnings, Issue issue, String logDescription) {
+		if (issue.getSeverity().equals(IssueSeverity.ERROR)) {
+			logger.error(logDescription);
+			errors.add(issue);
+		} else {
+			logger.warn(logDescription);
+			warnings.add(issue);
+		}
 	}
 
 	@Override

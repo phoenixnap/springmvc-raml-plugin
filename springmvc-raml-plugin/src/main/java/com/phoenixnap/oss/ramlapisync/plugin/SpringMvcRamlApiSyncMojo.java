@@ -18,7 +18,6 @@ import java.nio.file.Files;
 import java.nio.file.LinkOption;
 import java.nio.file.Paths;
 
-import org.apache.commons.lang.ArrayUtils;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
 import org.apache.maven.plugins.annotations.Mojo;
@@ -52,12 +51,6 @@ public class SpringMvcRamlApiSyncMojo extends CommonApiSyncMojo {
 	 */
 	@Parameter(required = true, readonly = true)
 	protected String restBasePath;
-
-	/**
-	 * TODO filter that allows the plugin to ignore packages other than the ones included
-	 */
-	@Parameter(readonly = true)
-	protected String[] exposedPackages = ArrayUtils.EMPTY_STRING_ARRAY;
 
 	/**
 	 * IF this is set to true, we will only parse methods that consume, produce or accept the requested defaultMediaType

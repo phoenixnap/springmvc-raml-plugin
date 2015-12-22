@@ -4,7 +4,7 @@
 
 	<groupId>com.phoenixnap.oss</groupId>
 	<artifactId>springmvc-raml-parent</artifactId>
-	<version>0.0.2</version>
+	<version>0.1.1</version>
 	
 	<name>Spring MVC to RAML Synchronizer</name>
 	<description>Parent pom to the SpringMVC RAML Generation/Verification Project</description>
@@ -53,11 +53,35 @@
 					</configuration>
 				</plugin>
 			</plugins>
+			
 		</pluginManagement>
-  </build>
+	</build>
+
+	<profiles>
+			<profile>
+				<id>sign</id>
+				<build>	
+				  <plugins>
+					<plugin>
+					  <groupId>org.apache.maven.plugins</groupId>
+					  <artifactId>maven-gpg-plugin</artifactId>
+					  <version>1.6</version>
+					  <executions>
+						<execution>
+						  <id>sign-artifacts</id>
+						  <phase>verify</phase>
+						  <goals>
+							<goal>sign</goal>
+						  </goals>
+						</execution>
+					  </executions>
+					</plugin>
+				  </plugins>
+				</build>
+			</profile>
+	</profiles>
    
-  <dependencyManagement>
-  
+  <dependencyManagement>  
     <dependencies>
 		<dependency>
 			<groupId>io.spring.platform</groupId>
@@ -73,6 +97,17 @@
 		</dependency>
 	</dependencies>
   </dependencyManagement>
+  
+  <distributionManagement>
+  <snapshotRepository>
+    <id>ossrh</id>
+    <url>https://oss.sonatype.org/content/repositories/snapshots</url>
+  </snapshotRepository>
+  <repository>
+    <id>ossrh</id>
+    <url>https://oss.sonatype.org/service/local/staging/deploy/maven2/</url>
+  </repository>
+</distributionManagement>
 
 </project>
 
