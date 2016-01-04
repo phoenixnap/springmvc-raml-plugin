@@ -58,5 +58,19 @@ public class NamingHelperTest {
 		assertEquals("Clean Both", "asdasd",
 				NamingHelper.cleanLeadingAndTrailingNewLineAndChars("   -*\n\t     asdasd   -*\n\t     "));
 	}
+	
+	@Test
+	public void test_resolveProperties_Success() {
+		assertEquals("Should ignore non properties", "/one/two/{three}", NamingHelper.resolveProperties("/one/two/{three}"));
+		assertEquals("Should use defaults if available", "/one/{two}/three", NamingHelper.resolveProperties("/one/{two}/${something:three}"));
+		assertEquals("Should use defaults if available", "/one:8080/two/three/{four}/five/", NamingHelper.resolveProperties("/one:8080/two/${something:three}/{four}/five/"));
+		assertEquals("Should use defaults if available", "/one:8080/two/{three}/four/five", NamingHelper.resolveProperties("/one:8080/two/${something:{three}}/four${something:/five}"));
+		assertEquals("Should use defaults if available", "/one:8080/two/three/four/five/", NamingHelper.resolveProperties("/one:8080/two/${something:three}/four/${something:five}/"));		
+		assertEquals("Should resolve to name if none available", "/one/two/three", NamingHelper.resolveProperties("/one/two/${three}"));
+		assertEquals("Should resolve to name if none available", "/one:8080/two/three/four/five/", NamingHelper.resolveProperties("/one:8080/two/${three}/four/${five}/"));
+		System.setProperty("three", "3");
+		assertEquals("Should resolve property if available", "/one:8080/two/3/four/five/", NamingHelper.resolveProperties("/one:8080/two/${three}/four/${five}/"));
+		assertEquals("All of the above", "/one:8080/two/3/four/five/", NamingHelper.resolveProperties("/one:8080/two/${three}/${four:four}/${five}/"));
+	}
 
 }

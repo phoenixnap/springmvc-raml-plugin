@@ -95,5 +95,56 @@ public class NamingHelper {
 		} while (clean);
 		return StringUtils.uncapitalize(convertedName);
 	}
+	
+	/**
+	 * Attempts to load system propertes from the string or use included defaults if available
+	 * 
+	 * @param inputString Strign containing spring property format
+	 * @return resolved String
+	 */
+	public static String resolveProperties(String inputString) {
+		if (!StringUtils.hasText(inputString)) {
+			return inputString;
+		}
+		String tempString = inputString.trim();
+		String outString = "";
+		int startIndex = 0;
+		while (tempString.indexOf("${", startIndex) != -1) {
+			int startsWithPos = tempString.indexOf("${", startIndex);
+			int endsWithPos = tempString.indexOf("}", startsWithPos+2);
+			int nextBracket = tempString.indexOf("{", startsWithPos+2);
+			if (nextBracket != -1 && endsWithPos > nextBracket) {
+				endsWithPos = tempString.indexOf("}", endsWithPos+1);
+			}
+			int defaultPos = tempString.lastIndexOf(":", endsWithPos);
+			if (defaultPos < startsWithPos) {
+				defaultPos = -1;
+			}
+			
+			if (startsWithPos != -1 && endsWithPos != -1) {
+				String value = tempString.substring(startsWithPos+2,endsWithPos);
+				String defaultString;
+				String key;				
+				
+				if (defaultPos != -1) {
+					//lets get default.
+					defaultString = value.substring(value.lastIndexOf(":") +1);
+					key = value.substring(0, value.lastIndexOf(":"));
+				} else {
+					key = value;
+					defaultString = value;
+				}
+				
+				outString += tempString.substring(startIndex, startsWithPos) + System.getProperty(key, defaultString);
+				startIndex = endsWithPos+1;
+			}		
+		}
+		if (startIndex < tempString.length()) {
+			outString += tempString.substring(startIndex);
+		}
+		return outString;
+	}
+	
 
+	
 }

@@ -12,6 +12,7 @@
  */
 package com.phoenixnap.oss.ramlapisync.plugin;
 
+import java.io.File;
 import java.io.IOException;
 import java.lang.annotation.Annotation;
 import java.nio.file.Files;
@@ -24,6 +25,8 @@ import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
 import org.apache.maven.plugins.annotations.ResolutionScope;
 import org.springframework.stereotype.Controller;
+import org.springframework.util.StringUtils;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.phoenixnap.oss.ramlapisync.generation.RamlGenerator;
@@ -61,7 +64,7 @@ public class SpringMvcRamlApiSyncMojo extends CommonApiSyncMojo {
 	@SuppressWarnings("unchecked")
 	@Override
 	protected Class<? extends Annotation>[] getSupportedClassAnnotations() {
-		return new Class[] { Controller.class, RestController.class };
+		return new Class[] { Controller.class, RestController.class, RequestMapping.class };
 	}
 
 	protected void generateRaml() throws MojoExecutionException, MojoFailureException, IOException {
@@ -70,8 +73,19 @@ public class SpringMvcRamlApiSyncMojo extends CommonApiSyncMojo {
 
 		Class<?>[] classArray = new Class[annotatedClasses.size()];
 		classArray = this.annotatedClasses.toArray(classArray);
-		ResourceParser scanner = new SpringMvcResourceParser(project.getBasedir().getParentFile() != null ? project
-				.getBasedir().getParentFile() : project.getBasedir(), version, defaultMediaType, restrictOnMediaType);
+		
+		//Lets use the base folder if supplied or default to relative scanning
+		File targetPath;		
+		if (StringUtils.hasText(javaDocPath)) {
+			targetPath = new File(javaDocPath);
+		} else if (project.getBasedir().getParentFile() != null) {
+			targetPath = project.getBasedir().getParentFile();
+		} else {
+			targetPath = project.getBasedir();
+		}
+				
+		
+		ResourceParser scanner = new SpringMvcResourceParser(targetPath, version, defaultMediaType, restrictOnMediaType);
 		RamlGenerator ramlGenerator = new RamlGenerator(scanner);
 		// Process the classes selected and build Raml model
 		ramlGenerator

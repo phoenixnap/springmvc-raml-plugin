@@ -51,11 +51,18 @@ public abstract class CommonApiSyncMojo extends AbstractMojo {
 	@Parameter(required = false, readonly = true, defaultValue = "application/json")
 	protected String defaultMediaType;
 	
+	
 	/**
 	 * Maven project - required for class scanning
 	 */
 	@Parameter(defaultValue = "${project}", required = true, readonly = true)
 	protected MavenProject project;
+	
+	/**
+	 * Path to the raml document to be verified
+	 */
+	@Parameter(required = false, readonly = true, defaultValue = "")
+	protected String javaDocPath;
 
 	/**
 	 * Holder for documents matching the suffix
@@ -78,6 +85,12 @@ public abstract class CommonApiSyncMojo extends AbstractMojo {
 	protected List<String> ignoredList = Collections.emptyList();
 	
 	/**
+	 * Filter that allows the plugin to scan packages in dependencies and add them to RAML scans
+	 */
+	@Parameter(readonly = true)
+	protected List<String> dependencyPackagesList = Collections.emptyList();
+	
+	/**
 	 * Holder for classes matching the annotations which identify them as resources
 	 */
 	protected List<Class<?>> annotatedClasses = new ArrayList<>();
@@ -98,11 +111,13 @@ public abstract class CommonApiSyncMojo extends AbstractMojo {
 	protected void prepareRaml() throws MojoExecutionException, MojoFailureException, IOException {
 		ClassLoaderUtils.addLocationsToClassLoader(project);
 		List<String> targetPacks = ClassLoaderUtils.loadPackages(project);
-		List<String> targetClasses = ClassLoaderUtils.loadClasses(project);
+		if (dependencyPackagesList != null && !dependencyPackagesList.isEmpty()) {
+			targetPacks.addAll(dependencyPackagesList);
+		}
 
 		ClassPath classPath = ClassPath.from(Thread.currentThread().getContextClassLoader());
 		for (String pack : targetPacks) {
-			scanPack(pack, targetClasses, classPath);
+			scanPack(pack, classPath);
 		}
 
 		for (ClassPath.ResourceInfo resourceInfo : classPath.getResources()) {
@@ -131,7 +146,7 @@ public abstract class CommonApiSyncMojo extends AbstractMojo {
 		}
 	}
 
-	protected void scanPack(String pack, List<String> targetClasses, ClassPath classPath)
+	protected void scanPack(String pack, ClassPath classPath)
 			throws MojoExecutionException, IOException {
 		this.getLog().info("Scanning package " + pack);
 
@@ -141,10 +156,10 @@ public abstract class CommonApiSyncMojo extends AbstractMojo {
 		}
 
 		for (ClassPath.ClassInfo classInfo : classPath.getTopLevelClasses(pack)) {
-
 			try {
 				Class<?> c = classInfo.load();
-				if (targetClasses.contains(c.getSimpleName()) && !ignoredList.contains(c.getPackage().getName()) && !ignoredList.contains(c.getName())) {
+				
+				if (!ignoredList.contains(c.getPackage().getName()) && !ignoredList.contains(c.getName())) {
 					scanClass(c);
 				}
 			} catch (Throwable ex) {

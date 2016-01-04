@@ -36,6 +36,7 @@ Then simply include the following code in the POM of the project you wish to gen
   <version>x.x.x</version>
   <configuration>
     <outputRamlFilePath>/src/main/resources/public/raml/api.raml</outputRamlFilePath>
+	<javaDocPath>D:/</javaDocPath>
     <restBasePath>/</restBasePath>
     <version>0.0.1</version>
     <restrictOnMediaType>false</restrictOnMediaType>
@@ -43,6 +44,9 @@ Then simply include the following code in the POM of the project you wish to gen
 	   <param>com.package.to.ignore</param>
 	   <param>com.specificClass.to.ignore.ClassName</param>
 	</ignoredList>
+	<dependencyPackagesList>
+	   <param>com.package.in.dependency.jar.to.include</param>
+	</dependencyPackagesList>
   </configuration>
   <executions>
     <execution>
@@ -59,6 +63,9 @@ Then simply include the following code in the POM of the project you wish to gen
 ### outputRamlFilePath
 (required) Relative file path where the RAML document will be saved to
 
+### javaDocPath
+(optional) Absolute path to a folder which will be used to search for JavaDoc. This folder should contain all source of controllers being scanned. Using root folders for this may increase scanning time. If this is not supplied, the scanner will default to the current project folder
+
 ### defaultMediaType
 (optional, default: application/json) Default media Type to be used in returns/consumes where these are not specified in the code
 
@@ -73,6 +80,9 @@ Then simply include the following code in the POM of the project you wish to gen
 
 ### ignoredList
 (optional, default: empty) If classes or packages are included in this list, they will not be included in the generated model
+
+### dependencyPackagesList
+(optional, default: empty) If packages are included in this list, they will be also added to the packages that will be scanned
 
 ### documentationSuffix
 (optional, default: -doc.md) The file extension that will be used to determine files that should be included as documents and linked to the generated RAML file
@@ -94,6 +104,7 @@ Then simply include the following code in the POM of the project you wish to gen
   <version>x.x.x</version>
   <configuration>
     <ramlToVerifyPath>/src/main/resources/public/raml/api.raml</ramlToVerifyPath>
+	<javaDocPath>D:/</javaDocPath>
     <performStyleChecks>true</performStyleChecks>
 	<checkForResourceExistence>true</checkForResourceExistence>
 	<checkForActionExistence>true</checkForActionExistence>
@@ -103,11 +114,14 @@ Then simply include the following code in the POM of the project you wish to gen
 	<checkForDefinitionOf40xResponseInSecuredResource>true</checkForDefinitionOf40xResponseInSecuredResource>
 	<breakBuildOnWarnings>false</breakBuildOnWarnings>
     <logWarnings>true</logWarnings>
-    <logErrors>true</logErrors>
+    <logErrors>true</logErrors>	
 	<ignoredList>
 	   <param>com.package.to.ignore</param>
 	   <param>com.specificClass.to.ignore.ClassName</param>
 	</ignoredList>
+	<dependencyPackagesList>
+	   <param>com.package.in.dependency.jar.to.include</param>
+	</dependencyPackagesList>
   </configuration>
   <executions>
     <execution>
@@ -123,6 +137,9 @@ Then simply include the following code in the POM of the project you wish to gen
 
 ### ramlToVerifyPath
 (required) Relative file path where the RAML document to verify will be loaded from.
+
+### javaDocPath
+(optional) Absolute path to a folder which will be used to search for JavaDoc. This folder should contain all source of controllers being scanned. Using root folders for this may increase scanning time. If this is not supplied, the scanner will default to the current project folder
 
 ### performStyleChecks
 (optional, default: true) Flag that will enable or disable Style Checking of the RAML file. If this is set to false it will override other style check flags
@@ -150,6 +167,9 @@ Then simply include the following code in the POM of the project you wish to gen
 
 ### ignoredList
 (optional, default: empty) If classes or packages are included in this list, they will not be included in the generated model
+
+### dependencyPackagesList
+(optional, default: empty) If packages are included in this list, they will be also added to the packages that will be scanned
 
 ### breakBuildOnWarnings
 (optional, default: false) Flag that will enable or disable braking of the build if Warnings are found

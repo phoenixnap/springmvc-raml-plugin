@@ -356,13 +356,13 @@ public class SpringMvcResourceParser extends ResourceParser {
 		String name = "";
 
 		if (classMapping != null && classMapping.value() != null && classMapping.value().length > 0) {
-			name += classMapping.value()[0];
+			name += NamingHelper.resolveProperties(classMapping.value()[0]);
 		}
 		if (classRestController != null && classRestController.value() != null) {
-			name += classRestController.value();
+			name += NamingHelper.resolveProperties(classRestController.value());
 		}
 		if (classController != null && classController.value() != null) {
-			name += classController.value();
+			name += NamingHelper.resolveProperties(classController.value());
 		}
 
 		if (methodMapping.value() != null) {
@@ -371,7 +371,7 @@ public class SpringMvcResourceParser extends ResourceParser {
 			} else if (name != "" && !name.endsWith("/") && !methodMapping.value()[0].startsWith("/")) {
 				name += "/";
 			}
-			name += methodMapping.value()[0];
+			name += NamingHelper.resolveProperties(methodMapping.value()[0]);
 		}
 
 		Map<ActionType, String> outMap = new HashMap<>();
@@ -417,11 +417,11 @@ public class SpringMvcResourceParser extends ResourceParser {
 	@Override
 	protected String getResourceName(Class<?> clazz) {
 		RequestMapping mapping = clazz.getAnnotation(RequestMapping.class);
+		String outMapping = "";
 		if (mapping != null && StringUtils.hasText(mapping.name())) {
-			return mapping.name();
+			outMapping = mapping.name();
 		}
-		return "";
-
+		return NamingHelper.resolveProperties(outMapping);
 	}
 
 	@Override
@@ -477,7 +477,9 @@ public class SpringMvcResourceParser extends ResourceParser {
 				} else {
 					leafResource = idResource;
 				}
+				//Clean Path variable defaults
 				partialUrl = cleanPathVariableRegex(partialUrl);
+				
 				String resourceName = "/" + partialUrl;
 				idResource = leafResource.getResource(resourceName);// lets check if the parent resource already
 																	// contains a resource
