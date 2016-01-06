@@ -79,10 +79,14 @@ public abstract class ResourceParser {
 	 */
 	private List<Resource> getMethodsFromService(Class<?> clazz, JavaDocStore javaDoc, Resource parentResource) {
 		List<Resource> resources = new ArrayList<>();
-		for (Method method : clazz.getMethods()) {
-			if (!IGNORE_METHOD_REGEX.matcher(method.getName()).matches() && shouldAddMethodToApi(method)) {
-				extractAndAppendResourceInfo(method, javaDoc.getJavaDoc(method), parentResource);
+		try {
+			for (Method method : clazz.getMethods()) {
+				if (!IGNORE_METHOD_REGEX.matcher(method.getName()).matches() && shouldAddMethodToApi(method)) {
+					extractAndAppendResourceInfo(method, javaDoc.getJavaDoc(method), parentResource);
+				}
 			}
+		} catch (NoClassDefFoundError nEx) {
+			logger.error("Unable to get methods - skipping class " + clazz, nEx);
 		}
 		return resources;
 	}

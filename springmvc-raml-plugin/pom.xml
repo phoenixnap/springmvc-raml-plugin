@@ -100,11 +100,19 @@
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-plugin-plugin</artifactId>
-				<version>3.3</version>
+				<version>3.4</version>
 				<configuration>
-					<goalPrefix>generate-springmvc-api-docs</goalPrefix>
+					<goalPrefix>springmvc-raml</goalPrefix>
+					<skipErrorNoDescriptorsFound>true</skipErrorNoDescriptorsFound>
 				</configuration>
 				<executions>
+					<execution>
+                        <id>mojo-descriptor</id>
+                        <phase>process-classes</phase>
+                        <goals>
+                            <goal>descriptor</goal>
+                        </goals>
+                    </execution>
 					<execution>
 						<id>default-descriptor</id>
 						<goals>

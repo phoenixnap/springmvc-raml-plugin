@@ -227,7 +227,7 @@ public class SpringMvcRamlVerifierMojo extends CommonApiSyncMojo {
 				verifyRaml();
 			} catch (IOException e) {
 				ClassLoaderUtils.restoreOriginalClassLoader();
-				throw new MojoExecutionException(e, "Unexpected exception while executing security enforcer.",
+				throw new MojoExecutionException(e, "Unexpected exception while executing Raml Sync Plugin.",
 						e.toString());
 			}
 		}
