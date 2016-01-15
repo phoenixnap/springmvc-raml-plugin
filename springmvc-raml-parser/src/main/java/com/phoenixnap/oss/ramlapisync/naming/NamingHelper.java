@@ -1,5 +1,5 @@
 /*
- * Copyright 2002-2015 the original author or authors.
+ * Copyright 2002-2016 the original author or authors.
  * 
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with
  * the License. You may obtain a copy of the License at
@@ -15,6 +15,10 @@ package com.phoenixnap.oss.ramlapisync.naming;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import org.raml.model.Action;
+import org.raml.model.ActionType;
+import org.raml.model.Resource;
+import org.raml.parser.utils.Inflector;
 import org.springframework.util.StringUtils;
 
 /**
@@ -144,6 +148,132 @@ public class NamingHelper {
 		}
 		return outString;
 	}
+
+	/**
+	 * Attempts to infer the name of a resource from a resources's relative URL
+	 * 
+	 * @param resource
+	 * @return
+	 */
+	public static String getResourceName(Resource resource) {
+		String url = resource.getRelativeUri();
+    	if (StringUtils.hasText(url)) {
+			if (url.contains("/") 
+					&& (url.lastIndexOf("/") < url.length())) {
+				return Inflector.singularize(StringUtils.capitalize(url.substring(url.lastIndexOf("/")+1)));
+			}
+		}
+    	
+    	return null;
+	}
+
+	/**
+	 * Attempts to infer the name of an action (intent) from a resource's relative URL and action details
+	 * 
+	 * @param resource
+	 * @return
+	 */
+	public static String getActionName(Resource controllerizedResource, Resource resource, Action action,
+			ActionType actionType) {
+		
+		String url = resource.getUri();
+		//Since this will be part of a resource/controller, remove the parent portion of the URL if enough details remain
+		//to infer a meaningful method name
+		if (controllerizedResource != resource 
+				&& StringUtils.countOccurrencesOf(url, "{") < StringUtils.countOccurrencesOf(url, "/")-1) {
+			url = url.replace(controllerizedResource.getUri(), "");
+		}
+		
+		//sanity check
+    	if (StringUtils.hasText(url)) {
+    		
+    		//Split the url into segments by seperator
+    		String[] splitUrl = url.split("/");
+    		String name = "";
+    		int nonIdsParsed = 0;
+    		int index = splitUrl.length-1;
+    		boolean singularizeNext = false;
+    		
+    		//Parse segments until end is reached or we travers a maximum of 2 non Path Variable segments, these 2 should both have at least 1
+    		//id path variable each otherwise they would have been typically part of the parent controller
+    		//or we have REALLY long URL nesting which isnt really a happy place.
+    		while (nonIdsParsed < 2 && index >= 0) {
+    			
+    			String segment = splitUrl[index];
+    			//Lets check for ID path variables
+    			if (segment.contains("{") && segment.contains("}")) {
+    				//should we add this to Method name
+    				//peek
+    				if (index > 0 && index == splitUrl.length-1) {
+    					String peek = splitUrl[index-1].toLowerCase();
+    					if (segment.toLowerCase().contains(Inflector.singularize(peek))) {
+    						//this is probably the Id
+    						name = name + "ById";
+    					} else {
+    						name = name + "By" + StringUtils.capitalize(segment.substring(1, segment.length()-1));
+    					}
+    				}
+    				//Since we probably found an ID, it means that method acts on a single resource in the collection. probably :)
+    				singularizeNext = true;
+    			} else {
+    				
+    				if (singularizeNext) { //consume singularisation
+    					if (!segment.endsWith("details")) {
+    						name = Inflector.singularize(StringUtils.capitalize(segment)) + name;
+    					} else {
+    						name = StringUtils.capitalize(segment) + name;
+    					}
+        				singularizeNext = false;
+        			} else {
+        				name = StringUtils.capitalize(segment) + name;
+        			}
+    				
+    				nonIdsParsed ++;
+    				if (singularizeNext) { //consume singularisation
+        				singularizeNext = false;
+        			}
+    			}
+    			index--;
+    		}
+    		
+    		//Add the http verb into the mix
+    		boolean collection = false;
+    		String tail = splitUrl[splitUrl.length-1];
+    		if (!Inflector.singularize(tail).equals(tail) && !tail.endsWith("details")) {
+    			collection = true;
+    		} 
+    		String prefix = convertActionTypeToIntent(actionType, collection);
+    		if (collection && ActionType.POST.equals(actionType)) {
+    			name = Inflector.singularize(name);
+    		}
+    		
+    		return prefix + name;
+		}
+    	//Poop happened. return nothing
+		return null;
+	}
+
+	/**
+	 * Attempts to convert the Http Verb into a textual representation of Intent based on REST conventions
+	 * 
+	 * @param actionType
+	 * @param isTargetCollection
+	 * @return
+	 */
+	private static String convertActionTypeToIntent(ActionType actionType, boolean isTargetCollection) {
+		switch (actionType) {
+			case DELETE : return "delete";
+			case GET : return "get";
+			case POST : if (isTargetCollection) {
+							return "create";
+						}
+			case PUT:	return "update";
+			case PATCH : return "modify";
+			default : return "do";
+		}
+	}
+	
+	 
 	
 
 	

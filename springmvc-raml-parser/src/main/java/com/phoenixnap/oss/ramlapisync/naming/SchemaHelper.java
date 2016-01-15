@@ -1,5 +1,5 @@
 /*
- * Copyright 2002-2015 the original author or authors.
+ * Copyright 2002-2016 the original author or authors.
  * 
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with
  * the License. You may obtain a copy of the License at
@@ -17,6 +17,7 @@ import java.lang.reflect.Parameter;
 import java.lang.reflect.Type;
 import java.math.BigDecimal;
 import java.util.Collections;
+import java.util.Date;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.TreeMap;
@@ -258,6 +259,23 @@ public class SchemaHelper {
 			return ParamType.STRING;
 		}
 		return null; // default to string
+	}
+	
+	/**
+	 * Maps simple types supported by RAML into primitives and other simple Java types
+	 * 
+	 * @param clazz The Class to map
+	 * @return The Simple RAML ParamType which maps to this class or null if one is not found
+	 */
+	public static Class<?> mapSimpleType(ParamType param) {
+		
+		switch (param) {
+			case BOOLEAN: return Boolean.class;
+			case DATE: return Date.class;
+			case INTEGER: return Long.class;
+			case NUMBER: return BigDecimal.class;
+			default : return String.class;
+		}
 	}
 
 }
