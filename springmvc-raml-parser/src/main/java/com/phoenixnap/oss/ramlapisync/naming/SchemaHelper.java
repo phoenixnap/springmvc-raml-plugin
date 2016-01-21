@@ -12,6 +12,7 @@
  */
 package com.phoenixnap.oss.ramlapisync.naming;
 
+import java.io.IOException;
 import java.lang.reflect.Field;
 import java.lang.reflect.Parameter;
 import java.lang.reflect.Type;
@@ -22,6 +23,13 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.TreeMap;
 
+import org.jsonschema2pojo.DefaultGenerationConfig;
+import org.jsonschema2pojo.GenerationConfig;
+import org.jsonschema2pojo.Jackson2Annotator;
+import org.jsonschema2pojo.SchemaGenerator;
+import org.jsonschema2pojo.SchemaMapper;
+import org.jsonschema2pojo.SchemaStore;
+import org.jsonschema2pojo.rules.RuleFactory;
 import org.raml.model.ParamType;
 import org.raml.model.parameter.QueryParameter;
 import org.slf4j.Logger;
@@ -35,9 +43,11 @@ import com.fasterxml.jackson.module.jsonSchema.factories.SchemaFactoryWrapper;
 import com.fasterxml.jackson.module.jsonSchema.types.ArraySchema;
 import com.fasterxml.jackson.module.jsonSchema.types.ObjectSchema;
 import com.fasterxml.jackson.module.jsonSchema.types.ValueTypeSchema;
+import com.phoenixnap.oss.ramlapisync.data.ApiBodyMetadata;
 import com.phoenixnap.oss.ramlapisync.data.ApiParameterMetadata;
 import com.phoenixnap.oss.ramlapisync.javadoc.JavaDocEntry;
 import com.phoenixnap.oss.ramlapisync.javadoc.JavaDocStore;
+import com.sun.codemodel.JCodeModel;
 
 /**
  * Class containing convenience methods relating to the extracting of information from Java types for use as Parameters.
@@ -51,7 +61,7 @@ import com.phoenixnap.oss.ramlapisync.javadoc.JavaDocStore;
 public class SchemaHelper {
 
 	protected static final Logger logger = LoggerFactory.getLogger(SchemaHelper.class);
-	
+
 	/**
 	 * Converts a simple parameter, ie String, or Boxed Primitive into
 	 * 
@@ -260,7 +270,7 @@ public class SchemaHelper {
 		}
 		return null; // default to string
 	}
-	
+
 	/**
 	 * Maps simple types supported by RAML into primitives and other simple Java types
 	 * 
@@ -268,13 +278,62 @@ public class SchemaHelper {
 	 * @return The Simple RAML ParamType which maps to this class or null if one is not found
 	 */
 	public static Class<?> mapSimpleType(ParamType param) {
-		
+
 		switch (param) {
-			case BOOLEAN: return Boolean.class;
-			case DATE: return Date.class;
-			case INTEGER: return Long.class;
-			case NUMBER: return BigDecimal.class;
-			default : return String.class;
+		case BOOLEAN:
+			return Boolean.class;
+		case DATE:
+			return Date.class;
+		case INTEGER:
+			return Long.class;
+		case NUMBER:
+			return BigDecimal.class;
+		default:
+			return String.class;
+		}
+	}
+
+	public static ApiBodyMetadata mapSchemaToPojo(String schema, String basePackage, String name) {
+		String resolvedName = name;
+		if (schema.contains("\"id\"")) {
+			int idIdx = schema.indexOf("\"id\"");
+			//find the  1st and second " after the idx
+			int startIdx = schema.indexOf("\"", idIdx+ 4);
+			int endIdx = schema.indexOf("\"", startIdx+1);
+			String id = schema.substring(startIdx+1, endIdx);
+			if (id.startsWith("urn:") && ((id.lastIndexOf(":")+1) < id.length())) {
+				id = id.substring(id.lastIndexOf(":")+1);
+			}
+			resolvedName = StringUtils.capitalize(id);
+		}
+		
+		JCodeModel codeModel = new JCodeModel();
+
+		GenerationConfig config = new DefaultGenerationConfig() {
+			@Override
+			public boolean isGenerateBuilders() { // set config option by overriding method
+				return true;
+			}
+
+			@Override
+			public boolean isIncludeAdditionalProperties() {
+				return false;
+			}
+
+			@Override
+			public boolean isIncludeDynamicAccessors() {
+				return false;
+			}
+		};
+
+		SchemaMapper mapper = new SchemaMapper(new RuleFactory(config, new Jackson2Annotator(), new SchemaStore()),
+				new SchemaGenerator());
+		try {
+			mapper.generate(codeModel, resolvedName, basePackage, schema);
+			return new ApiBodyMetadata(resolvedName, schema, codeModel);
+		} catch (IOException e) {
+			logger.error("Error generating pojo from schema", e);
+			return null;
 		}
 	}
 

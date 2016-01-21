@@ -37,13 +37,15 @@ public class ApiControllerMetadata {
 	
 	private String url;
 	private transient Resource resource;
+	private String basePackage;
 	
 	Set<ApiMappingMetadata> apiCalls = new LinkedHashSet<>();
 	
-	public ApiControllerMetadata(String url, Resource resource) {
+	public ApiControllerMetadata(String url, Resource resource, String basePackage) {
 		super();
 		this.url = url;
 		this.resource = resource;
+		this.basePackage = basePackage;
 	} 
 	
 	
@@ -80,6 +82,21 @@ public class ApiControllerMetadata {
     	
     }
 
+	public String getBasePackage() {
+		return basePackage;
+	}
+
+	
+	public Set<ApiBodyMetadata> getDependencies() {
+		Set<ApiBodyMetadata> dependencies = new LinkedHashSet<>();
+		for (ApiMappingMetadata method : apiCalls) {
+			if (method.getRequestBody() != null) {
+				dependencies.add(method.getRequestBody());
+			}
+			dependencies.addAll(method.getResponseBody().values());
+		}
+		return dependencies;
+	}
 
 	public String getDescription() {
 		return resource.getDescription();
