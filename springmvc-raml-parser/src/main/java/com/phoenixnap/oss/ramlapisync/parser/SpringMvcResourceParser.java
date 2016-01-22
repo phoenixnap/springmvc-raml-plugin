@@ -499,8 +499,8 @@ public class SpringMvcResourceParser extends ResourceParser {
 						UriParameter uriParameter = new UriParameter(resourceIdParameter.getName());
 						ParamType simpleType = SchemaHelper.mapSimpleType(resourceIdParameter.getType());
 						if (simpleType == null) {
-							throw new IllegalArgumentException(
-									"Only simple parameters are supported for URL Parameters");
+							logger.warn("Only simple parameters are supported for URL Parameters, defaulting " + resourceIdParameter.getType() + " to String");
+							simpleType = ParamType.STRING;
 							// TODO support Map<String, String implementations> or not?
 						}
 						uriParameter.setType(simpleType);
