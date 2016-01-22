@@ -1,5 +1,5 @@
 ## Spring MVC-RAML Synchronizer Plugin
-The Spring MVC-RAML Synchronizer project aims to provide a live representation of the endpoints exposed in a project by using the Spring MVC Annotation in that project as the single source of truth. This can be used to either generate RAML code from Spring annotations, or to keep hand-written RAML files in sync with the Spring MVC implementation by cross-checking the contract with the implementation
+The Spring MVC-RAML Synchronizer project aims to provide a live representation of the endpoints exposed in a project by using the Spring MVC Annotation in that project as the single source of truth. This can be used to either generate RAML code from Spring annotations, or to keep hand-written RAML files in sync with the Spring MVC implementation by cross-checking the contract with the implementation. In the third usage mode you can generate Spring MVC server endpoints (RestControllers) from a provided RAML document.
 
 The project will extract information using reflection and source inspection (for JavaDoc) so as to expose all information available to it.
 
@@ -19,7 +19,7 @@ extracted from the JDK download.
 ## License
 The SpringMVC-To-RAML plugin  is released under version 2.0 of the [Apache License][].
 
-## Usage - Generating RAML from Implementation
+## Usage 1 - Generating RAML from Implementation
 
 ### Sample Maven Code 
 
@@ -87,7 +87,7 @@ Then simply include the following code in the POM of the project you wish to gen
 ### documentationSuffix
 (optional, default: -doc.md) The file extension that will be used to determine files that should be included as documents and linked to the generated RAML file
 
-## Usage - Style Checking RAML document and Verifying against Implementation
+## Usage 2 - Style Checking RAML document and Verifying against Implementation
 
 ### Sample Maven Code 
 
@@ -179,6 +179,52 @@ Then simply include the following code in the POM of the project you wish to gen
 
 ### logErrors
 (optional, default: false) Flag that will enable or disable logging of error level Issues to standard out if found
+
+## Usage 3 - Generating SpringMVC Server Endpoints from a RAML file
+
+### Sample Maven Code 
+
+The first step is to download and compile these projects using Maven. Simply run mvn clean install in the parent directory and both the plugin and annotations artifacts will be compiled. These can optionally be deployed to your
+Artifactory or similar repo.
+
+
+Then simply include the following code in the POM of the project you wish to generate RAML for
+
+```
+<plugin>
+  <groupId>com.phoenixnap.oss</groupId>
+  <artifactId>springmvc-raml-plugin</artifactId>
+  <version>x.x.x</version>
+  <configuration>
+    <ramlPath></ramlPath>
+	<outputRelativePath>/generated</outputRelativePath>
+    <addTimestampFolder>false</addTimestampFolder>
+    <basePackage>com.gen.wow</basePackage>    
+  </configuration>
+  <executions>
+    <execution>
+      <id>generate-springmvc-endpoints</id>
+      <phase>compile</phase>
+      <goals>
+        <goal>generate-springmvc-endpoints</goal>
+      </goals>
+    </execution>
+  </executions>
+</plugin>
+```
+
+### ramlPath
+(required) Relative file path where the RAML document to be used for endpoint generation will be loaded from
+
+### outputRelativePath
+(optional) Relative path where the generated Java classes will be saved to. Package structure folders will be created relative to this path.
+
+### addTimestampFolder
+(optional, default: false) Should an extra folder be generated using a timestamp to seperate generations
+
+### basePackage
+(required) Base package to be used for the java classes to be generated. Model objects will be added in the .model subpackage
+
 
 
 ## Contributing

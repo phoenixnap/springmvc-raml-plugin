@@ -12,9 +12,6 @@
  */
 package com.phoenixnap.oss.ramlapisync.generation;
 
-import java.io.File;
-import java.io.FileWriter;
-import java.io.IOException;
 import java.util.LinkedHashSet;
 import java.util.Map.Entry;
 import java.util.Set;
@@ -27,7 +24,6 @@ import org.raml.parser.visitor.RamlDocumentBuilder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.phoenixnap.oss.ramlapisync.data.ApiBodyMetadata;
 import com.phoenixnap.oss.ramlapisync.data.ApiControllerMetadata;
 
 
@@ -141,55 +137,5 @@ public class RamlParser {
 		}
 	}
 
-	
-	//THIS METHOD IS TEMPORARY AND IS INCLUDED ONLY TO EVALUATE OR MANUALLY RUN GENERATION
-	//THIS WILL BE REMOVED ONCE 0.2.1 is RELEASED
-	public static void main(String[] args) {
-		String ramlPath = "D:/Crap/api.raml";
-		String rootPath = "D:/Crap/generated/";
-		String basePackage = "com.genapi.wow";
-		
-		Raml loadRamlFromFile = loadRamlFromFile("file:"+ramlPath);
-		RamlParser par = new RamlParser(basePackage);
-		RamlGenerator gen = new RamlGenerator(null);
-		Set<ApiControllerMetadata> controllers = par.extractControllers(loadRamlFromFile);
-		File rootDir = new File (rootPath + System.currentTimeMillis() + "/");
-		File dir = new File (rootPath + System.currentTimeMillis() + "/" + basePackage.replace(".", "/") + "/");
-		dir.mkdirs();
-		
-		for (ApiControllerMetadata met :controllers) {			
-			System.out.println("");
-			System.out.println("-----------------------------------------------------------");
-			System.out.println(met.getName());
-			System.out.println("");
-			String genX = gen.generateClassForRaml(met, "");
-			System.out.println(genX);
-			
-			Set<ApiBodyMetadata> dependencies = met.getDependencies();
-			for (ApiBodyMetadata body : dependencies) {
-				try {
-					body.getCodeModel().build(rootDir);
-				} catch (IOException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
-			}
-			
-			File file = new File(dir.getAbsolutePath() + "\\" + met.getName() + ".java");
-			FileWriter writer = null;
-			try {
-				writer = new FileWriter(file);
-				writer.append(genX);
-			} catch (IOException e) {
-				e.printStackTrace();
-			} finally {
-				try {
-					writer.close();
-				} catch (Exception ex) {
-					
-				}
-			}
-		}
-	}
 	
 }
