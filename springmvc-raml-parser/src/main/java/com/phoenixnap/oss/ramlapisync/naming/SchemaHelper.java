@@ -12,7 +12,6 @@
  */
 package com.phoenixnap.oss.ramlapisync.naming;
 
-import java.io.IOException;
 import java.lang.reflect.Field;
 import java.lang.reflect.Parameter;
 import java.lang.reflect.Type;
@@ -31,7 +30,9 @@ import org.jsonschema2pojo.SchemaMapper;
 import org.jsonschema2pojo.SchemaStore;
 import org.jsonschema2pojo.rules.RuleFactory;
 import org.raml.model.ParamType;
+import org.raml.model.Raml;
 import org.raml.model.parameter.QueryParameter;
+import org.raml.parser.utils.Inflector;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.util.StringUtils;
@@ -99,6 +100,26 @@ public class SchemaHelper {
 	}
 
 	/**
+	 * Utility method that will return a schema if the identifier is valid and exists in the raml file definition.
+	 * 
+	 * @param schema schemaName
+	 * @return
+	 */
+	public static String resolveSchema(String schema, Raml document) {
+		if (document == null || schema == null ||schema.indexOf("{") != -1) {
+			return null;
+		}
+		if (document.getSchemas() != null && !document.getSchemas().isEmpty()) {
+			for (Map<String, String> map : document.getSchemas()) {
+				if (map.containsKey(schema)) {
+					return map.get(schema);
+				}
+			}
+		}
+		return null;
+	}
+	
+	/**
 	 * Breaks down a class into component fields which are mapped as Query Parameters. If Javadoc is supplied, this will
 	 * be injected as comments
 	 * 
@@ -120,7 +141,6 @@ public class SchemaHelper {
 					"This method should only be called on non primitive classes which will be broken down into query parameters");
 		}
 
-		// System.out.println("   Schema Generation Requested For: " + clazz.getTypeName());
 		try {
 			for (Field field : param.getType().getDeclaredFields()) {
 				if (!java.lang.reflect.Modifier.isStatic(field.getModifiers())
@@ -169,7 +189,6 @@ public class SchemaHelper {
 		if (clazz == null || clazz.equals(Void.class)) {
 			return "{}";
 		}
-		// System.out.println("   Schema Generation Requested For: " + clazz.getTypeName());
 		try {
 			ObjectMapper m = new ObjectMapper();
 			JsonSchema jsonSchema = extractSchemaInternal(clazz.getType(), clazz.getGenericType(), responseDescription,
@@ -194,7 +213,6 @@ public class SchemaHelper {
 		if (clazz == null || clazz.equals(Void.class)) {
 			return "{}";
 		}
-		// System.out.println("   Schema Generation Requested For: " + clazz.getTypeName());
 		try {
 			ObjectMapper m = new ObjectMapper();
 			JsonSchema jsonSchema = extractSchemaInternal(clazz, TypeHelper.inferGenericType(clazz),
@@ -292,21 +310,40 @@ public class SchemaHelper {
 			return String.class;
 		}
 	}
+	
+	private static String JSON_SCHEMA_IDENT = "http://jsonschema.net";
 
-	public static ApiBodyMetadata mapSchemaToPojo(String schema, String basePackage, String name) {
-		String resolvedName = name;
-		if (schema.contains("\"id\"")) {
-			int idIdx = schema.indexOf("\"id\"");
+	public static ApiBodyMetadata mapSchemaToPojo(Raml document, String schema, String basePackage, String name) {
+		String resolvedName = null;
+		String schemaName = schema;
+		String resolvedSchema = SchemaHelper.resolveSchema(schema, document);
+		if (resolvedSchema == null) {
+			resolvedSchema = schema;
+			schemaName = null;
+		}
+		if (resolvedSchema.contains("\"id\"")) { //check if id can give us exact name
+			int idIdx = resolvedSchema.indexOf("\"id\"");
 			//find the  1st and second " after the idx
-			int startIdx = schema.indexOf("\"", idIdx+ 4);
-			int endIdx = schema.indexOf("\"", startIdx+1);
-			String id = schema.substring(startIdx+1, endIdx);
+			int startIdx = resolvedSchema.indexOf("\"", idIdx+ 4);
+			int endIdx = resolvedSchema.indexOf("\"", startIdx+1);
+			String id = resolvedSchema.substring(startIdx+1, endIdx);
 			if (id.startsWith("urn:") && ((id.lastIndexOf(":")+1) < id.length())) {
 				id = id.substring(id.lastIndexOf(":")+1);
+			} else if (id.startsWith(JSON_SCHEMA_IDENT)) {
+				if (id.length() > (JSON_SCHEMA_IDENT.length()+3)) {
+					id = id.substring(JSON_SCHEMA_IDENT.length());
+				}
+			} else {			
+				resolvedName = StringUtils.capitalize(id);
 			}
-			resolvedName = StringUtils.capitalize(id);
 		}
-		
+		if (!NamingHelper.isValidJavaClassName(resolvedName)) {
+			if (NamingHelper.isValidJavaClassName(schemaName)) {
+				resolvedName = Inflector.capitalize(schemaName); //try schema name
+			} else {
+				resolvedName = name; //fallback to generated
+			}
+		}
 		JCodeModel codeModel = new JCodeModel();
 
 		GenerationConfig config = new DefaultGenerationConfig() {
@@ -326,12 +363,13 @@ public class SchemaHelper {
 			}
 		};
 
-		SchemaMapper mapper = new SchemaMapper(new RuleFactory(config, new Jackson2Annotator(), new SchemaStore()),
+		SchemaStore schemaStore = new SchemaStore();
+		SchemaMapper mapper = new SchemaMapper(new RuleFactory(config, new Jackson2Annotator(), schemaStore),
 				new SchemaGenerator());
 		try {
-			mapper.generate(codeModel, resolvedName, basePackage, schema);
-			return new ApiBodyMetadata(resolvedName, schema, codeModel);
-		} catch (IOException e) {
+			mapper.generate(codeModel, resolvedName, basePackage, resolvedSchema);
+			return new ApiBodyMetadata(resolvedName, resolvedSchema, codeModel);
+		} catch (Exception e) {
 			logger.error("Error generating pojo from schema", e);
 			return null;
 		}

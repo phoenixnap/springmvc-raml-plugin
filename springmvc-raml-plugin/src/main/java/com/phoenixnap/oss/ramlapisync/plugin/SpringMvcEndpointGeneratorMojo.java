@@ -31,6 +31,7 @@ import com.phoenixnap.oss.ramlapisync.data.ApiBodyMetadata;
 import com.phoenixnap.oss.ramlapisync.data.ApiControllerMetadata;
 import com.phoenixnap.oss.ramlapisync.generation.RamlGenerator;
 import com.phoenixnap.oss.ramlapisync.generation.RamlParser;
+import com.sun.codemodel.JCodeModel;
 
 /**
  * Maven Plugin MOJO specific to Generation of Spring MVC Endpoints from RAML documents.
@@ -74,15 +75,23 @@ public class SpringMvcEndpointGeneratorMojo extends AbstractMojo {
 
 	protected void generateEndpoints() throws MojoExecutionException, MojoFailureException, IOException {	
 		
-		Raml loadRamlFromFile = RamlParser.loadRamlFromFile("file:"+ramlPath);
-		RamlParser par = new RamlParser(basePackage);
-		RamlGenerator gen = new RamlGenerator(null);
-		Set<ApiControllerMetadata> controllers = par.extractControllers(loadRamlFromFile);
-		
 		String resolvedPath = project.getBasedir().getAbsolutePath();
 		if (resolvedPath.endsWith(File.separator) || resolvedPath.endsWith("/")) {
 			resolvedPath = resolvedPath.substring(0, resolvedPath.length()-1);
 		}
+		String resolvedRamlPath = project.getBasedir().getAbsolutePath();
+		if (!ramlPath.startsWith(File.separator) && !ramlPath.startsWith("/")) {
+			resolvedRamlPath += File.separator + ramlPath;
+		} else {
+			resolvedRamlPath += ramlPath;
+		}
+		
+		Raml loadRamlFromFile = RamlParser.loadRamlFromFile( "file:"+resolvedRamlPath );
+		RamlParser par = new RamlParser(basePackage); 
+		RamlGenerator gen = new RamlGenerator(null);
+		Set<ApiControllerMetadata> controllers = par.extractControllers(loadRamlFromFile);
+		
+		
 		if (StringUtils.hasText(outputRelativePath)) {
 			if (!outputRelativePath.startsWith(File.separator) && !outputRelativePath.startsWith("/")) {
 				resolvedPath += File.separator;
@@ -91,6 +100,7 @@ public class SpringMvcEndpointGeneratorMojo extends AbstractMojo {
 		} else {
 			resolvedPath += "/generated-sources/";
 		}
+		
 		
 		File rootDir = new File (resolvedPath + (addTimestampFolder == true ? System.currentTimeMillis() : "") + "/");
 		File dir = new File (resolvedPath + (addTimestampFolder == true ? System.currentTimeMillis() : "") + "/" + basePackage.replace(".", "/") + "/");
@@ -107,8 +117,12 @@ public class SpringMvcEndpointGeneratorMojo extends AbstractMojo {
 			Set<ApiBodyMetadata> dependencies = met.getDependencies();
 			for (ApiBodyMetadata body : dependencies) {
 				try {
-					body.getCodeModel().build(rootDir);
+					JCodeModel codeModel = body.getCodeModel();
+					if (codeModel != null) {
+						codeModel.build(rootDir);
+					}					
 				} catch (IOException e) {
+					e.printStackTrace();
 					this.getLog().error("Could not build code model for " + met.getName(), e);
 				}
 			}

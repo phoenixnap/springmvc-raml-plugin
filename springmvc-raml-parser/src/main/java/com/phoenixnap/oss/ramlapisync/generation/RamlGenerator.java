@@ -28,12 +28,15 @@ import org.raml.model.DocumentationItem;
 import org.raml.model.Raml;
 import org.raml.model.Resource;
 import org.raml.model.parameter.UriParameter;
+import org.raml.parser.utils.Inflector;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.phoenixnap.oss.ramlapisync.data.ApiBodyMetadata;
@@ -52,7 +55,7 @@ import com.phoenixnap.oss.ramlapisync.parser.ResourceParser;
  *
  */
 public class RamlGenerator {
-	
+
 	public static final String MODEL_OBJECT_SUBFOLDER = ".model";
 
 	/**
@@ -73,58 +76,60 @@ public class RamlGenerator {
 	public RamlGenerator(ResourceParser scanner) {
 		this.scanner = scanner;
 	}
-	
+
 	/**
-	 * Generates a string representation for a java class representing this controller
-	 * TODO Note: Currently Experimental - will be moved to templating engine
+	 * Generates a string representation for a java class representing this controller TODO Note: Currently Experimental
+	 * - will be moved to templating engine
 	 * 
 	 * @param controller The controller to represent
 	 * @return
 	 */
-	public String generateClassForRaml (ApiControllerMetadata controller, String header) {
-		String gen ="";
-		if(StringUtils.hasText(header)) {
-			gen += header +"\n";
+	public String generateClassForRaml(ApiControllerMetadata controller, String header) {
+		String gen = "";
+		if (StringUtils.hasText(header)) {
+			gen += header + "\n";
 			gen += "\n";
 		}
-		
-		if(StringUtils.hasText(controller.getBasePackage())) {
-			gen += "package "+ controller.getBasePackage() +";\n";
+
+		if (StringUtils.hasText(controller.getBasePackage())) {
+			gen += "package " + controller.getBasePackage() + ";\n";
 			gen += "\n";
 		}
 		gen += "import org.springframework.http.*; \n";
+		gen += "import java.util.*; \n";
 		gen += "import org.springframework.web.bind.annotation.*; \n";
-		gen += "import " + (StringUtils.hasText(controller.getBasePackage()) ? controller.getBasePackage() +"." : "") + "model.*; \n"; //TODO make this import only if we have 1 or more bodies
+		gen += "import " + (StringUtils.hasText(controller.getBasePackage()) ? controller.getBasePackage() + "." : "")
+				+ "model.*; \n"; // TODO make this import only if we have 1 or more bodies
 		gen += "\n";
 		gen += "\n";
 		gen += "/**\n";
-		gen += " * " + controller.getDescription().replaceAll("\n", "\n *")+"\n";
+		gen += " * " + controller.getDescription().replaceAll("\n", "\n *") + "\n";
 		gen += " */\n";
-		gen += "@"+RestController.class.getSimpleName()+ "\n";
-		gen += "@"+RequestMapping.class.getSimpleName()+"(\""+controller.getUrl() + "\")\n";
-		gen += "public class "+ controller.getName() + " { \n";
+		gen += "@" + RestController.class.getSimpleName() + "\n";
+		gen += "@" + RequestMapping.class.getSimpleName() + "(\"" + controller.getUrl() + "\")\n";
+		gen += "public class " + controller.getName() + " { \n";
 		gen += "\n";
-		
+
 		for (ApiMappingMetadata mapping : controller.getApiCalls()) {
 			gen += generateMethodForApiCall(mapping);
 			gen += "\n";
 		}
-		
+
 		gen += "}\n";
 		return gen;
-		
+
 	}
 
 	/**
-	 * Generates a string representation for a java method representing this api endpoint
-	 * TODO Note: Currently Experimental - will be moved to templating engine
+	 * Generates a string representation for a java method representing this api endpoint TODO Note: Currently
+	 * Experimental - will be moved to templating engine
 	 * 
 	 * @param controller The controller to represent
 	 * @return
 	 */
 	public String generateMethodForApiCall(ApiMappingMetadata mapping) {
 		String parameters = "";
-		
+
 		boolean first = true;
 		for (ApiParameterMetadata param : mapping.getPathVariables()) {
 			if (!first) {
@@ -142,13 +147,19 @@ public class RamlGenerator {
 			}
 			parameters += generateParameter(param);
 		}
-		
+
 		String response = "ResponseEntity";
 		if (!mapping.getResponseBody().isEmpty()) {
 			ApiBodyMetadata apiBodyMetadata = mapping.getResponseBody().values().iterator().next();
-			response = "@ResponseBody " + apiBodyMetadata.getName();
+			response = "@" + ResponseBody.class.getSimpleName() +" ";
+			if (apiBodyMetadata.isArray()) {
+				response += ArrayList.class.getSimpleName() + "<" + apiBodyMetadata.getName() + ">";
+			} else {
+				response += apiBodyMetadata.getName();
+			}
+
 		}
-		
+
 		if (mapping.getRequestBody() != null) {
 			ApiBodyMetadata apiBodyMetadata = mapping.getRequestBody();
 			if (!first) {
@@ -156,26 +167,28 @@ public class RamlGenerator {
 			} else {
 				first = false;
 			}
-			parameters += "@RequestBody " + apiBodyMetadata.getName();
+			parameters += "@" + RequestBody.class.getSimpleName() + " " + apiBodyMetadata.getName() + " " + Inflector.camelize(apiBodyMetadata.getName());
 		}
-		
-		String gen ="";
+
+		String gen = "";
 		gen += "\t/**\n";
-		gen += "\t * " +  ((mapping.getDescription() != null)?mapping.getDescription().replaceAll("\n", "\n\t *"):"No description") + "\n";
+		gen += "\t * "
+				+ ((mapping.getDescription() != null) ? mapping.getDescription().replaceAll("\n", "\n\t *")
+						: "No description") + "\n";
 		gen += "\t */\n";
-		gen += "\t@RequestMapping(value=\""+mapping.getUrl() + "\")\n";
-		gen += "\tpublic "+ response + " "+ mapping.getName() + " (" + parameters + ") { \n";
+		gen += "\t@" + RequestMapping.class.getSimpleName() +"(value=\"" + mapping.getUrl() + "\", method=RequestMethod."+mapping.getActionType().name()+")\n";
+		gen += "\tpublic " + response + " " + mapping.getName() + " (" + parameters + ") { \n";
 		gen += "\t\n";
 		gen += "\t\t //TODO Autogenerated Method Stub. Implement me please.\n";
 		gen += "\t\t return null;\n";
-		
+
 		gen += "\t}\n";
 		return gen;
 	}
 
 	/**
-	 * Generates a string representation for a java parameter representing this api parameter
-	 * TODO Note: Currently Experimental - will be moved to templating engine
+	 * Generates a string representation for a java parameter representing this api parameter TODO Note: Currently
+	 * Experimental - will be moved to templating engine
 	 * 
 	 * @param controller The controller to represent
 	 * @return
@@ -187,8 +200,8 @@ public class RamlGenerator {
 		} else {
 			annotation += RequestParam.class.getSimpleName();
 		}
-		
-		return annotation +" " + param.getType().getSimpleName() + " " + param.getName();
+
+		return annotation + " " + param.getType().getSimpleName() + " " + param.getName();
 	}
 
 	/**
@@ -252,7 +265,7 @@ public class RamlGenerator {
 
 	/**
 	 * Parses the list of document models and adds them as RAML documentItem nodes in the RAML document.
-	
+	 * 
 	 * @param documents A set of metadata identifying the documents to be included
 	 * @return A List of RAML document items containing the supplied documents
 	 */
@@ -276,7 +289,7 @@ public class RamlGenerator {
 	 * character escaping.
 	 * 
 	 * @param preRaml The raw RAML as a string before processing has been applied
-	 * @return  The RAML document as a String after post processing has been applied
+	 * @return The RAML document as a String after post processing has been applied
 	 */
 	protected String postProcessRaml(String preRaml) {
 		Matcher fixIncludes = INCLUDE_FIXER_PATTERN.matcher(preRaml);
@@ -318,18 +331,18 @@ public class RamlGenerator {
 		}
 		FileOutputStream fos = null;
 		File file = new File(path);
-		
+
 		try {
-			
+
 			logger.info("Saving generated raml to " + file.getAbsolutePath());
 			fos = new FileOutputStream(file);
 			fos.write(outputRamlToString().getBytes());
 			fos.flush();
-		} catch (FileNotFoundException e) {			
+		} catch (FileNotFoundException e) {
 			logger.error("Could not save raml - directory enclosing " + file.getAbsolutePath() + " does not exist", e);
 			throw e;
 		} catch (IOException e) {
-			
+
 			logger.error(e.getMessage(), e);
 		} finally {
 			if (fos != null) {

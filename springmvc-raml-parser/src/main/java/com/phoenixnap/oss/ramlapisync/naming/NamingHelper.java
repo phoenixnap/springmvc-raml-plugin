@@ -52,6 +52,29 @@ public class NamingHelper {
 	}
 
 	/**
+	 * Utility method to check if a string can be used as a valid class name
+	 * 
+	 * @param input String to check
+	 * @return true if valid
+	 */
+	public static boolean isValidJavaClassName(String input) {
+		if (!StringUtils.hasText(input)) {
+			return false;
+		}
+		if (!Character.isJavaIdentifierStart(input.charAt(0))) {
+			return false;
+		}
+		if (input.length() > 1) {
+			for (int i = 1 ; i < input.length(); i++) {
+				if (!Character.isJavaIdentifierPart(input.charAt(i))) {
+					return false;
+				}
+			}
+		}
+		return true;
+	}
+	
+	/**
 	 * Utility method to clean New Line,Spaces and other highly useless characters found (mainly in javadoc)
 	 * 
 	 * @param input The string to be cleaned

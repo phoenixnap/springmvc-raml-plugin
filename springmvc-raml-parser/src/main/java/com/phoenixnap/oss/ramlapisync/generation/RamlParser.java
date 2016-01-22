@@ -74,7 +74,7 @@ public class RamlParser {
 		//if we have child resources, just append the url and go down the chain until we hit the first action.
 		//if an action is found we need to 
 		for (Entry<String, Resource> resource : raml.getResources().entrySet()) {
-			controllers.addAll(checkResource(startUrl, resource.getValue(), null));
+			controllers.addAll(checkResource(startUrl, resource.getValue(), null, raml));
 		}
 		
 		return controllers;
@@ -100,12 +100,12 @@ public class RamlParser {
 		return false;
 	}
 	
-	public Set<ApiControllerMetadata> checkResource(String baseUrl, Resource resource, ApiControllerMetadata controller) {
+	public Set<ApiControllerMetadata> checkResource(String baseUrl, Resource resource, ApiControllerMetadata controller, Raml document) {
 		Set<ApiControllerMetadata> controllers = new LinkedHashSet<>();
 		//append resource URL to url.
 		String url = baseUrl + resource.getRelativeUri();
 		if (controller == null && shouldCreateController(resource)) {
-			controller = new ApiControllerMetadata(url, resource, basePackage);
+			controller = new ApiControllerMetadata(url, resource, basePackage, document);
 			controllers.add(controller);
 		}
 		//extract actions for this resource
@@ -116,7 +116,7 @@ public class RamlParser {
 		}
 		if (resource.getResources() != null &&  !resource.getResources().isEmpty()) {
 			for (Entry<String, Resource> childResource : resource.getResources().entrySet()) {
-				controllers.addAll(checkResource(url, childResource.getValue(), controller));
+				controllers.addAll(checkResource(url, childResource.getValue(), controller,document));
 			}
 		}
 		return controllers;	

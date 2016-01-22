@@ -122,7 +122,8 @@ public class ApiMappingMetadata {
 					// Continue here!
 					String schema = body.getValue().getSchema();
 					if (StringUtils.hasText(schema)) {
-						ApiBodyMetadata requestBody = SchemaHelper.mapSchemaToPojo(schema, parent.getBasePackage()
+						
+						ApiBodyMetadata requestBody = SchemaHelper.mapSchemaToPojo(parent.getDocument(), schema, parent.getBasePackage()
 								+ ".model", StringUtils.capitalize(getName()) + "Request");
 						if (requestBody != null) {
 							setRequestBody(requestBody);
@@ -140,13 +141,14 @@ public class ApiMappingMetadata {
 			for (Entry<String, Response> responses : action.getResponses().entrySet()) {
 				Response response = responses.getValue();
 
-				if (response.getBody() != null && !response.getBody().isEmpty()) {
+				if ("200".equals(responses.getKey()) && response.getBody() != null && !response.getBody().isEmpty()) {
 					for (Entry<String, MimeType> body : response.getBody().entrySet()) {
 						if (body.getKey().toLowerCase().contains("json")) {
 							// Continue here!
 							String schema = body.getValue().getSchema();
 							if (StringUtils.hasText(schema)) {
-								ApiBodyMetadata responseBody = SchemaHelper.mapSchemaToPojo(schema,
+								
+								ApiBodyMetadata responseBody = SchemaHelper.mapSchemaToPojo(parent.getDocument(), schema,
 										parent.getBasePackage() + ".model", StringUtils.capitalize(getName()) + "Response");
 								if (responseBody != null) {
 									this.responseBody.put(body.getKey(), responseBody);
@@ -159,6 +161,8 @@ public class ApiMappingMetadata {
 			}
 		}
 	}
+	
+	
 
 	public Set<ApiParameterMetadata> getResponse() {
 		if (requestParameters != null) {
@@ -186,7 +190,7 @@ public class ApiMappingMetadata {
 					// Continue here!
 					String schema = body.getValue().getSchema();
 					if (StringUtils.hasText(schema)) {
-						ApiBodyMetadata requestBody = SchemaHelper.mapSchemaToPojo(schema, parent.getBasePackage()
+						ApiBodyMetadata requestBody = SchemaHelper.mapSchemaToPojo(parent.getDocument(), schema, parent.getBasePackage()
 								+ ".requestObjects", getName() + "Request");
 						if (requestBody != null) {
 							setRequestBody(requestBody);

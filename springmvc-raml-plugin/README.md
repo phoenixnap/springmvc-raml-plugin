@@ -197,7 +197,7 @@ Then simply include the following code in the POM of the project you wish to gen
   <version>x.x.x</version>
   <configuration>
     <ramlPath></ramlPath>
-	<outputRelativePath>/generated</outputRelativePath>
+	<outputRelativePath>/src/generated</outputRelativePath>
     <addTimestampFolder>false</addTimestampFolder>
     <basePackage>com.gen.wow</basePackage>    
   </configuration>
@@ -214,7 +214,7 @@ Then simply include the following code in the POM of the project you wish to gen
 ```
 
 ### ramlPath
-(required) Relative file path where the RAML document to be used for endpoint generation will be loaded from
+(required) The path to the file, relative to the project base directory
 
 ### outputRelativePath
 (optional) Relative path where the generated Java classes will be saved to. Package structure folders will be created relative to this path.

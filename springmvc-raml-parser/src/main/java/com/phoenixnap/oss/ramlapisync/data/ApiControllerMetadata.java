@@ -18,6 +18,7 @@ import java.util.Set;
 
 import org.raml.model.Action;
 import org.raml.model.ActionType;
+import org.raml.model.Raml;
 import org.raml.model.Resource;
 
 import com.phoenixnap.oss.ramlapisync.naming.NamingHelper;
@@ -38,14 +39,16 @@ public class ApiControllerMetadata {
 	private String url;
 	private transient Resource resource;
 	private String basePackage;
+	private Raml document;
 	
 	Set<ApiMappingMetadata> apiCalls = new LinkedHashSet<>();
 	
-	public ApiControllerMetadata(String url, Resource resource, String basePackage) {
+	public ApiControllerMetadata(String url, Resource resource, String basePackage, Raml document) {
 		super();
 		this.url = url;
 		this.resource = resource;
 		this.basePackage = basePackage;
+		this.document = document;
 	} 
 	
 	
@@ -87,6 +90,7 @@ public class ApiControllerMetadata {
 	}
 
 	
+	
 	public Set<ApiBodyMetadata> getDependencies() {
 		Set<ApiBodyMetadata> dependencies = new LinkedHashSet<>();
 		for (ApiMappingMetadata method : apiCalls) {
@@ -100,5 +104,10 @@ public class ApiControllerMetadata {
 
 	public String getDescription() {
 		return resource.getDescription();
+	}
+
+
+	public Raml getDocument() {
+		return document;
 	}
 }
