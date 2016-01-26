@@ -102,8 +102,9 @@ public class SchemaHelper {
 	/**
 	 * Utility method that will return a schema if the identifier is valid and exists in the raml file definition.
 	 * 
-	 * @param schema schemaName
-	 * @return
+	 * @param schema The name of the schema to resolve
+	 * @param document The Parent Raml Document
+	 * @return The full schema if contained in the raml document or null if not found
 	 */
 	public static String resolveSchema(String schema, Raml document) {
 		if (document == null || schema == null ||schema.indexOf("{") != -1) {
@@ -292,8 +293,8 @@ public class SchemaHelper {
 	/**
 	 * Maps simple types supported by RAML into primitives and other simple Java types
 	 * 
-	 * @param clazz The Class to map
-	 * @return The Simple RAML ParamType which maps to this class or null if one is not found
+	 * @param param The Type to map
+	 * @return The Java Class which maps to this Simple RAML ParamType or string if one is not found
 	 */
 	public static Class<?> mapSimpleType(ParamType param) {
 
@@ -313,6 +314,15 @@ public class SchemaHelper {
 	
 	private static String JSON_SCHEMA_IDENT = "http://jsonschema.net";
 
+	/**
+	 * Maps a JSON Schema to a JCodeModel using JSONSchema2Pojo and encapsulates it along with some metadata into an {@link ApiBodyMetadata} object.
+	 * 
+	 * @param document The Raml document being parsed
+	 * @param schema The Schema (full schema or schema name to be resolved)
+	 * @param basePackage The base package for the classes we are generating
+	 * @param name The suggested name of the class based on the api call and whether it's a request/response. This will only be used if no suitable alternative is found in the schema
+	 * @return Object representing this Body
+	 */
 	public static ApiBodyMetadata mapSchemaToPojo(Raml document, String schema, String basePackage, String name) {
 		String resolvedName = null;
 		String schemaName = schema;
@@ -370,7 +380,7 @@ public class SchemaHelper {
 			mapper.generate(codeModel, resolvedName, basePackage, resolvedSchema);
 			return new ApiBodyMetadata(resolvedName, resolvedSchema, codeModel);
 		} catch (Exception e) {
-			logger.error("Error generating pojo from schema", e);
+			logger.error("Error generating pojo from schema "+name, e);
 			return null;
 		}
 	}

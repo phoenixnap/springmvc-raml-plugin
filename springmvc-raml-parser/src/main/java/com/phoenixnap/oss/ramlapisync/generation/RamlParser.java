@@ -58,8 +58,8 @@ public class RamlParser {
 	 * These controllers will contain the metadata required by the code generator, including name
 	 * any annotations as well as conatining methods
 	 * 
-	 * @param raml
-	 * @return
+	 * @param raml The raml document to be parsed
+	 * @return A set of Controllers representing the inferred resources in the system
 	 */
 	public Set<ApiControllerMetadata> extractControllers (Raml raml) {
 		
@@ -100,6 +100,16 @@ public class RamlParser {
 		return false;
 	}
 	
+	/**
+	 * Recursive method to parse resources in a Raml File. It tries to go as deep as possible before creating the root Resource. Once this is done, methods and
+	 * child resources will be relative to the root resource
+	 * 
+	 * @param baseUrl The url currently being checked. Used to keep depth
+	 * @param resource The Resource in the RAML file being parsed
+	 * @param controller The root controller if created for this branch
+	 * @param document The raml Document being parse
+	 * @return A set of Controllers representing resources in this branch of the tree
+	 */
 	public Set<ApiControllerMetadata> checkResource(String baseUrl, Resource resource, ApiControllerMetadata controller, Raml document) {
 		Set<ApiControllerMetadata> controllers = new LinkedHashSet<>();
 		//append resource URL to url.

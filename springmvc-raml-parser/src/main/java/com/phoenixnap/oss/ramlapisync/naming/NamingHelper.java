@@ -175,8 +175,8 @@ public class NamingHelper {
 	/**
 	 * Attempts to infer the name of a resource from a resources's relative URL
 	 * 
-	 * @param resource
-	 * @return
+	 * @param resource The raml resource being parsed
+	 * @return A name representing this resource or null if one cannot be inferred
 	 */
 	public static String getResourceName(Resource resource) {
 		String url = resource.getRelativeUri();
@@ -193,8 +193,11 @@ public class NamingHelper {
 	/**
 	 * Attempts to infer the name of an action (intent) from a resource's relative URL and action details
 	 * 
-	 * @param resource
-	 * @return
+	 * @param controllerizedResource The resource that is mapped to the root controller
+	 * @param resource The child resource that will be mapped as a method of the root controller
+	 * @param action The RAML action object
+	 * @param actionType The ActionType/HTTP Verb for this Action
+	 * @return The java name of the method that will represent this Action
 	 */
 	public static String getActionName(Resource controllerizedResource, Resource resource, Action action,
 			ActionType actionType) {
@@ -279,8 +282,8 @@ public class NamingHelper {
 	/**
 	 * Attempts to convert the Http Verb into a textual representation of Intent based on REST conventions
 	 * 
-	 * @param actionType
-	 * @param isTargetCollection
+	 * @param actionType The ActionType/Http verb of the action
+	 * @param isTargetCollection True if this action is being done on a collection or plural resource (eg: books)
 	 * @return
 	 */
 	private static String convertActionTypeToIntent(ActionType actionType, boolean isTargetCollection) {

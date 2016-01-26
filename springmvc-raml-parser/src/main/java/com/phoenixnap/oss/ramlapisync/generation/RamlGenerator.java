@@ -73,6 +73,11 @@ public class RamlGenerator {
 	 */
 	private ResourceParser scanner;
 
+	/**
+	 * Default constructor
+	 * 
+	 * @param scanner The resource parsing engine. Only required for RAML generation
+	 */
 	public RamlGenerator(ResourceParser scanner) {
 		this.scanner = scanner;
 	}
@@ -82,7 +87,8 @@ public class RamlGenerator {
 	 * - will be moved to templating engine
 	 * 
 	 * @param controller The controller to represent
-	 * @return
+	 * @param header A header text string such as a copyright notice to be appended to the top of the class
+	 * @return The generated Java Class in string format
 	 */
 	public String generateClassForRaml(ApiControllerMetadata controller, String header) {
 		String gen = "";
@@ -102,9 +108,11 @@ public class RamlGenerator {
 				+ "model.*; \n"; // TODO make this import only if we have 1 or more bodies
 		gen += "\n";
 		gen += "\n";
-		gen += "/**\n";
-		gen += " * " + controller.getDescription().replaceAll("\n", "\n *") + "\n";
-		gen += " */\n";
+		if (StringUtils.hasText(controller.getDescription())) {
+			gen += "/**\n";
+			gen += " * " + controller.getDescription().replaceAll("\n", "\n *") + "\n";
+			gen += " */\n";
+		}
 		gen += "@" + RestController.class.getSimpleName() + "\n";
 		gen += "@" + RequestMapping.class.getSimpleName() + "(\"" + controller.getUrl() + "\")\n";
 		gen += "public class " + controller.getName() + " { \n";
@@ -124,8 +132,8 @@ public class RamlGenerator {
 	 * Generates a string representation for a java method representing this api endpoint TODO Note: Currently
 	 * Experimental - will be moved to templating engine
 	 * 
-	 * @param controller The controller to represent
-	 * @return
+	 * @param mapping The api call method to represent
+	 * @return The java method as a String
 	 */
 	public String generateMethodForApiCall(ApiMappingMetadata mapping) {
 		String parameters = "";
@@ -190,8 +198,8 @@ public class RamlGenerator {
 	 * Generates a string representation for a java parameter representing this api parameter TODO Note: Currently
 	 * Experimental - will be moved to templating engine
 	 * 
-	 * @param controller The controller to represent
-	 * @return
+	 * @param param The parameter to represent
+	 * @return The Java string representation of the parameter
 	 */
 	private String generateParameter(ApiParameterMetadata param) {
 		String annotation = "@";

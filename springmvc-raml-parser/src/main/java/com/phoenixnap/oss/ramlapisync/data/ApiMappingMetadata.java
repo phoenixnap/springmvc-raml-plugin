@@ -204,7 +204,7 @@ public class ApiMappingMetadata {
 	}
 
 	public String getUrl() {
-		return resource.getUri().replaceAll(parent.getUrl(), "");
+		return resource.getUri().replace(parent.getUrl(), "");
 	}
 
 	public String getName() {
