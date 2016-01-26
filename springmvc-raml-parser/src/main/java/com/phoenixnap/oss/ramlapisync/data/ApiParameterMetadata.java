@@ -1,5 +1,5 @@
 /*
- * Copyright 2002-2015 the original author or authors.
+ * Copyright 2002-2016 the original author or authors.
  * 
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with
  * the License. You may obtain a copy of the License at
@@ -16,12 +16,15 @@ import java.lang.annotation.Annotation;
 import java.lang.reflect.Parameter;
 
 import org.apache.commons.lang.NullArgumentException;
+import org.raml.model.parameter.AbstractParam;
+import org.raml.model.parameter.UriParameter;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import com.phoenixnap.oss.ramlapisync.annotations.Example;
+import com.phoenixnap.oss.ramlapisync.naming.SchemaHelper;
 import com.phoenixnap.oss.ramlapisync.naming.TypeHelper;
 
 /**
@@ -45,6 +48,11 @@ public class ApiParameterMetadata {
 	 * Java Parameter data relating to this parameter
 	 */
 	private Parameter param;
+	
+	/**
+	 * RAML Parameter data relating to this parameter
+	 */
+	private AbstractParam ramlParam;
 
 	/**
 	 * The Java Type of the parameter
@@ -83,6 +91,38 @@ public class ApiParameterMetadata {
 		} else {
 			return fallback != null ? fallback.getName() : null;
 		}
+	}
+	
+	/**
+	 * Default constructor that creates a metadata object from a Raml parameter
+	 * 
+	 * @param param Java Parameter representation
+	 */
+	public ApiParameterMetadata(String name, AbstractParam param) {
+		super();
+
+		if (param == null) {
+			throw new NullArgumentException("param");
+		}
+
+
+		if (param instanceof UriParameter) {
+			resourceId = true;
+			nullable = false;
+		} else {
+			resourceId = false;
+			nullable = !param.isRequired();
+		}
+
+
+		this.name = name;
+		this.param = null; //we wont have this.
+		
+		this.type = SchemaHelper.mapSimpleType(param.getType());
+		this.genericType = null;
+
+		this.example = StringUtils.hasText(param.getExample()) ? param.getExample() : null;
+		this.setRamlParam(param);
 	}
 
 	/**
@@ -204,6 +244,19 @@ public class ApiParameterMetadata {
 	 */
 	public String getExample() {
 		return example;
+	}
+
+	@Override
+	public String toString() {
+		return "ApiParameterMetadata [name=" + name + ", type=" + type + "]";
+	}
+
+	public AbstractParam getRamlParam() {
+		return ramlParam;
+	}
+
+	private void setRamlParam(AbstractParam ramlParam) {
+		this.ramlParam = ramlParam;
 	}
 
 }

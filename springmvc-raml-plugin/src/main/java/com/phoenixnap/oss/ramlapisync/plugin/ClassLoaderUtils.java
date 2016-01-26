@@ -1,5 +1,5 @@
 /*
- * Copyright 2002-2015 the original author or authors.
+ * Copyright 2002-2016 the original author or authors.
  * 
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with
  * the License. You may obtain a copy of the License at
@@ -57,9 +57,11 @@ public final class ClassLoaderUtils {
 
 			// Getting all artifacts locations
 			Set<Artifact> artifacts = mavenProject.getArtifacts();
+			
 			for (Artifact artifact : artifacts) {
 				urls.add(artifact.getFile().toURI().toURL());
 			}
+			
 		} catch (MalformedURLException e) {
 			// DO NOTHING
 		}
@@ -94,6 +96,7 @@ public final class ClassLoaderUtils {
 				packages.add(pack);
 			}
 		}
+		
 		return packages;
 	}
 
@@ -104,7 +107,6 @@ public final class ClassLoaderUtils {
 		File rootDir = new File(mavenProject.getBuild().getSourceDirectory());
 		Collection<File> files = FileUtils.listFiles(rootDir, new SuffixFileFilter(".java"), TrueFileFilter.TRUE);
 		for (File file : files) {
-			// System.out.println(file.getName());
 			String clazz = file.getName().replace(".java", "");
 			if (!clazz.isEmpty()) {
 				classes.add(clazz);

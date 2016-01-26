@@ -5,7 +5,7 @@
   	<parent>
 		<groupId>com.phoenixnap.oss</groupId>
 		<artifactId>springmvc-raml-parent</artifactId>
-		<version>0.1.1</version>
+		<version>0.2.1</version>
 	</parent>
 	
 	<artifactId>springmvc-raml-parser</artifactId>
@@ -109,7 +109,7 @@
 		 <dependency>
             <groupId>org.jsonschema2pojo</groupId>
             <artifactId>jsonschema2pojo-core</artifactId>
-            <version>0.4.17</version>
+            <version>0.4.18</version>
         </dependency>
 		
 		
