@@ -1,6 +1,7 @@
 ![PhoenixNAP Logo](https://phoenixnap.com/wp-content/themes/phoenixnap-v2/img/v2/logo.svg)
 
-## Spring MVC-RAML Synchronizer [![Build Status](https://travis-ci.org/phoenixnap/springmvc-raml-plugin.svg?branch=master)](https://travis-ci.org/phoenixnap/springmvc-raml-plugin)
+## Spring MVC-RAML Synchronizer [![Build Status](https://travis-ci.org/phoenixnap/springmvc-raml-plugin.svg?branch=master)](https://travis-ci.org/phoenixnap/springmvc-raml-plugin) [![Apache License 2](https://img.shields.io/badge/license-ASF2-blue.svg)](https://www.apache.org/licenses/LICENSE-2.0.txt) [![Maven Central](https://maven-badges.herokuapp.com/maven-central/com.phoenixnap.oss/springmvc-raml-plugin/badge.svg)](https://maven-badges.herokuapp.com/maven-central/com.phoenixnap.oss/springmvc-raml-plugin/badge.svg)
+
 The Spring MVC-RAML Sychronizer parent project aims to provide a live representation of the endpoints exposed in a project by using the Spring MVC Annotation in that project as the single source of truth. 
 This can be used to either:
 
