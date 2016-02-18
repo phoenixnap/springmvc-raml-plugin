@@ -365,7 +365,7 @@ public class SpringMvcResourceParser extends ResourceParser {
 			name += NamingHelper.resolveProperties(classController.value());
 		}
 
-		if (methodMapping.value() != null) {
+		if (methodMapping.value() != null && methodMapping.value().length > 0) {
 			if (name.endsWith("/") && methodMapping.value()[0].startsWith("/")) {
 				name = name.substring(0, name.length() - 1);
 			} else if (name != "" && !name.endsWith("/") && !methodMapping.value()[0].startsWith("/")) {
