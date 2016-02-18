@@ -41,6 +41,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.http.MediaType;
 
 import test.phoenixnap.oss.plugin.naming.testclasses.BugController;
+import test.phoenixnap.oss.plugin.naming.testclasses.NoValueController;
 import test.phoenixnap.oss.plugin.naming.testclasses.TestController;
 
 import com.phoenixnap.oss.ramlapisync.javadoc.JavaDocEntry;
@@ -384,4 +385,10 @@ public class SpringMvcResourceParserTest {
 		assertNotNull(testResource);
 	}
 
+	@Test
+	public void test_bug_noValueOnMethod() {
+		Resource resourceInfo = parser.extractResourceInfo(NoValueController.class);
+		assertEquals(0, resourceInfo.getResource("/base").getResources().size());
+		assertNotNull(resourceInfo);
+	}
 }
