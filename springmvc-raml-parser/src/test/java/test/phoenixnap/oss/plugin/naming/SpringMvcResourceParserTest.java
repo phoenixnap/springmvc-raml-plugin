@@ -389,7 +389,6 @@ public class SpringMvcResourceParserTest {
 	public void test_bug_noValueOnMethod() {
 		Resource resourceInfo = parser.extractResourceInfo(NoValueController.class);
 		assertEquals(0, resourceInfo.getResource("/base").getResources().size());
-		//assertEquals(ActionType.GET, resourceInfo.getResource("/base").)
 		assertNotNull(resourceInfo);
 	}
 }
