@@ -135,8 +135,6 @@ public class ApiMappingMetadata {
 	}
 
 	private void parseResponse() {
-		requestParameters = new LinkedHashSet<>();
-
 		if (action.getResponses() != null && !action.getResponses().isEmpty()) {
 			for (Entry<String, Response> responses : action.getResponses().entrySet()) {
 				Response response = responses.getValue();
