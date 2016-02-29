@@ -341,7 +341,7 @@ public abstract class ResourceParser {
 		Resource resource = new Resource();
 		resource.setRelativeUri("/" + getResourceName(clazz));
 		resource.setDisplayName(clazz.getSimpleName()); // TODO allow the Api annotation to specify
-														// this shit
+														// this stuff :)
 		JavaDocStore javaDoc = javaDocs.getJavaDoc(clazz);
 		String comment = javaDoc.getJavaDocComment(clazz);
 		if (comment != null) {

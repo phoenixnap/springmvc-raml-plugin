@@ -19,6 +19,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -240,7 +241,7 @@ public class RamlGenerator {
 			Resource resource = scanner.extractResourceInfo(item);
 			if (resource.getRelativeUri().equals("/")) { // root should never be added directly
 					for (Resource cResource : resource.getResources().values()) {
-						mergeResources(raml, cResource, false);
+						mergeResources(raml, cResource, true);
 					}
 				} else {
 					mergeResources(raml, resource, true);
@@ -251,6 +252,28 @@ public class RamlGenerator {
 		return this;
 	}
 
+	/**
+	 * Tree merging algorithm, if a resource already exists it will not overwrite and add all children to the existing resource 
+	 * @param existing
+	 * @param resource
+	 * @param addActions
+	 */
+	private void mergeResources(Resource existing, Resource resource, boolean addActions) {	
+		Map<String, Resource> existingChildResources = existing.getResources();
+		Map<String, Resource> newChildResources = resource.getResources();
+		for (String newChildKey : newChildResources.keySet()) {
+			if (!existingChildResources.containsKey(newChildKey)) {
+				existingChildResources.put(newChildKey, newChildResources.get(newChildKey));
+			} else {
+				mergeResources(existingChildResources.get(newChildKey), newChildResources.get(newChildKey), addActions);
+			}			
+		}
+		
+		if (addActions) {
+			existing.getActions().putAll(resource.getActions());
+		}
+	}
+	
 	/**
 	 * Merges two RAML Resources trees together. This is non-recursive and could currently lose children in lower
 	 * levels.
@@ -263,11 +286,7 @@ public class RamlGenerator {
 		if (existingResource == null) {
 			raml.getResources().put(resource.getRelativeUri(), resource);
 		} else {
-			// TODO implement a better merge.
-			existingResource.getResources().putAll(resource.getResources());
-			if (addActions) {
-				existingResource.getActions().putAll(resource.getActions());
-			}
+			mergeResources(existingResource, resource, addActions);
 		}
 	}
 
