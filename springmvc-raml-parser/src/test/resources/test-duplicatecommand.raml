@@ -1,0 +1,153 @@
+#%RAML 0.8
+title: Test API
+baseUri: /
+version: v1.0
+mediaType: application/headertest
+  
+
+/somethingCool:
+  description: |
+    A something resource
+  
+  /{somethingCoolId}:
+    description: |
+      The ID 
+    uriParameters:
+      somethingCoolId:
+        displayName: TheID
+        type: integer
+        required: true
+        example: 1234
+        
+    /status:
+      description: |
+        The status of a cooler  resource
+      get:
+        description: |
+          Returns the blaStatus
+        responses:
+          400:
+            body:
+               application/json:
+                example: |
+                  The blaer ID must be provided
+          404:
+            body:
+              application/json:
+                example: |
+                  The specified cool  does not exist
+          500:
+            body:
+              application/json:
+                example: |
+                  An error occurred while getting the cool status of the lcool  members
+          200:
+            body:
+              application/json:               
+      
+    /child:
+      description: |
+        A  child that is assigned to a blaer
+      get:
+        description: |
+          Determines whether a particular child is assigned to a cool
+        queryParameters:
+          childName:
+            displayName: child name
+            type: string
+            description: |
+              The name of the child to check if it is assigned to the cool
+            example: child_stuff
+            required: true
+        responses:
+          400:
+            body:
+              application/json:
+                example: |
+                  The cool ID must be provided
+          404:
+            body:
+              application/json:
+                example: |
+                  The specified cool does not exist
+          500:
+            body:
+              application/json:
+                example: |
+                  An error occurred while retrieving the child assignments for the specified cool
+          200:
+            body:
+              application/json:
+                example: |
+                  true
+                  
+  /status:
+    description: |
+      The status of a cool  resource
+    get:
+      description: |
+        Returns the  status for the cool  and  members owned by a color
+      queryParameters:
+        colorId:
+          displayName: color ID
+          type: integer
+          description: |
+            The color ID whose status is to be retrieved
+          example: 5119
+          required: true
+      responses:
+        400:
+            body:
+              application/json:
+                example: |
+                  The color ID must be provided
+        500:
+          body:
+            application/json:
+              example: |
+                An error occurred while retrieving the cool statuses
+        200:
+          body:
+            application/json:
+                 
+  /child:
+      description: |
+        A child resource that is assigned to a cool
+      get:
+        description: |
+          Determines whether a particular child is assigned to a cool
+        queryParameters:
+          colorId:
+            displayName: color ID
+            type: integer
+            description: |
+              The color ID whose blas' child assignments are to be checked
+            example: 1234
+            required: true
+          childName:
+            displayName: child name
+            type: string
+            description: |
+              The name of the child to check if it is assigned to the cool
+            example: cool_stuff
+            required: true
+        responses:
+          400:
+            body:
+              application/json:
+                example: |
+                  The child name must be provided
+          500:
+            body:
+              application/json:
+                example: |
+                  An error occurred when retrieving the child assignments for the   of the specified color
+          200:
+            body:
+              application/json:
+                example: |
+                  {                  
+                    "2279": false,
+                    "2359": false,
+                    "2789": false
+                  }

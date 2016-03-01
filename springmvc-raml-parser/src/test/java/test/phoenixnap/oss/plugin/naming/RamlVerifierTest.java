@@ -30,6 +30,8 @@ import test.phoenixnap.oss.plugin.naming.testclasses.ParamTestControllerPostWarn
 import test.phoenixnap.oss.plugin.naming.testclasses.ResponseBodyTestController;
 import test.phoenixnap.oss.plugin.naming.testclasses.ResponseBodyTestControllerError;
 import test.phoenixnap.oss.plugin.naming.testclasses.SecondVerifierTestController;
+import test.phoenixnap.oss.plugin.naming.testclasses.StyleCheckResourceDuplicateCommand;
+import test.phoenixnap.oss.plugin.naming.testclasses.StyleCheckResourceDuplicateCommandSecond;
 import test.phoenixnap.oss.plugin.naming.testclasses.ThirdVerifierTestController;
 import test.phoenixnap.oss.plugin.naming.testclasses.VerifierTestController;
 
@@ -63,6 +65,18 @@ public class RamlVerifierTest {
 	public void test_ResourceExistenceChecker_Success() {
 		Raml published = RamlVerifier.loadRamlFromFile("test-simple.raml");
 		Class<?>[] classesToGenerate = new Class[] {VerifierTestController.class, SecondVerifierTestController.class};
+		Raml computed = generator.generateRamlForClasses("test", "0.0.1", "/", classesToGenerate, Collections.emptySet()).getRaml();
+		
+		RamlVerifier verifier = new RamlVerifier(published, computed, Collections.singletonList(new ResourceExistenceChecker()), null, null);
+		assertFalse("Check that there are no errors and implementation matches raml", verifier.hasErrors());
+		assertFalse("Check that there are no warnings and implementation matches raml", verifier.hasWarnings());
+		
+	}
+	
+	@Test
+	public void test_ResourceExistenceChecker_DuplicateCommand() {
+		Raml published = RamlVerifier.loadRamlFromFile("test-duplicatecommand.raml");
+		Class<?>[] classesToGenerate = new Class[] {StyleCheckResourceDuplicateCommand.class, StyleCheckResourceDuplicateCommandSecond.class};
 		Raml computed = generator.generateRamlForClasses("test", "0.0.1", "/", classesToGenerate, Collections.emptySet()).getRaml();
 		
 		RamlVerifier verifier = new RamlVerifier(published, computed, Collections.singletonList(new ResourceExistenceChecker()), null, null);

@@ -365,7 +365,7 @@ public class SpringMvcResourceParser extends ResourceParser {
 			name += NamingHelper.resolveProperties(classController.value());
 		}
 
-		if (methodMapping.value() != null) {
+		if (methodMapping.value() != null && methodMapping.value().length > 0) {
 			if (name.endsWith("/") && methodMapping.value()[0].startsWith("/")) {
 				name = name.substring(0, name.length() - 1);
 			} else if (name != "" && !name.endsWith("/") && !methodMapping.value()[0].startsWith("/")) {
@@ -516,8 +516,8 @@ public class SpringMvcResourceParser extends ResourceParser {
 						idResource.getUriParameters().put(resourceIdParameter.getName(), uriParameter);
 					}
 
-					idResource.setDisplayName(displayName); // TODO allow the Api annotation to specify this shit
-					idResource.setDescription(resourceDescription); // TODO allow the Api annotation to specify this shit
+					idResource.setDisplayName(displayName); // TODO allow the Api annotation to specify this stuff :)
+					idResource.setDescription(resourceDescription); // TODO allow the Api annotation to specify this stuff :)
 					idResource.setParentResource(leafResource);
 					if(leafResource.getUri() != null) {
 						String targetUri = leafResource.getUri();
