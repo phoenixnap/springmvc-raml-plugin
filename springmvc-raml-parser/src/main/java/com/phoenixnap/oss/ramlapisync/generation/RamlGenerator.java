@@ -12,18 +12,9 @@
  */
 package com.phoenixnap.oss.ramlapisync.generation;
 
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-
+import com.phoenixnap.oss.ramlapisync.data.*;
+import com.phoenixnap.oss.ramlapisync.parser.ResourceParser;
+import org.apache.commons.io.FileUtils;
 import org.raml.emitter.RamlEmitter;
 import org.raml.model.DocumentationItem;
 import org.raml.model.Raml;
@@ -33,19 +24,15 @@ import org.raml.parser.utils.Inflector;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.util.StringUtils;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
-import com.phoenixnap.oss.ramlapisync.data.ApiBodyMetadata;
-import com.phoenixnap.oss.ramlapisync.data.ApiControllerMetadata;
-import com.phoenixnap.oss.ramlapisync.data.ApiDocumentMetadata;
-import com.phoenixnap.oss.ramlapisync.data.ApiMappingMetadata;
-import com.phoenixnap.oss.ramlapisync.data.ApiParameterMetadata;
-import com.phoenixnap.oss.ramlapisync.parser.ResourceParser;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.util.*;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * Class containing RAML generation driver. Methods in this class are used to orchestrate the process of extracting
@@ -58,6 +45,10 @@ import com.phoenixnap.oss.ramlapisync.parser.ResourceParser;
 public class RamlGenerator {
 
 	public static final String MODEL_OBJECT_SUBFOLDER = ".model";
+
+	public static final String DEFAULT_RAML_FILENAME = "api.raml";
+
+	private static final String RAML_EXTENSION = ".raml";
 
 	/**
 	 * Class Logger
@@ -349,10 +340,12 @@ public class RamlGenerator {
 	 * Emits the RAML model into its string representation and saves it as a file in the specified path
 	 * 
 	 * @param path The path to which the RAML document will be saved
+	 * @param createPathIfMissing Indicates if the path and/or file should be created if it doesn't exist
+	 * @param removeOldOutput Indicates if we will empty the output directory before generation occurs
 	 * @return A file handle to the created document file
 	 * @throws FileNotFoundException if the supplied path does not exist
 	 */
-	public File outputRamlToFile(String path) throws FileNotFoundException {
+	public File outputRamlToFile(String path, Boolean createPathIfMissing, Boolean removeOldOutput) throws FileNotFoundException {
 		if (this.raml == null) {
 			return null;
 		}
@@ -360,6 +353,7 @@ public class RamlGenerator {
 		File file = new File(path);
 
 		try {
+			file = prepareFileAndDirectories(file, createPathIfMissing, removeOldOutput);
 
 			logger.info("Saving generated raml to " + file.getAbsolutePath());
 			fos = new FileOutputStream(file);
@@ -380,6 +374,69 @@ public class RamlGenerator {
 					logger.error(e.getMessage(), e);
 				}
 
+			}
+		}
+		return file;
+	}
+
+	/**
+	 * Prepare the file and directories to be generated
+	 * @param file
+	 * @param createPathIfMissing
+	 * @param removeOldOutput
+     * @return File to generate
+     */
+	private File prepareFileAndDirectories(File file, Boolean createPathIfMissing, Boolean removeOldOutput) {
+		prepareDirectories(file, createPathIfMissing, removeOldOutput);
+
+		file = prepareFile(file);
+
+		return file;
+	}
+
+	/**
+	 * Create and clean the directories specified in the file path if requested
+	 * @param file
+	 * @param createPathIfMissing
+	 * @param removeOldOutput
+     */
+	private void prepareDirectories(File file, Boolean createPathIfMissing, Boolean removeOldOutput) {
+		File outputDirectory;
+
+		if(file.isDirectory()) {
+			outputDirectory = file;
+		} else {
+			outputDirectory = file.getParentFile();
+		}
+
+		if(!outputDirectory.exists() && createPathIfMissing) {
+			outputDirectory.mkdirs();
+		}
+
+		if(removeOldOutput) {
+			try
+			{
+				FileUtils.cleanDirectory(outputDirectory);
+			}
+			catch (IOException ioe)
+			{
+				logger.error("Failed to clean directory: " + outputDirectory, ioe);
+			}
+		}
+	}
+
+	/**
+	 * Make sure the file generated has a .raml extension.
+	 * Use the default file name if a directory name was specified.
+	 * @param file
+	 * @return File to generate
+     */
+	private File prepareFile(File file) {
+		if(file.isDirectory()) {
+			file = new File(file,DEFAULT_RAML_FILENAME);
+		} else {
+			if(!file.getName().toLowerCase().endsWith(RAML_EXTENSION)) {
+				file = new File(file.getAbsolutePath() + RAML_EXTENSION);
 			}
 		}
 		return file;

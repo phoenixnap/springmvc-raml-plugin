@@ -12,13 +12,9 @@
  */
 package com.phoenixnap.oss.ramlapisync.plugin;
 
-import java.io.File;
-import java.io.IOException;
-import java.lang.annotation.Annotation;
-import java.nio.file.Files;
-import java.nio.file.LinkOption;
-import java.nio.file.Paths;
-
+import com.phoenixnap.oss.ramlapisync.generation.RamlGenerator;
+import com.phoenixnap.oss.ramlapisync.parser.ResourceParser;
+import com.phoenixnap.oss.ramlapisync.parser.SpringMvcResourceParser;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
 import org.apache.maven.plugins.annotations.Mojo;
@@ -29,9 +25,12 @@ import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.phoenixnap.oss.ramlapisync.generation.RamlGenerator;
-import com.phoenixnap.oss.ramlapisync.parser.ResourceParser;
-import com.phoenixnap.oss.ramlapisync.parser.SpringMvcResourceParser;
+import java.io.File;
+import java.io.IOException;
+import java.lang.annotation.Annotation;
+import java.nio.file.Files;
+import java.nio.file.LinkOption;
+import java.nio.file.Paths;
 
 /**
  * Maven Plugin MOJO specific to Spring MVC Projects.
@@ -48,6 +47,18 @@ public class SpringMvcRamlApiSyncMojo extends CommonApiSyncMojo {
 	 */
 	@Parameter(required = true, readonly = true)
 	protected String outputRamlFilePath;
+
+	/**
+	 * If this is set to true, we will create the RAML file and directories if they don't exist
+	 */
+	@Parameter(required = false, readonly = true, defaultValue = "false")
+	protected Boolean createPathIfMissing;
+
+	/**
+	 * If this is set to true, we will empty the output directory before generation occurs
+	 */
+	@Parameter(required = false, readonly = true, defaultValue = "false")
+	private boolean removeOldOutput;
 
 	/**
 	 * Base URL relative to the generated RAML file for the APIs to be accessed at runtime
@@ -92,16 +103,23 @@ public class SpringMvcRamlApiSyncMojo extends CommonApiSyncMojo {
 				.generateRamlForClasses(project.getArtifactId(), version, restBasePath, classArray, this.documents);
 
 		// Extract RAML as a string and save to file
-		ramlGenerator.outputRamlToFile(this.getFullRamlOutputPath());
+		ramlGenerator.outputRamlToFile(this.getFullRamlOutputPath(), createPathIfMissing, removeOldOutput);
 	}
-	
+
 	/**
 	 * Converts the relative path to the absolute path
 	 * @return The absolute path for the Raml file to be saved
 	 */
 	public String getFullRamlOutputPath() {
 		// must get basedir from project to ensure that correct basedir is used when building from parent
-		return project.getBasedir() + this.outputRamlFilePath;
+		String path = project.getBasedir() + this.outputRamlFilePath;
+
+		// If the path ends with a slash, assume it is a directory and append the default filename
+		if(path.endsWith("/") || path.endsWith("\\")) {
+			path += RamlGenerator.DEFAULT_RAML_FILENAME;
+		}
+
+		return path;
 	}
 
 	public void execute() throws MojoExecutionException, MojoFailureException {
