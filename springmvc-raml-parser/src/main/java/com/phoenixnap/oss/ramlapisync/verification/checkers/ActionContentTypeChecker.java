@@ -88,8 +88,9 @@ public class ActionContentTypeChecker implements RamlActionVisitorCheck {
 				} else {
 					//successful response
 					Response targetResponse = target.getResponses().get("200");
-					for (String key : response.getBody().keySet()) {						
-						if (!targetResponse.getBody().containsKey(key)) {
+					for (String key : response.getBody().keySet()) {
+						logger.debug("Processing key {}.", key);
+						if (!targetResponse.getBody().containsKey(key) && !targetResponse.getBody().containsKey(ResourceParser.CATCH_ALL_MEDIA_TYPE)) {
 							issue = new Issue(maxSeverity, location, IssueType.MISSING, RESPONSE_BODY_MISSING, reference.getResource(), reference);
 							RamlCheckerResourceVisitorCoordinator.addIssue(errors, warnings, issue, RESPONSE_BODY_MISSING + " " + key);
 						}
