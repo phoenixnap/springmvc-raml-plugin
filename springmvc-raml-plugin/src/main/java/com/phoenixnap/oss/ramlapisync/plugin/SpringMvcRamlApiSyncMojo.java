@@ -79,8 +79,6 @@ public class SpringMvcRamlApiSyncMojo extends CommonApiSyncMojo {
 		return new Class[] { Controller.class, RestController.class, RequestMapping.class };
 	}
 
-	private static final String pathSeparator = System.getProperty("path.separator");
-
 	protected void generateRaml() throws MojoExecutionException, MojoFailureException, IOException {
 
 		super.prepareRaml();
@@ -115,14 +113,7 @@ public class SpringMvcRamlApiSyncMojo extends CommonApiSyncMojo {
 	 */
 	public String getFullRamlOutputPath() {
 		// must get basedir from project to ensure that correct basedir is used when building from parent
-		String path = project.getBasedir() + this.outputRamlFilePath;
-
-		// If the path ends with a slash, assume it is a directory and append the default filename
-		if(path.endsWith("/") || path.endsWith(pathSeparator)) {
-			path += RamlGenerator.DEFAULT_RAML_FILENAME;
-		}
-
-		return path;
+		return project.getBasedir() + this.outputRamlFilePath;
 	}
 
 	public void execute() throws MojoExecutionException, MojoFailureException {

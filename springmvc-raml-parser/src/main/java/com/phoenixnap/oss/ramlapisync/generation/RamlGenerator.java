@@ -61,9 +61,11 @@ public class RamlGenerator {
 
 	public static final String MODEL_OBJECT_SUBFOLDER = ".model";
 
-	public static final String DEFAULT_RAML_FILENAME = "api.raml";
+	private static final String DEFAULT_RAML_FILENAME = "api.raml";
 
 	private static final String RAML_EXTENSION = ".raml";
+
+	private static final String pathSeparator = System.getProperty("path.separator");
 
 	/**
 	 * Class Logger
@@ -365,10 +367,10 @@ public class RamlGenerator {
 			return null;
 		}
 		FileOutputStream fos = null;
-		File file = new File(path);
+		File file = getRamlOutputFile(path);
 
 		try {
-			file = prepareFileAndDirectories(file, createPathIfMissing, removeOldOutput);
+			prepareDirectories(file, createPathIfMissing, removeOldOutput);
 
 			logger.info("Saving generated raml to " + file.getAbsolutePath());
 			fos = new FileOutputStream(file);
@@ -395,25 +397,56 @@ public class RamlGenerator {
 	}
 
 	/**
-	 * Prepare the file and directories to be generated
-	 * @param file
-	 * @param createPathIfMissing
-	 * @param removeOldOutput
-     * @return File to generate
-     */
-	private File prepareFileAndDirectories(File file, Boolean createPathIfMissing, Boolean removeOldOutput) {
-		prepareDirectories(file, createPathIfMissing, removeOldOutput);
+	 * Takes the absolute path and gets the Raml file to be created
+	 *
+	 * @return raml file to be generated
+	 */
+	public File getRamlOutputFile(String path) {
+		File file = new File(this.preparePath(path));
 
-		file = prepareFile(file);
+		file = this.prepareFile(file);
+
+		return file;
+	}
+
+	/**
+	 * Checks the path and adds default file name if what was entered ends with a file separator
+	 *
+	 * @return The absolute path for the RAML file to be saved
+	 */
+	private String preparePath(String path) {
+		// If the path ends with a slash, assume it is a directory and append the default filename
+		if(path.endsWith("/") || path.endsWith(pathSeparator)) {
+			path += DEFAULT_RAML_FILENAME;
+		}
+		return path;
+	}
+
+	/**
+	 * Make sure the file to be generated has a .raml extension.
+	 * Use the default file name if a directory name was specified.
+	 *
+	 * @param file file to be generated
+	 * @return proper raml file
+	 */
+	private File prepareFile(File file) {
+		if(file.isDirectory()) {
+			file = new File(file, DEFAULT_RAML_FILENAME);
+		} else {
+			if(!file.getName().toLowerCase().endsWith(RAML_EXTENSION)) {
+				file = new File(file.getAbsolutePath() + RAML_EXTENSION);
+			}
+		}
 
 		return file;
 	}
 
 	/**
 	 * Create and clean the directories specified in the file path if requested
-	 * @param file
-	 * @param createPathIfMissing
-	 * @param removeOldOutput
+	 *
+	 * @param file file to be generated
+	 * @param createPathIfMissing should missing directories be created
+	 * @param removeOldOutput remove any existing contents from destination
      */
 	private void prepareDirectories(File file, Boolean createPathIfMissing, Boolean removeOldOutput) {
 		File outputDirectory;
@@ -425,7 +458,9 @@ public class RamlGenerator {
 		}
 
 		if(!outputDirectory.exists() && createPathIfMissing) {
-			outputDirectory.mkdirs();
+			if(!outputDirectory.mkdirs()) {
+				logger.info("Failed to create directory: " + outputDirectory);
+			}
 		}
 
 		if(removeOldOutput) {
@@ -438,23 +473,6 @@ public class RamlGenerator {
 				logger.error("Failed to clean directory: " + outputDirectory, ioe);
 			}
 		}
-	}
-
-	/**
-	 * Make sure the file generated has a .raml extension.
-	 * Use the default file name if a directory name was specified.
-	 * @param file
-	 * @return File to generate
-     */
-	private File prepareFile(File file) {
-		if(file.isDirectory()) {
-			file = new File(file,DEFAULT_RAML_FILENAME);
-		} else {
-			if(!file.getName().toLowerCase().endsWith(RAML_EXTENSION)) {
-				file = new File(file.getAbsolutePath() + RAML_EXTENSION);
-			}
-		}
-		return file;
 	}
 
 	/**
