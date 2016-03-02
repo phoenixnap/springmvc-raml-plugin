@@ -410,15 +410,17 @@ public class RamlGenerator {
 	}
 
 	/**
-	 * Checks the path and adds default file name if what was entered ends with a file separator
+	 * Checks the path and adds default file name if what was entered appears to be a directory
 	 *
 	 * @return The absolute path for the RAML file to be saved
 	 */
 	private String preparePath(String path) {
-		// If the path ends with a slash, assume it is a directory and append the default filename
+		// If the path ends with a slash or the system path separator, assume it is a directory
+		// and append the default filename
 		if(path.endsWith("/") || path.endsWith(pathSeparator)) {
 			path += DEFAULT_RAML_FILENAME;
 		}
+		
 		return path;
 	}
 
