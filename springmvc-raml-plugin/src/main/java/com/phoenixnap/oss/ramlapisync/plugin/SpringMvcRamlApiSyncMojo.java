@@ -118,7 +118,7 @@ public class SpringMvcRamlApiSyncMojo extends CommonApiSyncMojo {
 		String path = project.getBasedir() + this.outputRamlFilePath;
 
 		// If the path ends with a slash, assume it is a directory and append the default filename
-		if(path.endsWith("/") || path.endsWith(pathSeparator) /*path.endsWith("\\")*/) {
+		if(path.endsWith("/") || path.endsWith(pathSeparator)) {
 			path += RamlGenerator.DEFAULT_RAML_FILENAME;
 		}
 
