@@ -64,7 +64,7 @@ Then simply include the following code in the POM of the project you wish to gen
 (required) Relative file path where the RAML document will be saved to
 
 ### createPathIfMissing
-(optional, default: false) If this is set to true, we will create the RAML file and directories if they don't exist
+(optional, default: false) If this is set to true, we will create the path directories if they don't exist
 
 ### removeOldOutput
 (optional, default: false) If this is set to true, we will empty the output directory before generation occurs
