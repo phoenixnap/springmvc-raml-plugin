@@ -12,9 +12,13 @@
  */
 package com.phoenixnap.oss.ramlapisync.plugin;
 
-import com.phoenixnap.oss.ramlapisync.generation.RamlGenerator;
-import com.phoenixnap.oss.ramlapisync.parser.ResourceParser;
-import com.phoenixnap.oss.ramlapisync.parser.SpringMvcResourceParser;
+import java.io.File;
+import java.io.IOException;
+import java.lang.annotation.Annotation;
+import java.nio.file.Files;
+import java.nio.file.LinkOption;
+import java.nio.file.Paths;
+
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
 import org.apache.maven.plugins.annotations.Mojo;
@@ -25,12 +29,9 @@ import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.io.File;
-import java.io.IOException;
-import java.lang.annotation.Annotation;
-import java.nio.file.Files;
-import java.nio.file.LinkOption;
-import java.nio.file.Paths;
+import com.phoenixnap.oss.ramlapisync.generation.RamlGenerator;
+import com.phoenixnap.oss.ramlapisync.parser.ResourceParser;
+import com.phoenixnap.oss.ramlapisync.parser.SpringMvcResourceParser;
 
 /**
  * Maven Plugin MOJO specific to Spring MVC Projects.
@@ -78,6 +79,8 @@ public class SpringMvcRamlApiSyncMojo extends CommonApiSyncMojo {
 		return new Class[] { Controller.class, RestController.class, RequestMapping.class };
 	}
 
+	private static final String pathSeparator = System.getProperty("path.separator");
+
 	protected void generateRaml() throws MojoExecutionException, MojoFailureException, IOException {
 
 		super.prepareRaml();
@@ -115,7 +118,7 @@ public class SpringMvcRamlApiSyncMojo extends CommonApiSyncMojo {
 		String path = project.getBasedir() + this.outputRamlFilePath;
 
 		// If the path ends with a slash, assume it is a directory and append the default filename
-		if(path.endsWith("/") || path.endsWith("\\")) {
+		if(path.endsWith("/") || path.endsWith(pathSeparator) /*path.endsWith("\\")*/) {
 			path += RamlGenerator.DEFAULT_RAML_FILENAME;
 		}
 

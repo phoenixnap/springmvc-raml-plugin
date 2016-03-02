@@ -12,9 +12,18 @@
  */
 package com.phoenixnap.oss.ramlapisync.generation;
 
-import com.phoenixnap.oss.ramlapisync.data.*;
-import com.phoenixnap.oss.ramlapisync.parser.ResourceParser;
-import org.apache.commons.io.FileUtils;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
 import org.raml.emitter.RamlEmitter;
 import org.raml.model.DocumentationItem;
 import org.raml.model.Raml;
@@ -24,15 +33,21 @@ import org.raml.parser.utils.Inflector;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.util.StringUtils;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.RestController;
 
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.util.*;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
+import com.phoenixnap.oss.ramlapisync.data.ApiBodyMetadata;
+import com.phoenixnap.oss.ramlapisync.data.ApiControllerMetadata;
+import com.phoenixnap.oss.ramlapisync.data.ApiDocumentMetadata;
+import com.phoenixnap.oss.ramlapisync.data.ApiMappingMetadata;
+import com.phoenixnap.oss.ramlapisync.data.ApiParameterMetadata;
+import com.phoenixnap.oss.ramlapisync.parser.ResourceParser;
+
+import org.apache.commons.io.FileUtils;
 
 /**
  * Class containing RAML generation driver. Methods in this class are used to orchestrate the process of extracting
