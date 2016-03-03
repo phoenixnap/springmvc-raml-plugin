@@ -47,6 +47,8 @@ import com.phoenixnap.oss.ramlapisync.data.ApiMappingMetadata;
 import com.phoenixnap.oss.ramlapisync.data.ApiParameterMetadata;
 import com.phoenixnap.oss.ramlapisync.parser.ResourceParser;
 
+import org.apache.commons.io.FileUtils;
+
 /**
  * Class containing RAML generation driver. Methods in this class are used to orchestrate the process of extracting
  * information from classes, generating RAML and storing this as a String or in a File.
@@ -58,6 +60,12 @@ import com.phoenixnap.oss.ramlapisync.parser.ResourceParser;
 public class RamlGenerator {
 
 	public static final String MODEL_OBJECT_SUBFOLDER = ".model";
+
+	private static final String DEFAULT_RAML_FILENAME = "api.raml";
+
+	private static final String RAML_EXTENSION = ".raml";
+
+	private static final String pathSeparator = System.getProperty("path.separator");
 
 	/**
 	 * Class Logger
@@ -349,17 +357,20 @@ public class RamlGenerator {
 	 * Emits the RAML model into its string representation and saves it as a file in the specified path
 	 * 
 	 * @param path The path to which the RAML document will be saved
+	 * @param createPathIfMissing Indicates if the path and/or file should be created if it doesn't exist
+	 * @param removeOldOutput Indicates if we will empty the output directory before generation occurs
 	 * @return A file handle to the created document file
 	 * @throws FileNotFoundException if the supplied path does not exist
 	 */
-	public File outputRamlToFile(String path) throws FileNotFoundException {
+	public File outputRamlToFile(String path, Boolean createPathIfMissing, Boolean removeOldOutput) throws FileNotFoundException {
 		if (this.raml == null) {
 			return null;
 		}
 		FileOutputStream fos = null;
-		File file = new File(path);
+		File file = getRamlOutputFile(path);
 
 		try {
+			prepareDirectories(file, createPathIfMissing, removeOldOutput);
 
 			logger.info("Saving generated raml to " + file.getAbsolutePath());
 			fos = new FileOutputStream(file);
@@ -383,6 +394,87 @@ public class RamlGenerator {
 			}
 		}
 		return file;
+	}
+
+	/**
+	 * Takes the absolute path and gets the Raml file to be created
+	 *
+	 * @return raml file to be generated
+	 */
+	public File getRamlOutputFile(String path) {
+		File file = new File(this.preparePath(path));
+
+		file = this.prepareFile(file);
+
+		return file;
+	}
+
+	/**
+	 * Checks the path and adds default file name if what was entered appears to be a directory
+	 *
+	 * @return The absolute path for the RAML file to be saved
+	 */
+	private String preparePath(String path) {
+		// If the path ends with a slash or the system path separator, assume it is a directory
+		// and append the default filename
+		if(path.endsWith("/") || path.endsWith(pathSeparator)) {
+			path += DEFAULT_RAML_FILENAME;
+		}
+		
+		return path;
+	}
+
+	/**
+	 * Make sure the file to be generated has a .raml extension.
+	 * Use the default file name if a directory name was specified.
+	 *
+	 * @param file file to be generated
+	 * @return proper raml file
+	 */
+	private File prepareFile(File file) {
+		if(file.isDirectory()) {
+			file = new File(file, DEFAULT_RAML_FILENAME);
+		} else {
+			if(!file.getName().toLowerCase().endsWith(RAML_EXTENSION)) {
+				file = new File(file.getAbsolutePath() + RAML_EXTENSION);
+			}
+		}
+
+		return file;
+	}
+
+	/**
+	 * Create and clean the directories specified in the file path if requested
+	 *
+	 * @param file file to be generated
+	 * @param createPathIfMissing should missing directories be created
+	 * @param removeOldOutput remove any existing contents from destination
+     */
+	private void prepareDirectories(File file, Boolean createPathIfMissing, Boolean removeOldOutput) {
+		File outputDirectory;
+
+		if(file.isDirectory()) {
+			outputDirectory = file;
+		} else {
+			outputDirectory = file.getParentFile();
+		}
+
+		if(!outputDirectory.exists() && createPathIfMissing) {
+			if(!outputDirectory.mkdirs()) {
+				logger.info("Failed to create directory: " + outputDirectory);
+			}
+		}
+
+		if(removeOldOutput) {
+			try
+			{
+				FileUtils.cleanDirectory(outputDirectory);
+			}
+			catch (IOException ioe)
+			{
+				logger.error("Failed to clean directory: " + outputDirectory, ioe);
+			}
+		}
 	}
 
 	/**

@@ -50,6 +50,18 @@ public class SpringMvcRamlApiSyncMojo extends CommonApiSyncMojo {
 	protected String outputRamlFilePath;
 
 	/**
+	 * If this is set to true, we will create the RAML file and directories if they don't exist
+	 */
+	@Parameter(required = false, readonly = true, defaultValue = "false")
+	protected Boolean createPathIfMissing;
+
+	/**
+	 * If this is set to true, we will empty the output directory before generation occurs
+	 */
+	@Parameter(required = false, readonly = true, defaultValue = "false")
+	private boolean removeOldOutput;
+
+	/**
 	 * Base URL relative to the generated RAML file for the APIs to be accessed at runtime
 	 */
 	@Parameter(required = true, readonly = true)
@@ -92,9 +104,9 @@ public class SpringMvcRamlApiSyncMojo extends CommonApiSyncMojo {
 				.generateRamlForClasses(project.getArtifactId(), version, restBasePath, classArray, this.documents);
 
 		// Extract RAML as a string and save to file
-		ramlGenerator.outputRamlToFile(this.getFullRamlOutputPath());
+		ramlGenerator.outputRamlToFile(this.getFullRamlOutputPath(), createPathIfMissing, removeOldOutput);
 	}
-	
+
 	/**
 	 * Converts the relative path to the absolute path
 	 * @return The absolute path for the Raml file to be saved
