@@ -12,28 +12,32 @@
  */
 package com.phoenixnap.oss.ramlapisync.plugin;
 
-import java.io.File;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.util.List;
-import java.util.Set;
-
-import com.phoenixnap.oss.ramlapisync.generation.serialize.ApiControllerMetadataSerializer;
-import org.apache.maven.plugin.AbstractMojo;
-import org.apache.maven.plugin.MojoExecutionException;
-import org.apache.maven.plugin.MojoFailureException;
-import org.apache.maven.plugins.annotations.Mojo;
-import org.apache.maven.plugins.annotations.Parameter;
-import org.apache.maven.plugins.annotations.ResolutionScope;
-import org.apache.maven.project.MavenProject;
-import org.raml.model.Raml;
-import org.springframework.util.StringUtils;
-
 import com.phoenixnap.oss.ramlapisync.data.ApiBodyMetadata;
 import com.phoenixnap.oss.ramlapisync.data.ApiControllerMetadata;
 import com.phoenixnap.oss.ramlapisync.generation.RamlGenerator;
 import com.phoenixnap.oss.ramlapisync.generation.RamlParser;
+import com.phoenixnap.oss.ramlapisync.generation.serialize.ApiControllerMetadataSerializer;
 import com.sun.codemodel.JCodeModel;
+import org.apache.maven.artifact.DependencyResolutionRequiredException;
+import org.apache.maven.plugin.AbstractMojo;
+import org.apache.maven.plugin.MojoExecutionException;
+import org.apache.maven.plugin.MojoFailureException;
+import org.apache.maven.plugin.descriptor.PluginDescriptor;
+import org.apache.maven.plugins.annotations.Component;
+import org.apache.maven.plugins.annotations.Mojo;
+import org.apache.maven.plugins.annotations.Parameter;
+import org.apache.maven.plugins.annotations.ResolutionScope;
+import org.apache.maven.project.MavenProject;
+import org.codehaus.plexus.classworlds.realm.ClassRealm;
+import org.raml.model.Raml;
+import org.springframework.util.StringUtils;
+
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.net.MalformedURLException;
+import java.util.List;
+import java.util.Set;
 
 /**
  * Maven Plugin MOJO specific to Generation of Spring MVC Endpoints from RAML documents.
@@ -49,6 +53,9 @@ public class SpringMvcEndpointGeneratorMojo extends AbstractMojo {
 	 */
 	@Parameter(defaultValue = "${project}", required = true, readonly = true)
 	protected MavenProject project;
+
+	@Component
+	private PluginDescriptor descriptor;
 	
 	/**
 	 * Path to the raml document to be verified
@@ -80,7 +87,9 @@ public class SpringMvcEndpointGeneratorMojo extends AbstractMojo {
 	@Parameter(required = false, readonly = true, defaultValue = "com.phoenixnap.oss.ramlapisync.generation.RamlGenerator")
 	protected String ramlGenerator;
 
-	protected void generateEndpoints() throws MojoExecutionException, MojoFailureException, IOException {	
+	private ClassRealm classRealm;
+
+	protected void generateEndpoints() throws MojoExecutionException, MojoFailureException, IOException {
 		
 		String resolvedPath = project.getBasedir().getAbsolutePath();
 		if (resolvedPath.endsWith(File.separator) || resolvedPath.endsWith("/")) {
@@ -134,16 +143,25 @@ public class SpringMvcEndpointGeneratorMojo extends AbstractMojo {
 	}
 
 	private RamlGenerator createRamlGenerator() {
-		if(ramlGenerator == null || ramlGenerator.trim().isEmpty()) {
-			return new RamlGenerator();
-		}
 		try {
-			return (RamlGenerator)Class.forName(ramlGenerator).newInstance();
+			return (RamlGenerator) getClassRealm().loadClass(ramlGenerator).newInstance();
 		} catch (Exception e) {
 			getLog().error("Could not instantiate RamlGenerator "+ramlGenerator +". The default RamlGenerator will be used.", e);
-		} finally {
-			return new RamlGenerator();
 		}
+		return new RamlGenerator();
+	}
+
+	private ClassRealm getClassRealm() throws DependencyResolutionRequiredException, MalformedURLException {
+		if(classRealm == null) {
+			List<String> runtimeClasspathElements = project.getRuntimeClasspathElements();
+			classRealm = descriptor.getClassRealm();
+			for (String element : runtimeClasspathElements)
+			{
+				File elementFile = new File(element);
+				classRealm.addURL(elementFile.toURI().toURL());
+			}
+		}
+		return classRealm;
 	}
 
 	private void generateModelSources(ApiControllerMetadata met, ApiBodyMetadata body, File rootDir) {
