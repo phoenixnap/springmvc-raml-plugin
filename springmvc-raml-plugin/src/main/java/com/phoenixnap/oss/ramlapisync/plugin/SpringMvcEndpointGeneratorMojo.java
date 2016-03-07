@@ -161,19 +161,19 @@ public class SpringMvcEndpointGeneratorMojo extends AbstractMojo {
 	private void generateControllerSource(ApiControllerMetadataSerializer serializer, File dir) {
 		String genX = serializer.serialize();
 		this.getLog().debug(genX);
-
-		File file = new File(dir.getAbsolutePath() + "\\" + serializer.getName() + ".java");
+		String javaFileName = serializer.getName() + ".java";
+		File file = new File(dir.getAbsolutePath() + "\\" + javaFileName);
 		FileWriter writer = null;
 		try {
             writer = new FileWriter(file);
             writer.append(genX);
         } catch (IOException e) {
-            this.getLog().error("Could not write java file" + serializer.getName(), e);
+            this.getLog().error("Could not write java file " + javaFileName, e);
         } finally {
             try {
                 writer.close();
             } catch (Exception ex) {
-                this.getLog().error("Could not close FileWriter " + serializer.getName(), ex);
+                this.getLog().error("Could not close FileWriter " + javaFileName, ex);
             }
         }
 	}

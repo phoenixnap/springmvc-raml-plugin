@@ -29,7 +29,7 @@ import static org.junit.Assert.assertEquals;
 public class Spring4ControllerDecoratorTest {
 
     private static final String RESOURE_BASE = "decorator/";
-    private RamlSpring4DecoratorGenerator generator = new RamlSpring4DecoratorGenerator(null);
+    private RamlSpring4DecoratorGenerator generator = new RamlSpring4DecoratorGenerator();
 
     @Test
     public void test_simple_Success() throws Exception {
