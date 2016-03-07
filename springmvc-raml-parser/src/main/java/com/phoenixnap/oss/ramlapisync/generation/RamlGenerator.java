@@ -68,10 +68,15 @@ public class RamlGenerator {
 
 	/**
 	 * Default constructor
-	 * 
+	 */
+	public RamlGenerator() {
+	}
+
+	/**
 	 * @param scanner The resource parsing engine. Only required for RAML generation
 	 */
 	public RamlGenerator(ResourceParser scanner) {
+		this();
 		this.scanner = scanner;
 	}
 

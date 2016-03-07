@@ -73,7 +73,12 @@ public class SpringMvcEndpointGeneratorMojo extends AbstractMojo {
 	 */
 	@Parameter(required = true, readonly = true, defaultValue = "")
 	protected String basePackage;
-	
+
+	/**
+	 * The full qualified name of the RamlGenerator that should be used.
+	 */
+	@Parameter(required = false, readonly = true, defaultValue = "com.phoenixnap.oss.ramlapisync.generation.RamlGenerator")
+	protected String ramlGenerator;
 
 	protected void generateEndpoints() throws MojoExecutionException, MojoFailureException, IOException {	
 		
@@ -89,8 +94,8 @@ public class SpringMvcEndpointGeneratorMojo extends AbstractMojo {
 		}
 		
 		Raml loadRamlFromFile = RamlParser.loadRamlFromFile( "file:"+resolvedRamlPath );
-		RamlParser par = new RamlParser(basePackage); 
-		RamlGenerator gen = new RamlGenerator(null);
+		RamlParser par = new RamlParser(basePackage);
+		RamlGenerator gen = createRamlGenerator();
 		Set<ApiControllerMetadata> controllers = par.extractControllers(loadRamlFromFile);
 		
 		
@@ -126,6 +131,19 @@ public class SpringMvcEndpointGeneratorMojo extends AbstractMojo {
 		}
 		
 		
+	}
+
+	private RamlGenerator createRamlGenerator() {
+		if(ramlGenerator == null || ramlGenerator.trim().isEmpty()) {
+			return new RamlGenerator();
+		}
+		try {
+			return (RamlGenerator)Class.forName(ramlGenerator).newInstance();
+		} catch (Exception e) {
+			getLog().error("Could not instantiate RamlGenerator "+ramlGenerator +". The default RamlGenerator will be used.", e);
+		} finally {
+			return new RamlGenerator();
+		}
 	}
 
 	private void generateModelSources(ApiControllerMetadata met, ApiBodyMetadata body, File rootDir) {
