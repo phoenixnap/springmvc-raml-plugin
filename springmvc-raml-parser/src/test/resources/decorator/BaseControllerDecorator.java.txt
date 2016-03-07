@@ -1,5 +1,6 @@
 package com.gen.test;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.*;
 import java.util.*;
 import org.springframework.web.bind.annotation.*;
@@ -10,15 +11,15 @@ import com.gen.test.model.*;
 @RequestMapping("/base")
 public class BaseControllerDecorator implements BaseController {
 
-    @Autowire
+    @Autowired
     private BaseController baseControllerDelegate;
 
 	/**
 	 * No description
 	 */
 	@RequestMapping(value="", method=RequestMethod.GET)
-	public ResponseEntity getBase () {
-        return this.baseControllerDelegate.getBase();
+	public ResponseEntity getBase (@RequestParam Long queryParam1, @RequestParam String queryParam2) {
+        return this.baseControllerDelegate.getBase(queryParam1, queryParam2);
 	}
 
 	/**

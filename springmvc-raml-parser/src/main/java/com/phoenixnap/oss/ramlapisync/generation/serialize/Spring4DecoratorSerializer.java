@@ -3,8 +3,6 @@ package com.phoenixnap.oss.ramlapisync.generation.serialize;
 import com.phoenixnap.oss.ramlapisync.data.ApiControllerMetadata;
 import com.phoenixnap.oss.ramlapisync.data.ApiMappingMetadata;
 
-import java.util.stream.Collectors;
-
 /**
  * @author armin.weisser
  */
@@ -12,6 +10,12 @@ public class Spring4DecoratorSerializer extends Spring4ControllerSerializer {
 
     public Spring4DecoratorSerializer(ApiControllerMetadata controller, String header) {
         super(controller, header);
+    }
+
+    @Override
+    protected void addImports() {
+        gen += "import org.springframework.beans.factory.annotation.Autowired;\n";
+        super.addImports();
     }
 
     @Override
@@ -26,7 +30,7 @@ public class Spring4DecoratorSerializer extends Spring4ControllerSerializer {
 
     @Override
     protected void addClassFields() {
-        String fields = "\t@Autowire\n";
+        String fields = "\t@Autowired\n";
         fields += "\tprivate "+ generateInterfaceName() + " " + generateDelegateName() + ";\n\n";
         gen += fields;
     }
@@ -37,12 +41,8 @@ public class Spring4DecoratorSerializer extends Spring4ControllerSerializer {
 
     @Override
     protected String generateMethodBody(ApiMappingMetadata mapping) {
-        String paramList = generateCallingMethodParameters(mapping);
-        return "\t\t return this." + generateDelegateName() + "." + mapping.getName() + "("+paramList+");\n";
-    }
-
-    private String generateCallingMethodParameters(ApiMappingMetadata mapping) {
-        return mapping.getPathVariables().stream().map(p -> p.getName()).collect(Collectors.toList()).stream().collect(Collectors.joining(","));
+        String paramList = generateMethodParameters(mapping, parameterNamesOnlyStrategy(), requestBodyParameterParameterNamesOnlyStrategy());
+        return "\t\t return this." + generateDelegateName() + "." + mapping.getName() + "(" + paramList + ");\n";
     }
 
     private String generateDelegateName() {

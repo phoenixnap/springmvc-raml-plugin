@@ -1,5 +1,6 @@
 package com.gen.test;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.*;
 import java.util.*;
 import org.springframework.web.bind.annotation.*;
@@ -10,7 +11,7 @@ import com.gen.test.model.*;
 @RequestMapping("/secondBase")
 public class SecondBaseControllerDecorator implements SecondBaseController {
 
-    @Autowire
+    @Autowired
     private SecondBaseController secondBaseControllerDelegate;
 
 	/**

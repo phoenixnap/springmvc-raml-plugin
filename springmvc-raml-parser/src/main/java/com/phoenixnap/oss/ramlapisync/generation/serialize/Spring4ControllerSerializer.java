@@ -10,7 +10,6 @@ import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.function.Function;
 import java.util.stream.Collectors;
@@ -78,9 +77,13 @@ public class Spring4ControllerSerializer implements ApiControllerMetadataSeriali
         gen += "import org.springframework.http.*; \n";
         gen += "import java.util.*; \n";
         gen += "import org.springframework.web.bind.annotation.*; \n";
-        gen += "import " + (StringUtils.hasText(controller.getBasePackage()) ? controller.getBasePackage() + "." : "")
-                + "model.*; \n"; // TODO make this import only if we have 1 or more bodies
+        gen += generateModelImport(); // TODO make this import only if we have 1 or more bodies
         gen += "\n";
+    }
+
+    protected String generateModelImport() {
+        return "import " + (StringUtils.hasText(controller.getBasePackage()) ? controller.getBasePackage() + "." : "")
+                + "model.*; \n";
     }
 
     protected void addPackageSection() {
@@ -109,12 +112,7 @@ public class Spring4ControllerSerializer implements ApiControllerMetadataSeriali
         return controller.getName();
     }
 
-    protected String generateParameters(ApiMappingMetadata mapping, Function<ApiParameterMetadata, String> mappingFunction) {
-        List<ApiParameterMetadata> parameterMetadataList = new ArrayList<>();
-        parameterMetadataList.addAll(mapping.getPathVariables());
-        parameterMetadataList.addAll(mapping.getRequestParameters());
-        return parameterMetadataList.stream().map(mappingFunction).collect(Collectors.toList()).stream().collect(Collectors.joining(","));
-    }
+
 
     /**
      * Generates a string representation for a java method representing this api endpoint TODO Note: Currently
@@ -128,7 +126,7 @@ public class Spring4ControllerSerializer implements ApiControllerMetadataSeriali
         String gen = "";
         gen += generateMethodComments(mapping);
         gen += generateMethodAnnotation(mapping);
-        gen += "\tpublic " + generateMethodResponseType(mapping) + " " + mapping.getName() + " (" + generateAllMethodParameters(mapping) + ") ";
+        gen += "\tpublic " + generateMethodResponseType(mapping) + " " + mapping.getName() + " (" + generateMethodParameters(mapping) + ") ";
         gen += "{ \n";
         gen += generateMethodBody(mapping);
         gen += "\t}\n";
@@ -149,22 +147,82 @@ public class Spring4ControllerSerializer implements ApiControllerMetadataSeriali
         return "\t@" + RequestMapping.class.getSimpleName() +"(value=\"" + mapping.getUrl() + "\", method=RequestMethod."+mapping.getActionType().name()+")\n";
     }
 
-    protected String generateAllMethodParameters(ApiMappingMetadata mapping) {
-        String parameters = generateParameters(mapping, apiParameterMetadata -> generateParameter(apiParameterMetadata));
-        if (mapping.getRequestBody() != null) {
-            ApiBodyMetadata apiBodyMetadata = mapping.getRequestBody();
-            Arrays.asList(parameters, generateRequestBodyParameter(apiBodyMetadata)).stream().collect(Collectors.joining(","));
-        }
+    protected String generateMethodParameters(ApiMappingMetadata mapping) {
+        return generateMethodParameters(mapping, parameterFullStrategy(), requestBodyParameterAllStrategy());
+    }
+
+    protected String generateMethodParameters(ApiMappingMetadata mapping,
+                                              Function<ApiParameterMetadata, String> parameterMappingStrategy,
+                                              Function<ApiBodyMetadata, String> requestBodyParameterMappingStrategy) {
+        String parameters = generateParameters(mapping, parameterMappingStrategy);
+        parameters += generateBodyParameters(mapping, requestBodyParameterMappingStrategy);
         return parameters;
     }
 
-    protected String generateRequestBodyParameter(ApiBodyMetadata apiBodyMetadata) {
-        String annotation = generateRequestBodyParamaterAnnotation();
-        return annotation + apiBodyMetadata.getName() + " " + Inflector.camelize(apiBodyMetadata.getName());
+    protected String generateParameters(ApiMappingMetadata mapping, Function<ApiParameterMetadata, String> mappingFunction) {
+        List<ApiParameterMetadata> parameterMetadataList = new ArrayList<>();
+        parameterMetadataList.addAll(mapping.getPathVariables());
+        parameterMetadataList.addAll(mapping.getRequestParameters());
+        return generateCommaSeperatedParameters(parameterMetadataList, mappingFunction);
     }
 
-    protected String generateRequestBodyParamaterAnnotation() {
-        return "@" + RequestBody.class.getSimpleName() + " ";
+    protected String generateBodyParameters(ApiMappingMetadata mapping, Function<ApiBodyMetadata, String> mappingFunction) {
+        if (mapping.getRequestBody() != null) {
+            List<ApiBodyMetadata> bodyMetadataList = new ArrayList<>();
+            bodyMetadataList.add(mapping.getRequestBody());
+            return generateCommaSeperatedParameters(bodyMetadataList, mappingFunction);
+        }
+        return "";
+    }
+
+    protected <T> String generateCommaSeperatedParameters(List<T> parameterMetadataList, Function<T, String> mappingFunction) {
+        return parameterMetadataList.stream().map(mappingFunction).collect(Collectors.toList()).stream().collect(Collectors.joining(", "));
+    }
+
+    protected Function<ApiBodyMetadata, String> requestBodyParameterAllStrategy() {
+        return apiBodyMetadata -> {
+            String annotation = generateRequestBodyParamaterAnnotation();
+            String type = generateRequestBodyParameterType(apiBodyMetadata) + " ";
+            String name = Inflector.camelize(type);
+            return annotation + type + name;
+        };
+    }
+
+    protected Function<ApiBodyMetadata, String> requestBodyParameterNoAnnotationsStrategy() {
+        return apiBodyMetadata -> {
+            String type = generateRequestBodyParameterType(apiBodyMetadata) + " ";
+            String name = Inflector.camelize(type);
+            return type + name;
+        };
+    }
+
+    protected Function<ApiBodyMetadata, String> requestBodyParameterParameterNamesOnlyStrategy() {
+        return apiBodyMetadata -> {
+            String type = generateRequestBodyParameterType(apiBodyMetadata) + " ";
+            String name = Inflector.camelize(type);
+            return name;
+        };
+    }
+
+    protected Function<ApiParameterMetadata, String> parameterFullStrategy() {
+        return apiParameterMetadata -> {
+            String annotation = generateParameterAnnotation(apiParameterMetadata);
+            String type = generateParameterType(apiParameterMetadata);
+            String name = apiParameterMetadata.getName();
+            return annotation + type + name;
+        };
+    }
+
+    protected Function<ApiParameterMetadata, String> parameterNoAnnotationsStrategy() {
+        return apiParameterMetadata -> {
+            String type = generateParameterType(apiParameterMetadata);
+            String name = apiParameterMetadata.getName();
+            return type + name;
+        };
+    }
+
+    protected Function<ApiParameterMetadata, String> parameterNamesOnlyStrategy() {
+        return apiParameterMetadata -> apiParameterMetadata.getName();
     }
 
     protected String generateMethodResponseType(ApiMappingMetadata mapping) {
@@ -173,13 +231,23 @@ public class Spring4ControllerSerializer implements ApiControllerMetadataSeriali
             ApiBodyMetadata apiBodyMetadata = mapping.getResponseBody().values().iterator().next();
             response = "@" + ResponseBody.class.getSimpleName() +" ";
             if (apiBodyMetadata.isArray()) {
-                response += ArrayList.class.getSimpleName() + "<" + apiBodyMetadata.getName() + ">";
+                response += ArrayList.class.getSimpleName() + "<" + generateRequestBodyParameterType(apiBodyMetadata) + ">";
             } else {
-                response += apiBodyMetadata.getName();
+                response += generateRequestBodyParameterType(apiBodyMetadata);
             }
 
         }
         return response;
+    }
+
+
+    protected String generateRequestBodyParameterType(ApiBodyMetadata apiBodyMetadata) {
+        return apiBodyMetadata.getName();
+    }
+
+
+    protected String generateRequestBodyParamaterAnnotation() {
+        return "@" + RequestBody.class.getSimpleName() + " ";
     }
 
     protected String generateMethodBody(ApiMappingMetadata mapping) {
@@ -189,16 +257,10 @@ public class Spring4ControllerSerializer implements ApiControllerMetadataSeriali
         return methodBody;
     }
 
-    /**
-     * Generates a string representation for a java parameter representing this api parameter TODO Note: Currently
-     * Experimental - will be moved to templating engine
-     *
-     * @param param The parameter to represent
-     * @return The Java string representation of the parameter
-     */
-    protected String generateParameter(ApiParameterMetadata param) {
-        String annotation = generateParameterAnnotation(param);
-        return annotation + param.getType().getSimpleName() + " " + param.getName();
+
+
+    protected String generateParameterType(ApiParameterMetadata param) {
+        return param.getType().getSimpleName() + " ";
     }
 
     protected String generateParameterAnnotation(ApiParameterMetadata param) {
