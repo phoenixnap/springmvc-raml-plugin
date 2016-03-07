@@ -12,42 +12,26 @@
  */
 package com.phoenixnap.oss.ramlapisync.generation;
 
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-
+import com.phoenixnap.oss.ramlapisync.data.ApiControllerMetadata;
+import com.phoenixnap.oss.ramlapisync.data.ApiDocumentMetadata;
+import com.phoenixnap.oss.ramlapisync.generation.serialize.ApiControllerMetadataSerializer;
+import com.phoenixnap.oss.ramlapisync.generation.serialize.Spring4ControllerSerializer;
+import com.phoenixnap.oss.ramlapisync.parser.ResourceParser;
+import org.apache.commons.io.FileUtils;
 import org.raml.emitter.RamlEmitter;
 import org.raml.model.DocumentationItem;
 import org.raml.model.Raml;
 import org.raml.model.Resource;
-import org.raml.model.parameter.UriParameter;
-import org.raml.parser.utils.Inflector;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.util.StringUtils;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.bind.annotation.RestController;
 
-import com.phoenixnap.oss.ramlapisync.data.ApiBodyMetadata;
-import com.phoenixnap.oss.ramlapisync.data.ApiControllerMetadata;
-import com.phoenixnap.oss.ramlapisync.data.ApiDocumentMetadata;
-import com.phoenixnap.oss.ramlapisync.data.ApiMappingMetadata;
-import com.phoenixnap.oss.ramlapisync.data.ApiParameterMetadata;
-import com.phoenixnap.oss.ramlapisync.parser.ResourceParser;
-
-import org.apache.commons.io.FileUtils;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.util.*;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * Class containing RAML generation driver. Methods in this class are used to orchestrate the process of extracting
@@ -99,126 +83,8 @@ public class RamlGenerator {
 	 * @param header A header text string such as a copyright notice to be appended to the top of the class
 	 * @return The generated Java Class in string format
 	 */
-	public String generateClassForRaml(ApiControllerMetadata controller, String header) {
-		String gen = "";
-		if (StringUtils.hasText(header)) {
-			gen += header + "\n";
-			gen += "\n";
-		}
-
-		if (StringUtils.hasText(controller.getBasePackage())) {
-			gen += "package " + controller.getBasePackage() + ";\n";
-			gen += "\n";
-		}
-		gen += "import org.springframework.http.*; \n";
-		gen += "import java.util.*; \n";
-		gen += "import org.springframework.web.bind.annotation.*; \n";
-		gen += "import " + (StringUtils.hasText(controller.getBasePackage()) ? controller.getBasePackage() + "." : "")
-				+ "model.*; \n"; // TODO make this import only if we have 1 or more bodies
-		gen += "\n";
-		gen += "\n";
-		if (StringUtils.hasText(controller.getDescription())) {
-			gen += "/**\n";
-			gen += " * " + controller.getDescription().replaceAll("\n", "\n *") + "\n";
-			gen += " */\n";
-		}
-		gen += "@" + RestController.class.getSimpleName() + "\n";
-		gen += "@" + RequestMapping.class.getSimpleName() + "(\"" + controller.getUrl() + "\")\n";
-		gen += "public class " + controller.getName() + " { \n";
-		gen += "\n";
-
-		for (ApiMappingMetadata mapping : controller.getApiCalls()) {
-			gen += generateMethodForApiCall(mapping);
-			gen += "\n";
-		}
-
-		gen += "}\n";
-		return gen;
-
-	}
-
-	/**
-	 * Generates a string representation for a java method representing this api endpoint TODO Note: Currently
-	 * Experimental - will be moved to templating engine
-	 * 
-	 * @param mapping The api call method to represent
-	 * @return The java method as a String
-	 */
-	public String generateMethodForApiCall(ApiMappingMetadata mapping) {
-		String parameters = "";
-
-		boolean first = true;
-		for (ApiParameterMetadata param : mapping.getPathVariables()) {
-			if (!first) {
-				parameters += ", ";
-			} else {
-				first = false;
-			}
-			parameters += generateParameter(param);
-		}
-		for (ApiParameterMetadata param : mapping.getRequestParameters()) {
-			if (!first) {
-				parameters += ", ";
-			} else {
-				first = false;
-			}
-			parameters += generateParameter(param);
-		}
-
-		String response = "ResponseEntity";
-		if (!mapping.getResponseBody().isEmpty()) {
-			ApiBodyMetadata apiBodyMetadata = mapping.getResponseBody().values().iterator().next();
-			response = "@" + ResponseBody.class.getSimpleName() +" ";
-			if (apiBodyMetadata.isArray()) {
-				response += ArrayList.class.getSimpleName() + "<" + apiBodyMetadata.getName() + ">";
-			} else {
-				response += apiBodyMetadata.getName();
-			}
-
-		}
-
-		if (mapping.getRequestBody() != null) {
-			ApiBodyMetadata apiBodyMetadata = mapping.getRequestBody();
-			if (!first) {
-				parameters += ", ";
-			} else {
-				first = false;
-			}
-			parameters += "@" + RequestBody.class.getSimpleName() + " " + apiBodyMetadata.getName() + " " + Inflector.camelize(apiBodyMetadata.getName());
-		}
-
-		String gen = "";
-		gen += "\t/**\n";
-		gen += "\t * "
-				+ ((mapping.getDescription() != null) ? mapping.getDescription().replaceAll("\n", "\n\t *")
-						: "No description") + "\n";
-		gen += "\t */\n";
-		gen += "\t@" + RequestMapping.class.getSimpleName() +"(value=\"" + mapping.getUrl() + "\", method=RequestMethod."+mapping.getActionType().name()+")\n";
-		gen += "\tpublic " + response + " " + mapping.getName() + " (" + parameters + ") { \n";
-		gen += "\t\n";
-		gen += "\t\t //TODO Autogenerated Method Stub. Implement me please.\n";
-		gen += "\t\t return null;\n";
-
-		gen += "\t}\n";
-		return gen;
-	}
-
-	/**
-	 * Generates a string representation for a java parameter representing this api parameter TODO Note: Currently
-	 * Experimental - will be moved to templating engine
-	 * 
-	 * @param param The parameter to represent
-	 * @return The Java string representation of the parameter
-	 */
-	private String generateParameter(ApiParameterMetadata param) {
-		String annotation = "@";
-		if (param.getRamlParam() != null && param.getRamlParam() instanceof UriParameter) {
-			annotation += PathVariable.class.getSimpleName();
-		} else {
-			annotation += RequestParam.class.getSimpleName();
-		}
-
-		return annotation + " " + param.getType().getSimpleName() + " " + param.getName();
+	public List<ApiControllerMetadataSerializer> generateClassForRaml(ApiControllerMetadata controller, String header) {
+		return Arrays.asList(new Spring4ControllerSerializer(controller, header));
 	}
 
 	/**

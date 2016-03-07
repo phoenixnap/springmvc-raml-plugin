@@ -1,7 +1,13 @@
 package com.phoenixnap.oss.ramlapisync.generation;
 
 import com.phoenixnap.oss.ramlapisync.data.ApiControllerMetadata;
+import com.phoenixnap.oss.ramlapisync.generation.serialize.ApiControllerMetadataSerializer;
+import com.phoenixnap.oss.ramlapisync.generation.serialize.Spring4ControllerInterfaceSerializer;
+import com.phoenixnap.oss.ramlapisync.generation.serialize.Spring4DecoratorSerializer;
 import com.phoenixnap.oss.ramlapisync.parser.ResourceParser;
+
+import java.util.Arrays;
+import java.util.List;
 
 /**
  * Extends the standard RamlGenerator by providing a Spring4 Controller based on a decorator pattern.
@@ -39,7 +45,10 @@ public class RamlSpring4DecoratorGenerator extends RamlGenerator {
     }
 
     @Override
-    public String generateClassForRaml(ApiControllerMetadata controller, String header) {
-        return super.generateClassForRaml(controller, header);
+    public List<ApiControllerMetadataSerializer> generateClassForRaml(ApiControllerMetadata controller, String header) {
+        return Arrays.asList(
+                new Spring4ControllerInterfaceSerializer(controller, header),
+                new Spring4DecoratorSerializer(controller, header)
+        );
     }
 }

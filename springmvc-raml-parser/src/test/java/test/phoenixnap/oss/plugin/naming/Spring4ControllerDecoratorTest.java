@@ -4,6 +4,7 @@ import com.phoenixnap.oss.ramlapisync.data.ApiControllerMetadata;
 import com.phoenixnap.oss.ramlapisync.generation.RamlParser;
 import com.phoenixnap.oss.ramlapisync.generation.RamlSpring4DecoratorGenerator;
 import com.phoenixnap.oss.ramlapisync.generation.RamlVerifier;
+import com.phoenixnap.oss.ramlapisync.generation.serialize.ApiControllerMetadataSerializer;
 import org.apache.commons.lang.StringUtils;
 import org.junit.Test;
 import org.raml.model.Raml;
@@ -15,6 +16,7 @@ import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.util.List;
 import java.util.Set;
 
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -37,11 +39,6 @@ public class Spring4ControllerDecoratorTest {
 
         assertEquals(2, controllersMetadataSet.size());
 
-        // EndpointWithGetController
-        // EndpointWithGetAndPostController
-        // EndpointWithGetController
-        // EndpointWithURIParamController
-
         for(ApiControllerMetadata apiControllerMetadata: controllersMetadataSet) {
             verifyGenerateClassFor(apiControllerMetadata);
         }
@@ -49,22 +46,25 @@ public class Spring4ControllerDecoratorTest {
     }
 
     private void verifyGenerateClassFor(ApiControllerMetadata apiControllerMetadata) throws Exception {
-        String controllerName = apiControllerMetadata.getName();
-        String expectedCode = getTextFromFile(RESOURE_BASE + controllerName + "Decorator.java.txt");
-        String generatedCode = generator.generateClassForRaml(apiControllerMetadata, "");
+        List<ApiControllerMetadataSerializer> serializers = generator.generateClassForRaml(apiControllerMetadata, "");
+        ApiControllerMetadataSerializer interfaceSerializer = serializers.get(0);
+        ApiControllerMetadataSerializer decoratorSerializer = serializers.get(1);
+        verifySerializer(interfaceSerializer);
+        verifySerializer(decoratorSerializer);
+    }
+
+    private void verifySerializer(ApiControllerMetadataSerializer serializer) throws Exception {
+        String expectedCode = getTextFromFile(RESOURE_BASE + serializer.getName() + ".java.txt");
+        String generatedCode = serializer.serialize();
 
         try {
-            assertThat(controllerName + " is not generated correctly.", generatedCode, equalToIgnoringWhiteSpace(expectedCode));
+            assertThat(serializer.getName() + " is not generated correctly.", generatedCode, equalToIgnoringWhiteSpace(expectedCode));
         } catch (AssertionError e) {
             // We let assertEquals fail here instead, because better IDE support for multi line string diff.
             assertEquals(expectedCode, generatedCode);
         }
-
     }
 
-    private File getFile(String resourcePath) throws URISyntaxException {
-        return new File(getUri(resourcePath));
-    }
 
     private String getTextFromFile(String resourcePath) throws Exception {
         URI uri = getUri(resourcePath);

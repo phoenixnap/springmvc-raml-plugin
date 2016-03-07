@@ -15,8 +15,10 @@ package com.phoenixnap.oss.ramlapisync.plugin;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.util.List;
 import java.util.Set;
 
+import com.phoenixnap.oss.ramlapisync.generation.serialize.ApiControllerMetadataSerializer;
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
@@ -111,41 +113,53 @@ public class SpringMvcEndpointGeneratorMojo extends AbstractMojo {
 			this.getLog().debug("-----------------------------------------------------------");
 			this.getLog().debug(met.getName());
 			this.getLog().debug("");
-			String genX = gen.generateClassForRaml(met, "");
-			this.getLog().debug(genX);
-			
+
 			Set<ApiBodyMetadata> dependencies = met.getDependencies();
 			for (ApiBodyMetadata body : dependencies) {
-				try {
-					JCodeModel codeModel = body.getCodeModel();
-					if (codeModel != null) {
-						codeModel.build(rootDir);
-					}					
-				} catch (IOException e) {
-					e.printStackTrace();
-					this.getLog().error("Could not build code model for " + met.getName(), e);
-				}
+				generateModelSources(met, body, rootDir);
 			}
-			
-			File file = new File(dir.getAbsolutePath() + "\\" + met.getName() + ".java");
-			FileWriter writer = null;
-			try {
-				writer = new FileWriter(file);
-				writer.append(genX);
-			} catch (IOException e) {
-				this.getLog().error("Could not write java file" + met.getName(), e);
-			} finally {
-				try {
-					writer.close();
-				} catch (Exception ex) {
-					this.getLog().error("Could not close FileWriter " + met.getName(), ex);
-				}
+
+			List<ApiControllerMetadataSerializer> serializers = gen.generateClassForRaml(met, "");
+			for(ApiControllerMetadataSerializer serializer: serializers) {
+				generateControllerSource(serializer, dir);
 			}
 		}
 		
 		
 	}
-	
+
+	private void generateModelSources(ApiControllerMetadata met, ApiBodyMetadata body, File rootDir) {
+		try {
+            JCodeModel codeModel = body.getCodeModel();
+            if (codeModel != null) {
+                codeModel.build(rootDir);
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+            this.getLog().error("Could not build code model for " + met.getName(), e);
+        }
+	}
+
+	private void generateControllerSource(ApiControllerMetadataSerializer serializer, File dir) {
+		String genX = serializer.serialize();
+		this.getLog().debug(genX);
+
+		File file = new File(dir.getAbsolutePath() + "\\" + serializer.getName() + ".java");
+		FileWriter writer = null;
+		try {
+            writer = new FileWriter(file);
+            writer.append(genX);
+        } catch (IOException e) {
+            this.getLog().error("Could not write java file" + serializer.getName(), e);
+        } finally {
+            try {
+                writer.close();
+            } catch (Exception ex) {
+                this.getLog().error("Could not close FileWriter " + serializer.getName(), ex);
+            }
+        }
+	}
+
 	public void execute() throws MojoExecutionException, MojoFailureException {
 		long startTime = System.currentTimeMillis();
 		
