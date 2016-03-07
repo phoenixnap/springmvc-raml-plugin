@@ -1,5 +1,6 @@
 package com.phoenixnap.oss.ramlapisync.generation.serialize;
 
+import com.phoenixnap.oss.ramlapisync.data.ApiBodyMetadata;
 import com.phoenixnap.oss.ramlapisync.data.ApiControllerMetadata;
 import com.phoenixnap.oss.ramlapisync.data.ApiMappingMetadata;
 
@@ -43,6 +44,15 @@ public class Spring4DecoratorSerializer extends Spring4ControllerSerializer {
     protected String generateMethodBody(ApiMappingMetadata mapping) {
         String paramList = generateMethodParameters(mapping, parameterNamesOnlyStrategy(), requestBodyParameterParameterNamesOnlyStrategy());
         return "\t\t return this." + generateDelegateName() + "." + mapping.getName() + "(" + paramList + ");\n";
+    }
+
+    protected String generateMethodResponseType(ApiMappingMetadata mapping) {
+        String response = "ResponseEntity";
+        if (!mapping.getResponseBody().isEmpty()) {
+            ApiBodyMetadata apiBodyMetadata = mapping.getResponseBody().values().iterator().next();
+            response += "<" + generateRequestBodyParameterType(apiBodyMetadata) +">";
+        }
+        return response;
     }
 
     private String generateDelegateName() {

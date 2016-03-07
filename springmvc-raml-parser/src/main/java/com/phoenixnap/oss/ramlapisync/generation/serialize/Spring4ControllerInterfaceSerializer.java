@@ -1,5 +1,6 @@
 package com.phoenixnap.oss.ramlapisync.generation.serialize;
 
+import com.phoenixnap.oss.ramlapisync.data.ApiBodyMetadata;
 import com.phoenixnap.oss.ramlapisync.data.ApiControllerMetadata;
 import com.phoenixnap.oss.ramlapisync.data.ApiMappingMetadata;
 import com.phoenixnap.oss.ramlapisync.data.ApiParameterMetadata;
@@ -40,6 +41,15 @@ public class Spring4ControllerInterfaceSerializer extends Spring4ControllerSeria
 
     protected String generateMethodParameters(ApiMappingMetadata mapping) {
         return generateMethodParameters(mapping, parameterNoAnnotationsStrategy(), requestBodyParameterNoAnnotationsStrategy());
+    }
+
+    protected String generateMethodResponseType(ApiMappingMetadata mapping) {
+        String response = "ResponseEntity";
+        if (!mapping.getResponseBody().isEmpty()) {
+            ApiBodyMetadata apiBodyMetadata = mapping.getResponseBody().values().iterator().next();
+            response += "<" + generateRequestBodyParameterType(apiBodyMetadata) +">";
+        }
+        return response;
     }
 
     @Override
