@@ -5,11 +5,9 @@ import com.phoenixnap.oss.ramlapisync.generation.RamlParser;
 import com.phoenixnap.oss.ramlapisync.generation.RamlSpring4DecoratorGenerator;
 import com.phoenixnap.oss.ramlapisync.generation.RamlVerifier;
 import com.phoenixnap.oss.ramlapisync.generation.serialize.ApiControllerMetadataSerializer;
-import org.apache.commons.lang.StringUtils;
 import org.junit.Test;
 import org.raml.model.Raml;
 
-import java.io.File;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
@@ -32,7 +30,7 @@ public class Spring4ControllerDecoratorTest {
     private RamlSpring4DecoratorGenerator generator = new RamlSpring4DecoratorGenerator();
 
     @Test
-    public void test_simple_Success() throws Exception {
+    public void test_simple_decorator_Success() throws Exception {
         Raml published = RamlVerifier.loadRamlFromFile(RESOURE_BASE + "test-simple-decorator.raml");
         RamlParser par = new RamlParser("com.gen.test");
         Set<ApiControllerMetadata> controllersMetadataSet = par.extractControllers(published);
@@ -42,8 +40,21 @@ public class Spring4ControllerDecoratorTest {
         for(ApiControllerMetadata apiControllerMetadata: controllersMetadataSet) {
             verifyGenerateClassFor(apiControllerMetadata);
         }
-
     }
+
+    @Test
+    public void test_contenttype_decorator_Success() throws Exception {
+        Raml published = RamlVerifier.loadRamlFromFile(RESOURE_BASE + "test-contenttype-success-decorator.raml");
+        RamlParser par = new RamlParser("com.gen.test");
+        Set<ApiControllerMetadata> controllersMetadataSet = par.extractControllers(published);
+
+        assertEquals(1, controllersMetadataSet.size());
+
+        for(ApiControllerMetadata apiControllerMetadata: controllersMetadataSet) {
+            verifyGenerateClassFor(apiControllerMetadata);
+        }
+    }
+
 
     private void verifyGenerateClassFor(ApiControllerMetadata apiControllerMetadata) throws Exception {
         List<ApiControllerMetadataSerializer> serializers = generator.generateClassForRaml(apiControllerMetadata, "");
