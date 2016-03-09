@@ -19,6 +19,8 @@ import java.util.stream.Collectors;
  */
 public class Spring4ControllerSerializer implements ApiControllerMetadataSerializer {
 
+    // TODO Build JCodeModel instead of magic String concatenation
+
     protected final String header;
     protected final ApiControllerMetadata controller;
     protected String gen = "";
