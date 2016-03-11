@@ -84,8 +84,8 @@ public class SpringMvcEndpointGeneratorMojo extends AbstractMojo {
 	/**
 	 * The base path under which the rest endpoints are located.
 	 */
-	@Parameter(required = false, readonly = true, defaultValue = "")
-	protected String startUrl;
+	@Parameter(required = false, readonly = true)
+	protected String baseUri;
 
 	/**
 	 * The full qualified name of the RamlGenerator that should be used.
@@ -109,7 +109,7 @@ public class SpringMvcEndpointGeneratorMojo extends AbstractMojo {
 		}
 		
 		Raml loadRamlFromFile = RamlParser.loadRamlFromFile( "file:"+resolvedRamlPath );
-		RamlParser par = new RamlParser(basePackage, startUrl);
+		RamlParser par = new RamlParser(basePackage, getBasePath(loadRamlFromFile));
 		RamlGenerator gen = createRamlGenerator();
 		Set<ApiControllerMetadata> controllers = par.extractControllers(loadRamlFromFile);
 
@@ -145,6 +145,13 @@ public class SpringMvcEndpointGeneratorMojo extends AbstractMojo {
 		}
 		
 		
+	}
+
+	/*
+	 * @return The configuration property <baseUri> (if set) or the baseUri from the RAML spec.
+     */
+	private String getBasePath(Raml loadRamlFromFile) {
+		return baseUri != null ? baseUri : loadRamlFromFile.getBasePath();
 	}
 
 	private RamlGenerator createRamlGenerator() {
