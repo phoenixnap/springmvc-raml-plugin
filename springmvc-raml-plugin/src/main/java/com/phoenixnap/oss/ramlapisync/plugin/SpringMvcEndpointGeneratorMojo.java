@@ -82,7 +82,8 @@ public class SpringMvcEndpointGeneratorMojo extends AbstractMojo {
 	protected String basePackage;
 
 	/**
-	 * The base path under which the rest endpoints are located.
+	 * The explicit base path under which the rest endpoints should be located.
+	 * If overrules the baseUri setting in the raml spec.
 	 */
 	@Parameter(required = false, readonly = true)
 	protected String baseUri;
