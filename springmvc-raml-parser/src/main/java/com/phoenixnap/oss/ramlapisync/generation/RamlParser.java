@@ -12,10 +12,7 @@
  */
 package com.phoenixnap.oss.ramlapisync.generation;
 
-import java.util.LinkedHashSet;
-import java.util.Map.Entry;
-import java.util.Set;
-
+import com.phoenixnap.oss.ramlapisync.data.ApiControllerMetadata;
 import org.raml.model.Action;
 import org.raml.model.ActionType;
 import org.raml.model.Raml;
@@ -24,7 +21,9 @@ import org.raml.parser.visitor.RamlDocumentBuilder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.phoenixnap.oss.ramlapisync.data.ApiControllerMetadata;
+import java.util.LinkedHashSet;
+import java.util.Map.Entry;
+import java.util.Set;
 
 
 /**
@@ -36,23 +35,31 @@ import com.phoenixnap.oss.ramlapisync.data.ApiControllerMetadata;
  *
  */	
 public class RamlParser {
-	
-	
-	/**
-	 * Base java package for generates files
-	 */
-	private String basePackage;
-	
-	
-	public RamlParser (String basePackage) {
-		this.basePackage = basePackage;
-	}
-	
+
 	/**
 	 * Class Logger
 	 */
 	protected static final Logger logger = LoggerFactory.getLogger(RamlParser.class);
-	
+
+	/**
+	 * Base java package for generates files
+	 */
+	private String basePackage;
+
+	/**
+	 * The start URL that every controller should be prefixed with
+	 */
+	private String startUrl = "";
+
+	public RamlParser (String basePackage) {
+		this.basePackage = basePackage;
+	}
+
+	public RamlParser(String basePackage, String startUrl) {
+		this(basePackage);
+		this.startUrl = startUrl;
+	}
+
 	/**
 	 * This method will extract a set of controllers from the RAML file.
 	 * These controllers will contain the metadata required by the code generator, including name
@@ -67,9 +74,7 @@ public class RamlParser {
 		if (raml == null) {
 			return controllers;
 		}
-		
-		String startUrl = "";
-		
+
 		//Iterate on all parent resources
 		//if we have child resources, just append the url and go down the chain until we hit the first action.
 		//if an action is found we need to 

@@ -12,16 +12,15 @@
  */
 package com.phoenixnap.oss.ramlapisync.data;
 
-import java.util.Collections;
-import java.util.LinkedHashSet;
-import java.util.Set;
-
+import com.phoenixnap.oss.ramlapisync.naming.NamingHelper;
 import org.raml.model.Action;
 import org.raml.model.ActionType;
 import org.raml.model.Raml;
 import org.raml.model.Resource;
 
-import com.phoenixnap.oss.ramlapisync.naming.NamingHelper;
+import java.util.Collections;
+import java.util.LinkedHashSet;
+import java.util.Set;
 
 
 /**
@@ -36,16 +35,16 @@ public class ApiControllerMetadata {
 	
 	public static final String CONTROLLER_SUFFIX = "Controller";
 	
-	private String url;
+	private String controllerUrl;
 	private transient Resource resource;
 	private String basePackage;
 	private Raml document;
 	
 	Set<ApiMappingMetadata> apiCalls = new LinkedHashSet<>();
 	
-	public ApiControllerMetadata(String url, Resource resource, String basePackage, Raml document) {
+	public ApiControllerMetadata(String controllerUrl, Resource resource, String basePackage, Raml document) {
 		super();
-		this.url = url;
+		this.controllerUrl = controllerUrl;
 		this.resource = resource;
 		this.basePackage = basePackage;
 		this.document = document;
@@ -75,13 +74,17 @@ public class ApiControllerMetadata {
 		return resource;
 	}
 	
-	public String getUrl() {
+	public String getResourceUri() {
 		return resource.getUri();
+	}
+
+	public String getControllerUrl() {
+		return controllerUrl;
 	}
 
 
 	public String toString() {
-    	return "Controller "+getName()+"["+url+"]";
+    	return "Controller "+getName()+"["+ getControllerUrl() +"]";
     	
     }
 

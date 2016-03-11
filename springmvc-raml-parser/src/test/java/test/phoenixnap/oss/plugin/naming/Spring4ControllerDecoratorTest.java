@@ -32,7 +32,7 @@ public class Spring4ControllerDecoratorTest {
     @Test
     public void test_simple_decorator_Success() throws Exception {
         Raml published = RamlVerifier.loadRamlFromFile(RESOURE_BASE + "test-simple-decorator.raml");
-        RamlParser par = new RamlParser("com.gen.test");
+        RamlParser par = new RamlParser("com.gen.test", "/api");
         Set<ApiControllerMetadata> controllersMetadataSet = par.extractControllers(published);
 
         assertEquals(2, controllersMetadataSet.size());

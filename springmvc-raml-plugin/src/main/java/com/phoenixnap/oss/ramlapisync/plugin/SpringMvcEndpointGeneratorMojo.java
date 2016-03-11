@@ -82,6 +82,12 @@ public class SpringMvcEndpointGeneratorMojo extends AbstractMojo {
 	protected String basePackage;
 
 	/**
+	 * The base path under which the rest endpoints are located.
+	 */
+	@Parameter(required = false, readonly = true, defaultValue = "")
+	protected String startUrl;
+
+	/**
 	 * The full qualified name of the RamlGenerator that should be used.
 	 */
 	@Parameter(required = false, readonly = true, defaultValue = "com.phoenixnap.oss.ramlapisync.generation.RamlGenerator")
@@ -103,11 +109,10 @@ public class SpringMvcEndpointGeneratorMojo extends AbstractMojo {
 		}
 		
 		Raml loadRamlFromFile = RamlParser.loadRamlFromFile( "file:"+resolvedRamlPath );
-		RamlParser par = new RamlParser(basePackage);
+		RamlParser par = new RamlParser(basePackage, startUrl);
 		RamlGenerator gen = createRamlGenerator();
 		Set<ApiControllerMetadata> controllers = par.extractControllers(loadRamlFromFile);
-		
-		
+
 		if (StringUtils.hasText(outputRelativePath)) {
 			if (!outputRelativePath.startsWith(File.separator) && !outputRelativePath.startsWith("/")) {
 				resolvedPath += File.separator;
@@ -143,12 +148,13 @@ public class SpringMvcEndpointGeneratorMojo extends AbstractMojo {
 	}
 
 	private RamlGenerator createRamlGenerator() {
+		RamlGenerator generator = new RamlGenerator();
 		try {
-			return (RamlGenerator) getClassRealm().loadClass(ramlGenerator).newInstance();
+			generator = (RamlGenerator) getClassRealm().loadClass(ramlGenerator).newInstance();
 		} catch (Exception e) {
 			getLog().error("Could not instantiate RamlGenerator "+ramlGenerator +". The default RamlGenerator will be used.", e);
 		}
-		return new RamlGenerator();
+		return generator;
 	}
 
 	private ClassRealm getClassRealm() throws DependencyResolutionRequiredException, MalformedURLException {
