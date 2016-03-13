@@ -6,10 +6,14 @@ version: 1
 /base:
   get:
     queryParameters:
-      queryParam1:
+      requiredQueryParam:
         type: integer
-      queryParam2:
+        required: true
+      optionalQueryParam:
         type: string
+      optionalQueryParam2:
+        type: number
+        required: false
   /endpointWithGetAndPost:
     get:
       responses:
