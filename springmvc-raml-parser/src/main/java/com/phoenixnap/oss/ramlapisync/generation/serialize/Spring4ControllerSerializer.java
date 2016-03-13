@@ -6,6 +6,7 @@ import com.phoenixnap.oss.ramlapisync.data.ApiMappingMetadata;
 import com.phoenixnap.oss.ramlapisync.data.ApiParameterMetadata;
 import org.raml.model.parameter.UriParameter;
 import org.raml.parser.utils.Inflector;
+import org.springframework.http.MediaType;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 
@@ -72,7 +73,21 @@ public class Spring4ControllerSerializer implements ApiControllerMetadataSeriali
             gen += " */\n";
         }
         gen += "@" + RestController.class.getSimpleName() + "\n";
-        gen += "@" + RequestMapping.class.getSimpleName() + "(\"" + controller.getControllerUrl() + "\")\n";
+        gen += "@" + RequestMapping.class.getSimpleName() + "(\"" + controller.getControllerUrl();
+        String mediaType = generateMediaType();
+        if(mediaType != null) {
+            gen += "\", produces=\"" + mediaType;
+        }
+        gen += "\")\n";
+    }
+
+    private String generateMediaType() {
+        String ramlMediaType = controller.getDocument().getMediaType();
+        try {
+            return MediaType.parseMediaType(ramlMediaType).toString();
+        } catch (Exception e) {
+            return null;
+        }
     }
 
     protected void addImports() {
