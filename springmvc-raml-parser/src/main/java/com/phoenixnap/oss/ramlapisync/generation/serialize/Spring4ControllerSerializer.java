@@ -73,12 +73,15 @@ public class Spring4ControllerSerializer implements ApiControllerMetadataSeriali
             gen += " */\n";
         }
         gen += "@" + RestController.class.getSimpleName() + "\n";
-        gen += "@" + RequestMapping.class.getSimpleName() + "(\"" + controller.getControllerUrl();
+        gen += "@" + RequestMapping.class.getSimpleName() + "("+generateRequestMappingAttributes()+")\n";
+    }
+
+    private String generateRequestMappingAttributes() {
         String mediaType = generateMediaType();
-        if(mediaType != null) {
-            gen += "\", produces=\"" + mediaType;
+        if(mediaType == null) {
+            return "\""+controller.getControllerUrl()+"\"";
         }
-        gen += "\")\n";
+        return "value=\""+controller.getControllerUrl()+"\", produces=\"" + mediaType +"\"";
     }
 
     private String generateMediaType() {

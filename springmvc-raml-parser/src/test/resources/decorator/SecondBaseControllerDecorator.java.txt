@@ -8,7 +8,7 @@ import com.gen.test.model.*;
 
 
 @RestController
-@RequestMapping("/api/secondBase", produces="application/json")
+@RequestMapping(value="/api/secondBase", produces="application/json")
 public class SecondBaseControllerDecorator implements SecondBaseController {
 
     @Autowired
