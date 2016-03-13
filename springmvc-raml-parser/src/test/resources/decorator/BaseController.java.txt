@@ -10,7 +10,7 @@ public interface BaseController {
 	/**
 	 * No description
 	 */
-	ResponseEntity getBase (Long queryParam1, String queryParam2);
+	ResponseEntity getBase (Long requiredQueryParam, String optionalQueryParam, BigDecimal optionalQueryParam2);
 
 	/**
 	 * No description

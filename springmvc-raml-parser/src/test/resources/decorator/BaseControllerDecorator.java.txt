@@ -18,8 +18,8 @@ public class BaseControllerDecorator implements BaseController {
 	 * No description
 	 */
 	@RequestMapping(value="", method=RequestMethod.GET)
-	public ResponseEntity getBase (@RequestParam Long queryParam1, @RequestParam String queryParam2) {
-        return this.baseControllerDelegate.getBase(queryParam1, queryParam2);
+	public ResponseEntity getBase (@RequestParam Long requiredQueryParam, @RequestParam(required = false) String optionalQueryParam, @RequestParam(required = false) BigDecimal optionalQueryParam2) {
+        return this.baseControllerDelegate.getBase(requiredQueryParam, optionalQueryParam, optionalQueryParam2);
 	}
 
 	/**
