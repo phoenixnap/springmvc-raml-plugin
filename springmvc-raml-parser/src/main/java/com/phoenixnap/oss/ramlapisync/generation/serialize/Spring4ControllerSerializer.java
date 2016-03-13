@@ -275,7 +275,7 @@ public class Spring4ControllerSerializer implements ApiControllerMetadataSeriali
         // In RAML parameters are optional unless the required attribute is included and its value set to 'true'.
         // In Spring a parameter is required by default unlesse the required attribute is included and its value is set to 'false'
         // So we just need to set required=false if the RAML "required" parameter is not set or explicitly set to false.
-        if(!param.getRamlParam().isRequired()) {
+        if(param.getRamlParam() != null && !param.getRamlParam().isRequired()) {
             annotation += "(required = false)";
         }
 
