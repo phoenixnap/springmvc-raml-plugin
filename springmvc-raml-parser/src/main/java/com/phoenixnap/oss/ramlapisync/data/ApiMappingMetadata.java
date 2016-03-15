@@ -12,28 +12,18 @@
  */
 package com.phoenixnap.oss.ramlapisync.data;
 
-import java.util.Collections;
-import java.util.LinkedHashMap;
-import java.util.LinkedHashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
-import java.util.Set;
-
-import org.raml.model.Action;
-import org.raml.model.ActionType;
-import org.raml.model.MimeType;
-import org.raml.model.Resource;
-import org.raml.model.Response;
+import com.phoenixnap.oss.ramlapisync.naming.NamingHelper;
+import com.phoenixnap.oss.ramlapisync.naming.SchemaHelper;
+import com.phoenixnap.oss.ramlapisync.parser.ResourceParser;
+import org.raml.model.*;
 import org.raml.model.parameter.FormParameter;
 import org.raml.model.parameter.QueryParameter;
 import org.raml.model.parameter.UriParameter;
 import org.springframework.http.MediaType;
 import org.springframework.util.StringUtils;
 
-import com.phoenixnap.oss.ramlapisync.naming.NamingHelper;
-import com.phoenixnap.oss.ramlapisync.naming.SchemaHelper;
-import com.phoenixnap.oss.ramlapisync.parser.ResourceParser;
+import java.util.*;
+import java.util.Map.Entry;
 
 /**
  * Class containing the data required to successfully generate code for an api call within a controller
@@ -202,7 +192,7 @@ public class ApiMappingMetadata {
 	}
 
 	public String getUrl() {
-		return resource.getUri().replace(parent.getUrl(), "");
+		return resource.getUri().replace(parent.getResourceUri(), "");
 	}
 
 	public String getName() {

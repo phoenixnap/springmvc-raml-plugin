@@ -1,0 +1,25 @@
+package com.gen.test;
+
+import org.springframework.http.*;
+import java.util.*;
+import org.springframework.web.bind.annotation.*;
+import com.gen.test.model.*;
+
+public interface BaseController {
+
+	/**
+	 * No description
+	 */
+	ResponseEntity getBase (Long requiredQueryParam, String optionalQueryParam, BigDecimal optionalQueryParam2);
+
+	/**
+	 * No description
+	 */
+	ResponseEntity getEndpointWithGetAndPost ();
+
+	/**
+	 * No description
+	 */
+	ResponseEntity updateEndpointWithGetAndPost ();
+
+}

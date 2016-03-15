@@ -1,0 +1,41 @@
+package com.gen.test;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.*;
+import java.util.*;
+import org.springframework.web.bind.annotation.*;
+import com.gen.test.model.*;
+
+
+@RestController
+@RequestMapping(value="/api/base", produces="application/json")
+public class BaseControllerDecorator implements BaseController {
+
+    @Autowired
+    private BaseController baseControllerDelegate;
+
+	/**
+	 * No description
+	 */
+	@RequestMapping(value="", method=RequestMethod.GET)
+	public ResponseEntity getBase (@RequestParam Long requiredQueryParam, @RequestParam(required = false) String optionalQueryParam, @RequestParam(required = false) BigDecimal optionalQueryParam2) {
+        return this.baseControllerDelegate.getBase(requiredQueryParam, optionalQueryParam, optionalQueryParam2);
+	}
+
+	/**
+	 * No description
+	 */
+	@RequestMapping(value="/endpointWithGetAndPost", method=RequestMethod.GET)
+	public ResponseEntity getEndpointWithGetAndPost () {
+        return this.baseControllerDelegate.getEndpointWithGetAndPost();
+	}
+
+	/**
+	 * No description
+	 */
+	@RequestMapping(value="/endpointWithGetAndPost", method=RequestMethod.POST)
+	public ResponseEntity updateEndpointWithGetAndPost () {
+        return this.baseControllerDelegate.updateEndpointWithGetAndPost();
+	}
+
+}
