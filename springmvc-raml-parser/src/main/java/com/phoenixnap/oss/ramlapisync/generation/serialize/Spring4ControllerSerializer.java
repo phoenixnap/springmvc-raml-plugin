@@ -163,7 +163,7 @@ public class Spring4ControllerSerializer implements ApiControllerMetadataSeriali
         return gen;
     }
 
-    private String generateMethodAnnotation(ApiMappingMetadata mapping) {
+    protected String generateMethodAnnotation(ApiMappingMetadata mapping) {
         return "\t@" + RequestMapping.class.getSimpleName() +"(value=\"" + mapping.getUrl() + "\", method=RequestMethod."+mapping.getActionType().name()+")\n";
     }
 

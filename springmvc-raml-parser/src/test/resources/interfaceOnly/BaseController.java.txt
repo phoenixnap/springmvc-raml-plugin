@@ -1,0 +1,30 @@
+package com.gen.test;
+
+import org.springframework.http.*;
+import java.util.*;
+import org.springframework.web.bind.annotation.*;
+import com.gen.test.model.*;
+
+@RestController
+@RequestMapping(value="/api/base", produces="application/json")
+public interface BaseController {
+
+	/**
+	 * No description
+	 */
+	@RequestMapping(value="", method=RequestMethod.GET)
+	ResponseEntity getBase (@RequestParam Long requiredQueryParam, @RequestParam(required = false) String optionalQueryParam, @RequestParam(required = false) BigDecimal optionalQueryParam2);
+
+	/**
+	 * No description
+	 */
+	@RequestMapping(value="/endpointWithGetAndPost", method=RequestMethod.GET)
+    ResponseEntity getEndpointWithGetAndPost ();
+
+	/**
+	 * No description
+	 */
+	 @RequestMapping(value="/endpointWithGetAndPost", method=RequestMethod.POST)
+     ResponseEntity updateEndpointWithGetAndPost ();
+
+}

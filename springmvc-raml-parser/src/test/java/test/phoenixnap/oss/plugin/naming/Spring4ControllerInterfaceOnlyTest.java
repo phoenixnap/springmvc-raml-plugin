@@ -3,7 +3,7 @@ package test.phoenixnap.oss.plugin.naming;
 import com.phoenixnap.oss.ramlapisync.data.ApiControllerMetadata;
 import com.phoenixnap.oss.ramlapisync.generation.RamlGenerator;
 import com.phoenixnap.oss.ramlapisync.generation.RamlParser;
-import com.phoenixnap.oss.ramlapisync.generation.RamlSpring4DecoratorGenerator;
+import com.phoenixnap.oss.ramlapisync.generation.RamlSpring4InterfaceOnlyGenerator;
 import com.phoenixnap.oss.ramlapisync.generation.RamlVerifier;
 import com.phoenixnap.oss.ramlapisync.generation.serialize.ApiControllerMetadataSerializer;
 import org.junit.Test;
@@ -25,13 +25,13 @@ import static org.junit.Assert.assertEquals;
 /**
  * @author armin.weisser
  */
-public class Spring4ControllerDecoratorTest {
+public class Spring4ControllerInterfaceOnlyTest {
 
-    private static final String RESOURE_BASE = "decorator/";
-    private RamlGenerator generator = new RamlSpring4DecoratorGenerator();
+    private static final String RESOURE_BASE = "interfaceOnly/";
+    private RamlGenerator generator = new RamlSpring4InterfaceOnlyGenerator();
 
     @Test
-    public void test_simple_decorator_Success() throws Exception {
+    public void test_simple_interfaceOnly_Success() throws Exception {
         Raml published = RamlVerifier.loadRamlFromFile(RESOURE_BASE + "test-simple-decorator.raml");
         RamlParser par = new RamlParser("com.gen.test", "/api");
         Set<ApiControllerMetadata> controllersMetadataSet = par.extractControllers(published);
@@ -44,7 +44,7 @@ public class Spring4ControllerDecoratorTest {
     }
 
     @Test
-    public void test_contenttype_decorator_Success() throws Exception {
+    public void test_contenttype_interfaceOnly_Success() throws Exception {
         Raml published = RamlVerifier.loadRamlFromFile(RESOURE_BASE + "test-contenttype-success-decorator.raml");
         RamlParser par = new RamlParser("com.gen.test");
         Set<ApiControllerMetadata> controllersMetadataSet = par.extractControllers(published);
@@ -60,9 +60,7 @@ public class Spring4ControllerDecoratorTest {
     private void verifyGenerateClassFor(ApiControllerMetadata apiControllerMetadata) throws Exception {
         List<ApiControllerMetadataSerializer> serializers = generator.generateClassForRaml(apiControllerMetadata, "");
         ApiControllerMetadataSerializer interfaceSerializer = serializers.get(0);
-        ApiControllerMetadataSerializer decoratorSerializer = serializers.get(1);
         verifySerializer(interfaceSerializer);
-        verifySerializer(decoratorSerializer);
     }
 
     private void verifySerializer(ApiControllerMetadataSerializer serializer) throws Exception {

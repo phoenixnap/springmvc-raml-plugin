@@ -1,0 +1,24 @@
+package com.gen.test;
+
+import org.springframework.http.*;
+import java.util.*;
+import org.springframework.web.bind.annotation.*;
+import com.gen.test.model.*;
+
+@RestController
+@RequestMapping("/contentTypeBase")
+public interface ContentTypeBaseController {
+
+	/**
+	 * No description
+	 */
+	@RequestMapping(value="", method=RequestMethod.GET)
+    ResponseEntity<GetContentTypeBaseResponse> getContentTypeBase ();
+
+	/**
+	 * No description
+	 */
+	 @RequestMapping(value="/endpointWithResponseType", method=RequestMethod.POST)
+     ResponseEntity<NamedResponseType> updateEndpointWithResponseType ();
+
+}
