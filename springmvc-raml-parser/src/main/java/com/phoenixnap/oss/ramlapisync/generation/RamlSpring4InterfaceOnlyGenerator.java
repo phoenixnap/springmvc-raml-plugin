@@ -9,33 +9,23 @@ import java.util.Arrays;
 import java.util.List;
 
 /**
- * Extends the standard RamlGenerator by providing a Spring4 Controller based on a decorator pattern.
+ * Extends the standard RamlGenerator by providing a Spring4 Controller interface.
  * The goal is to generate code that does not have to be manually extended by the user.
- * A raml endpoint called /people for example implies two generated artefacts:
+ * A raml endpoint called /people for example would lead to the following interface only:
  *
  * // 1. Controller Interface
+ * @RestController
+ * @RequestMapping("/people")
  * interface PeopleController {
+ *     @RequestMapping(value="", method=RequestMethod.GET)
  *     ResponseEntity getPeople();
  * }
  *
- * // 2. A Decorator that implements the Controller Interface
- * // and delegates to another instance of a class implementing the very same controller interface.
- * class PeopleControllerDecorator implements PeopleController {
- *
- *     @Autowired
- *     PeopleController peopleControllerDelegate;
- *
- *     @RequestMapping(value="", method=RequestMethod.GET)
- *     public ResponseEntity getPeople() {
- *         return this.peopleControllerDelegate.getPeople();
- *     }
- * }
- *
- * Now all the user has to do is to implement a Spring-Bean called "PeopleControllerDelegate".
+ * Now all the user has to do is to implement a this interface.
  * This way he can implement the endpoint without altering the generated code.
  *
  * @author armin.weisser
- * @since 0.2.5
+ * @since 0.3.1
  */
 public class RamlSpring4InterfaceOnlyGenerator extends RamlGenerator {
 

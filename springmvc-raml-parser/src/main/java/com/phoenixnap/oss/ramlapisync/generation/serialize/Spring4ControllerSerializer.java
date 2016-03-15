@@ -16,15 +16,31 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 
 /**
+ * This class provides a general serializition of a .raml spec into a Spring MVC Controller stub.
+ *
+ * It also implements a basic version of the serialize() method.
+ * You can probably subclass this one if you want to implement another serialization strategy
+ * and reuse the serialize() method as a template method.
+ *
+ * All methods called from the serialize() are protected so that a subclass can hook into
+ * almost every step of the code generation algorithm.
+ *
+ * There are two kinds of protected methods.
+ * The ones starting with "add" are altering the "gen" field, which holds the generated result.
+ * The ones starting with "generate" are somehow functional methods that don't alter the state of the class.
+ *
+ * TODO Build JCodeModel instead of magic String concatenation.
+ * TODO Refactor the different generate and add methods to different Rules (just like org.jsonschema2pojo.rules.Rule ...)
+ *
  * @author armin.weisser
+ * @author Kurt Paris
+ * @since 0.3.1
  */
 public class Spring4ControllerSerializer implements ApiControllerMetadataSerializer {
 
-    // TODO Build JCodeModel instead of magic String concatenation
-
     protected final String header;
     protected final ApiControllerMetadata controller;
-    protected String gen = "";
+    protected String gen;
 
     public Spring4ControllerSerializer(ApiControllerMetadata controller, String header) {
         this.header = header;
@@ -38,6 +54,7 @@ public class Spring4ControllerSerializer implements ApiControllerMetadataSeriali
 
     @Override
     public String serialize() {
+        gen = "";
         addHeader();
         addPackageSection();
         addImports();
@@ -49,22 +66,40 @@ public class Spring4ControllerSerializer implements ApiControllerMetadataSeriali
         return gen;
     }
 
-    protected void addCloseClass() {
-        gen += "}\n";
-    }
-
-    protected void addClassMethods() {
-        for (ApiMappingMetadata mapping : controller.getApiCalls()) {
-            gen += generateMethodForApiCall(mapping);
+    /**
+     * add the given header field to the generated code.
+     */
+    protected void addHeader() {
+        if (StringUtils.hasText(header)) {
+            gen += header + "\n";
             gen += "\n";
         }
     }
 
-    protected void addClassDeclaration() {
-        gen += "public class " + generateControllerClassName() + " " + generateImplementsExtends() + " { \n";
+    /**
+     * add the package declaration to the generated code.
+     */
+    protected void addPackageSection() {
+        if (StringUtils.hasText(controller.getBasePackage())) {
+            gen += "package " + controller.getBasePackage() + ";\n";
+            gen += "\n";
+        }
+    }
+
+    /**
+     * add imports to the generated code.
+     */
+    protected void addImports() {
+        gen += "import org.springframework.http.*; \n";
+        gen += "import java.util.*; \n";
+        gen += "import org.springframework.web.bind.annotation.*; \n";
+        gen += generateModelImport();
         gen += "\n";
     }
 
+    /**
+     * add class annoations to the generated code.
+     */
     protected void addClassAnnotations() {
         gen += "\n";
         if (StringUtils.hasText(controller.getDescription())) {
@@ -73,10 +108,45 @@ public class Spring4ControllerSerializer implements ApiControllerMetadataSeriali
             gen += " */\n";
         }
         gen += "@" + RestController.class.getSimpleName() + "\n";
-        gen += "@" + RequestMapping.class.getSimpleName() + "("+generateRequestMappingAttributes()+")\n";
+        gen += "@" + RequestMapping.class.getSimpleName() + "("+ generateClassRequestMappingAttributes()+")\n";
     }
 
-    private String generateRequestMappingAttributes() {
+    /**
+     * add the class declaration to the generated code.
+     */
+    protected void addClassDeclaration() {
+        gen += "public class " + generateControllerClassName() + " " + generateImplementsExtends() + " { \n";
+        gen += "\n";
+    }
+
+    /**
+     * add field declerations to the generated code.
+     */
+    protected void addClassFields() {
+    }
+
+    /**
+     * add all methods to the generated code.
+     */
+    protected void addClassMethods() {
+        for (ApiMappingMetadata mapping : controller.getApiCalls()) {
+            gen += generateMethodForApiCall(mapping);
+            gen += "\n";
+        }
+    }
+
+    /**
+     * add the closing '}' to the generated code.
+     */
+    protected void addCloseClass() {
+        gen += "}\n";
+    }
+
+
+    /**
+     * @return attribute for @RequestMapping annotation at class level
+     */
+    private String generateClassRequestMappingAttributes() {
         String mediaType = generateMediaType();
         if(mediaType == null) {
             return "\""+controller.getControllerUrl()+"\"";
@@ -84,6 +154,9 @@ public class Spring4ControllerSerializer implements ApiControllerMetadataSeriali
         return "value=\""+controller.getControllerUrl()+"\", produces=\"" + mediaType +"\"";
     }
 
+    /**
+     * @return the media type specefied in the .raml spec, or null if no media type is set.
+     */
     private String generateMediaType() {
         String ramlMediaType = controller.getDocument().getMediaType();
         try {
@@ -93,39 +166,31 @@ public class Spring4ControllerSerializer implements ApiControllerMetadataSeriali
         }
     }
 
-    protected void addImports() {
-        gen += "import org.springframework.http.*; \n";
-        gen += "import java.util.*; \n";
-        gen += "import org.springframework.web.bind.annotation.*; \n";
-        gen += generateModelImport(); // TODO make this import only if we have 1 or more bodies
-        gen += "\n";
-    }
-
+    /**
+     * @return the import statetement for the generated model code or an empty string if no model is generated.
+     */
     protected String generateModelImport() {
-        return "import " + (StringUtils.hasText(controller.getBasePackage()) ? controller.getBasePackage() + "." : "")
-                + "model.*; \n";
-    }
-
-    protected void addPackageSection() {
-        if (StringUtils.hasText(controller.getBasePackage())) {
-            gen += "package " + controller.getBasePackage() + ";\n";
-            gen += "\n";
+        if(hasResponseModel()) {
+            String basePackage = StringUtils.hasText(controller.getBasePackage()) ? controller.getBasePackage() + "." : "";
+            return "import " + basePackage + "model.*; \n";
         }
-    }
-
-    protected void addHeader() {
-        if (StringUtils.hasText(header)) {
-            gen += header + "\n";
-            gen += "\n";
-        }
-    }
-
-
-    protected String generateImplementsExtends() {
         return "";
     }
 
-    protected void addClassFields() {
+    /**
+     *
+     * @return true, if the controller has a response model
+     */
+    protected boolean hasResponseModel() {
+        return controller.getDependencies().size() > 0;
+    }
+
+    /**
+     *
+     * @return the implements and extends part of the class declaration
+     */
+    protected String generateImplementsExtends() {
+        return "";
     }
 
     protected String generateControllerClassName() {
@@ -143,34 +208,62 @@ public class Spring4ControllerSerializer implements ApiControllerMetadataSeriali
      * @return The java method as a String
      */
     protected String generateMethodForApiCall(ApiMappingMetadata mapping) {
-        String gen = "";
-        gen += generateMethodComments(mapping);
-        gen += generateMethodAnnotation(mapping);
-        gen += "\tpublic " + generateMethodResponseType(mapping) + " " + mapping.getName() + " (" + generateMethodParameters(mapping) + ") ";
-        gen += "{ \n";
-        gen += generateMethodBody(mapping);
-        gen += "\t}\n";
-        return gen;
+        String methodCode = "";
+        methodCode += generateMethodComments(mapping);
+        methodCode += generateMethodAnnotation(mapping);
+        methodCode += "\tpublic " + generateMethodResponseType(mapping) + " " + mapping.getName() + " (" + generateMethodParameters(mapping) + ") ";
+        methodCode += "{ \n";
+        methodCode += generateMethodBody(mapping);
+        methodCode += "\t}\n";
+        return methodCode;
     }
 
+    /**
+     *
+     * @param mapping The api call method to represent
+     * @return comment section of the method declaration
+     */
     protected String generateMethodComments(ApiMappingMetadata mapping) {
-        String gen = "";
-        gen += "\t/**\n";
-        gen += "\t * "
+        String comments = "";
+        comments += "\t/**\n";
+        comments += "\t * "
                 + ((mapping.getDescription() != null) ? mapping.getDescription().replaceAll("\n", "\n\t *")
                 : "No description") + "\n";
-        gen += "\t */\n";
-        return gen;
+        comments += "\t */\n";
+        return comments;
     }
 
+    /**
+     *
+     * @param mapping The api call method to represent
+     * @return the method annotion (@RequestMapping ...) for this controller method.
+     */
     protected String generateMethodAnnotation(ApiMappingMetadata mapping) {
         return "\t@" + RequestMapping.class.getSimpleName() +"(value=\"" + mapping.getUrl() + "\", method=RequestMethod."+mapping.getActionType().name()+")\n";
     }
 
+    /**
+     * This method makes use of the generic generateMethodParameters(ApiMappingMetadata, Function, Function) method.
+     * In this case a fully blown method signatures are being created (annotion + type + name).
+     *
+     * @param mapping The api call method to represent
+     * @return the method parameters.
+     */
     protected String generateMethodParameters(ApiMappingMetadata mapping) {
         return generateMethodParameters(mapping, parameterFullStrategy(), requestBodyParameterAllStrategy());
     }
 
+    /**
+     * This is a generic generateMethodParameters(ApiMappingMetadata, Function, Function) method.
+     * It makes use of Java 8 Function parameters to externalize the strategy of parameter serialization.
+     *
+     * The method generates a ',' seperated list of all API Endpoint parameters (@PathVariable and @RequestParam).
+     *
+     * @param mapping  The api call method to represent
+     * @param parameterMappingStrategy The strategy for ApiParameterMetadata parameters
+     * @param requestBodyParameterMappingStrategy The strategy for ApiBodyMetadata parameters
+     * @return a ',' seperated serialization of all API Endpoint parameters
+     */
     protected String generateMethodParameters(ApiMappingMetadata mapping,
                                               Function<ApiParameterMetadata, String> parameterMappingStrategy,
                                               Function<ApiBodyMetadata, String> requestBodyParameterMappingStrategy) {
@@ -179,6 +272,12 @@ public class Spring4ControllerSerializer implements ApiControllerMetadataSeriali
         return parameters;
     }
 
+    /**
+     *
+     * @param mapping The api call method to represent
+     * @param mappingFunction The strategy for ApiParameterMetadata parameters
+     * @return a ',' seperated serialization of ApiParameterMetadata parameters
+     */
     protected String generateParameters(ApiMappingMetadata mapping, Function<ApiParameterMetadata, String> mappingFunction) {
         List<ApiParameterMetadata> parameterMetadataList = new ArrayList<>();
         parameterMetadataList.addAll(mapping.getPathVariables());
@@ -186,6 +285,12 @@ public class Spring4ControllerSerializer implements ApiControllerMetadataSeriali
         return generateCommaSeperatedParameters(parameterMetadataList, mappingFunction);
     }
 
+    /**
+     *
+     * @param mapping The api call method to represent
+     * @param mappingFunction The strategy for ApiBodyMetadata parameters
+     * @return a ',' seperated serialization of ApiBodyMetadata parameters
+     */
     protected String generateBodyParameters(ApiMappingMetadata mapping, Function<ApiBodyMetadata, String> mappingFunction) {
         if (mapping.getRequestBody() != null) {
             List<ApiBodyMetadata> bodyMetadataList = new ArrayList<>();
@@ -195,10 +300,21 @@ public class Spring4ControllerSerializer implements ApiControllerMetadataSeriali
         return "";
     }
 
+    /**
+     *
+     * @param parameterMetadataList values to iterator
+     * @param mappingFunction a mapping function
+     * @param <T>
+     * @return a ',' seperated serialization of parameterMetadataList values mapped by the mapping function.
+     */
     protected <T> String generateCommaSeperatedParameters(List<T> parameterMetadataList, Function<T, String> mappingFunction) {
         return parameterMetadataList.stream().map(mappingFunction).collect(Collectors.toList()).stream().collect(Collectors.joining(", "));
     }
 
+    /**
+     *
+     * @return a fully blown serialization of the ApiBodyMetadata parameters (annotation + type + name).
+     */
     protected Function<ApiBodyMetadata, String> requestBodyParameterAllStrategy() {
         return apiBodyMetadata -> {
             String annotation = generateRequestBodyParamaterAnnotation();
@@ -208,6 +324,10 @@ public class Spring4ControllerSerializer implements ApiControllerMetadataSeriali
         };
     }
 
+    /**
+     *
+     * @return a serialization of the ApiBodyMetadata parameters without annotations (type + name).
+     */
     protected Function<ApiBodyMetadata, String> requestBodyParameterNoAnnotationsStrategy() {
         return apiBodyMetadata -> {
             String type = generateRequestBodyParameterType(apiBodyMetadata) + " ";
@@ -216,6 +336,10 @@ public class Spring4ControllerSerializer implements ApiControllerMetadataSeriali
         };
     }
 
+    /**
+     *
+     * @return a serialization of the ApiBodyMetadata parameter names only (name).
+     */
     protected Function<ApiBodyMetadata, String> requestBodyParameterParameterNamesOnlyStrategy() {
         return apiBodyMetadata -> {
             String type = generateRequestBodyParameterType(apiBodyMetadata) + " ";
@@ -224,6 +348,10 @@ public class Spring4ControllerSerializer implements ApiControllerMetadataSeriali
         };
     }
 
+    /**
+     *
+     * @return a fully blown serialization of the ApiParameterMetadata parameters (annotation + type + name).
+     */
     protected Function<ApiParameterMetadata, String> parameterFullStrategy() {
         return apiParameterMetadata -> {
             String annotation = generateParameterAnnotation(apiParameterMetadata);
@@ -233,6 +361,10 @@ public class Spring4ControllerSerializer implements ApiControllerMetadataSeriali
         };
     }
 
+    /**
+     *
+     * @return a serialization of the ApiParameterMetadata parameters without annotations (type + name).
+     */
     protected Function<ApiParameterMetadata, String> parameterNoAnnotationsStrategy() {
         return apiParameterMetadata -> {
             String type = generateParameterType(apiParameterMetadata);
@@ -241,10 +373,19 @@ public class Spring4ControllerSerializer implements ApiControllerMetadataSeriali
         };
     }
 
+    /**
+     *
+     * @return a serialization of the ApiParameterMetadata parameter names only (name).
+     */
     protected Function<ApiParameterMetadata, String> parameterNamesOnlyStrategy() {
         return apiParameterMetadata -> apiParameterMetadata.getName();
     }
 
+    /**
+     *
+     * @param mapping The api call method to represent
+     * @return the method response type (Spring "ResponseEntity" by default).
+     */
     protected String generateMethodResponseType(ApiMappingMetadata mapping) {
         String response = "ResponseEntity";
         if (!mapping.getResponseBody().isEmpty()) {
@@ -260,16 +401,28 @@ public class Spring4ControllerSerializer implements ApiControllerMetadataSeriali
         return response;
     }
 
-
+    /**
+     *
+     * @param apiBodyMetadata
+     * @return the name of the ApiBodyMetadata
+     */
     protected String generateRequestBodyParameterType(ApiBodyMetadata apiBodyMetadata) {
         return apiBodyMetadata.getName();
     }
 
-
+    /**
+     *
+     * @return the single @RequestBody Annotation
+     */
     protected String generateRequestBodyParamaterAnnotation() {
         return "@" + RequestBody.class.getSimpleName() + " ";
     }
 
+    /**
+     *
+     * @param mapping The api call method to represent
+     * @return an empty method body of this api endpoint method.
+     */
     protected String generateMethodBody(ApiMappingMetadata mapping) {
         String methodBody = "\t\n";
         methodBody += "\t\t //TODO Autogenerated Method Stub. Implement me please.\n";
@@ -277,12 +430,20 @@ public class Spring4ControllerSerializer implements ApiControllerMetadataSeriali
         return methodBody;
     }
 
-
-
+    /**
+     *
+     * @param param
+     * @return the type of the parameter
+     */
     protected String generateParameterType(ApiParameterMetadata param) {
         return param.getType().getSimpleName() + " ";
     }
 
+    /**
+     *
+     * @param param
+     * @return the Annotation of the parameter including (required = false) if the parameter is optional.
+     */
     protected String generateParameterAnnotation(ApiParameterMetadata param) {
         String annotation = "@";
         if (param.getRamlParam() != null && param.getRamlParam() instanceof UriParameter) {

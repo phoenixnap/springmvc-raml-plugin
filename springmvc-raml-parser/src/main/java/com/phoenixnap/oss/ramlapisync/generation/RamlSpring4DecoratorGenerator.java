@@ -21,6 +21,8 @@ import java.util.List;
  *
  * // 2. A Decorator that implements the Controller Interface
  * // and delegates to another instance of a class implementing the very same controller interface.
+ * @RestController
+ * @RequestMapping("/people")
  * class PeopleControllerDecorator implements PeopleController {
  *
  *     @Autowired
@@ -36,7 +38,7 @@ import java.util.List;
  * This way he can implement the endpoint without altering the generated code.
  *
  * @author armin.weisser
- * @since 0.2.5
+ * @since 0.3.1
  */
 public class RamlSpring4DecoratorGenerator extends RamlGenerator {
 

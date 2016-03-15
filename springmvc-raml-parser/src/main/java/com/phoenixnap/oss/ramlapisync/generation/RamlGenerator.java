@@ -49,6 +49,9 @@ public class RamlGenerator {
 
 	private static final String pathSeparator = System.getProperty("path.separator");
 
+	private static final Pattern INCLUDE_FIXER_PATTERN = Pattern.compile("\"(\\!include [^\"]*)\"");
+
+
 	/**
 	 * Class Logger
 	 */
@@ -196,8 +199,6 @@ public class RamlGenerator {
 		}
 		return documentInfos;
 	}
-
-	private static final Pattern INCLUDE_FIXER_PATTERN = Pattern.compile("\"(\\!include [^\"]*)\"");
 
 	/**
 	 * Raml post-processor that will be run before the final RAML string is output to overcome a limitation due to
