@@ -43,8 +43,6 @@ import java.util.regex.Pattern;
  */
 public class RamlGenerator {
 
-	public static final String MODEL_OBJECT_SUBFOLDER = ".model";
-
 	private static final String DEFAULT_RAML_FILENAME = "api.raml";
 
 	private static final String RAML_EXTENSION = ".raml";
@@ -67,7 +65,7 @@ public class RamlGenerator {
 	private ResourceParser scanner;
 
 	/**
-	 * Default constructor
+	 * Default constructor. A scanner is not mandatory.
 	 */
 	public RamlGenerator() {
 	}
@@ -104,8 +102,10 @@ public class RamlGenerator {
 	 */
 	public RamlGenerator generateRamlForClasses(String title, String version, String baseUri,
 			Class<?>[] classesToGenerate, Set<ApiDocumentMetadata> documents) {
-		Raml raml = new Raml();
 
+		assertResourceParser();
+
+		Raml raml = new Raml();
 		raml.setBaseUri(baseUri);
 		raml.setVersion(version);
 		raml.setTitle(title);
@@ -129,6 +129,15 @@ public class RamlGenerator {
 			});
 		this.raml = raml;
 		return this;
+	}
+
+	/**
+	 * for some of the public methods a ResourceParser has to be set.
+	 */
+	private void assertResourceParser() {
+		if(scanner == null) {
+			throw new IllegalStateException("Please make sure to setup a ResourceParser before calling this method.");
+		}
 	}
 
 	/**
