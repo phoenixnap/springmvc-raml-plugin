@@ -209,7 +209,7 @@ public class SpringMvcEndpointGeneratorMojo extends AbstractMojo {
 		String genX = serializer.serialize();
 		this.getLog().debug(genX);
 		String javaFileName = serializer.getName() + ".java";
-		File file = new File(dir.getAbsolutePath() + "\\" + javaFileName);
+		File file = new File(dir.getAbsolutePath() + "/" + javaFileName);
 		FileWriter writer = null;
 		try {
             writer = new FileWriter(file);
