@@ -3,7 +3,6 @@ package com.gen.test;
 import org.springframework.http.*;
 import java.util.*;
 import org.springframework.web.bind.annotation.*;
-import com.gen.test.model.*;
 
 public interface SecondBaseController {
 
