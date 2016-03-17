@@ -12,15 +12,16 @@
  */
 package com.phoenixnap.oss.ramlapisync.data;
 
-import com.phoenixnap.oss.ramlapisync.naming.NamingHelper;
+import java.util.Collections;
+import java.util.LinkedHashSet;
+import java.util.Set;
+
 import org.raml.model.Action;
 import org.raml.model.ActionType;
 import org.raml.model.Raml;
 import org.raml.model.Resource;
 
-import java.util.Collections;
-import java.util.LinkedHashSet;
-import java.util.Set;
+import com.phoenixnap.oss.ramlapisync.naming.NamingHelper;
 
 
 /**
@@ -53,6 +54,10 @@ public class ApiControllerMetadata {
 	
 	public void addApiCall(Resource resource, ActionType actionType, Action action) {
 		apiCalls.add(new ApiMappingMetadata(this, resource, actionType, action));
+	}
+	
+	public void addApiCall(Resource resource, ActionType actionType, Action action, String responseContentType) {
+		apiCalls.add(new ApiMappingMetadata(this, resource, actionType, action, responseContentType));
 	}
 	
     public Set<ApiMappingMetadata> getApiCalls() {

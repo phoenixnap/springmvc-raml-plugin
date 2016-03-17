@@ -126,7 +126,14 @@ public class RamlParser {
 		//extract actions for this resource
 		if (resource.getActions() != null && !resource.getActions().isEmpty()) {			
 			for (Entry<ActionType, Action> childResource : resource.getActions().entrySet()) {
-				controller.addApiCall(resource, childResource.getKey(), childResource.getValue());
+				//if we have multiple response types in the raml, this should produce different calls
+				if (childResource.getValue().hasBody() && childResource.getValue().getBody().size() > 1) {
+					for (String responseType : childResource.getValue().getBody().keySet()) {
+						controller.addApiCall(resource, childResource.getKey(), childResource.getValue(), responseType);
+					}
+				} else {
+					controller.addApiCall(resource, childResource.getKey(), childResource.getValue());
+				}
 			}
 		}
 		if (resource.getResources() != null &&  !resource.getResources().isEmpty()) {

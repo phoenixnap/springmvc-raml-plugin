@@ -15,6 +15,7 @@ package com.phoenixnap.oss.ramlapisync.data;
 import com.phoenixnap.oss.ramlapisync.naming.NamingHelper;
 import com.phoenixnap.oss.ramlapisync.naming.SchemaHelper;
 import com.phoenixnap.oss.ramlapisync.parser.ResourceParser;
+
 import org.raml.model.*;
 import org.raml.model.parameter.FormParameter;
 import org.raml.model.parameter.QueryParameter;
@@ -44,14 +45,19 @@ public class ApiMappingMetadata {
 	Set<ApiParameterMetadata> pathVariables = null;
 	Set<ApiParameterMetadata> requestParameters = null;
 
-	public ApiMappingMetadata(ApiControllerMetadata parent, Resource resource, ActionType actionType, Action action) {
+	public ApiMappingMetadata(ApiControllerMetadata parent, Resource resource, ActionType actionType, Action action, String responseContentTypeFilter) {
 		super();
 		this.parent = parent;
 		this.resource = resource;
 		this.actionType = actionType;
 		this.action = action;
 		parseRequest();
-		parseResponse();
+		parseResponse(responseContentTypeFilter);
+
+	}
+	
+	public ApiMappingMetadata(ApiControllerMetadata parent, Resource resource, ActionType actionType, Action action) {
+		this(parent, resource, actionType, action, null);
 
 	}
 
@@ -124,22 +130,24 @@ public class ApiMappingMetadata {
 		}
 	}
 
-	private void parseResponse() {
+	private void parseResponse(String responseContentTypeFilter) {
 		if (action.getResponses() != null && !action.getResponses().isEmpty()) {
 			for (Entry<String, Response> responses : action.getResponses().entrySet()) {
 				Response response = responses.getValue();
 
 				if ("200".equals(responses.getKey()) && response.getBody() != null && !response.getBody().isEmpty()) {
 					for (Entry<String, MimeType> body : response.getBody().entrySet()) {
-						if (body.getKey().toLowerCase().contains("json")) {
-							// Continue here!
-							String schema = body.getValue().getSchema();
-							if (StringUtils.hasText(schema)) {
-								
-								ApiBodyMetadata responseBody = SchemaHelper.mapSchemaToPojo(parent.getDocument(), schema,
-										parent.getBasePackage() + ".model", StringUtils.capitalize(getName()) + "Response");
-								if (responseBody != null) {
-									this.responseBody.put(body.getKey(), responseBody);
+						if (responseContentTypeFilter == null || body.getKey().equals(responseContentTypeFilter)) {
+							if (body.getKey().toLowerCase().contains("json")) { //if we have a json type we need to return an object
+								// Continue here!
+								String schema = body.getValue().getSchema();
+								if (StringUtils.hasText(schema)) {
+									
+									ApiBodyMetadata responseBody = SchemaHelper.mapSchemaToPojo(parent.getDocument(), schema,
+											parent.getBasePackage() + ".model", StringUtils.capitalize(getName()) + "Response");
+									if (responseBody != null) {
+										this.responseBody.put(body.getKey(), responseBody);
+									}
 								}
 							}
 						}
@@ -200,13 +208,10 @@ public class ApiMappingMetadata {
 	}
 
 	public String getProduces() {
-		if (action.getResponses() != null && !action.getResponses().isEmpty()
-				&& action.getResponses().containsKey("200")) {
-			Response response = action.getResponses().get("200");
-
+		if (responseBody != null && !responseBody.isEmpty()) {
 			String out = "";
 			boolean first = true;
-			for (String key : response.getBody().keySet()) {
+			for (String key : responseBody.keySet()) {
 				if (first) {
 					first = false;
 				} else {
