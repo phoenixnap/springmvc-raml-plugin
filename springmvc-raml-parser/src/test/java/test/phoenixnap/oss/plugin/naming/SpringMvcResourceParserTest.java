@@ -21,6 +21,7 @@ import static org.junit.Assert.assertTrue;
 import java.lang.reflect.Method;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -31,6 +32,7 @@ import org.raml.model.Action;
 import org.raml.model.ActionType;
 import org.raml.model.MimeType;
 import org.raml.model.ParamType;
+import org.raml.model.Raml;
 import org.raml.model.Resource;
 import org.raml.model.Response;
 import org.raml.model.parameter.FormParameter;
@@ -44,6 +46,9 @@ import test.phoenixnap.oss.plugin.naming.testclasses.BugController;
 import test.phoenixnap.oss.plugin.naming.testclasses.NoValueController;
 import test.phoenixnap.oss.plugin.naming.testclasses.TestController;
 
+import com.phoenixnap.oss.ramlapisync.data.ApiControllerMetadata;
+import com.phoenixnap.oss.ramlapisync.generation.RamlParser;
+import com.phoenixnap.oss.ramlapisync.generation.RamlVerifier;
 import com.phoenixnap.oss.ramlapisync.javadoc.JavaDocEntry;
 import com.phoenixnap.oss.ramlapisync.javadoc.JavaDocExtractor;
 import com.phoenixnap.oss.ramlapisync.javadoc.JavaDocStore;
@@ -81,6 +86,17 @@ public class SpringMvcResourceParserTest {
 		assertNotNull("Check Response is there", response.getBody().get(DEFAULT_MEDIA_TYPE));
 		assertNotNull("Check Response Schema is there", response.getBody().get(DEFAULT_MEDIA_TYPE).getSchema());
 	}
+	
+    @Test
+    public void test_seperateContentType_decorator_Success() throws Exception {
+        Raml published = RamlVerifier.loadRamlFromFile("test-responsebody-multipletype.raml");
+        RamlParser par = new RamlParser("com.gen.test", "/api");
+        Set<ApiControllerMetadata> controllersMetadataSet = par.extractControllers(published);
+
+        assertEquals(1, controllersMetadataSet.size());
+        assertEquals(2, controllersMetadataSet.iterator().next().getApiCalls().size());
+
+    }
 
 	private static String combineConstantAndName(String constant, String name) {
 		return name + constant;
