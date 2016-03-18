@@ -25,7 +25,6 @@ import java.util.Map;
 import java.util.Set;
 
 import org.junit.BeforeClass;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.mockito.Mockito;
 import org.mockito.invocation.InvocationOnMock;
@@ -57,6 +56,7 @@ import com.phoenixnap.oss.ramlapisync.javadoc.JavaDocEntry;
 import com.phoenixnap.oss.ramlapisync.javadoc.JavaDocExtractor;
 import com.phoenixnap.oss.ramlapisync.javadoc.JavaDocStore;
 import com.phoenixnap.oss.ramlapisync.parser.FileSearcher;
+import com.phoenixnap.oss.ramlapisync.parser.ResourceParser;
 import com.phoenixnap.oss.ramlapisync.parser.SpringMvcResourceParser;
 
 /**
@@ -84,7 +84,7 @@ public class SpringMvcResourceParserTest {
 
 	private void validateSimpleAjaxResponse(Action action) {
 		assertEquals(1, action.getResponses().size());
-		Response response = action.getResponses().get("200");
+		Response response = ResourceParser.getSuccessfulResponse(action);
 		assertEquals("Checking return javadoc", RETURN_JAVADOC, response.getDescription());
 		assertEquals(1, response.getBody().size());
 		assertNotNull("Check Response is there", response.getBody().get(DEFAULT_MEDIA_TYPE));
@@ -93,7 +93,7 @@ public class SpringMvcResourceParserTest {
 	
 	private void validateMultipleResponse(Action action) {
 		assertEquals(1, action.getResponses().size());
-		Response response = action.getResponses().get("200");
+		Response response = ResourceParser.getSuccessfulResponse(action);
 		assertEquals("Checking return javadoc", RETURN_JAVADOC, response.getDescription());
 		assertEquals(2, response.getBody().size());
 		assertNotNull("Check Response is there", response.getBody().get(MediaType.APPLICATION_JSON_VALUE));		
