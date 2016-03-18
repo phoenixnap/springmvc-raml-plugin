@@ -26,6 +26,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.phoenixnap.oss.ramlapisync.data.ApiControllerMetadata;
+import com.phoenixnap.oss.ramlapisync.parser.ResourceParser;
 
 
 /**
@@ -142,11 +143,11 @@ public class RamlParser {
 				Response response = null;
 				
 				if (childResource.getValue().getResponses() != null) {
-					response = childResource.getValue().getResponses().get("200");
+					response = ResourceParser.getSuccessfulResponse(childResource.getValue());
 				}
 				
 				if (seperateMethodsByContentType && response != null && response.hasBody() && response.getBody().size() > 1) {
-						for (String responseType : childResource.getValue().getResponses().get("200").getBody().keySet()) {
+						for (String responseType : response.getBody().keySet()) {
 							controller.addApiCall(resource, childResource.getKey(), childResource.getValue(), responseType);
 						}
 					

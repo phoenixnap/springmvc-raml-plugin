@@ -44,6 +44,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.http.MediaType;
 
 import test.phoenixnap.oss.plugin.naming.testclasses.BugController;
+import test.phoenixnap.oss.plugin.naming.testclasses.MultipleContentTypeTestController;
 import test.phoenixnap.oss.plugin.naming.testclasses.NoValueController;
 import test.phoenixnap.oss.plugin.naming.testclasses.TestController;
 
@@ -55,6 +56,7 @@ import com.phoenixnap.oss.ramlapisync.javadoc.JavaDocEntry;
 import com.phoenixnap.oss.ramlapisync.javadoc.JavaDocExtractor;
 import com.phoenixnap.oss.ramlapisync.javadoc.JavaDocStore;
 import com.phoenixnap.oss.ramlapisync.parser.FileSearcher;
+import com.phoenixnap.oss.ramlapisync.parser.ResourceParser;
 import com.phoenixnap.oss.ramlapisync.parser.SpringMvcResourceParser;
 
 /**
@@ -82,42 +84,20 @@ public class SpringMvcResourceParserTest {
 
 	private void validateSimpleAjaxResponse(Action action) {
 		assertEquals(1, action.getResponses().size());
-		Response response = action.getResponses().get("200");
+		Response response = ResourceParser.getSuccessfulResponse(action);
 		assertEquals("Checking return javadoc", RETURN_JAVADOC, response.getDescription());
 		assertEquals(1, response.getBody().size());
 		assertNotNull("Check Response is there", response.getBody().get(DEFAULT_MEDIA_TYPE));
 		assertNotNull("Check Response Schema is there", response.getBody().get(DEFAULT_MEDIA_TYPE).getSchema());
 	}
 	
-    @Test
-    public void test_seperateContentType__Success() throws Exception {
-        Raml published = RamlVerifier.loadRamlFromFile("test-responsebody-multipletype.raml");
-        RamlParser par = new RamlParser("com.gen.test", "/api", true);
-        Set<ApiControllerMetadata> controllersMetadataSet = par.extractControllers(published);
-
-        assertEquals(1, controllersMetadataSet.size());
-        assertEquals(2, controllersMetadataSet.iterator().next().getApiCalls().size());
-        
-        //lets check that names wont collide
-        Iterator<ApiMappingMetadata> apiCallIterator = controllersMetadataSet.iterator().next().getApiCalls().iterator();
-		assertTrue(apiCallIterator.next().getName().contains("As"));
-		assertTrue(apiCallIterator.next().getName().contains("As"));
-        
-        //lets check that it switches off correctly
-        par = new RamlParser("com.gen.test", "/api", false);
-        controllersMetadataSet = par.extractControllers(published);
-        assertEquals(1, controllersMetadataSet.size());
-        assertEquals(1, controllersMetadataSet.iterator().next().getApiCalls().size());
-        
-        //lets check that names arent changed
-        apiCallIterator = controllersMetadataSet.iterator().next().getApiCalls().iterator();
-		assertFalse(apiCallIterator.next().getName().contains("As"));
-		
-
-    }
-
-	private static String combineConstantAndName(String constant, String name) {
-		return name + constant;
+	private void validateMultipleResponse(Action action) {
+		assertEquals(1, action.getResponses().size());
+		Response response = ResourceParser.getSuccessfulResponse(action);
+		assertEquals("Checking return javadoc", RETURN_JAVADOC, response.getDescription());
+		assertEquals(2, response.getBody().size());
+		assertNotNull("Check Response is there", response.getBody().get(MediaType.APPLICATION_JSON_VALUE));		
+		assertNotNull("Check Response is there", response.getBody().get(MediaType.TEXT_PLAIN_VALUE));		
 	}
 
 	@SuppressWarnings("unchecked")
@@ -151,6 +131,39 @@ public class SpringMvcResourceParserTest {
 
 		baseResourceTestController = parser.extractResourceInfo(TestController.class);
 	}
+	
+
+	private static String combineConstantAndName(String constant, String name) {
+		return name + constant;
+	}
+
+    @Test
+    public void test_seperateContentType__Success() throws Exception {
+        Raml published = RamlVerifier.loadRamlFromFile("test-responsebody-multipletype.raml");
+        RamlParser par = new RamlParser("com.gen.test", "/api", true);
+        Set<ApiControllerMetadata> controllersMetadataSet = par.extractControllers(published);
+
+        assertEquals(1, controllersMetadataSet.size());
+        assertEquals(2, controllersMetadataSet.iterator().next().getApiCalls().size());
+        
+        //lets check that names wont collide
+        Iterator<ApiMappingMetadata> apiCallIterator = controllersMetadataSet.iterator().next().getApiCalls().iterator();
+		assertTrue(apiCallIterator.next().getName().contains("As"));
+		assertTrue(apiCallIterator.next().getName().contains("As"));
+        
+        //lets check that it switches off correctly
+        par = new RamlParser("com.gen.test", "/api", false);
+        controllersMetadataSet = par.extractControllers(published);
+        assertEquals(1, controllersMetadataSet.size());
+        assertEquals(1, controllersMetadataSet.iterator().next().getApiCalls().size());
+        
+        //lets check that names arent changed
+        apiCallIterator = controllersMetadataSet.iterator().next().getApiCalls().iterator();
+		assertFalse(apiCallIterator.next().getName().contains("As"));
+		
+
+    }
+
 
 	@Test
 	public void test_controllerdetection() {
@@ -164,6 +177,22 @@ public class SpringMvcResourceParserTest {
 	public void test_multipleHttpMethods() {
 		Resource testResource = baseResourceTestController.getResource("/base").getResource("/simpleMethodAll");
 		assertEquals("Assert resources size", ActionType.values().length, testResource.getActions().size());
+	}
+	
+	@Test
+	public void test_multipleContentType() {
+		Resource resourceInfo = parser.extractResourceInfo(MultipleContentTypeTestController.class);
+
+		Resource testResource = resourceInfo.getResource("/base").getResource("/endpoint");
+		assertEquals("Assert resources size", 2, testResource.getActions().size());
+		Action getAction = testResource.getActions().get(ActionType.GET);
+		Action postAction = testResource.getActions().get(ActionType.POST);
+		assertNotNull(getAction);
+		assertNotNull(postAction);
+		assertEquals("Assert Javadoc", COMMENT_JAVADOC, getAction.getDescription());
+		assertEquals("Assert Javadoc", COMMENT_JAVADOC, postAction.getDescription());
+		validateMultipleResponse(getAction);
+		validateMultipleResponse(postAction);
 	}
 
 	@Test
