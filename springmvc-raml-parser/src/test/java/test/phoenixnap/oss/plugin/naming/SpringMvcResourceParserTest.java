@@ -19,6 +19,7 @@ import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
 import java.lang.reflect.Method;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -47,6 +48,7 @@ import test.phoenixnap.oss.plugin.naming.testclasses.NoValueController;
 import test.phoenixnap.oss.plugin.naming.testclasses.TestController;
 
 import com.phoenixnap.oss.ramlapisync.data.ApiControllerMetadata;
+import com.phoenixnap.oss.ramlapisync.data.ApiMappingMetadata;
 import com.phoenixnap.oss.ramlapisync.generation.RamlParser;
 import com.phoenixnap.oss.ramlapisync.generation.RamlVerifier;
 import com.phoenixnap.oss.ramlapisync.javadoc.JavaDocEntry;
@@ -88,13 +90,29 @@ public class SpringMvcResourceParserTest {
 	}
 	
     @Test
-    public void test_seperateContentType_decorator_Success() throws Exception {
+    public void test_seperateContentType__Success() throws Exception {
         Raml published = RamlVerifier.loadRamlFromFile("test-responsebody-multipletype.raml");
-        RamlParser par = new RamlParser("com.gen.test", "/api");
+        RamlParser par = new RamlParser("com.gen.test", "/api", true);
         Set<ApiControllerMetadata> controllersMetadataSet = par.extractControllers(published);
 
         assertEquals(1, controllersMetadataSet.size());
         assertEquals(2, controllersMetadataSet.iterator().next().getApiCalls().size());
+        
+        //lets check that names wont collide
+        Iterator<ApiMappingMetadata> apiCallIterator = controllersMetadataSet.iterator().next().getApiCalls().iterator();
+		assertTrue(apiCallIterator.next().getName().contains("As"));
+		assertTrue(apiCallIterator.next().getName().contains("As"));
+        
+        //lets check that it switches off correctly
+        par = new RamlParser("com.gen.test", "/api", false);
+        controllersMetadataSet = par.extractControllers(published);
+        assertEquals(1, controllersMetadataSet.size());
+        assertEquals(1, controllersMetadataSet.iterator().next().getApiCalls().size());
+        
+        //lets check that names arent changed
+        apiCallIterator = controllersMetadataSet.iterator().next().getApiCalls().iterator();
+		assertFalse(apiCallIterator.next().getName().contains("As"));
+		
 
     }
 

@@ -87,6 +87,12 @@ public class SpringMvcEndpointGeneratorMojo extends AbstractMojo {
 	 */
 	@Parameter(required = false, readonly = true)
 	protected String baseUri;
+	
+	/**
+	 * If set to true, we will generate seperate methods for different content types in the RAML
+	 */
+	@Parameter(required = false, readonly = true, defaultValue = "false")
+	protected Boolean seperateMethodsByContentType;
 
 	/**
 	 * The full qualified name of the RamlGenerator that should be used.
@@ -110,7 +116,7 @@ public class SpringMvcEndpointGeneratorMojo extends AbstractMojo {
 		}
 		
 		Raml loadRamlFromFile = RamlParser.loadRamlFromFile( "file:"+resolvedRamlPath );
-		RamlParser par = new RamlParser(basePackage, getBasePath(loadRamlFromFile));
+		RamlParser par = new RamlParser(basePackage, getBasePath(loadRamlFromFile), seperateMethodsByContentType);
 		RamlGenerator gen = createRamlGenerator();
 		Set<ApiControllerMetadata> controllers = par.extractControllers(loadRamlFromFile);
 

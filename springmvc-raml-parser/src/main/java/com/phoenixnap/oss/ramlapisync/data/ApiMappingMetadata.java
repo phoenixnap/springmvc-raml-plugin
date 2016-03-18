@@ -44,6 +44,8 @@ public class ApiMappingMetadata {
 	Map<String, ApiBodyMetadata> responseBody = new LinkedHashMap<>();
 	Set<ApiParameterMetadata> pathVariables = null;
 	Set<ApiParameterMetadata> requestParameters = null;
+	
+	private String responseContentTypeFilter;
 
 	public ApiMappingMetadata(ApiControllerMetadata parent, Resource resource, ActionType actionType, Action action, String responseContentTypeFilter) {
 		super();
@@ -51,6 +53,8 @@ public class ApiMappingMetadata {
 		this.resource = resource;
 		this.actionType = actionType;
 		this.action = action;
+		
+		this.responseContentTypeFilter = responseContentTypeFilter;
 		parseRequest();
 		parseResponse(responseContentTypeFilter);
 
@@ -204,7 +208,11 @@ public class ApiMappingMetadata {
 	}
 
 	public String getName() {
-		return NamingHelper.getActionName(parent.getResource(), resource, action, actionType);
+		String name = NamingHelper.getActionName(parent.getResource(), resource, action, actionType);
+		if (responseContentTypeFilter != null) {
+			name += NamingHelper.convertContentTypeToQualifier(responseContentTypeFilter);
+		}
+		return name;
 	}
 
 	public String getProduces() {

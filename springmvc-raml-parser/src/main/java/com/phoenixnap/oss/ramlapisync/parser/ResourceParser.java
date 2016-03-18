@@ -63,6 +63,7 @@ public abstract class ResourceParser {
 	protected String version;
 
 	protected String defaultMediaType;
+	
 
 	public ResourceParser(File javaDocPath, String version, String defaultMediaType) {
 		this.version = version;

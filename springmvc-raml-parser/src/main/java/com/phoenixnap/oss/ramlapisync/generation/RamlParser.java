@@ -52,6 +52,11 @@ public class RamlParser {
 	 * The start URL that every controller should be prefixed with
 	 */
 	private String startUrl = "";
+	
+	/**
+	 * If set to true, we will generate seperate methods for different content types in the RAML
+	 */
+	protected boolean seperateMethodsByContentType = false;
 
 	public RamlParser (String basePackage) {
 		this.basePackage = basePackage;
@@ -60,6 +65,11 @@ public class RamlParser {
 	public RamlParser(String basePackage, String startUrl) {
 		this(basePackage);
 		this.startUrl = startUrl;
+	}
+	
+	public RamlParser(String basePackage, String startUrl, boolean seperateMethodsByContentType) {
+		this(basePackage, startUrl);
+		this.seperateMethodsByContentType = seperateMethodsByContentType;
 	}
 
 	/**
@@ -135,7 +145,7 @@ public class RamlParser {
 					response = childResource.getValue().getResponses().get("200");
 				}
 				
-				if (response != null && response.hasBody() && response.getBody().size() > 1) {
+				if (seperateMethodsByContentType && response != null && response.hasBody() && response.getBody().size() > 1) {
 						for (String responseType : childResource.getValue().getResponses().get("200").getBody().keySet()) {
 							controller.addApiCall(resource, childResource.getKey(), childResource.getValue(), responseType);
 						}
