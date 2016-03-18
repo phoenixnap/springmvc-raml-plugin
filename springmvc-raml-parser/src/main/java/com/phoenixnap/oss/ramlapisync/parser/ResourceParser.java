@@ -15,7 +15,6 @@ package com.phoenixnap.oss.ramlapisync.parser;
 import java.io.File;
 import java.lang.reflect.Method;
 import java.lang.reflect.Parameter;
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -78,8 +77,7 @@ public abstract class ResourceParser {
 	 * @param clazz
 	 * @return
 	 */
-	private List<Resource> getMethodsFromService(Class<?> clazz, JavaDocStore javaDoc, Resource parentResource) {
-		List<Resource> resources = new ArrayList<>();
+	private void getMethodsFromService(Class<?> clazz, JavaDocStore javaDoc, Resource parentResource) {
 		try {
 			for (Method method : clazz.getMethods()) {
 				if (!IGNORE_METHOD_REGEX.matcher(method.getName()).matches() && shouldAddMethodToApi(method)) {
@@ -89,7 +87,6 @@ public abstract class ResourceParser {
 		} catch (NoClassDefFoundError nEx) {
 			logger.error("Unable to get methods - skipping class " + clazz, nEx);
 		}
-		return resources;
 	}
 
 	/**
@@ -349,17 +346,10 @@ public abstract class ResourceParser {
 			resource.setDescription(comment);
 		}
 
-		List<Resource> methodsFromService = getMethodsFromService(clazz, javaDoc, resource);
-		for (Resource cResource : methodsFromService) {
-			String relativeUri = cResource.getRelativeUri();
-			if (resource.getResources().containsKey(relativeUri)) {
-				resource.getResource(relativeUri).getActions().putAll(cResource.getActions());
-			} else {
-				cResource.setParentResource(resource);
-				cResource.setParentUri(resource.getUri());
-				resource.getResources().put(relativeUri, cResource);
-			}
-		}
+		
+		//Append stuff to the parent resource
+		getMethodsFromService(clazz, javaDoc, resource);
+		
 
 		return resource;
 	}
