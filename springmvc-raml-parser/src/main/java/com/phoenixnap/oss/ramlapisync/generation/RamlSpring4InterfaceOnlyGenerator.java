@@ -26,10 +26,10 @@ import java.util.List;
  * A raml endpoint called /people for example would lead to the following interface only:
  *
  * // 1. Controller Interface
- * @RestController
- * @RequestMapping("/people")
+ * {@literal @}@RestController
+ * {@literal @}@RequestMapping("/people")
  * interface PeopleController {
- *     @RequestMapping(value="", method=RequestMethod.GET)
+ *     {@literal @}@RequestMapping(value="", method=RequestMethod.GET)
  *     ResponseEntity getPeople();
  * }
  *

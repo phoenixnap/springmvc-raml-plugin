@@ -280,6 +280,7 @@ public class RamlGenerator {
 	/**
 	 * Takes the absolute path and gets the Raml file to be created
 	 *
+	 * @param path The path for the raml file to be saved in
 	 * @return raml file to be generated
 	 */
 	public File getRamlOutputFile(String path) {
