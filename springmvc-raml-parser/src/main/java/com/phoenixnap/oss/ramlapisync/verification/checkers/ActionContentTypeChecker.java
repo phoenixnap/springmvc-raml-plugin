@@ -55,7 +55,7 @@ public class ActionContentTypeChecker
 		Set<Issue> warnings = new LinkedHashSet<>();
 		Issue issue;
 
-		// Only apply this checker in the contract
+		// Only apply this checker in the source
 		if (location.equals(IssueLocation.CONTRACT)) {
 			return new Pair<>(warnings, errors);
 		}
@@ -80,26 +80,24 @@ public class ActionContentTypeChecker
 				}
 			}
 		}
-
-		// Now the response
-		if (reference.getResponses() != null && !reference.getResponses().isEmpty() && reference.getResponses().containsKey("200")) {
-			// successful response
-			Response response = reference.getResponses().get("200");
-			if (response.getBody() != null && !response.getBody().isEmpty()) {
-				if (target.getResponses() == null || target.getResponses().isEmpty() || target.getResponses().get("200") == null) {
-					issue = new Issue(maxSeverity, location, IssueType.MISSING, RESPONSE_BODY_MISSING, reference.getResource(), reference);
-					RamlCheckerResourceVisitorCoordinator.addIssue(errors, warnings, issue, RESPONSE_BODY_MISSING);
-				}
-				else {
-					// successful response
-					Response targetResponse = target.getResponses().get("200");
-					boolean found = false;
-					for (String key : response.getBody().keySet()) {
-						logger.debug("Processing key {}.", key);
-						if (targetResponse.getBody().containsKey(key)) {
-							found = true;
-							break;
-						}
+		
+		//Now the response
+		Response response = ResourceParser.getSuccessfulResponse(reference);
+		//successful response
+		if (response != null && response.getBody() != null && !response.getBody().isEmpty()) {
+			Response targetResponse = ResourceParser.getSuccessfulResponse(target);
+			
+			if (targetResponse == null) {
+				issue = new Issue(maxSeverity, location, IssueType.MISSING, RESPONSE_BODY_MISSING, reference.getResource(), reference);
+				RamlCheckerResourceVisitorCoordinator.addIssue(errors, warnings, issue, RESPONSE_BODY_MISSING);
+			} else {
+				// successful response
+				boolean found = false;
+				for (String key : response.getBody().keySet()) {
+					logger.debug("Processing key {}.", key);
+					if (targetResponse.getBody().containsKey(key)) {
+						found = true;
+						break;
 					}
 					if (!found && !targetResponse.getBody().containsKey(ResourceParser.CATCH_ALL_MEDIA_TYPE)) {
 						issue = new Issue(maxSeverity, location, IssueType.MISSING, RESPONSE_BODY_MISSING, reference.getResource(), reference);

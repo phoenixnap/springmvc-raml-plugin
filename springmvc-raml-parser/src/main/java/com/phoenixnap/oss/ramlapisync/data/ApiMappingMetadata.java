@@ -135,29 +135,24 @@ public class ApiMappingMetadata {
 	}
 
 	private void parseResponse(String responseContentTypeFilter) {
-		if (action.getResponses() != null && !action.getResponses().isEmpty()) {
-			for (Entry<String, Response> responses : action.getResponses().entrySet()) {
-				Response response = responses.getValue();
+		Response response = ResourceParser.getSuccessfulResponse(action);
 
-				if ("200".equals(responses.getKey()) && response.getBody() != null && !response.getBody().isEmpty()) {
-					for (Entry<String, MimeType> body : response.getBody().entrySet()) {
-						if (responseContentTypeFilter == null || body.getKey().equals(responseContentTypeFilter)) {
-							if (body.getKey().toLowerCase().contains("json")) { //if we have a json type we need to return an object
-								// Continue here!
-								String schema = body.getValue().getSchema();
-								if (StringUtils.hasText(schema)) {
-									
-									ApiBodyMetadata responseBody = SchemaHelper.mapSchemaToPojo(parent.getDocument(), schema,
-											parent.getBasePackage() + ".model", StringUtils.capitalize(getName()) + "Response");
-									if (responseBody != null) {
-										this.responseBody.put(body.getKey(), responseBody);
-									}
-								}
+		if (response != null && response.getBody() != null && !response.getBody().isEmpty()) {
+			for (Entry<String, MimeType> body : response.getBody().entrySet()) {
+				if (responseContentTypeFilter == null || body.getKey().equals(responseContentTypeFilter)) {
+					if (body.getKey().toLowerCase().contains("json")) { //if we have a json type we need to return an object
+						// Continue here!
+						String schema = body.getValue().getSchema();
+						if (StringUtils.hasText(schema)) {
+							
+							ApiBodyMetadata responseBody = SchemaHelper.mapSchemaToPojo(parent.getDocument(), schema,
+									parent.getBasePackage() + ".model", StringUtils.capitalize(getName()) + "Response");
+							if (responseBody != null) {
+								this.responseBody.put(body.getKey(), responseBody);
 							}
 						}
 					}
 				}
-
 			}
 		}
 	}

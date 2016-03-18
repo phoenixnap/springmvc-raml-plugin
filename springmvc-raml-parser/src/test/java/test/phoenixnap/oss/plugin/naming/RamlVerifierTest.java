@@ -130,19 +130,6 @@ public class RamlVerifierTest {
 
 
 	@Test
-	public void test_ActionMultiContentTypeChecker_ExtraContentTypeInController() {
-		Raml published = RamlVerifier.loadRamlFromFile("test-multicontenttype-missingcontent.raml");
-		Class<?>[] classesToGenerate = new Class[] { MultiContentTypeTestController.class };
-		Raml computed = generator.generateRamlForClasses("test", "0.0.1", "/", classesToGenerate, Collections.emptySet()).getRaml();
-
-		RamlVerifier verifier = new RamlVerifier(published, computed, Collections.emptyList(), Collections.singletonList(new ActionContentTypeChecker()), null);
-		assertTrue("Check that there are no errors and implementation matches raml", verifier.hasErrors());
-		assertFalse("Check that there are no warnings and implementation matches raml", verifier.hasWarnings());
-
-	}
-
-
-	@Test
 	public void test_ActionResponseBodySchemaChecker_Success() {
 		Raml published = RamlVerifier.loadRamlFromFile("test-responsebody-success.raml");
 		Class<?>[] classesToGenerate = new Class[] { ResponseBodyTestController.class };
