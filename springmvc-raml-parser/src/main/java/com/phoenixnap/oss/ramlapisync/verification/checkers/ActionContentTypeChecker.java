@@ -55,7 +55,7 @@ public class ActionContentTypeChecker
 		Set<Issue> warnings = new LinkedHashSet<>();
 		Issue issue;
 
-		// Only apply this checker in the contract
+		// Only apply this checker in the source
 		if (location.equals(IssueLocation.CONTRACT)) {
 			return new Pair<>(warnings, errors);
 		}
