@@ -27,8 +27,7 @@ public class Spring4ControllerMethodSignatureRuleTest extends AbstractController
         assertThat(jMethod.name(), equalTo("getBase"));
         assertThat(jMethod.mods().getValue(), equalTo(JMod.PUBLIC));
         assertThat(jMethod.type().name(), equalTo("ResponseEntity"));
-        assertThat(jMethod.annotations(), hasSize(1));
-        assertThat(serializeModel(), containsString("@RequestMapping(value = \"\", method = RequestMethod.GET)"));
+        assertThat(jMethod.annotations(), hasSize(0)); // no implicit annotations
         assertThat(jMethod.body().isEmpty(), is(true));
     }
 }
