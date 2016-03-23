@@ -8,7 +8,7 @@ import org.springframework.util.StringUtils;
 /**
  * @author armin.weisser
  */
-public class PackageRule implements ControllerRule<JCodeModel, JPackage> {
+public class PackageRule implements Rule<JCodeModel, JPackage, ApiControllerMetadata> {
 
     @Override
     public JPackage apply(ApiControllerMetadata controllerMetadata, JCodeModel generatableType) {

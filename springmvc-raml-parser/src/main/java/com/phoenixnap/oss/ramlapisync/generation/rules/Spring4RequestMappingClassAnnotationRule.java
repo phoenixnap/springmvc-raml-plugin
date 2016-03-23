@@ -9,8 +9,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 
 /**
  * @author armin.weisser
+ * @since 0.3.2
  */
-public class Spring4ControllerRequestMappingAnnotationRule implements ControllerRule<JDefinedClass, JAnnotationUse> {
+public class Spring4RequestMappingClassAnnotationRule implements Rule<JDefinedClass, JAnnotationUse, ApiControllerMetadata> {
     @Override
     public JAnnotationUse apply(ApiControllerMetadata controllerMetadata, JDefinedClass generatableType) {
         JAnnotationUse requestMapping = generatableType.annotate(RequestMapping.class);

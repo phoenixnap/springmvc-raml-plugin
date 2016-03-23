@@ -7,8 +7,9 @@ import org.springframework.web.bind.annotation.RestController;
 
 /**
  * @author armin.weisser
+ * @since 0.3.2
  */
-public class Spring4ControllerRestControllerAnnotationRule implements ControllerRule<JDefinedClass, JAnnotationUse> {
+public class Spring4RestControllerAnnotationRule implements Rule<JDefinedClass, JAnnotationUse, ApiControllerMetadata> {
     @Override
     public JAnnotationUse apply(ApiControllerMetadata controllerMetadata, JDefinedClass generatableType) {
         return generatableType.annotate(RestController.class);

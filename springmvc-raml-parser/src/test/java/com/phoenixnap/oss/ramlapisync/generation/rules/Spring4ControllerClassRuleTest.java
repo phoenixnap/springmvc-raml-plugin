@@ -16,15 +16,14 @@ public class Spring4ControllerClassRuleTest extends AbstractControllerRuleTestBa
 
     @Test
     public void applyClassRule_shouldCreate_validControllerClass() {
-        JPackage jPackage = new PackageRule().apply(getControllerMetadata(), jCodeModel);
-        JClass jClass = new Spring4ControllerClassRule().apply(getControllerMetadata(), jPackage);
+        JClass jClass = new Spring4ControllerClassRule().apply(getControllerMetadata(), jCodeModel.rootPackage());
         assertThat(jClass, is(notNullValue()));
         assertThat(jClass.name(), equalTo("BaseController"));
     }
 
     @Test
     public void applyClassRule_shouldBeIdempotent() {
-        JPackage jPackage = new PackageRule().apply(getControllerMetadata(), jCodeModel);
+        JPackage jPackage = jCodeModel.rootPackage();
         Spring4ControllerClassRule spring4ControllerClassRule = new Spring4ControllerClassRule();
 
         JClass jClass1 = spring4ControllerClassRule.apply(getControllerMetadata(), jPackage);
@@ -39,8 +38,7 @@ public class Spring4ControllerClassRuleTest extends AbstractControllerRuleTestBa
 
     @Test
     public void applyClassRule_shouldCreate_RestControllerAnnotation() {
-        JPackage jPackage = new PackageRule().apply(getControllerMetadata(), jCodeModel);
-        new Spring4ControllerClassRule().apply(getControllerMetadata(), jPackage);
+        new Spring4ControllerClassRule().apply(getControllerMetadata(), jCodeModel.rootPackage());
         String serializeModel = serializeModel();
         assertThat(serializeModel, containsString("@RestController"));
         assertThat(serializeModel, containsString("import org.springframework.web.bind.annotation.RestController;"));
@@ -48,8 +46,7 @@ public class Spring4ControllerClassRuleTest extends AbstractControllerRuleTestBa
 
     @Test
     public void applyClassRule_shouldCreate_RequestMappingAnnotation() {
-        JPackage jPackage = new PackageRule().apply(getControllerMetadata(), jCodeModel);
-        new Spring4ControllerClassRule().apply(getControllerMetadata(), jPackage);
+        new Spring4ControllerClassRule().apply(getControllerMetadata(), jCodeModel.rootPackage());
         assertThat(serializeModel(), containsString("@RequestMapping(value = \"/api/base\", produces = \"application/json\")"));
     }
 
