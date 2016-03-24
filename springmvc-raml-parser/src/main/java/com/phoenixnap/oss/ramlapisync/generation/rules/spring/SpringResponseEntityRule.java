@@ -25,18 +25,5 @@ public class SpringResponseEntityRule implements Rule<JDefinedClass, JType, ApiM
             return responseEntity.narrow(genericType);
         }
         return responseEntity;
-
-        // TODO do we need another rule that can handle @ResponseBody or array stuff?
-        /*String response = "ResponseEntity";
-        if (!endpointMetadata.getResponseBody().isEmpty()) {
-            ApiBodyMetadata apiBodyMetadata = endpointMetadata.getResponseBody().values().iterator().next();
-            response = "@" + ResponseBody.class.getSimpleName() +" ";
-            if (apiBodyMetadata.isArray()) {
-                response += ArrayList.class.getSimpleName() + "<" + apiBodyMetadata.getName() + ">";
-            } else {
-                response += apiBodyMetadata.getName();
-            }
-        }
-        */
     }
 }

@@ -9,6 +9,7 @@ import org.springframework.http.ResponseEntity;
 
 /**
  * The BaseController class
+ * (Generated with version ${project.version})
  *
  */
 public interface BaseController {
@@ -50,6 +51,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 /**
  * The BaseController class
+ * (Generated with version ${project.version})
  *
  */
 @RestController

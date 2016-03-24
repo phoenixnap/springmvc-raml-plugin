@@ -2,6 +2,11 @@ package com.phoenixnap.oss.ramlapisync.generation;
 
 import com.sun.codemodel.*;
 
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.Iterator;
+import java.util.Properties;
+
 /**
  * @author armin.weisser
  * @since 0.3.2
@@ -15,10 +20,12 @@ public abstract class CodeModelHelper {
      * @return the first class in any package that matches the simple class name.
      */
     public static JClass findFirstClassBySimpleName(JCodeModel codeModel, String simpleClassName) {
-        while(codeModel.packages().hasNext()) {
-            JPackage jPackage = codeModel.packages().next();
-            while(jPackage.classes().hasNext()) {
-                JDefinedClass aClass = jPackage.classes().next();
+        Iterator<JPackage> packages = codeModel.packages();
+        while(packages.hasNext()) {
+            JPackage jPackage = packages.next();
+            Iterator<JDefinedClass> classes = jPackage.classes();
+            while(classes.hasNext()) {
+                JDefinedClass aClass = classes.next();
                 if(aClass.name().equals(simpleClassName)) {
                     return aClass;
                 }
@@ -29,6 +36,18 @@ public abstract class CodeModelHelper {
 
     public static JExtMethod ext(JMethod jMethod, JCodeModel jCodeModel) {
         return new JExtMethod(jMethod, jCodeModel);
+    }
+
+    public static String getVersion() {
+        try {
+            Properties prop = new Properties();
+            InputStream in = Thread.currentThread().getContextClassLoader().getResourceAsStream("parser.properties");
+            prop.load(in);
+            in.close();
+            return prop.getProperty("parser.version");
+        } catch (IOException e) {
+            return "???";
+        }
     }
 
     /**
