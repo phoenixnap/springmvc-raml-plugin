@@ -23,8 +23,8 @@ public class Spring4ControllerDecoratorRule implements Rule<JCodeModel, JDefined
                 .setPackageRule(new PackageRule())
                 .setClassRule(new ControllerInterfaceDeclarationRule())
                 .setMethodSignatureRule(new ControllerMethodSignatureRule(
-                        new SpringResponseEntityRule()
-                ))
+                        new SpringResponseEntityRule(),
+                        new MethodParamsRule()))
                 .apply(metadata, generatableType);
 
         String delegateFieldName = StringUtils.uncapitalize(generatedInterface.name()+"Delegate");
@@ -37,8 +37,8 @@ public class Spring4ControllerDecoratorRule implements Rule<JCodeModel, JDefined
                 .setImplementsRule(new ImplementsControllerInterfaceRule(generatedInterface))
                 .addFieldDeclerationRule(new SpringDelegateFieldDeclerationRule(delegateFieldName))
                 .setMethodSignatureRule(new ControllerMethodSignatureRule(
-                        new SpringResponseEntityRule()
-                ))
+                        new SpringResponseEntityRule(),
+                        new MethodParamsRule()))
                 .setMetodBodyRule(new DelegatingMethodBodyRule(delegateFieldName));
 
         return delegateGenerator.apply(metadata, generatableType);

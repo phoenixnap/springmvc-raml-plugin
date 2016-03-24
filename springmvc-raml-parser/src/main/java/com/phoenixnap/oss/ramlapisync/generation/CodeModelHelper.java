@@ -1,9 +1,6 @@
 package com.phoenixnap.oss.ramlapisync.generation;
 
-import com.sun.codemodel.JClass;
-import com.sun.codemodel.JCodeModel;
-import com.sun.codemodel.JDefinedClass;
-import com.sun.codemodel.JPackage;
+import com.sun.codemodel.*;
 
 /**
  * @author armin.weisser
@@ -30,4 +27,29 @@ public abstract class CodeModelHelper {
         throw new InvalidModelException("No unique class found for simple class name " + simpleClassName);
     }
 
+    public static JExtMethod ext(JMethod jMethod, JCodeModel jCodeModel) {
+        return new JExtMethod(jMethod, jCodeModel);
+    }
+
+    /**
+     * Helper class because JMethod does not expose it's JCodeModel.
+     */
+    public static class JExtMethod {
+
+        private final JMethod jMethod;
+        private final JCodeModel owner;
+
+        public JExtMethod(JMethod jMethod, JCodeModel jCodeModel) {
+            this.jMethod = jMethod;
+            this.owner = jCodeModel;
+        }
+
+        public JMethod get() {
+            return jMethod;
+        }
+
+        public JCodeModel owner() {
+            return owner;
+        }
+    }
 }

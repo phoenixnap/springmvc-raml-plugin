@@ -3,6 +3,7 @@ package com.phoenixnap.oss.ramlapisync.generation.rules;
 import com.phoenixnap.oss.ramlapisync.data.ApiControllerMetadata;
 import com.phoenixnap.oss.ramlapisync.generation.rules.basic.ControllerInterfaceDeclarationRule;
 import com.phoenixnap.oss.ramlapisync.generation.rules.basic.ControllerMethodSignatureRule;
+import com.phoenixnap.oss.ramlapisync.generation.rules.basic.MethodParamsRule;
 import com.phoenixnap.oss.ramlapisync.generation.rules.basic.PackageRule;
 import com.phoenixnap.oss.ramlapisync.generation.rules.spring.Spring4RestControllerAnnotationRule;
 import com.phoenixnap.oss.ramlapisync.generation.rules.spring.SpringRequestMappingClassAnnotationRule;
@@ -27,8 +28,8 @@ public class Spring4ControllerInterfaceRule implements Rule<JCodeModel, JDefined
         generator.setClassRule(new ControllerInterfaceDeclarationRule());
         generator.addMethodAnnotationRule(new SpringRequestMappingMethodAnnotationRule());
         generator.setMethodSignatureRule(new ControllerMethodSignatureRule(
-                new SpringResponseEntityRule()
-        ));
+                new SpringResponseEntityRule(),
+                new MethodParamsRule()));
 
         return generator.apply(metadata, generatableType);
     }

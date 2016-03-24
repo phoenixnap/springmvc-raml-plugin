@@ -2,6 +2,7 @@ package com.phoenixnap.oss.ramlapisync.generation.rules;
 
 import com.phoenixnap.oss.ramlapisync.data.ApiControllerMetadata;
 import com.phoenixnap.oss.ramlapisync.data.ApiMappingMetadata;
+import com.phoenixnap.oss.ramlapisync.generation.rules.basic.MethodCommentRule;
 import com.sun.codemodel.*;
 
 import java.util.ArrayList;
@@ -22,6 +23,7 @@ public class GenericJavaClassRule implements Rule<JCodeModel, JDefinedClass, Api
     private Rule<JDefinedClass, JMethod, ApiMappingMetadata> methodSignatureRule;
     private Optional<Rule<JMethod, JMethod, ApiMappingMetadata>> metodBodyRule = Optional.empty();
     private List<Rule<JMethod, JAnnotationUse, ApiMappingMetadata>> methodAnnotationRules = new ArrayList<>();
+    private MethodCommentRule methodCommentRule;
 
     public JDefinedClass apply(ApiControllerMetadata metadata, JCodeModel codeModel) {
         JPackage jPackage = packageRule.apply(metadata, codeModel);
@@ -31,6 +33,7 @@ public class GenericJavaClassRule implements Rule<JCodeModel, JDefinedClass, Api
         fieldDeclerationRules.forEach(rule -> rule.apply(metadata, jClass));
         metadata.getApiCalls().forEach( apiMappingMetadata -> {
             JMethod jMethod = methodSignatureRule.apply(apiMappingMetadata, jClass);
+            methodCommentRule.apply(apiMappingMetadata, jMethod);
             methodAnnotationRules.forEach(rule -> rule.apply(apiMappingMetadata, jMethod));
             metodBodyRule.ifPresent( rule -> rule.apply(apiMappingMetadata, jMethod));
         });
@@ -77,4 +80,11 @@ public class GenericJavaClassRule implements Rule<JCodeModel, JDefinedClass, Api
         this.methodAnnotationRules.add(methodAnnotationRule);
         return this;
     }
+
+
+    public GenericJavaClassRule setMethodCommentRule(MethodCommentRule methodCommentRule) {
+        this.methodCommentRule = methodCommentRule;
+        return this;
+    }
+
 }
