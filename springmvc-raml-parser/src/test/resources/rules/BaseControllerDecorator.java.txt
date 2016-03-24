@@ -1,0 +1,75 @@
+-----------------------------------com.gen.test.BaseController.java-----------------------------------
+
+package com.gen.test;
+
+import com.gen.test.model.NamedResponseType;
+import org.springframework.http.ResponseEntity;
+
+
+/**
+ * The BaseController class
+ *
+ */
+public interface BaseController {
+
+
+	/**
+	 * No description
+	 *
+	 */
+	public ResponseEntity getBase();
+
+    /**
+     * Get base entity by ID
+     *
+     */
+    public ResponseEntity<NamedResponseType> getBaseById(String id);
+
+}
+-----------------------------------com.gen.test.BaseControllerDecorator.java-----------------------------------
+
+package com.gen.test;
+
+import com.gen.test.model.NamedResponseType;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RestController;
+
+
+/**
+ * The BaseController class
+ *
+ */
+@RestController
+@RequestMapping(value = "/api/base", produces = "application/json")
+public class BaseControllerDecorator
+    implements BaseController
+{
+
+    @Autowired
+    private BaseController baseControllerDelegate;
+
+	/**
+	 * No description
+	 *
+	 */
+	@RequestMapping(value = "", method = RequestMethod.GET)
+	public ResponseEntity getBase() {
+        return this.baseControllerDelegate.getBase();
+	}
+
+    /**
+     * Get base entity by ID
+     *
+     */
+	@RequestMapping(value = "/{id}", method = RequestMethod.GET)
+    public ResponseEntity<NamedResponseType> getBaseById(
+        @PathVariable
+        String id) {
+        return this.baseControllerDelegate.getBaseById(id);
+    }
+
+}

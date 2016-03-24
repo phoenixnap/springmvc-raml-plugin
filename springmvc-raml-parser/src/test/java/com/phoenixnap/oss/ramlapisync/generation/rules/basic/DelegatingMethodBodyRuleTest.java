@@ -1,6 +1,5 @@
 package com.phoenixnap.oss.ramlapisync.generation.rules.basic;
 
-import com.phoenixnap.oss.ramlapisync.data.ApiMappingMetadata;
 import com.phoenixnap.oss.ramlapisync.generation.rules.AbstractControllerRuleTestBase;
 import com.sun.codemodel.JClassAlreadyExistsException;
 import com.sun.codemodel.JDefinedClass;
@@ -24,11 +23,11 @@ public class DelegatingMethodBodyRuleTest extends AbstractControllerRuleTestBase
 
         JDefinedClass jClass = jCodeModel.rootPackage()._class(JMod.PUBLIC, "TestClass");
         JMethod jMethod = jClass.method(JMod.PUBLIC, Object.class, "getBase");
-        ApiMappingMetadata endpointMetadata = getControllerMetadata().getApiCalls().iterator().next();
-        jMethod = rule.apply(endpointMetadata, jMethod);
+        jMethod = rule.apply(getEndpointMetadata(), jMethod);
 
         assertThat(jMethod, is(notNullValue()));
         assertThat(jMethod.body().isEmpty(), is(false));
+        assertThat(jMethod.params(), hasSize(0));
         assertThat(serializeModel(), containsString("return this.controllerDelegate.getBase();"));
     }
 
@@ -39,11 +38,11 @@ public class DelegatingMethodBodyRuleTest extends AbstractControllerRuleTestBase
 
         JDefinedClass jClass = jCodeModel.rootPackage()._class(JMod.PUBLIC, "TestClass");
         JMethod jMethod = jClass.method(JMod.PUBLIC, Object.class, "getBase");
-        ApiMappingMetadata endpointMetadata = getControllerMetadata().getApiCalls().iterator().next();
-        jMethod = rule.apply(endpointMetadata, jMethod);
+        jMethod = rule.apply(getEndpointMetadata(), jMethod);
 
         assertThat(jMethod, is(notNullValue()));
         assertThat(jMethod.body().isEmpty(), is(false));
+        assertThat(jMethod.params(), hasSize(0));
         assertThat(serializeModel(), containsString("return this.delegate.getBase();"));
     }
 
@@ -55,11 +54,25 @@ public class DelegatingMethodBodyRuleTest extends AbstractControllerRuleTestBase
 
         JDefinedClass jClass = jCodeModel.rootPackage()._class(JMod.PUBLIC, "TestClass");
         JMethod jMethod = jClass.method(JMod.PUBLIC, Object.class, "getBase");
-        ApiMappingMetadata endpointMetadata = getControllerMetadata().getApiCalls().iterator().next();
-        jMethod = rule.apply(endpointMetadata, jMethod);
+        jMethod = rule.apply(getEndpointMetadata(), jMethod);
 
         assertThat(jMethod, is(notNullValue()));
         assertThat(jMethod.body().isEmpty(), is(false));
+        assertThat(jMethod.params(), hasSize(0));
         assertThat(serializeModel(), containsString("return this.delegate.getBase();"));
+    }
+
+    @Test
+    public void applyRuleOnParametrizedEndpoint_shouldCreate_methodCall_onDelegate() throws JClassAlreadyExistsException {
+
+        JDefinedClass jClass = jCodeModel.rootPackage()._class(JMod.PUBLIC, "TestClass");
+        JMethod jMethod = jClass.method(JMod.PUBLIC, Object.class, "getBaseById");
+        jMethod.param(String.class, "id");
+        jMethod = rule.apply(getEndpointMetadata(2), jMethod);
+
+        assertThat(jMethod, is(notNullValue()));
+        assertThat(jMethod.body().isEmpty(), is(false));
+        assertThat(jMethod.params(), hasSize(1));
+        assertThat(serializeModel(), containsString("return this.controllerDelegate.getBaseById(id);"));
     }
 }
