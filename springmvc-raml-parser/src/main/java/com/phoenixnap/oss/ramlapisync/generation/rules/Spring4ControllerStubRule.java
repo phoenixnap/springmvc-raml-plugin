@@ -26,7 +26,7 @@ public class Spring4ControllerStubRule implements Rule<JCodeModel, JDefinedClass
                 .addMethodAnnotationRule(new SpringResponseBodyMethodAnnotationRule())
                 .setMethodSignatureRule(new ControllerMethodSignatureRule(
                         new SpringSimpleResponseTypeRule(),
-                        new MethodParamsRule()
+                        new SpringMethodParamsRule()
                 ))
                 .setMetodBodyRule(new ImplementMeMethodBodyRule());
 

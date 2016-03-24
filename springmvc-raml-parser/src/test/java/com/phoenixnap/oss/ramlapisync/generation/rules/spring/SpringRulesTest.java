@@ -3,10 +3,14 @@ package com.phoenixnap.oss.ramlapisync.generation.rules.spring;
 import com.phoenixnap.oss.ramlapisync.generation.rules.AbstractControllerRuleTestBase;
 import com.sun.codemodel.*;
 import org.junit.Test;
+import org.springframework.http.ResponseEntity;
 
 import java.io.Serializable;
 
+import static com.phoenixnap.oss.ramlapisync.generation.CodeModelHelper.ext;
 import static org.hamcrest.CoreMatchers.*;
+import static org.hamcrest.Matchers.containsString;
+import static org.hamcrest.Matchers.hasSize;
 import static org.junit.Assert.assertThat;
 
 /**
@@ -68,6 +72,22 @@ public class SpringRulesTest extends AbstractControllerRuleTestBase {
         assertThat(serializeModel(), containsString("import org.springframework.beans.factory.annotation.Autowired;"));
         assertThat(serializeModel(), containsString("@Autowired"));
         assertThat(serializeModel(), containsString("private Serializable delegate;"));
+    }
+
+    @Test
+    public void applySpringMethodParamsRule_shouldCreate_validMethodParams() throws JClassAlreadyExistsException {
+
+        SpringMethodParamsRule rule = new SpringMethodParamsRule();
+        JDefinedClass jClass = jCodeModel.rootPackage()._class("TestController");
+        JMethod jMethod = jClass.method(JMod.PUBLIC, ResponseEntity.class, "getBaseById");
+        jMethod = rule.apply(getEndpointMetadata(2), ext(jMethod, jCodeModel));
+
+        assertThat(jMethod.params(), hasSize(1));
+        String serializeModel = serializeModel();
+        assertThat(serializeModel, containsString("import org.springframework.web.bind.annotation.PathVariable;"));
+        assertThat(serializeModel, containsString("public ResponseEntity getBaseById("));
+        assertThat(serializeModel, containsString("@PathVariable"));
+        assertThat(serializeModel, containsString("String id) {"));
     }
 
 
