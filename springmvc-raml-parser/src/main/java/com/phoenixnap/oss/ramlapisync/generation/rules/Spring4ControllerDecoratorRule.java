@@ -21,7 +21,9 @@ public class Spring4ControllerDecoratorRule implements Rule<JCodeModel, JDefined
 
         JDefinedClass generatedInterface = new GenericJavaClassRule()
                 .setPackageRule(new PackageRule())
+                .setClassCommentRule(new ClassCommentRule())
                 .setClassRule(new ControllerInterfaceDeclarationRule())
+                .setMethodCommentRule(new MethodCommentRule())
                 .setMethodSignatureRule(new ControllerMethodSignatureRule(
                         new SpringResponseEntityRule(),
                         new MethodParamsRule()))
@@ -31,11 +33,13 @@ public class Spring4ControllerDecoratorRule implements Rule<JCodeModel, JDefined
 
         GenericJavaClassRule delegateGenerator = new GenericJavaClassRule()
                 .setPackageRule(new PackageRule())
+                .setClassCommentRule(new ClassCommentRule())
                 .addClassAnnotationRule(new Spring4RestControllerAnnotationRule())
                 .addClassAnnotationRule(new SpringRequestMappingClassAnnotationRule())
                 .setClassRule(new ControllerClassDeclarationRule("Decorator"))
                 .setImplementsRule(new ImplementsControllerInterfaceRule(generatedInterface))
                 .addFieldDeclerationRule(new SpringDelegateFieldDeclerationRule(delegateFieldName))
+                .setMethodCommentRule(new MethodCommentRule())
                 .setMethodSignatureRule(new ControllerMethodSignatureRule(
                         new SpringResponseEntityRule(),
                         new MethodParamsRule()))

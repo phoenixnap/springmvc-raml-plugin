@@ -1,10 +1,7 @@
 package com.phoenixnap.oss.ramlapisync.generation.rules;
 
 import com.phoenixnap.oss.ramlapisync.data.ApiControllerMetadata;
-import com.phoenixnap.oss.ramlapisync.generation.rules.basic.ControllerInterfaceDeclarationRule;
-import com.phoenixnap.oss.ramlapisync.generation.rules.basic.ControllerMethodSignatureRule;
-import com.phoenixnap.oss.ramlapisync.generation.rules.basic.MethodParamsRule;
-import com.phoenixnap.oss.ramlapisync.generation.rules.basic.PackageRule;
+import com.phoenixnap.oss.ramlapisync.generation.rules.basic.*;
 import com.phoenixnap.oss.ramlapisync.generation.rules.spring.Spring4RestControllerAnnotationRule;
 import com.phoenixnap.oss.ramlapisync.generation.rules.spring.SpringRequestMappingClassAnnotationRule;
 import com.phoenixnap.oss.ramlapisync.generation.rules.spring.SpringRequestMappingMethodAnnotationRule;
@@ -21,16 +18,18 @@ public class Spring4ControllerInterfaceRule implements Rule<JCodeModel, JDefined
     @Override
     public JDefinedClass apply(ApiControllerMetadata metadata, JCodeModel generatableType) {
 
-        GenericJavaClassRule generator = new GenericJavaClassRule();
-        generator.setPackageRule(new PackageRule());
-        generator.addClassAnnotationRule(new Spring4RestControllerAnnotationRule());
-        generator.addClassAnnotationRule(new SpringRequestMappingClassAnnotationRule());
-        generator.setClassRule(new ControllerInterfaceDeclarationRule());
-        generator.addMethodAnnotationRule(new SpringRequestMappingMethodAnnotationRule());
-        generator.setMethodSignatureRule(new ControllerMethodSignatureRule(
-                new SpringResponseEntityRule(),
-                new MethodParamsRule()));
-
+        GenericJavaClassRule generator = new GenericJavaClassRule()
+                .setPackageRule(new PackageRule())
+                .setClassCommentRule(new ClassCommentRule())
+                .addClassAnnotationRule(new Spring4RestControllerAnnotationRule())
+                .addClassAnnotationRule(new SpringRequestMappingClassAnnotationRule())
+                .setClassRule(new ControllerInterfaceDeclarationRule())
+                .setMethodCommentRule(new MethodCommentRule())
+                .addMethodAnnotationRule(new SpringRequestMappingMethodAnnotationRule())
+                .setMethodSignatureRule(new ControllerMethodSignatureRule(
+                        new SpringResponseEntityRule(),
+                        new MethodParamsRule())
+                );
         return generator.apply(metadata, generatableType);
     }
 }

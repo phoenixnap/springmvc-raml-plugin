@@ -16,18 +16,19 @@ public class Spring4ControllerStubRule implements Rule<JCodeModel, JDefinedClass
     public JDefinedClass apply(ApiControllerMetadata metadata, JCodeModel generatableType) {
 
         GenericJavaClassRule generator = new GenericJavaClassRule()
-            .setPackageRule(new PackageRule())
-            .addClassAnnotationRule(new Spring4RestControllerAnnotationRule())
-            .addClassAnnotationRule(new SpringRequestMappingClassAnnotationRule())
-            .setClassRule(new ControllerClassDeclarationRule())
-            .setMethodCommentRule(new MethodCommentRule())
-            .addMethodAnnotationRule(new SpringRequestMappingMethodAnnotationRule())
-            .addMethodAnnotationRule(new SpringResponseBodyMethodAnnotationRule())
-            .setMethodSignatureRule(new ControllerMethodSignatureRule(
-                    new SpringSimpleResponseTypeRule(),
-                    new MethodParamsRule()
-            ))
-            .setMetodBodyRule(new ImplementMeMethodBodyRule());
+                .setPackageRule(new PackageRule())
+                .setClassCommentRule(new ClassCommentRule())
+                .addClassAnnotationRule(new Spring4RestControllerAnnotationRule())
+                .addClassAnnotationRule(new SpringRequestMappingClassAnnotationRule())
+                .setClassRule(new ControllerClassDeclarationRule())
+                .setMethodCommentRule(new MethodCommentRule())
+                .addMethodAnnotationRule(new SpringRequestMappingMethodAnnotationRule())
+                .addMethodAnnotationRule(new SpringResponseBodyMethodAnnotationRule())
+                .setMethodSignatureRule(new ControllerMethodSignatureRule(
+                        new SpringSimpleResponseTypeRule(),
+                        new MethodParamsRule()
+                ))
+                .setMetodBodyRule(new ImplementMeMethodBodyRule());
 
         return generator.apply(metadata, generatableType);
     }

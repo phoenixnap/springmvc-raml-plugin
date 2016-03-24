@@ -22,7 +22,7 @@ public class MethodParamsRuleTest extends AbstractControllerRuleTestBase {
     private MethodParamsRule rule = new MethodParamsRule();
 
     @Test
-    public void applyMethodRule_shouldCreate_validMethodSignature_withBody() throws JClassAlreadyExistsException {
+    public void applyRule_shouldCreate_validMethodParams() throws JClassAlreadyExistsException {
 
         JDefinedClass jClass = jCodeModel.rootPackage()._class("TestController");
         JMethod jMethod = jClass.method(JMod.PUBLIC, ResponseEntity.class, "getBaseById");

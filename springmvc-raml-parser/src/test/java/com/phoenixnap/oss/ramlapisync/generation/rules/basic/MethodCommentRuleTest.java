@@ -17,7 +17,7 @@ public class MethodCommentRuleTest extends AbstractControllerRuleTestBase {
     private MethodCommentRule rule = new MethodCommentRule();
 
     @Test
-    public void applyMethodRule_shouldCreate_validMethodSignature_withBody() throws JClassAlreadyExistsException {
+    public void applyRule_shouldCreate_validMethodComment() throws JClassAlreadyExistsException {
 
         JDefinedClass jClass = jCodeModel.rootPackage()._class("TestController");
         JMethod jMethod = jClass.method(JMod.PUBLIC, ResponseEntity.class, "getBaseById");

@@ -7,6 +7,7 @@ import com.sun.codemodel.JMethod;
 
 /**
  * @author armin.weisser
+ * @since 0.3.2
  */
 public class MethodCommentRule implements Rule<JMethod,JDocComment,ApiMappingMetadata> {
     @Override

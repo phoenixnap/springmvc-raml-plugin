@@ -2,7 +2,6 @@ package com.phoenixnap.oss.ramlapisync.generation.rules;
 
 import com.phoenixnap.oss.ramlapisync.data.ApiControllerMetadata;
 import com.phoenixnap.oss.ramlapisync.data.ApiMappingMetadata;
-import com.phoenixnap.oss.ramlapisync.generation.rules.basic.MethodCommentRule;
 import com.sun.codemodel.*;
 
 import java.util.ArrayList;
@@ -23,12 +22,14 @@ public class GenericJavaClassRule implements Rule<JCodeModel, JDefinedClass, Api
     private Rule<JDefinedClass, JMethod, ApiMappingMetadata> methodSignatureRule;
     private Optional<Rule<JMethod, JMethod, ApiMappingMetadata>> metodBodyRule = Optional.empty();
     private List<Rule<JMethod, JAnnotationUse, ApiMappingMetadata>> methodAnnotationRules = new ArrayList<>();
-    private MethodCommentRule methodCommentRule;
+    private Rule<JMethod,JDocComment,ApiMappingMetadata> methodCommentRule;
+    private Rule<JDefinedClass, JDocComment, ApiControllerMetadata> classCommentRule;
 
     public JDefinedClass apply(ApiControllerMetadata metadata, JCodeModel codeModel) {
         JPackage jPackage = packageRule.apply(metadata, codeModel);
         JDefinedClass jClass = classRule.apply(metadata, jPackage);
         implementsRule.ifPresent(rule -> rule.apply(metadata, jClass));
+        classCommentRule.apply(metadata, jClass);
         classAnnotationRules.forEach(rule -> rule.apply(metadata, jClass));
         fieldDeclerationRules.forEach(rule -> rule.apply(metadata, jClass));
         metadata.getApiCalls().forEach( apiMappingMetadata -> {
@@ -48,6 +49,11 @@ public class GenericJavaClassRule implements Rule<JCodeModel, JDefinedClass, Api
 
     public GenericJavaClassRule addClassAnnotationRule(Rule<JDefinedClass,JAnnotationUse, ApiControllerMetadata> annotationRule) {
         this.classAnnotationRules.add(annotationRule);
+        return this;
+    }
+
+    public GenericJavaClassRule setClassCommentRule(Rule<JDefinedClass, JDocComment, ApiControllerMetadata> classCommentRule) {
+        this.classCommentRule = classCommentRule;
         return this;
     }
 
@@ -82,7 +88,7 @@ public class GenericJavaClassRule implements Rule<JCodeModel, JDefinedClass, Api
     }
 
 
-    public GenericJavaClassRule setMethodCommentRule(MethodCommentRule methodCommentRule) {
+    public GenericJavaClassRule setMethodCommentRule(Rule<JMethod,JDocComment,ApiMappingMetadata> methodCommentRule) {
         this.methodCommentRule = methodCommentRule;
         return this;
     }
