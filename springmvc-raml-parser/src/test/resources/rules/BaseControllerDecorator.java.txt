@@ -9,7 +9,7 @@ import org.springframework.http.ResponseEntity;
 
 /**
  * The BaseController class
- * (Generated with version ${project.version})
+ * (Generated with springmvc-raml-parser v.${project.version})
  *
  */
 public interface BaseController {
@@ -51,7 +51,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 /**
  * The BaseController class
- * (Generated with version ${project.version})
+ * (Generated with springmvc-raml-parser v.${project.version})
  *
  */
 @RestController
