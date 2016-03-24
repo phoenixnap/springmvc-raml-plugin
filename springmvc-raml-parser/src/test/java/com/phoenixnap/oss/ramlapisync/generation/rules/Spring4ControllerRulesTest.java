@@ -15,5 +15,4 @@ public class Spring4ControllerRulesTest extends AbstractControllerRuleTestBase {
         verifyGeneratedCode("BaseControllerStub");
     }
 
-
 }

@@ -8,13 +8,16 @@ import com.sun.codemodel.JCodeModel;
 import com.sun.codemodel.writer.SingleStreamCodeWriter;
 import org.apache.log4j.Logger;
 import org.hamcrest.MatcherAssert;
+import org.hamcrest.text.IsEqualIgnoringWhiteSpace;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.raml.model.Raml;
 
+import java.io.BufferedReader;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.io.StringReader;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
@@ -24,7 +27,6 @@ import java.nio.file.Paths;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.nullValue;
-import static org.hamcrest.Matchers.equalToIgnoringWhiteSpace;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertThat;
 
@@ -93,7 +95,7 @@ public abstract class AbstractControllerRuleTestBase {
         String generatedCode = serializeModel();
 
         try {
-            MatcherAssert.assertThat(name + " is not generated correctly.", generatedCode, equalToIgnoringWhiteSpace(expectedCode));
+            MatcherAssert.assertThat(name + " is not generated correctly.", generatedCode, new IsEqualIgnoringLeadingAndEndingWhiteSpaces(expectedCode));
         } catch (AssertionError e) {
             // We let assertEquals fail here instead, because better IDE support for multi line string diff.
             assertEquals(expectedCode, generatedCode);
@@ -109,5 +111,27 @@ public abstract class AbstractControllerRuleTestBase {
     private URI getUri(String resourcePath) throws URISyntaxException {
         URL resource = getClass().getClassLoader().getResource(resourcePath);
         return resource.toURI();
+    }
+
+    public static class IsEqualIgnoringLeadingAndEndingWhiteSpaces extends IsEqualIgnoringWhiteSpace {
+
+        public IsEqualIgnoringLeadingAndEndingWhiteSpaces(String string) {
+            super(string);
+        }
+
+        public String stripSpace(String toBeStripped) {
+            String result = "";
+            BufferedReader bufReader = new BufferedReader(new StringReader(toBeStripped));
+            String line;
+            try {
+                while( (line=bufReader.readLine()) != null ) {
+                    result += super.stripSpace(line);
+                }
+            } catch (IOException e) {
+                return e.getMessage();
+            }
+            return result;
+        }
+
     }
 }
