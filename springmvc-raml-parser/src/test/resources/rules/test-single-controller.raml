@@ -14,6 +14,17 @@ baseUri: /
           body:
             application/json:
               schema: NamedResponseType
+  /{id}/elements:
+    get:
+      queryParameters:
+        requiredQueryParam:
+          type: integer
+          required: true
+        optionalQueryParam:
+          type: string
+        optionalQueryParam2:
+          type: number
+          required: false
 schemas:
   - NamedResponseType: |
       {
