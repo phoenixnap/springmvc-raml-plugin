@@ -1,6 +1,7 @@
-package com.phoenixnap.oss.ramlapisync.generation.rules;
+package com.phoenixnap.oss.ramlapisync.generation.rules.spring;
 
 import com.phoenixnap.oss.ramlapisync.data.ApiControllerMetadata;
+import com.phoenixnap.oss.ramlapisync.generation.rules.Rule;
 import com.sun.codemodel.JClass;
 import com.sun.codemodel.JDefinedClass;
 import com.sun.codemodel.JFieldVar;

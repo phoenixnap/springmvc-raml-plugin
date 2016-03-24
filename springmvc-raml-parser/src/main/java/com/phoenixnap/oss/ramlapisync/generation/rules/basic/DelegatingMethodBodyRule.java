@@ -1,8 +1,10 @@
-package com.phoenixnap.oss.ramlapisync.generation.rules;
+package com.phoenixnap.oss.ramlapisync.generation.rules.basic;
 
 import com.phoenixnap.oss.ramlapisync.data.ApiMappingMetadata;
+import com.phoenixnap.oss.ramlapisync.generation.rules.Rule;
 import com.sun.codemodel.JExpr;
 import com.sun.codemodel.JMethod;
+import org.springframework.util.StringUtils;
 
 /**
  * @author armin.weisser
@@ -10,10 +12,12 @@ import com.sun.codemodel.JMethod;
  */
 public class DelegatingMethodBodyRule implements Rule<JMethod, JMethod, ApiMappingMetadata> {
 
-    private final String delegeeFieldName;
+    private String delegeeFieldName = "delegate";
 
     public DelegatingMethodBodyRule(String delegeeFieldName) {
-        this.delegeeFieldName = delegeeFieldName;
+        if(!StringUtils.isEmpty(delegeeFieldName)) {
+            this.delegeeFieldName = delegeeFieldName;
+        }
     }
 
     @Override

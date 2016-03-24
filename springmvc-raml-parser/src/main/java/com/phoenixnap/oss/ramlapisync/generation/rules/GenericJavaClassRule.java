@@ -1,8 +1,7 @@
-package com.phoenixnap.oss.ramlapisync.generation;
+package com.phoenixnap.oss.ramlapisync.generation.rules;
 
 import com.phoenixnap.oss.ramlapisync.data.ApiControllerMetadata;
 import com.phoenixnap.oss.ramlapisync.data.ApiMappingMetadata;
-import com.phoenixnap.oss.ramlapisync.generation.rules.Rule;
 import com.sun.codemodel.*;
 
 import java.util.ArrayList;
@@ -11,8 +10,9 @@ import java.util.Optional;
 
 /**
  * @author armin.weisser
+ * @since 0.3.2
  */
-public class JavaControllerGeneratorRecipe implements GeneratorRecipe<GeneratedArtefact, ApiControllerMetadata> {
+public class GenericJavaClassRule implements Rule<JCodeModel, JDefinedClass, ApiControllerMetadata> {
 
     private Rule<JCodeModel, JPackage, ApiControllerMetadata> packageRule;
     private List<Rule<JDefinedClass,JAnnotationUse, ApiControllerMetadata>> classAnnotationRules = new ArrayList<>();
@@ -23,10 +23,7 @@ public class JavaControllerGeneratorRecipe implements GeneratorRecipe<GeneratedA
     private Optional<Rule<JMethod, JMethod, ApiMappingMetadata>> metodBodyRule = Optional.empty();
     private List<Rule<JMethod, JAnnotationUse, ApiMappingMetadata>> methodAnnotationRules = new ArrayList<>();
 
-    @Override
-    public GeneratedArtefact apply(ApiControllerMetadata metadata) {
-        JCodeModel codeModel = new JCodeModel();
-
+    public JDefinedClass apply(ApiControllerMetadata metadata, JCodeModel codeModel) {
         JPackage jPackage = packageRule.apply(metadata, codeModel);
         JDefinedClass jClass = classRule.apply(metadata, jPackage);
         implementsRule.ifPresent(rule -> rule.apply(metadata, jClass));
@@ -37,40 +34,47 @@ public class JavaControllerGeneratorRecipe implements GeneratorRecipe<GeneratedA
             methodAnnotationRules.forEach(rule -> rule.apply(apiMappingMetadata, jMethod));
             metodBodyRule.ifPresent( rule -> rule.apply(apiMappingMetadata, jMethod));
         });
-
-        return new GeneratedArtefact(codeModel, jClass);
+        return jClass;
     }
 
 
-    public void setPackageRule(Rule<JCodeModel, JPackage, ApiControllerMetadata> packageRule) {
+    public GenericJavaClassRule setPackageRule(Rule<JCodeModel, JPackage, ApiControllerMetadata> packageRule) {
         this.packageRule = packageRule;
+        return this;
     }
 
-    public void addClassAnnotationRule(Rule<JDefinedClass,JAnnotationUse, ApiControllerMetadata> annotationRule) {
+    public GenericJavaClassRule addClassAnnotationRule(Rule<JDefinedClass,JAnnotationUse, ApiControllerMetadata> annotationRule) {
         this.classAnnotationRules.add(annotationRule);
+        return this;
     }
 
-    public void setClassRule(Rule<JPackage, JDefinedClass, ApiControllerMetadata> classRule) {
+    public GenericJavaClassRule setClassRule(Rule<JPackage, JDefinedClass, ApiControllerMetadata> classRule) {
         this.classRule = classRule;
+        return this;
     }
 
-    public void setMethodSignatureRule(Rule<JDefinedClass, JMethod, ApiMappingMetadata> methodSignatureRule) {
+    public GenericJavaClassRule setMethodSignatureRule(Rule<JDefinedClass, JMethod, ApiMappingMetadata> methodSignatureRule) {
         this.methodSignatureRule = methodSignatureRule;
+        return this;
     }
 
-    public void setMetodBodyRule(Rule<JMethod, JMethod, ApiMappingMetadata> metodBodyRule) {
+    public GenericJavaClassRule setMetodBodyRule(Rule<JMethod, JMethod, ApiMappingMetadata> metodBodyRule) {
         this.metodBodyRule = Optional.of(metodBodyRule);
+        return this;
     }
 
-    public void addFieldDeclerationRule(Rule<JDefinedClass, JFieldVar, ApiControllerMetadata> fieldDeclerationRule) {
+    public GenericJavaClassRule addFieldDeclerationRule(Rule<JDefinedClass, JFieldVar, ApiControllerMetadata> fieldDeclerationRule) {
         this.fieldDeclerationRules.add(fieldDeclerationRule);
+        return this;
     }
 
-    public void setImplementsRule(Rule<JDefinedClass, JDefinedClass, ApiControllerMetadata>  implementsRule) {
+    public GenericJavaClassRule setImplementsRule(Rule<JDefinedClass, JDefinedClass, ApiControllerMetadata>  implementsRule) {
         this.implementsRule = Optional.of(implementsRule);
+        return this;
     }
 
-    public void addMethodAnnotationRule(Rule<JMethod, JAnnotationUse, ApiMappingMetadata> methodAnnotationRule) {
+    public GenericJavaClassRule addMethodAnnotationRule(Rule<JMethod, JAnnotationUse, ApiMappingMetadata> methodAnnotationRule) {
         this.methodAnnotationRules.add(methodAnnotationRule);
+        return this;
     }
 }

@@ -1,6 +1,7 @@
-package com.phoenixnap.oss.ramlapisync.generation.rules;
+package com.phoenixnap.oss.ramlapisync.generation.rules.basic;
 
 import com.phoenixnap.oss.ramlapisync.data.ApiControllerMetadata;
+import com.phoenixnap.oss.ramlapisync.generation.rules.Rule;
 import com.sun.codemodel.JClassAlreadyExistsException;
 import com.sun.codemodel.JDefinedClass;
 import com.sun.codemodel.JPackage;
@@ -9,15 +10,15 @@ import com.sun.codemodel.JPackage;
  * @author armin.weisser
  * @since 0.3.2
  */
-public class ControllerClassRule implements Rule<JPackage,JDefinedClass, ApiControllerMetadata> {
+public class ControllerClassDeclarationRule implements Rule<JPackage,JDefinedClass, ApiControllerMetadata> {
 
     private final String classNameSuffix;
 
-    public ControllerClassRule() {
+    public ControllerClassDeclarationRule() {
         this("");
     }
 
-    public ControllerClassRule(String classNameSuffix) {
+    public ControllerClassDeclarationRule(String classNameSuffix) {
         this.classNameSuffix = classNameSuffix;
     }
 

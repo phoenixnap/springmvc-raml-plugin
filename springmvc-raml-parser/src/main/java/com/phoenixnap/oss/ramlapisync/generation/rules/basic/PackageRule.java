@@ -1,6 +1,7 @@
-package com.phoenixnap.oss.ramlapisync.generation.rules;
+package com.phoenixnap.oss.ramlapisync.generation.rules.basic;
 
 import com.phoenixnap.oss.ramlapisync.data.ApiControllerMetadata;
+import com.phoenixnap.oss.ramlapisync.generation.rules.Rule;
 import com.sun.codemodel.JCodeModel;
 import com.sun.codemodel.JPackage;
 import org.springframework.util.StringUtils;
