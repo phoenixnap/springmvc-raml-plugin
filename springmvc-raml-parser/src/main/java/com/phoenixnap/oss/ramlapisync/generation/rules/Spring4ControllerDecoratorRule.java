@@ -8,6 +8,33 @@ import com.sun.codemodel.JDefinedClass;
 import org.apache.commons.lang.StringUtils;
 
 /**
+ * A code generation Rule that provides a Spring4 Controller based on a decorator pattern.
+ * The goal is to generate code that does not have to be manually extended by the user.
+ * A raml endpoint called /people for example implies two generated artefacts:
+ *
+ * // 1. Controller Interface
+ * interface PeopleController {
+ *     ResponseEntity getPeople();
+ * }
+ *
+ * // 2. A Decorator that implements the Controller Interface
+ * // and delegates to another instance of a class implementing the very same controller interface.
+ * @RestController
+ * @RequestMapping("/people")
+ * class PeopleControllerDecorator implements PeopleController {
+ *
+ *     @Autowired
+ *     PeopleController peopleControllerDelegate;
+ *
+ *     @RequestMapping(value="", method=RequestMethod.GET)
+ *     public ResponseEntity getPeople() {
+ *         return this.peopleControllerDelegate.getPeople();
+ *     }
+ * }
+ *
+ * Now all the user has to do is to implement a Spring-Bean called "PeopleControllerDelegate".
+ * This way he can implement the endpoint without altering the generated code.
+ *
  * @author armin.weisser
  * @since 0.3.2
  */
@@ -34,7 +61,7 @@ public class Spring4ControllerDecoratorRule implements Rule<JCodeModel, JDefined
                 .addClassAnnotationRule(new Spring4RestControllerAnnotationRule())
                 .addClassAnnotationRule(new SpringRequestMappingClassAnnotationRule())
                 .setClassRule(new ControllerClassDeclarationRule("Decorator"))
-                .setImplementsRule(new ImplementsControllerInterfaceRule(generatedInterface))
+                .setImplementsExtendsRule(new ImplementsControllerInterfaceRule(generatedInterface))
                 .addFieldDeclerationRule(new SpringDelegateFieldDeclerationRule(delegateFieldName))
                 .setMethodCommentRule(new MethodCommentRule())
                 .addMethodAnnotationRule(new SpringRequestMappingMethodAnnotationRule())

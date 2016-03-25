@@ -7,6 +7,9 @@ import com.sun.codemodel.JDefinedClass;
 import com.sun.codemodel.JDocComment;
 
 /**
+ * Generates a simple class comment.
+ * If no description is provided by the RAML spec a simple "No description" is added as class level comment.
+ *
  * @author armin.weisser
  * @since 0.3.2
  */

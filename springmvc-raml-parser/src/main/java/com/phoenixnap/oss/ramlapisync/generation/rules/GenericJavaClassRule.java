@@ -3,38 +3,112 @@ package com.phoenixnap.oss.ramlapisync.generation.rules;
 import com.phoenixnap.oss.ramlapisync.data.ApiControllerMetadata;
 import com.phoenixnap.oss.ramlapisync.data.ApiMappingMetadata;
 import com.sun.codemodel.*;
+import sun.plugin.dom.exception.InvalidStateException;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
 /**
+ * This is a configurable template rule which generates a Java artefact (class or interface)
+ * based on an ApiControllerMetadata instance.
+ * The code generation steps are executed by applying subsequent Rule instances.
+ *
+ * The caller has to set appropriate Rule instances for each part of the Java class generation.
+ *
+ * At least a packageRule and a classRule is mandatory.
+ * If the ApiControllerMetadata contains one or more endpoints (ApiMappingMetadata)
+ * at least methodSignatureRule is mandatory.
+ *
+ * packageRule              - a package declaration rule
+ * classCommentRule         - an optional class comment rule
+ * classAnnotationRules     - a set of class annotation rules
+ * classRule                - a class declaration rule
+ * implementsExtendsRule    - an optional rule to define implements/extends part of the class declaration
+ * fieldDeclerationRules    - a set of field declaration rules. May be empty.
+ * methodCommentRule        - an optional method comment rule
+ * methodAnnotationRules    - a set of method annotation rules. May be empty.
+ * methodSignatureRule      - a method signature rule (just the signature, no annotations, no body)
+ * metodBodyRule            - an optional method body rule
+ *
  * @author armin.weisser
  * @since 0.3.2
  */
 public class GenericJavaClassRule implements Rule<JCodeModel, JDefinedClass, ApiControllerMetadata> {
 
+    /**
+     * a package declaration rule
+     */
     private Rule<JCodeModel, JPackage, ApiControllerMetadata> packageRule;
-    private List<Rule<JDefinedClass,JAnnotationUse, ApiControllerMetadata>> classAnnotationRules = new ArrayList<>();
-    private Rule<JPackage,JDefinedClass, ApiControllerMetadata> classRule;
-    private Optional<Rule<JDefinedClass, JDefinedClass, ApiControllerMetadata>> implementsRule = Optional.empty();
-    private List<Rule<JDefinedClass, JFieldVar, ApiControllerMetadata>> fieldDeclerationRules = new ArrayList<>();
-    private Rule<JDefinedClass, JMethod, ApiMappingMetadata> methodSignatureRule;
-    private Optional<Rule<JMethod, JMethod, ApiMappingMetadata>> metodBodyRule = Optional.empty();
-    private List<Rule<JMethod, JAnnotationUse, ApiMappingMetadata>> methodAnnotationRules = new ArrayList<>();
-    private Rule<JMethod,JDocComment,ApiMappingMetadata> methodCommentRule;
-    private Rule<JDefinedClass, JDocComment, ApiControllerMetadata> classCommentRule;
 
+    /**
+     * an optional class comment rule.
+     */
+    private Optional<Rule<JDefinedClass, JDocComment, ApiControllerMetadata>> classCommentRule =  Optional.empty();
+
+    /**
+     * a set of class annotation rules. May be empty.
+     */
+    private List<Rule<JDefinedClass,JAnnotationUse, ApiControllerMetadata>> classAnnotationRules = new ArrayList<>();
+
+    /**
+     * an optional class declaration rule.
+     */
+    private Rule<JPackage,JDefinedClass, ApiControllerMetadata> classRule;
+
+    /**
+     * an optional rule to define implements/extends part of the class declaration
+     */
+    private Optional<Rule<JDefinedClass, JDefinedClass, ApiControllerMetadata>> implementsExtendsRule = Optional.empty();
+
+    /**
+     * a set of field declaration rules. May be empty.
+     */
+    private List<Rule<JDefinedClass, JFieldVar, ApiControllerMetadata>> fieldDeclerationRules = new ArrayList<>();
+
+    /**
+     * an optional method comment rule
+     */
+    private Optional<Rule<JMethod, JDocComment, ApiMappingMetadata>> methodCommentRule = Optional.empty();
+
+    /**
+     * a set of method annotation rules. May be empty.
+     */
+    private List<Rule<JMethod, JAnnotationUse, ApiMappingMetadata>> methodAnnotationRules = new ArrayList<>();
+
+    /**
+     * a method signature rule (just the signature, no annotations, no body)
+     */
+    private Rule<JDefinedClass, JMethod, ApiMappingMetadata> methodSignatureRule;
+
+    /**
+     * an optional method body rule
+     */
+    private Optional<Rule<JMethod, JMethod, ApiMappingMetadata>> metodBodyRule = Optional.empty();
+
+    /**
+     * @throws InvalidStateException if a packageRule or classRule is missing or if the ApiControllerMetadata
+     *         requires a missing methodSignatureRule.
+     */
+    @Override
     public JDefinedClass apply(ApiControllerMetadata metadata, JCodeModel codeModel) {
+
+        if(packageRule == null || classRule == null) {
+            throw new InvalidStateException("A packageRule and classRule are mandatory.");
+        }
+        if(!metadata.getApiCalls().isEmpty() && methodSignatureRule == null) {
+            throw new InvalidStateException("Since there are API Calls in the metadata at least a methodSignatureRule is mandatory");
+        }
+
         JPackage jPackage = packageRule.apply(metadata, codeModel);
         JDefinedClass jClass = classRule.apply(metadata, jPackage);
-        implementsRule.ifPresent(rule -> rule.apply(metadata, jClass));
-        classCommentRule.apply(metadata, jClass);
+        implementsExtendsRule.ifPresent(rule -> rule.apply(metadata, jClass));
+        classCommentRule.ifPresent(rule-> rule.apply(metadata, jClass));
         classAnnotationRules.forEach(rule -> rule.apply(metadata, jClass));
         fieldDeclerationRules.forEach(rule -> rule.apply(metadata, jClass));
         metadata.getApiCalls().forEach( apiMappingMetadata -> {
             JMethod jMethod = methodSignatureRule.apply(apiMappingMetadata, jClass);
-            methodCommentRule.apply(apiMappingMetadata, jMethod);
+            methodCommentRule.ifPresent(rule-> rule.apply(apiMappingMetadata, jMethod));
             methodAnnotationRules.forEach(rule -> rule.apply(apiMappingMetadata, jMethod));
             metodBodyRule.ifPresent( rule -> rule.apply(apiMappingMetadata, jMethod));
         });
@@ -48,12 +122,14 @@ public class GenericJavaClassRule implements Rule<JCodeModel, JDefinedClass, Api
     }
 
     public GenericJavaClassRule addClassAnnotationRule(Rule<JDefinedClass,JAnnotationUse, ApiControllerMetadata> annotationRule) {
-        this.classAnnotationRules.add(annotationRule);
+        if(annotationRule != null) {
+            this.classAnnotationRules.add(annotationRule);
+        }
         return this;
     }
 
     public GenericJavaClassRule setClassCommentRule(Rule<JDefinedClass, JDocComment, ApiControllerMetadata> classCommentRule) {
-        this.classCommentRule = classCommentRule;
+        this.classCommentRule = Optional.ofNullable(classCommentRule);
         return this;
     }
 
@@ -68,7 +144,7 @@ public class GenericJavaClassRule implements Rule<JCodeModel, JDefinedClass, Api
     }
 
     public GenericJavaClassRule setMetodBodyRule(Rule<JMethod, JMethod, ApiMappingMetadata> metodBodyRule) {
-        this.metodBodyRule = Optional.of(metodBodyRule);
+        this.metodBodyRule = Optional.ofNullable(metodBodyRule);
         return this;
     }
 
@@ -77,19 +153,21 @@ public class GenericJavaClassRule implements Rule<JCodeModel, JDefinedClass, Api
         return this;
     }
 
-    public GenericJavaClassRule setImplementsRule(Rule<JDefinedClass, JDefinedClass, ApiControllerMetadata>  implementsRule) {
-        this.implementsRule = Optional.of(implementsRule);
+    public GenericJavaClassRule setImplementsExtendsRule(Rule<JDefinedClass, JDefinedClass, ApiControllerMetadata> implementsExtendsRule) {
+        this.implementsExtendsRule = Optional.ofNullable(implementsExtendsRule);
         return this;
     }
 
     public GenericJavaClassRule addMethodAnnotationRule(Rule<JMethod, JAnnotationUse, ApiMappingMetadata> methodAnnotationRule) {
-        this.methodAnnotationRules.add(methodAnnotationRule);
+        if(methodAnnotationRule != null) {
+            this.methodAnnotationRules.add(methodAnnotationRule);
+        }
         return this;
     }
 
 
     public GenericJavaClassRule setMethodCommentRule(Rule<JMethod,JDocComment,ApiMappingMetadata> methodCommentRule) {
-        this.methodCommentRule = methodCommentRule;
+        this.methodCommentRule = Optional.ofNullable(methodCommentRule);
         return this;
     }
 

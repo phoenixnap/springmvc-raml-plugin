@@ -5,6 +5,14 @@ import com.phoenixnap.oss.ramlapisync.generation.rules.Rule;
 import com.sun.codemodel.JDefinedClass;
 
 /**
+ * Generates an implements expression based on a given JDefinedClass.
+ *
+ * INPUT:
+ * JDefinedClass interfaceType
+ *
+ * OUTPUT:
+ * implements <interfaceType>
+ *
  * @author armin.weisser
  * @since 0.3.2
  */

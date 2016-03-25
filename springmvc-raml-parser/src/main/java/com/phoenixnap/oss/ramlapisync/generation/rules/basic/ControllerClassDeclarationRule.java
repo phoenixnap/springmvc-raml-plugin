@@ -7,6 +7,20 @@ import com.sun.codemodel.JDefinedClass;
 import com.sun.codemodel.JPackage;
 
 /**
+ * Generates an class declaration based on the controller name in ApiControllerMetadata.
+ *
+ * INPUT:
+ * #%RAML 0.8
+ * title: myapi
+ * mediaType: application/json
+ * baseUri: /
+ * /base:
+ *
+ * OUTPUT:
+ * public class BaseController {
+ *
+ * }
+ *
  * @author armin.weisser
  * @since 0.3.2
  */

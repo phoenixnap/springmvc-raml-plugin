@@ -11,6 +11,28 @@ import com.sun.codemodel.JType;
 import static com.phoenixnap.oss.ramlapisync.generation.CodeModelHelper.ext;
 
 /**
+ * Generates a method signatur for an endpoint defined by an ApiMappingMetadata instance.
+ *
+ * INPUT:
+ * #%RAML 0.8
+ * title: myapi
+ * mediaType: application/json
+ * baseUri: /
+ * /base:
+ *   /{id}
+ *     get:
+ *
+ * OUTPUT:
+ * public ResponseType getBaseById(String id)
+ *
+ * OR:
+ * public ResponseType<MyType> getBaseById(@PathVariable String id)
+ *
+ * OR:
+ * public MyType getBaseById(@PathVariable String id)
+ *
+ * The parameter and return type configuration depends on the underlying paramsRule and responseTypeRule.
+ *
  * @author armin.weisser
  * @since 0.3.2
  */

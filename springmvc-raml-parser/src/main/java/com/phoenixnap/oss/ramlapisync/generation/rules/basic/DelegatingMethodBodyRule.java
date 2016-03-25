@@ -8,6 +8,24 @@ import com.sun.codemodel.JMethod;
 import org.springframework.util.StringUtils;
 
 /**
+ * Generates a method body that delegates the method call to a private field.
+ * The field is not setup in this rule, so you must make sure, that this field exists in the generated code,
+ * befor applying this rule.
+ *
+ * INPUT:
+ * #%RAML 0.8
+ * title: myapi
+ * mediaType: application/json
+ * baseUri: /
+ * /base:
+ *   /{id}
+ *     get:
+ *
+ * OUTPUT:
+ * return this.delegate.getBaseById(id);
+ *
+ * The name of the field can be configured. Default is "delegate".
+ *
  * @author armin.weisser
  * @since 0.3.2
  */

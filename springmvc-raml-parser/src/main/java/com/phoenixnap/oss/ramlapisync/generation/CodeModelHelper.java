@@ -8,6 +8,8 @@ import java.util.Iterator;
 import java.util.Properties;
 
 /**
+ * The class provides static helper methods for JCodeModel related tasks.
+ *
  * @author armin.weisser
  * @since 0.3.2
  */

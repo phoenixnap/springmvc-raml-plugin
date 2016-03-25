@@ -6,6 +6,9 @@ import com.sun.codemodel.JDocComment;
 import com.sun.codemodel.JMethod;
 
 /**
+ * A simple method comment.
+ * If no description is provided by the RAML spec for this enpoint a simple "No description" is added as method comment.
+ *
  * @author armin.weisser
  * @since 0.3.2
  */
