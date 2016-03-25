@@ -31,17 +31,17 @@ import org.springframework.util.StringUtils;
  */
 public class DelegatingMethodBodyRule implements Rule<JMethod, JMethod, ApiMappingMetadata> {
 
-    private String delegeeFieldName = "delegate";
+    private String delegateFieldName = "delegate";
 
-    public DelegatingMethodBodyRule(String delegeeFieldName) {
-        if(!StringUtils.isEmpty(delegeeFieldName)) {
-            this.delegeeFieldName = delegeeFieldName;
+    public DelegatingMethodBodyRule(String delegateFieldName) {
+        if(StringUtils.hasText(delegateFieldName)) {
+            this.delegateFieldName = delegateFieldName;
         }
     }
 
     @Override
     public JMethod apply(ApiMappingMetadata endpointMetadata, JMethod generatableType) {
-        JInvocation jInvocation = JExpr._this().ref(delegeeFieldName).invoke(generatableType);
+        JInvocation jInvocation = JExpr._this().ref(delegateFieldName).invoke(generatableType);
         generatableType.params().forEach(p -> jInvocation.arg(p));
         generatableType.body()._return(jInvocation);
         return generatableType;

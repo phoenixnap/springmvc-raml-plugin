@@ -12,6 +12,34 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 
 /**
+ * Generates all method parameters with Spring annotations needed for an endpoint defined by ApiMappingMetadata.
+ * This includes path variables, request parameters and the request body.
+ *
+ * INPUT:
+ * #%RAML 0.8
+ * title: myapi
+ * mediaType: application/json
+ * baseUri: /
+ * /base:
+ *   /{id}/elements:
+ *     get:
+ *       queryParameters:
+ *         requiredQueryParam:
+ *           type: integer
+ *           required: true
+ *         optionalQueryParam:
+ *           type: string
+ *         optionalQueryParam2:
+ *           type: number
+ *           required: false
+ *
+ * OUTPUT:
+ * (@PathVariable String id
+ *  , @RequestParam Integer requiredQueryParam
+ *  , @RequestParam(required=false) String optionalQueryParam
+ *  , @RequestParam(required=false) BigDecimal optionalQueryParam2
+ * )
+ *
  * @author armin.weisser
  * @since 0.3.2
  */

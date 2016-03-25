@@ -7,6 +7,8 @@ import com.sun.codemodel.JMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 /**
+ * Adds a @ResponseBody annotation to the method if there is response body declared in this endpoints metadata.
+ *
  * @author armin.weisser
  * @since 0.3.2
  */

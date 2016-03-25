@@ -15,6 +15,34 @@ import static com.phoenixnap.oss.ramlapisync.generation.CodeModelHelper.findFirs
 import static org.springframework.util.StringUtils.uncapitalize;
 
 /**
+ * Generates all method parameters needed for an endpoint defined by ApiMappingMetadata.
+ * This includes path variables, request parameters and the request body.
+ *
+ * INPUT:
+ * #%RAML 0.8
+ * title: myapi
+ * mediaType: application/json
+ * baseUri: /
+ * /base:
+ *   /{id}/elements:
+ *     get:
+ *       queryParameters:
+ *         requiredQueryParam:
+ *           type: integer
+ *           required: true
+ *         optionalQueryParam:
+ *           type: string
+ *         optionalQueryParam2:
+ *           type: number
+ *           required: false
+ *
+ * OUTPUT:
+ * (String id
+ *  , Integer requiredQueryParam
+ *  , String optionalQueryParam
+ *  , BigDecimal optionalQueryParam2
+ * )
+ *
  * @author armin.weisser
  * @since 0.3.2
  */

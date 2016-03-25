@@ -13,6 +13,32 @@ import java.util.ArrayList;
 import static com.phoenixnap.oss.ramlapisync.generation.CodeModelHelper.findFirstClassBySimpleName;
 
 /**
+ * Creates a org.springframework.http.ResponseEntity as a return type for an endpoint.
+ * If the endpoint declares a response body the first type of the response body will used as return type instead.
+ * If the endpoints response body is an "array" th
+ *
+ * #%RAML 0.8
+ * title: myapi
+ * mediaType: application/json
+ * baseUri: /
+ *
+ * /base:
+ *   get:
+ *   /{id}:
+ *     get:
+ *       responses:
+ *         200:
+ *           body:
+ *             application/json:
+ *               schema: NamedResponseType
+ *               ...
+ *
+ * OUTPUT:
+ * NamedResponseType
+ *
+ * OR:
+ * ArrayList<NamedResponseType> (if the NamedResponseType is an "array")
+ *
  * @author armin.weisser
  * @since 0.3.2
  */
