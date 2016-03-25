@@ -1,5 +1,6 @@
 package com.phoenixnap.oss.ramlapisync.generation;
 
+import com.phoenixnap.oss.ramlapisync.generation.exception.InvalidCodeModelException;
 import com.sun.codemodel.*;
 
 import java.io.IOException;
@@ -33,7 +34,7 @@ public abstract class CodeModelHelper {
                 }
             }
         }
-        throw new InvalidModelException("No unique class found for simple class name " + simpleClassName);
+        throw new InvalidCodeModelException("No unique class found for simple class name " + simpleClassName);
     }
 
     public static JExtMethod ext(JMethod jMethod, JCodeModel jCodeModel) {
