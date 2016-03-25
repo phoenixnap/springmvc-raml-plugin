@@ -4,7 +4,7 @@
 
 	<groupId>com.phoenixnap.oss</groupId>
 	<artifactId>springmvc-raml-parent</artifactId>
-	<version>0.3.1</version>
+	<version>0.3.2-VI</version>
 	
 	<name>Spring MVC to RAML Synchronizer</name>
 	<description>Parent pom to the SpringMVC RAML Generation/Verification Project</description>
@@ -112,17 +112,13 @@
 		</dependency>
 	</dependencies>
   </dependencyManagement>
-  
-  <distributionManagement>
-  <snapshotRepository>
-    <id>ossrh</id>
-    <url>https://oss.sonatype.org/content/repositories/snapshots</url>
-  </snapshotRepository>
-  <repository>
-    <id>ossrh</id>
-    <url>https://oss.sonatype.org/service/local/staging/deploy/maven2/</url>
-  </repository>
-</distributionManagement>
+
+	<distributionManagement>
+		<repository>
+			<id>vi.thirdparty</id>
+			<url>http://maven.virtual-identity.net/content/repositories/thirdparty/</url>
+		</repository>
+	</distributionManagement>
 
 </project>
 

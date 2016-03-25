@@ -235,20 +235,20 @@ Then simply include the following code in the POM of the project you wish to gen
 ### baseUri
 (optional) Base URI for generated Spring controllers. This overrules the baseUri attribute from inside the .raml spec.
 
-### ramlGenerator
-(optional, default: com.phoenixnap.oss.ramlapisync.generation.RamlGenerator) The generator class to be used. 
+### rule
+(optional, default: com.phoenixnap.oss.ramlapisync.generation.rules.Spring4ControllerStubRule) The rule class to be used for code generation. 
 
-- com.phoenixnap.oss.ramlapisync.generation.RamlGenerator: 
-The standard generator. It creates simple controller stubs classes with Spring MVC annotations and empty method bodies (like in v.0.2.4).
+- com.phoenixnap.oss.ramlapisync.generation.rule.Spring4ControllerStubRule: 
+The standard rule. It creates simple controller stubs classes with Spring MVC annotations and empty method bodies (like in v.0.2.4).
 All you have to do is to implement the empty method body for each endpoint. This is simple and easy.
 The drawback: When you regenerate the controller stubs your code will be overriden.
 
-- com.phoenixnap.oss.ramlapisync.generation.RamlSpring4DecoratorGenerator: 
+- com.phoenixnap.oss.ramlapisync.generation.rules.Spring4ControllerDecoratorRule: 
 Creates a controller interface and a decorator with Spring MVC annotations for each top level endpoint.
 The decorator implements the controller interface and delegates all method calls to an @Autowired ControllerDelegate.
 So all you have to do is to provide an ControllerDelegate class which implements the controller interface.
 
-- com.phoenixnap.oss.ramlapisync.generation.RamlSpring4InterfaceOnlyGenerator:
+- com.phoenixnap.oss.ramlapisync.generation.rules.Spring4ControllerInterfaceRule:
 Creates an single interface with Spring MVC annotations for each top level endpoint.
 All you have to do is to provide an implementation for the controller interface
 

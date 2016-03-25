@@ -1,0 +1,35 @@
+#%RAML 0.8
+title: myapi
+mediaType: application/json
+baseUri: /
+
+/base:
+  description: The BaseController class
+  get:
+  /{id}:
+    get:
+      description: Get base entity by ID
+      responses:
+        200:
+          body:
+            application/json:
+              schema: NamedResponseType
+  /{id}/elements:
+    get:
+      queryParameters:
+        requiredQueryParam:
+          type: integer
+          required: true
+        optionalQueryParam:
+          type: string
+        optionalQueryParam2:
+          type: number
+          required: false
+schemas:
+  - NamedResponseType: |
+      {
+        "type": "object",
+        "$schema": "http://json-schema.org/draft-03/schema",
+        "id": "http://jsonschema.net",
+        "required": true
+      }
