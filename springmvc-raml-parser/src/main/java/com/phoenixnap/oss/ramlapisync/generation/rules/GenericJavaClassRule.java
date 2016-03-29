@@ -3,7 +3,6 @@ package com.phoenixnap.oss.ramlapisync.generation.rules;
 import com.phoenixnap.oss.ramlapisync.data.ApiControllerMetadata;
 import com.phoenixnap.oss.ramlapisync.data.ApiMappingMetadata;
 import com.sun.codemodel.*;
-import sun.plugin.dom.exception.InvalidStateException;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -87,17 +86,17 @@ public class GenericJavaClassRule implements Rule<JCodeModel, JDefinedClass, Api
     private Optional<Rule<JMethod, JMethod, ApiMappingMetadata>> metodBodyRule = Optional.empty();
 
     /**
-     * @throws InvalidStateException if a packageRule or classRule is missing or if the ApiControllerMetadata
+     * @throws IllegalStateException if a packageRule or classRule is missing or if the ApiControllerMetadata
      *         requires a missing methodSignatureRule.
      */
     @Override
     public JDefinedClass apply(ApiControllerMetadata metadata, JCodeModel codeModel) {
 
         if(packageRule == null || classRule == null) {
-            throw new InvalidStateException("A packageRule and classRule are mandatory.");
+            throw new IllegalStateException("A packageRule and classRule are mandatory.");
         }
         if(!metadata.getApiCalls().isEmpty() && methodSignatureRule == null) {
-            throw new InvalidStateException("Since there are API Calls in the metadata at least a methodSignatureRule is mandatory");
+            throw new IllegalStateException("Since there are API Calls in the metadata at least a methodSignatureRule is mandatory");
         }
 
         JPackage jPackage = packageRule.apply(metadata, codeModel);
