@@ -121,13 +121,14 @@ public class SpringMvcEndpointGeneratorMojo extends AbstractMojo {
 		} else {
 			resolvedPath += "/generated-sources/";
 		}
-		
-		
+
 		File rootDir = new File (resolvedPath + (addTimestampFolder == true ? System.currentTimeMillis() : "") + "/");
-		File dir = new File (resolvedPath + (addTimestampFolder == true ? System.currentTimeMillis() : "") + "/" + basePackage.replace(".", "/") + "/");
-		dir.mkdirs();
-		
-		for (ApiControllerMetadata met :controllers) {			
+
+		generateCode(controllers, rootDir);
+	}
+
+	private void generateCode(Set<ApiControllerMetadata> controllers, File rootDir) {
+		for (ApiControllerMetadata met :controllers) {
 			this.getLog().debug("");
 			this.getLog().debug("-----------------------------------------------------------");
 			this.getLog().debug(met.getName());
@@ -140,8 +141,6 @@ public class SpringMvcEndpointGeneratorMojo extends AbstractMojo {
 
 			generateControllerSource(met, rootDir);
 		}
-		
-		
 	}
 
 	/*
