@@ -89,6 +89,12 @@ public class SpringMvcEndpointGeneratorMojo extends AbstractMojo {
 	protected String baseUri;
 
 	/**
+	 * If set to true, we will generate seperate methods for different content types in the RAML
+	 */
+	@Parameter(required = false, readonly = true, defaultValue = "false")
+	protected Boolean seperateMethodsByContentType;
+
+	/**
 	 * The full qualified name of the Rule that should be used for code generation.
 	 */
 	@Parameter(required = false, readonly = true, defaultValue = "com.phoenixnap.oss.ramlapisync.generation.rules.Spring4ControllerStubRule")
@@ -110,7 +116,7 @@ public class SpringMvcEndpointGeneratorMojo extends AbstractMojo {
 		}
 		
 		Raml loadRamlFromFile = RamlParser.loadRamlFromFile( "file:"+resolvedRamlPath );
-		RamlParser par = new RamlParser(basePackage, getBasePath(loadRamlFromFile));
+		RamlParser par = new RamlParser(basePackage, getBasePath(loadRamlFromFile), seperateMethodsByContentType);
 		Set<ApiControllerMetadata> controllers = par.extractControllers(loadRamlFromFile);
 
 		if (StringUtils.hasText(outputRelativePath)) {

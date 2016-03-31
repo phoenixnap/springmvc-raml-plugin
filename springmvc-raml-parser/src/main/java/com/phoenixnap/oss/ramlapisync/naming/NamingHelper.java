@@ -19,6 +19,7 @@ import org.raml.model.Action;
 import org.raml.model.ActionType;
 import org.raml.model.Resource;
 import org.raml.parser.utils.Inflector;
+import org.springframework.http.MediaType;
 import org.springframework.util.StringUtils;
 
 /**
@@ -32,6 +33,59 @@ public class NamingHelper {
 
 	private static final Pattern CLASS_SUFFIXES_TO_CLEAN = Pattern.compile(
 			"^(.+)(services|service|impl|class|controller)", Pattern.CASE_INSENSITIVE);
+	
+	private static final Pattern CONTENT_TYPE_VERSION = Pattern.compile(
+			"[^v]*(v[\\d\\.]*).*", Pattern.CASE_INSENSITIVE);
+	
+	/**
+	 * Converts an http contentType into a qualifier that can be used within a Java method
+	 * 
+	 * @param contentType The content type to convert application/json
+	 * @return qualifier, example V1Html
+	 */
+	public static String convertContentTypeToQualifier (String contentType) {
+		//lets start off simple since qualifers are better if they are simple :)
+		//if we have simple standard types lets add some heuristics
+		if (contentType.equals(MediaType.APPLICATION_JSON_VALUE)) {
+			return "AsJson";
+		}
+		
+		if (contentType.equals(MediaType.APPLICATION_OCTET_STREAM_VALUE)) {
+			return "AsBinary";
+		}
+		
+		if (contentType.equals(MediaType.TEXT_PLAIN_VALUE) || contentType.equals(MediaType.TEXT_HTML_VALUE)) {
+			return "AsText";
+		}
+		
+		//we have a non standard type. lets see if we have a version
+		Matcher versionMatcher = CONTENT_TYPE_VERSION.matcher(contentType);
+		if (versionMatcher.find()) {
+			String version = versionMatcher.group(1);
+			
+			if (version != null) {
+				return StringUtils.capitalize(version).replace(".", "_");
+			}
+		}
+		
+		//if we got here we have some sort of funky content type. deal with it
+		int seperatorIndex = contentType.indexOf("/");
+		if (seperatorIndex != -1 && seperatorIndex < contentType.length()) {
+			String candidate = contentType.substring(seperatorIndex+1).toLowerCase();
+			String out = "";
+			if (candidate.contains("json")) {
+				candidate = candidate.replace("json", "");
+				out += "AsJson";
+			}
+			
+			candidate = StringUtils.deleteAny(candidate, " ,.+=-'\"\\|~`#$%^&\n\t");		
+			if (StringUtils.hasText(candidate)) {
+				out = StringUtils.capitalize(candidate) + out;
+			}
+			return "_" + out;
+		}
+		return "";
+	}
 	
 	/**
 	 * Checks if a Resource URI fragment is a URI Parameter. URI parameters are defined as {myParameter}

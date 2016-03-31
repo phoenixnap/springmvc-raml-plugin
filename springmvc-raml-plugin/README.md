@@ -207,6 +207,7 @@ Then simply include the following code in the POM of the project you wish to gen
     <addTimestampFolder>false</addTimestampFolder>
     <basePackage>com.gen.wow</basePackage>
     <baseUri>/api</baseUri>
+	<seperateMethodsByContentType>false</seperateMethodsByContentType>
   </configuration>
   <executions>
     <execution>
@@ -234,6 +235,9 @@ Then simply include the following code in the POM of the project you wish to gen
 
 ### baseUri
 (optional) Base URI for generated Spring controllers. This overrules the baseUri attribute from inside the .raml spec.
+
+### seperateMethodsByContentType
+(optional, default: false) Should we generate seperate API methods for endpoints which define multiple content types in their 200 response. 
 
 ### rule
 (optional, default: com.phoenixnap.oss.ramlapisync.generation.rules.Spring4ControllerStubRule) The rule class to be used for code generation. 

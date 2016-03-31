@@ -72,5 +72,20 @@ public class NamingHelperTest {
 		assertEquals("Should resolve property if available", "/one:8080/two/3/four/five/", NamingHelper.resolveProperties("/one:8080/two/${three}/four/${five}/"));
 		assertEquals("All of the above", "/one:8080/two/3/four/five/", NamingHelper.resolveProperties("/one:8080/two/${three}/${four:four}/${five}/"));
 	}
+	
+	@Test
+	public void test_convertTypeToQualifier_Success() {
+		assertEquals("Should deal with simple standards cleanly", "AsJson", NamingHelper.convertContentTypeToQualifier("application/json"));
+		assertEquals("Should deal with simple standards cleanly", "AsBinary", NamingHelper.convertContentTypeToQualifier("application/octet-stream"));
+		assertEquals("Should deal with simple standards cleanly", "AsText", NamingHelper.convertContentTypeToQualifier("text/plain"));
+		assertEquals("Should deal with simple standards cleanly", "AsText", NamingHelper.convertContentTypeToQualifier("text/html"));
+		
+		assertEquals("Should deal extract versions", "V1", NamingHelper.convertContentTypeToQualifier("application/v1+json"));
+		assertEquals("Should deal extract versions", "V1", NamingHelper.convertContentTypeToQualifier("application/asdasdasdv1asdsad+json"));
+		assertEquals("Should deal extract versions", "V1_2", NamingHelper.convertContentTypeToQualifier("application/asdasdasdv1.2asdsad+json"));
+		
+		assertEquals("Should deal extract versions", "_StuffAsJson", NamingHelper.convertContentTypeToQualifier("application/stuff+json"));
+		
+	}
 
 }
