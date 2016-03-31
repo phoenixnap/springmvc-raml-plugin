@@ -304,7 +304,7 @@ public class Spring4ControllerSerializer implements ApiControllerMetadataSeriali
      *
      * @param parameterMetadataList values to iterator
      * @param mappingFunction a mapping function
-     * @param <T>
+     * @param <T> Any class
      * @return a ',' seperated serialization of parameterMetadataList values mapped by the mapping function.
      */
     protected <T> String generateCommaSeperatedParameters(List<T> parameterMetadataList, Function<T, String> mappingFunction) {

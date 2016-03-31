@@ -42,6 +42,7 @@ public class Spring4ControllerDecoratorTest {
             verifyGenerateClassFor(apiControllerMetadata);
         }
     }
+    
 
     @Test
     public void test_contenttype_decorator_Success() throws Exception {

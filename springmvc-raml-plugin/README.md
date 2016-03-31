@@ -207,6 +207,7 @@ Then simply include the following code in the POM of the project you wish to gen
     <addTimestampFolder>false</addTimestampFolder>
     <basePackage>com.gen.wow</basePackage>
     <baseUri>/api</baseUri>
+	<seperateMethodsByContentType>false</seperateMethodsByContentType>
   </configuration>
   <executions>
     <execution>
@@ -237,6 +238,9 @@ Then simply include the following code in the POM of the project you wish to gen
 
 ### ramlGenerator
 (optional, default: com.phoenixnap.oss.ramlapisync.generation.RamlGenerator) The generator class to be used. 
+
+### seperateMethodsByContentType
+(optional, default: false) Should we generate seperate API methods for endpoints which define multiple content types in their 200 response. 
 
 - com.phoenixnap.oss.ramlapisync.generation.RamlGenerator: 
 The standard generator. It creates simple controller stubs classes with Spring MVC annotations and empty method bodies (like in v.0.2.4).

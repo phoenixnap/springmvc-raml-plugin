@@ -541,10 +541,19 @@ public class SpringMvcResourceParser extends ResourceParser {
 			}
 			action.setResource(actionTargetResource);
 			action.setType(apiAction);
-			actionTargetResource.getActions().putIfAbsent(apiAction, action);
+			if (actionTargetResource.getActions().containsKey(apiAction)) {
+				//merge action
+				Action existingAction = actionTargetResource.getActions().get(apiAction);
+				mergeActions(existingAction, action);
+				
+			} else {
+				actionTargetResource.getActions().put(apiAction, action);
+			}
 		}
 
 	}
+	
+	
 
 	private String cleanPathVariableRegex(String partialUrl) {
 		if (partialUrl.startsWith("{") && partialUrl.endsWith("}") && partialUrl.contains(":")) {

@@ -12,18 +12,21 @@
  */
 package com.phoenixnap.oss.ramlapisync.generation;
 
-import com.phoenixnap.oss.ramlapisync.data.ApiControllerMetadata;
+import java.util.LinkedHashSet;
+import java.util.Map.Entry;
+import java.util.Set;
+
 import org.raml.model.Action;
 import org.raml.model.ActionType;
 import org.raml.model.Raml;
 import org.raml.model.Resource;
+import org.raml.model.Response;
 import org.raml.parser.visitor.RamlDocumentBuilder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.LinkedHashSet;
-import java.util.Map.Entry;
-import java.util.Set;
+import com.phoenixnap.oss.ramlapisync.data.ApiControllerMetadata;
+import com.phoenixnap.oss.ramlapisync.parser.ResourceParser;
 
 
 /**
@@ -50,6 +53,11 @@ public class RamlParser {
 	 * The start URL that every controller should be prefixed with
 	 */
 	private String startUrl = "";
+	
+	/**
+	 * If set to true, we will generate seperate methods for different content types in the RAML
+	 */
+	protected boolean seperateMethodsByContentType = false;
 
 	public RamlParser (String basePackage) {
 		this.basePackage = basePackage;
@@ -58,6 +66,11 @@ public class RamlParser {
 	public RamlParser(String basePackage, String startUrl) {
 		this(basePackage);
 		this.startUrl = startUrl;
+	}
+	
+	public RamlParser(String basePackage, String startUrl, boolean seperateMethodsByContentType) {
+		this(basePackage, startUrl);
+		this.seperateMethodsByContentType = seperateMethodsByContentType;
 	}
 
 	/**
@@ -126,7 +139,21 @@ public class RamlParser {
 		//extract actions for this resource
 		if (resource.getActions() != null && !resource.getActions().isEmpty()) {			
 			for (Entry<ActionType, Action> childResource : resource.getActions().entrySet()) {
-				controller.addApiCall(resource, childResource.getKey(), childResource.getValue());
+				//if we have multiple response types in the raml, this should produce different calls
+				Response response = null;
+				
+				if (childResource.getValue().getResponses() != null) {
+					response = ResourceParser.getSuccessfulResponse(childResource.getValue());
+				}
+				
+				if (seperateMethodsByContentType && response != null && response.hasBody() && response.getBody().size() > 1) {
+						for (String responseType : response.getBody().keySet()) {
+							controller.addApiCall(resource, childResource.getKey(), childResource.getValue(), responseType);
+						}
+					
+				} else {
+					controller.addApiCall(resource, childResource.getKey(), childResource.getValue());
+				}
 			}
 		}
 		if (resource.getResources() != null &&  !resource.getResources().isEmpty()) {

@@ -15,6 +15,7 @@ package com.phoenixnap.oss.ramlapisync.data;
 import com.phoenixnap.oss.ramlapisync.naming.NamingHelper;
 import com.phoenixnap.oss.ramlapisync.naming.SchemaHelper;
 import com.phoenixnap.oss.ramlapisync.parser.ResourceParser;
+
 import org.raml.model.*;
 import org.raml.model.parameter.FormParameter;
 import org.raml.model.parameter.QueryParameter;
@@ -43,15 +44,24 @@ public class ApiMappingMetadata {
 	Map<String, ApiBodyMetadata> responseBody = new LinkedHashMap<>();
 	Set<ApiParameterMetadata> pathVariables = null;
 	Set<ApiParameterMetadata> requestParameters = null;
+	
+	private String responseContentTypeFilter;
 
-	public ApiMappingMetadata(ApiControllerMetadata parent, Resource resource, ActionType actionType, Action action) {
+	public ApiMappingMetadata(ApiControllerMetadata parent, Resource resource, ActionType actionType, Action action, String responseContentTypeFilter) {
 		super();
 		this.parent = parent;
 		this.resource = resource;
 		this.actionType = actionType;
 		this.action = action;
+		
+		this.responseContentTypeFilter = responseContentTypeFilter;
 		parseRequest();
-		parseResponse();
+		parseResponse(responseContentTypeFilter);
+
+	}
+	
+	public ApiMappingMetadata(ApiControllerMetadata parent, Resource resource, ActionType actionType, Action action) {
+		this(parent, resource, actionType, action, null);
 
 	}
 
@@ -124,28 +134,25 @@ public class ApiMappingMetadata {
 		}
 	}
 
-	private void parseResponse() {
-		if (action.getResponses() != null && !action.getResponses().isEmpty()) {
-			for (Entry<String, Response> responses : action.getResponses().entrySet()) {
-				Response response = responses.getValue();
+	private void parseResponse(String responseContentTypeFilter) {
+		Response response = ResourceParser.getSuccessfulResponse(action);
 
-				if ("200".equals(responses.getKey()) && response.getBody() != null && !response.getBody().isEmpty()) {
-					for (Entry<String, MimeType> body : response.getBody().entrySet()) {
-						if (body.getKey().toLowerCase().contains("json")) {
-							// Continue here!
-							String schema = body.getValue().getSchema();
-							if (StringUtils.hasText(schema)) {
-								
-								ApiBodyMetadata responseBody = SchemaHelper.mapSchemaToPojo(parent.getDocument(), schema,
-										parent.getBasePackage() + ".model", StringUtils.capitalize(getName()) + "Response");
-								if (responseBody != null) {
-									this.responseBody.put(body.getKey(), responseBody);
-								}
+		if (response != null && response.getBody() != null && !response.getBody().isEmpty()) {
+			for (Entry<String, MimeType> body : response.getBody().entrySet()) {
+				if (responseContentTypeFilter == null || body.getKey().equals(responseContentTypeFilter)) {
+					if (body.getKey().toLowerCase().contains("json")) { //if we have a json type we need to return an object
+						// Continue here!
+						String schema = body.getValue().getSchema();
+						if (StringUtils.hasText(schema)) {
+							
+							ApiBodyMetadata responseBody = SchemaHelper.mapSchemaToPojo(parent.getDocument(), schema,
+									parent.getBasePackage() + ".model", StringUtils.capitalize(getName()) + "Response");
+							if (responseBody != null) {
+								this.responseBody.put(body.getKey(), responseBody);
 							}
 						}
 					}
 				}
-
 			}
 		}
 	}
@@ -196,17 +203,18 @@ public class ApiMappingMetadata {
 	}
 
 	public String getName() {
-		return NamingHelper.getActionName(parent.getResource(), resource, action, actionType);
+		String name = NamingHelper.getActionName(parent.getResource(), resource, action, actionType);
+		if (responseContentTypeFilter != null) {
+			name += NamingHelper.convertContentTypeToQualifier(responseContentTypeFilter);
+		}
+		return name;
 	}
 
 	public String getProduces() {
-		if (action.getResponses() != null && !action.getResponses().isEmpty()
-				&& action.getResponses().containsKey("200")) {
-			Response response = action.getResponses().get("200");
-
+		if (responseBody != null && !responseBody.isEmpty()) {
 			String out = "";
 			boolean first = true;
-			for (String key : response.getBody().keySet()) {
+			for (String key : responseBody.keySet()) {
 				if (first) {
 					first = false;
 				} else {
