@@ -46,7 +46,7 @@ import static com.phoenixnap.oss.ramlapisync.generation.CodeModelHelper.ext;
  * The parameter and return type configuration depends on the underlying paramsRule and responseTypeRule.
  *
  * @author armin.weisser
- * @since 0.3.2
+ * @since 0.4.1
  */
 public class ControllerMethodSignatureRule implements Rule<JDefinedClass, JMethod, ApiMappingMetadata> {
 

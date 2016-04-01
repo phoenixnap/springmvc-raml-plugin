@@ -353,8 +353,13 @@ public class NamingHelper {
 		}
 	}
 	
-	 
-	
+	/**
+	 * Returns the default sub package that will be used for model objects used in the Request/Response body
+	 * @return the package suffix to be appended.
+	 */
+	public static String getDefaultModelPackage() {
+		return ".model";
+	}
 
 	
 }

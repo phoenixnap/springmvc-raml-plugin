@@ -95,9 +95,7 @@ public class ApiControllerMetadata {
 
 	public String getBasePackage() {
 		return basePackage;
-	}
-
-	
+	}	
 	
 	public Set<ApiBodyMetadata> getDependencies() {
 		Set<ApiBodyMetadata> dependencies = new LinkedHashSet<>();

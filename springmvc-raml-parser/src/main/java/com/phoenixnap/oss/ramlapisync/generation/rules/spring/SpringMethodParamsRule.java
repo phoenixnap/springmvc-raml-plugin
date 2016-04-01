@@ -53,7 +53,7 @@ import org.springframework.web.bind.annotation.RequestParam;
  * )
  *
  * @author armin.weisser
- * @since 0.3.2
+ * @since 0.4.1
  */
 public class SpringMethodParamsRule extends MethodParamsRule {
 

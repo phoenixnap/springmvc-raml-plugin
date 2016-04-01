@@ -22,6 +22,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.TreeMap;
 
+import org.jsonschema2pojo.Annotator;
 import org.jsonschema2pojo.DefaultGenerationConfig;
 import org.jsonschema2pojo.GenerationConfig;
 import org.jsonschema2pojo.Jackson2Annotator;
@@ -354,35 +355,64 @@ public class SchemaHelper {
 				resolvedName = name; //fallback to generated
 			}
 		}
-		JCodeModel codeModel = new JCodeModel();
-
-		GenerationConfig config = new DefaultGenerationConfig() {
-			@Override
-			public boolean isGenerateBuilders() { // set config option by overriding method
-				return true;
-			}
-
-			@Override
-			public boolean isIncludeAdditionalProperties() {
-				return false;
-			}
-
-			@Override
-			public boolean isIncludeDynamicAccessors() {
-				return false;
-			}
-		};
-
-		SchemaStore schemaStore = new SchemaStore();
-		SchemaMapper mapper = new SchemaMapper(new RuleFactory(config, new Jackson2Annotator(), schemaStore),
-				new SchemaGenerator());
-		try {
-			mapper.generate(codeModel, resolvedName, basePackage, resolvedSchema);
+		JCodeModel codeModel = buildBodyJCodeModel(basePackage, resolvedName, resolvedSchema, null, null);
+		if (codeModel != null) {
 			return new ApiBodyMetadata(resolvedName, resolvedSchema, codeModel);
-		} catch (Exception e) {
-			logger.error("Error generating pojo from schema "+name, e);
+		} else {
 			return null;
 		}
 	}
+
+	/**
+	 * Builds a JCodeModel for classes that will be used as Request or Response bodies
+	 * 
+	 * @param basePackage The package we will be using for the domain objects
+	 * @param name The class name
+	 * @param schema The JSON Schema representing this class
+	 * @param config JsonSchema2Pojo configuration. if null a default config will be used
+	 * @param annotator JsonSchema2Pojo annotator. if null a default annotator will be used
+	 * @return built JCodeModel
+	 */
+	public static JCodeModel buildBodyJCodeModel(String basePackage, String name, String schema, GenerationConfig config, Annotator annotator) {
+		JCodeModel codeModel = new JCodeModel();
+		SchemaStore schemaStore = new SchemaStore();
+		
+		
+		if (config == null) {
+				config = new DefaultGenerationConfig() {
+				@Override
+				public boolean isGenerateBuilders() { // set config option by overriding method
+					return true;
+				}
+	
+				@Override
+				public boolean isIncludeAdditionalProperties() {
+					return false;
+				}
+	
+				@Override
+				public boolean isIncludeDynamicAccessors() {
+					return false;
+				}
+			};
+		}
+		if (annotator == null) {
+			annotator = new Jackson2Annotator();
+		}
+		RuleFactory ruleFactory = new RuleFactory(config, annotator, schemaStore);
+
+		
+		SchemaMapper mapper = new SchemaMapper(ruleFactory,
+				new SchemaGenerator());
+		try {
+			mapper.generate(codeModel, name, basePackage, schema);
+		} catch (Exception e) {
+			logger.error("Error generating pojo from schema "+ name, e);
+			return null;
+		}
+		return codeModel;
+	}
+	
+	
 
 }

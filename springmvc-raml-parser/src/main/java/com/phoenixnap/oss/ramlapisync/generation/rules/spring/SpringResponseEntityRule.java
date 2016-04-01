@@ -46,7 +46,7 @@ import static com.phoenixnap.oss.ramlapisync.generation.CodeModelHelper.findFirs
  * {@literal @}ResponseEntity{@literal <}NamedResponseType{@literal >}
  *
  * @author armin.weisser
- * @since 0.3.2
+ * @since 0.4.1
  */
 public class SpringResponseEntityRule implements Rule<JDefinedClass, JType, ApiMappingMetadata> {
 

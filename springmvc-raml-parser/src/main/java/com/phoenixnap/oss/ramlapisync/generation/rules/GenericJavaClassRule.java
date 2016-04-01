@@ -43,7 +43,7 @@ import java.util.Optional;
  * metodBodyRule            - an optional method body rule
  *
  * @author armin.weisser
- * @since 0.3.2
+ * @since 0.4.1
  */
 public class GenericJavaClassRule implements Rule<JCodeModel, JDefinedClass, ApiControllerMetadata> {
 
@@ -95,7 +95,7 @@ public class GenericJavaClassRule implements Rule<JCodeModel, JDefinedClass, Api
     /**
      * an optional method body rule
      */
-    private Optional<Rule<JMethod, JMethod, ApiMappingMetadata>> metodBodyRule = Optional.empty();
+    private Optional<Rule<JMethod, JMethod, ApiMappingMetadata>> methodBodyRule = Optional.empty();
 
     /**
      * @throws IllegalStateException if a packageRule or classRule is missing or if the ApiControllerMetadata
@@ -121,7 +121,7 @@ public class GenericJavaClassRule implements Rule<JCodeModel, JDefinedClass, Api
             JMethod jMethod = methodSignatureRule.apply(apiMappingMetadata, jClass);
             methodCommentRule.ifPresent(rule-> rule.apply(apiMappingMetadata, jMethod));
             methodAnnotationRules.forEach(rule -> rule.apply(apiMappingMetadata, jMethod));
-            metodBodyRule.ifPresent( rule -> rule.apply(apiMappingMetadata, jMethod));
+            methodBodyRule.ifPresent( rule -> rule.apply(apiMappingMetadata, jMethod));
         });
         return jClass;
     }
@@ -154,12 +154,12 @@ public class GenericJavaClassRule implements Rule<JCodeModel, JDefinedClass, Api
         return this;
     }
 
-    public GenericJavaClassRule setMetodBodyRule(Rule<JMethod, JMethod, ApiMappingMetadata> metodBodyRule) {
-        this.metodBodyRule = Optional.ofNullable(metodBodyRule);
+    public GenericJavaClassRule setMethodBodyRule(Rule<JMethod, JMethod, ApiMappingMetadata> metodBodyRule) {
+        this.methodBodyRule = Optional.ofNullable(metodBodyRule);
         return this;
     }
 
-    public GenericJavaClassRule addFieldDeclerationRule(Rule<JDefinedClass, JFieldVar, ApiControllerMetadata> fieldDeclerationRule) {
+    public GenericJavaClassRule addFieldDeclarationRule(Rule<JDefinedClass, JFieldVar, ApiControllerMetadata> fieldDeclerationRule) {
         this.fieldDeclerationRules.add(fieldDeclerationRule);
         return this;
     }

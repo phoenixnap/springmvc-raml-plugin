@@ -239,19 +239,25 @@ Then simply include the following code in the POM of the project you wish to gen
 ### seperateMethodsByContentType
 (optional, default: false) Should we generate seperate API methods for endpoints which define multiple content types in their 200 response. 
 
+### useJackson1xCompatibility
+(optional, default: false) If set to true, we will generate Jackson 1 annotations inside the model objects.
+
 ### rule
 (optional, default: com.phoenixnap.oss.ramlapisync.generation.rules.Spring4ControllerStubRule) The rule class to be used for code generation. 
 
+- com.phoenixnap.oss.ramlapisync.generation.rules.Spring3ControllerStubRule:
 - com.phoenixnap.oss.ramlapisync.generation.rule.Spring4ControllerStubRule: 
 The standard rule. It creates simple controller stubs classes with Spring MVC annotations and empty method bodies (like in v.0.2.4).
 All you have to do is to implement the empty method body for each endpoint. This is simple and easy.
 The drawback: When you regenerate the controller stubs your code will be overriden.
 
+- com.phoenixnap.oss.ramlapisync.generation.rules.Spring3ControllerDecoratorRule: 
 - com.phoenixnap.oss.ramlapisync.generation.rules.Spring4ControllerDecoratorRule: 
 Creates a controller interface and a decorator with Spring MVC annotations for each top level endpoint.
 The decorator implements the controller interface and delegates all method calls to an @Autowired ControllerDelegate.
 So all you have to do is to provide an ControllerDelegate class which implements the controller interface.
 
+- com.phoenixnap.oss.ramlapisync.generation.rules.Spring3ControllerInterfaceRule:
 - com.phoenixnap.oss.ramlapisync.generation.rules.Spring4ControllerInterfaceRule:
 Creates an single interface with Spring MVC annotations for each top level endpoint.
 All you have to do is to provide an implementation for the controller interface

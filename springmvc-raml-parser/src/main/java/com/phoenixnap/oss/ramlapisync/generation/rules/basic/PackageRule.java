@@ -29,7 +29,7 @@ import org.springframework.util.StringUtils;
  * package my.api;
  *
  * @author armin.weisser
- * @since 0.3.2
+ * @since 0.4.1
  */
 public class PackageRule implements Rule<JCodeModel, JPackage, ApiControllerMetadata> {
 

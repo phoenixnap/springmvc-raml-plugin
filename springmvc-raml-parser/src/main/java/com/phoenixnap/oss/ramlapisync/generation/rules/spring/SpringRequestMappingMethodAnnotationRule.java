@@ -37,7 +37,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
  * {@literal @}RequestMapping(value="{id}", method=RequestMethod.GET)
  *
  * @author armin.weisser
- * @since 0.3.2
+ * @since 0.4.1
  */
 public class SpringRequestMappingMethodAnnotationRule implements Rule<JMethod, JAnnotationUse, ApiMappingMetadata> {
 

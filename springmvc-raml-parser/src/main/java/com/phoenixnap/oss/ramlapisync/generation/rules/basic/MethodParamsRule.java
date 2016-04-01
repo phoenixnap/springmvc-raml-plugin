@@ -56,7 +56,7 @@ import static org.springframework.util.StringUtils.uncapitalize;
  * )
  *
  * @author armin.weisser
- * @since 0.3.2
+ * @since 0.4.1
  */
 public class MethodParamsRule implements Rule<CodeModelHelper.JExtMethod, JMethod, ApiMappingMetadata> {
 

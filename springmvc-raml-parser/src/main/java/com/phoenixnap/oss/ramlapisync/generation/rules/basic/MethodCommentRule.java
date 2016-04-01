@@ -22,7 +22,7 @@ import com.sun.codemodel.JMethod;
  * If no description is provided by the RAML spec for this enpoint a simple "No description" is added as method comment.
  *
  * @author armin.weisser
- * @since 0.3.2
+ * @since 0.4.1
  */
 public class MethodCommentRule implements Rule<JMethod,JDocComment,ApiMappingMetadata> {
     @Override

@@ -14,53 +14,41 @@ package com.phoenixnap.oss.ramlapisync.generation.rules;
 
 import com.phoenixnap.oss.ramlapisync.data.ApiControllerMetadata;
 import com.phoenixnap.oss.ramlapisync.data.ApiMappingMetadata;
-import com.phoenixnap.oss.ramlapisync.generation.rules.spring.SpringControllerDecoratorRule;
+import com.phoenixnap.oss.ramlapisync.generation.rules.spring.SpringControllerInterfaceRule;
+import com.phoenixnap.oss.ramlapisync.generation.rules.spring.SpringResponseBodyMethodAnnotationRule;
 import com.phoenixnap.oss.ramlapisync.generation.rules.spring.SpringRestControllerAnnotationRule;
 import com.sun.codemodel.JAnnotationUse;
 import com.sun.codemodel.JDefinedClass;
 import com.sun.codemodel.JMethod;
 
 /**
- * A code generation Rule that provides a Spring4 Controller based on a decorator pattern.
+ * A code generation Rule that provides a standalone Controller interface with Spring4 annotations.
  * The goal is to generate code that does not have to be manually extended by the user.
- * A raml endpoint called /people for example implies two generated artefacts:
+ * A raml endpoint called /people for example would lead to the following interface only:
  *
  * // 1. Controller Interface
+ * {@literal @}RestController
+ * {@literal @}RequestMapping("/people")
  * interface PeopleController {
+ *     {@literal @}RequestMapping(value="", method=RequestMethod.GET)
  *     ResponseEntity getPeople();
  * }
  *
- * // 2. A Decorator that implements the Controller Interface
- * // and delegates to another instance of a class implementing the very same controller interface.
- * {@literal @}RestController
- * {@literal @}RequestMapping("/people")
- * class PeopleControllerDecorator implements PeopleController {
- *
- *     {@literal @}Autowired
- *     PeopleController peopleControllerDelegate;
- *
- *     {@literal @}RequestMapping(value="", method=RequestMethod.GET)
- *     public ResponseEntity getPeople() {
- *         return this.peopleControllerDelegate.getPeople();
- *     }
- * }
- *
- * Now all the user has to do is to implement a Spring-Bean called "PeopleControllerDelegate".
+ * Now all the user has to do is to implement a this interface.
  * This way he can implement the endpoint without altering the generated code.
  *
  * @author armin.weisser
- * @author kurtpa
  * @since 0.4.1
  */
-public class Spring4ControllerDecoratorRule extends SpringControllerDecoratorRule {
-    
-	@Override
-	protected Rule<JDefinedClass, JAnnotationUse, ApiControllerMetadata> getControllerAnnotationRule() {
-		return new SpringRestControllerAnnotationRule(4);
-	}
-	
+public class Spring3ControllerInterfaceRule extends SpringControllerInterfaceRule {
+
 	@Override
 	protected Rule<JMethod, JAnnotationUse, ApiMappingMetadata> getResponseBodyAnnotationRule() {
-		return null; //ResponseBody not needed for RestController
+		return new SpringResponseBodyMethodAnnotationRule();
 	}
+	
+	protected Rule<JDefinedClass, JAnnotationUse, ApiControllerMetadata> getControllerAnnotationRule() {
+		return new SpringRestControllerAnnotationRule(3);
+	}
+	
 }

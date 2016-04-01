@@ -34,7 +34,7 @@ import com.sun.codemodel.JPackage;
  * }
  *
  * @author armin.weisser
- * @since 0.3.2
+ * @since 0.4.1
  */
 public class ControllerInterfaceDeclarationRule implements Rule<JPackage,JDefinedClass, ApiControllerMetadata> {
 

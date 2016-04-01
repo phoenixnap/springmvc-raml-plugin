@@ -32,11 +32,11 @@ import static org.junit.Assert.assertThat;
 
 /**
  * @author armin.weisser
- * @since 0.3.2
+ * @since 0.4.1
  */
 public abstract class AbstractControllerRuleTestBase {
 
-    private static final String RESOURE_BASE = "rules/";
+    private static final String RESOURCE_BASE = "rules/";
     private static Raml RAML;
 
     protected Logger logger = Logger.getLogger(this.getClass());
@@ -47,7 +47,7 @@ public abstract class AbstractControllerRuleTestBase {
 
     @BeforeClass
     public static void initRaml() {
-        RAML = RamlVerifier.loadRamlFromFile(RESOURE_BASE + "test-single-controller.raml");
+        RAML = RamlVerifier.loadRamlFromFile(RESOURCE_BASE + "test-single-controller.raml");
     }
 
     @Before
@@ -91,7 +91,7 @@ public abstract class AbstractControllerRuleTestBase {
     }
 
     protected void verifyGeneratedCode(String name) throws Exception {
-        String expectedCode = getTextFromFile(RESOURE_BASE + name + ".java.txt");
+        String expectedCode = getTextFromFile(RESOURCE_BASE + name + ".java.txt");
         String generatedCode = serializeModel();
 
         try {

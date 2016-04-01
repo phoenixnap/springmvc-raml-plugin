@@ -3,7 +3,7 @@ package com.phoenixnap.oss.ramlapisync.generation.exception;
 /**
  * A runtime exception telling the caller that there is a problem with the CodeModel.
  * @author armin.weisser
- * @since 0.3.2
+ * @since 0.4.1
  */
 public class InvalidCodeModelException extends RuntimeException {
 

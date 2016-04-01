@@ -15,6 +15,7 @@ package com.phoenixnap.oss.ramlapisync.generation.rules;
 import com.phoenixnap.oss.ramlapisync.data.ApiControllerMetadata;
 import com.phoenixnap.oss.ramlapisync.data.ApiMappingMetadata;
 import com.phoenixnap.oss.ramlapisync.generation.rules.spring.SpringControllerStubRule;
+import com.phoenixnap.oss.ramlapisync.generation.rules.spring.SpringResponseBodyMethodAnnotationRule;
 import com.phoenixnap.oss.ramlapisync.generation.rules.spring.SpringRestControllerAnnotationRule;
 import com.sun.codemodel.JAnnotationUse;
 import com.sun.codemodel.JDefinedClass;
@@ -39,17 +40,18 @@ import com.sun.codemodel.JMethod;
  * So this solution is mainly usefull for one time code generation.
  *
  * @author armin.weisser
+ * @author kurtpa
  * @since 0.4.1
  */
-public class Spring4ControllerStubRule extends SpringControllerStubRule {
+public class Spring3ControllerStubRule extends SpringControllerStubRule {
 
 	@Override
 	protected Rule<JMethod, JAnnotationUse, ApiMappingMetadata> getResponseBodyAnnotationRule() {
-		return null; //Spring 4 Rest Controllers dont need @responsebody
+		return new SpringResponseBodyMethodAnnotationRule();
 	}
 
 	@Override
 	protected Rule<JDefinedClass, JAnnotationUse, ApiControllerMetadata> getControllerAnnotationRule() {
-		return new SpringRestControllerAnnotationRule(4);
+		return new SpringRestControllerAnnotationRule(3);
 	}
 }

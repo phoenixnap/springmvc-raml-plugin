@@ -34,7 +34,7 @@ import com.sun.codemodel.JMethod;
  * The name of the field can be configured. Default is "delegate".
  *
  * @author armin.weisser
- * @since 0.3.2
+ * @since 0.4.1
  */
 public class ImplementMeMethodBodyRule implements Rule<JMethod, JMethod, ApiMappingMetadata> {
 

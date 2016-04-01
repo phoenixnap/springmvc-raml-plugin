@@ -26,7 +26,7 @@ import com.sun.codemodel.JDefinedClass;
  * implements {@literal <}interfaceType{@literal >}
  *
  * @author armin.weisser
- * @since 0.3.2
+ * @since 0.4.1
  */
 public class ImplementsControllerInterfaceRule implements Rule<JDefinedClass, JDefinedClass, ApiControllerMetadata> {
 

@@ -13,10 +13,12 @@
 package com.phoenixnap.oss.ramlapisync.generation.rules;
 
 import com.phoenixnap.oss.ramlapisync.data.ApiControllerMetadata;
-import com.phoenixnap.oss.ramlapisync.generation.rules.basic.*;
-import com.phoenixnap.oss.ramlapisync.generation.rules.spring.*;
-import com.sun.codemodel.JCodeModel;
+import com.phoenixnap.oss.ramlapisync.data.ApiMappingMetadata;
+import com.phoenixnap.oss.ramlapisync.generation.rules.spring.SpringControllerInterfaceRule;
+import com.phoenixnap.oss.ramlapisync.generation.rules.spring.SpringRestControllerAnnotationRule;
+import com.sun.codemodel.JAnnotationUse;
 import com.sun.codemodel.JDefinedClass;
+import com.sun.codemodel.JMethod;
 
 /**
  * A code generation Rule that provides a standalone Controller interface with Spring4 annotations.
@@ -35,25 +37,17 @@ import com.sun.codemodel.JDefinedClass;
  * This way he can implement the endpoint without altering the generated code.
  *
  * @author armin.weisser
- * @since 0.3.2
+ * @since 0.4.1
  */
-public class Spring4ControllerInterfaceRule implements Rule<JCodeModel, JDefinedClass, ApiControllerMetadata> {
+public class Spring4ControllerInterfaceRule extends SpringControllerInterfaceRule {
 
-    @Override
-    public JDefinedClass apply(ApiControllerMetadata metadata, JCodeModel generatableType) {
+	protected Rule<JDefinedClass, JAnnotationUse, ApiControllerMetadata> getControllerAnnotationRule() {
+		return new SpringRestControllerAnnotationRule(4);
+	}
 
-        GenericJavaClassRule generator = new GenericJavaClassRule()
-                .setPackageRule(new PackageRule())
-                .setClassCommentRule(new ClassCommentRule())
-                .addClassAnnotationRule(new Spring4RestControllerAnnotationRule())
-                .addClassAnnotationRule(new SpringRequestMappingClassAnnotationRule())
-                .setClassRule(new ControllerInterfaceDeclarationRule())
-                .setMethodCommentRule(new MethodCommentRule())
-                .addMethodAnnotationRule(new SpringRequestMappingMethodAnnotationRule())
-                .setMethodSignatureRule(new ControllerMethodSignatureRule(
-                        new SpringResponseEntityRule(),
-                        new SpringMethodParamsRule())
-                );
-        return generator.apply(metadata, generatableType);
-    }
+	@Override
+	protected Rule<JMethod, JAnnotationUse, ApiMappingMetadata> getResponseBodyAnnotationRule() {
+		return null; //ResponseBody not needed for RestController
+	}
+	
 }

@@ -12,6 +12,8 @@
  */
 package com.phoenixnap.oss.ramlapisync.data;
 
+import org.jsonschema2pojo.Annotator;
+import org.jsonschema2pojo.GenerationConfig;
 import org.raml.model.ParamType;
 import org.raml.parser.utils.Inflector;
 
@@ -80,6 +82,10 @@ public class ApiBodyMetadata {
 
 	public boolean isArray() {
 		return array;
+	}
+	
+	public JCodeModel getCodeModel(String basePackage, GenerationConfig config, Annotator annotator) {
+		return SchemaHelper.buildBodyJCodeModel(basePackage, name, schema, config, annotator);
 	}
 
 }

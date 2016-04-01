@@ -52,7 +52,7 @@ import static com.phoenixnap.oss.ramlapisync.generation.CodeModelHelper.findFirs
  * ArrayList{@literal <}NamedResponseType{@literal >} (if the NamedResponseType is an "array")
  *
  * @author armin.weisser
- * @since 0.3.2
+ * @since 0.4.1
  */
 public class SpringSimpleResponseTypeRule implements Rule<JDefinedClass, JType, ApiMappingMetadata> {
 

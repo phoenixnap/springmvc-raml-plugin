@@ -12,19 +12,28 @@
  */
 package com.phoenixnap.oss.ramlapisync.data;
 
-import com.phoenixnap.oss.ramlapisync.naming.NamingHelper;
-import com.phoenixnap.oss.ramlapisync.naming.SchemaHelper;
-import com.phoenixnap.oss.ramlapisync.parser.ResourceParser;
+import java.util.Collections;
+import java.util.LinkedHashMap;
+import java.util.LinkedHashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
+import java.util.Set;
 
-import org.raml.model.*;
+import org.raml.model.Action;
+import org.raml.model.ActionType;
+import org.raml.model.MimeType;
+import org.raml.model.Resource;
+import org.raml.model.Response;
 import org.raml.model.parameter.FormParameter;
 import org.raml.model.parameter.QueryParameter;
 import org.raml.model.parameter.UriParameter;
 import org.springframework.http.MediaType;
 import org.springframework.util.StringUtils;
 
-import java.util.*;
-import java.util.Map.Entry;
+import com.phoenixnap.oss.ramlapisync.naming.NamingHelper;
+import com.phoenixnap.oss.ramlapisync.naming.SchemaHelper;
+import com.phoenixnap.oss.ramlapisync.parser.ResourceParser;
 
 /**
  * Class containing the data required to successfully generate code for an api call within a controller
@@ -124,7 +133,7 @@ public class ApiMappingMetadata {
 					if (StringUtils.hasText(schema)) {
 						
 						ApiBodyMetadata requestBody = SchemaHelper.mapSchemaToPojo(parent.getDocument(), schema, parent.getBasePackage()
-								+ ".model", StringUtils.capitalize(getName()) + "Request");
+								+ NamingHelper.getDefaultModelPackage(), StringUtils.capitalize(getName()) + "Request");
 						if (requestBody != null) {
 							setRequestBody(requestBody);
 						}
@@ -146,7 +155,7 @@ public class ApiMappingMetadata {
 						if (StringUtils.hasText(schema)) {
 							
 							ApiBodyMetadata responseBody = SchemaHelper.mapSchemaToPojo(parent.getDocument(), schema,
-									parent.getBasePackage() + ".model", StringUtils.capitalize(getName()) + "Response");
+									parent.getBasePackage() + NamingHelper.getDefaultModelPackage(), StringUtils.capitalize(getName()) + "Response");
 							if (responseBody != null) {
 								this.responseBody.put(body.getKey(), responseBody);
 							}
@@ -186,7 +195,7 @@ public class ApiMappingMetadata {
 					String schema = body.getValue().getSchema();
 					if (StringUtils.hasText(schema)) {
 						ApiBodyMetadata requestBody = SchemaHelper.mapSchemaToPojo(parent.getDocument(), schema, parent.getBasePackage()
-								+ ".requestObjects", getName() + "Request");
+								+ NamingHelper.getDefaultModelPackage(), getName() + "Request");
 						if (requestBody != null) {
 							setRequestBody(requestBody);
 						}

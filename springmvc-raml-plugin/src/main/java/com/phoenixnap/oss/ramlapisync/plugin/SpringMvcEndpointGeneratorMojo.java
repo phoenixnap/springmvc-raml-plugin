@@ -12,13 +12,12 @@
  */
 package com.phoenixnap.oss.ramlapisync.plugin;
 
-import com.phoenixnap.oss.ramlapisync.data.ApiBodyMetadata;
-import com.phoenixnap.oss.ramlapisync.data.ApiControllerMetadata;
-import com.phoenixnap.oss.ramlapisync.generation.RamlParser;
-import com.phoenixnap.oss.ramlapisync.generation.rules.Rule;
-import com.phoenixnap.oss.ramlapisync.generation.rules.Spring4ControllerStubRule;
-import com.sun.codemodel.JCodeModel;
-import com.sun.codemodel.JDefinedClass;
+import java.io.File;
+import java.io.IOException;
+import java.net.MalformedURLException;
+import java.util.List;
+import java.util.Set;
+
 import org.apache.maven.artifact.DependencyResolutionRequiredException;
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
@@ -30,14 +29,20 @@ import org.apache.maven.plugins.annotations.Parameter;
 import org.apache.maven.plugins.annotations.ResolutionScope;
 import org.apache.maven.project.MavenProject;
 import org.codehaus.plexus.classworlds.realm.ClassRealm;
+import org.jsonschema2pojo.Annotator;
+import org.jsonschema2pojo.GenerationConfig;
+import org.jsonschema2pojo.Jackson1Annotator;
 import org.raml.model.Raml;
 import org.springframework.util.StringUtils;
 
-import java.io.File;
-import java.io.IOException;
-import java.net.MalformedURLException;
-import java.util.List;
-import java.util.Set;
+import com.phoenixnap.oss.ramlapisync.data.ApiBodyMetadata;
+import com.phoenixnap.oss.ramlapisync.data.ApiControllerMetadata;
+import com.phoenixnap.oss.ramlapisync.generation.RamlParser;
+import com.phoenixnap.oss.ramlapisync.generation.rules.Rule;
+import com.phoenixnap.oss.ramlapisync.generation.rules.Spring4ControllerStubRule;
+import com.phoenixnap.oss.ramlapisync.naming.NamingHelper;
+import com.sun.codemodel.JCodeModel;
+import com.sun.codemodel.JDefinedClass;
 
 /**
  * Maven Plugin MOJO specific to Generation of Spring MVC Endpoints from RAML documents.
@@ -93,6 +98,12 @@ public class SpringMvcEndpointGeneratorMojo extends AbstractMojo {
 	 */
 	@Parameter(required = false, readonly = true, defaultValue = "false")
 	protected Boolean seperateMethodsByContentType;
+	
+	/**
+	 * If set to true, we will generate Jackson 1 annotations inside the model objects
+	 */
+	@Parameter(required = false, readonly = true, defaultValue = "false")
+	protected Boolean useJackson1xCompatibility;
 
 	/**
 	 * The full qualified name of the Rule that should be used for code generation.
@@ -142,7 +153,7 @@ public class SpringMvcEndpointGeneratorMojo extends AbstractMojo {
 
 			Set<ApiBodyMetadata> dependencies = met.getDependencies();
 			for (ApiBodyMetadata body : dependencies) {
-				generateModelSources(met, body, rootDir);
+				generateModelSources(met, body, rootDir, null, useJackson1xCompatibility == true ? new Jackson1Annotator() : null );
 			}
 
 			generateControllerSource(met, rootDir);
@@ -194,9 +205,14 @@ public class SpringMvcEndpointGeneratorMojo extends AbstractMojo {
 		return classRealm;
 	}
 
-	private void generateModelSources(ApiControllerMetadata met, ApiBodyMetadata body, File rootDir) {
+	private void generateModelSources(ApiControllerMetadata met, ApiBodyMetadata body, File rootDir, GenerationConfig config, Annotator annotator) {
 		try {
-            JCodeModel codeModel = body.getCodeModel();
+            JCodeModel codeModel;
+            if (config ==null && annotator == null) {
+            	codeModel = body.getCodeModel();
+            } else {
+            	codeModel = body.getCodeModel(basePackage + NamingHelper.getDefaultModelPackage(), config, annotator);
+            }
             if (codeModel != null) {
                 codeModel.build(rootDir);
             }

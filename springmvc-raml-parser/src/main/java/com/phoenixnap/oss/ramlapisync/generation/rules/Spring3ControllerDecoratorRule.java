@@ -15,6 +15,7 @@ package com.phoenixnap.oss.ramlapisync.generation.rules;
 import com.phoenixnap.oss.ramlapisync.data.ApiControllerMetadata;
 import com.phoenixnap.oss.ramlapisync.data.ApiMappingMetadata;
 import com.phoenixnap.oss.ramlapisync.generation.rules.spring.SpringControllerDecoratorRule;
+import com.phoenixnap.oss.ramlapisync.generation.rules.spring.SpringResponseBodyMethodAnnotationRule;
 import com.phoenixnap.oss.ramlapisync.generation.rules.spring.SpringRestControllerAnnotationRule;
 import com.sun.codemodel.JAnnotationUse;
 import com.sun.codemodel.JDefinedClass;
@@ -52,15 +53,15 @@ import com.sun.codemodel.JMethod;
  * @author kurtpa
  * @since 0.4.1
  */
-public class Spring4ControllerDecoratorRule extends SpringControllerDecoratorRule {
+public class Spring3ControllerDecoratorRule extends SpringControllerDecoratorRule {
     
 	@Override
 	protected Rule<JDefinedClass, JAnnotationUse, ApiControllerMetadata> getControllerAnnotationRule() {
-		return new SpringRestControllerAnnotationRule(4);
+		return new SpringRestControllerAnnotationRule(3);
 	}
 	
 	@Override
 	protected Rule<JMethod, JAnnotationUse, ApiMappingMetadata> getResponseBodyAnnotationRule() {
-		return null; //ResponseBody not needed for RestController
+		return new SpringResponseBodyMethodAnnotationRule();
 	}
 }

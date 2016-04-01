@@ -39,7 +39,7 @@ import org.springframework.util.StringUtils;
  * The name of the field can be configured. Default is "delegate".
  *
  * @author armin.weisser
- * @since 0.3.2
+ * @since 0.4.1
  */
 public class DelegatingMethodBodyRule implements Rule<JMethod, JMethod, ApiMappingMetadata> {
 

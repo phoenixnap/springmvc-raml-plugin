@@ -12,7 +12,7 @@ import static org.junit.Assert.assertThat;
 
 /**
  * @author armin.weisser
- * @since 0.3.2
+ * @since 0.4.1
  */
 public class DelegatingMethodBodyRuleTest extends AbstractControllerRuleTestBase {
 

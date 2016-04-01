@@ -32,7 +32,7 @@ import org.springframework.util.StringUtils;
  * BaseClass delegate;
  *
  * @author armin.weisser
- * @since 0.3.2
+ * @since 0.4.1
  */
 public class SpringDelegateFieldDeclerationRule implements Rule<JDefinedClass, JFieldVar, ApiControllerMetadata> {
 

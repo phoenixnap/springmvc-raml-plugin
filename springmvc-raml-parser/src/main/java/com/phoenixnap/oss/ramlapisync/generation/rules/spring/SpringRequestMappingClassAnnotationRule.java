@@ -37,7 +37,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
  * {@literal @}RequestMapping(value="/api/base", produces="application/json")
  *
  * @author armin.weisser
- * @since 0.3.2
+ * @since 0.4.1
  */
 public class SpringRequestMappingClassAnnotationRule implements Rule<JDefinedClass, JAnnotationUse, ApiControllerMetadata> {
     @Override

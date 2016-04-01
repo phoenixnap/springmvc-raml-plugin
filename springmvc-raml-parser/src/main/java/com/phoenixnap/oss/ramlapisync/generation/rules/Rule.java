@@ -24,7 +24,7 @@ package com.phoenixnap.oss.ramlapisync.generation.rules;
  *            The type of the meta data that this rule should operate on. E.g ApiControllerMetadata.
  *
  * @author armin.weisser
- * @since 0.3.2
+ * @since 0.4.1
  */
 public interface Rule<T, R, M> {
 

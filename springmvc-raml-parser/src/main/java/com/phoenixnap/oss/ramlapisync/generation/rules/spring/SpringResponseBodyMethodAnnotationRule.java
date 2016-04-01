@@ -22,7 +22,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
  * Adds a @ResponseBody annotation to the method if there is response body declared in this endpoints metadata.
  *
  * @author armin.weisser
- * @since 0.3.2
+ * @since 0.4.1
  */
 public class SpringResponseBodyMethodAnnotationRule implements Rule<JMethod, JAnnotationUse, ApiMappingMetadata> {
     @Override

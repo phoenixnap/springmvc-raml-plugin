@@ -23,7 +23,7 @@ import com.sun.codemodel.JDocComment;
  * If no description is provided by the RAML spec a simple "No description" is added as class level comment.
  *
  * @author armin.weisser
- * @since 0.3.2
+ * @since 0.4.1
  */
 public class ClassCommentRule implements Rule<JDefinedClass, JDocComment, ApiControllerMetadata> {
 

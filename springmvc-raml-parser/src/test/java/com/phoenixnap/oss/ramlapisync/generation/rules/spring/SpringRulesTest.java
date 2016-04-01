@@ -15,13 +15,13 @@ import static org.junit.Assert.assertThat;
 
 /**
  * @author armin.weisser
- * @since 0.3.2
+ * @since 0.4.1
  */
 public class SpringRulesTest extends AbstractControllerRuleTestBase {
 
     @Test
     public void applyRestControllerAnnotationRule_shouldCreate_validClassAnnotation() throws JClassAlreadyExistsException {
-        Spring4RestControllerAnnotationRule rule = new Spring4RestControllerAnnotationRule();
+        SpringRestControllerAnnotationRule rule = new SpringRestControllerAnnotationRule(4);
 
         JPackage jPackage = jCodeModel.rootPackage();
         JDefinedClass jClass = jPackage._class(JMod.PUBLIC, "MyClass");

@@ -24,7 +24,7 @@ import java.util.Properties;
  * The class provides static helper methods for JCodeModel related tasks.
  *
  * @author armin.weisser
- * @since 0.3.2
+ * @since 0.4.1
  */
 public abstract class CodeModelHelper {
 
