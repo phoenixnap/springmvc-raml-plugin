@@ -341,8 +341,8 @@ public abstract class ResourceParser {
 	 * - Copying over Request Data?
 	 * - Copying over other responses?
 	 * 
-	 * @param existingAction
-	 * @param newAction
+	 * @param existingAction The action we already have in our model
+	 * @param newAction The action we we want to include in the model
 	 */
 	protected void mergeActions (Action existingAction, Action newAction) {
 		Response existingSuccessfulResponse = getSuccessfulResponse(existingAction);
@@ -357,7 +357,7 @@ public abstract class ResourceParser {
 	
 	/**
 	 * Gets the successful response from an action (200 or 201)
-	 * @param action
+	 * @param action The action to parse
 	 * @return The Successful response or null if not found
 	 */
 	public static Response getSuccessfulResponse(Action action) {

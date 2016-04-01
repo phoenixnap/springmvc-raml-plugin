@@ -21,8 +21,8 @@ import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 /**
- * Adds a @RequestMapping annotation at class level
- * The "value" of the @RequestMapping is the controller url from the ApiControllerMetadata instance.
+ * Adds a {@literal @}RequestMapping annotation at class level
+ * The "value" of the {@literal @}RequestMapping is the controller url from the ApiControllerMetadata instance.
  * If the ApiControllerMetadata defines an explicit media type the "produces" attribute will be set to this media type.
  *
  * INPUT:
@@ -34,7 +34,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
  *   get:
  *
  * OUTPUT:
- * @RequestMapping(value="/api/base", produces="application/json")
+ * {@literal @}RequestMapping(value="/api/base", produces="application/json")
  *
  * @author armin.weisser
  * @since 0.3.2

@@ -19,7 +19,7 @@ import com.sun.codemodel.JDefinedClass;
 import org.springframework.web.bind.annotation.RestController;
 
 /**
- * Adds the @RestController annotation to the given JDefinedClass
+ * Adds the {@literal @}RestController annotation to the given JDefinedClass
  *
  * @author armin.weisser
  * @since 0.3.2

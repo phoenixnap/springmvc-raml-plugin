@@ -38,10 +38,10 @@ import static com.phoenixnap.oss.ramlapisync.generation.CodeModelHelper.ext;
  * public ResponseType getBaseById(String id)
  *
  * OR:
- * public ResponseType<MyType> getBaseById(@PathVariable String id)
+ * public ResponseType{@literal <}MyType{@literal >} getBaseById({@literal @}PathVariable String id)
  *
  * OR:
- * public MyType getBaseById(@PathVariable String id)
+ * public MyType getBaseById({@literal @}PathVariable String id)
  *
  * The parameter and return type configuration depends on the underlying paramsRule and responseTypeRule.
  *

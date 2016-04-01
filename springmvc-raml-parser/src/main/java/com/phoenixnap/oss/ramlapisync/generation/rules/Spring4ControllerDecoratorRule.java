@@ -31,14 +31,14 @@ import org.apache.commons.lang.StringUtils;
  *
  * // 2. A Decorator that implements the Controller Interface
  * // and delegates to another instance of a class implementing the very same controller interface.
- * @RestController
- * @RequestMapping("/people")
+ * {@literal @}RestController
+ * {@literal @}RequestMapping("/people")
  * class PeopleControllerDecorator implements PeopleController {
  *
- *     @Autowired
+ *     {@literal @}Autowired
  *     PeopleController peopleControllerDelegate;
  *
- *     @RequestMapping(value="", method=RequestMethod.GET)
+ *     {@literal @}RequestMapping(value="", method=RequestMethod.GET)
  *     public ResponseEntity getPeople() {
  *         return this.peopleControllerDelegate.getPeople();
  *     }

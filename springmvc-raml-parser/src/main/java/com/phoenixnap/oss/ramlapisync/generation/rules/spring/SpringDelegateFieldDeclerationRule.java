@@ -23,12 +23,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.StringUtils;
 
 /**
- * Creates a private field declaration with a Spring @Autowired annotation.
+ * Creates a private field declaration with a Spring {@literal @}Autowired annotation.
  * The type of the field is derived from the super class of the given JDefinedClass.
  * The name of the field can be injected by the caller. Default is "delegate".
  *
  * EXAMPLE OUTPUT:
- * @Autowired
+ * {@literal @}Autowired
  * BaseClass delegate;
  *
  * @author armin.weisser

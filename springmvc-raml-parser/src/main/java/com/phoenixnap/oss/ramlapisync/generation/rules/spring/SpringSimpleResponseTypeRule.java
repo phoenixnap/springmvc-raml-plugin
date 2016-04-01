@@ -49,7 +49,7 @@ import static com.phoenixnap.oss.ramlapisync.generation.CodeModelHelper.findFirs
  * NamedResponseType
  *
  * OR:
- * ArrayList<NamedResponseType> (if the NamedResponseType is an "array")
+ * ArrayList{@literal <}NamedResponseType{@literal >} (if the NamedResponseType is an "array")
  *
  * @author armin.weisser
  * @since 0.3.2

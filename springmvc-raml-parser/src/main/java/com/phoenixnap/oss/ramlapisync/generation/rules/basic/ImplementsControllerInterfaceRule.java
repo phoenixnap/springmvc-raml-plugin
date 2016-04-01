@@ -23,7 +23,7 @@ import com.sun.codemodel.JDefinedClass;
  * JDefinedClass interfaceType
  *
  * OUTPUT:
- * implements <interfaceType>
+ * implements {@literal <}interfaceType{@literal >}
  *
  * @author armin.weisser
  * @since 0.3.2

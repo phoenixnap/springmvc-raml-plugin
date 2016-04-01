@@ -29,9 +29,10 @@ import java.util.Properties;
 public abstract class CodeModelHelper {
 
     /**
+     *	Searches inside a JCodeModel for a class with a specified name ignoring package
      *
-     * @param codeModel
-     * @param simpleClassName
+     * @param codeModel The codemodel which we will look inside
+     * @param simpleClassName The class name to search for
      * @return the first class in any package that matches the simple class name.
      */
     public static JClass findFirstClassBySimpleName(JCodeModel codeModel, String simpleClassName) {

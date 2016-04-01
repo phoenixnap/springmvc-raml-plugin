@@ -96,6 +96,7 @@ public class ApiParameterMetadata {
 	/**
 	 * Default constructor that creates a metadata object from a Raml parameter
 	 * 
+	 * @param name	The name of this parameter if different in annotation
 	 * @param param Java Parameter representation
 	 */
 	public ApiParameterMetadata(String name, AbstractParam param) {

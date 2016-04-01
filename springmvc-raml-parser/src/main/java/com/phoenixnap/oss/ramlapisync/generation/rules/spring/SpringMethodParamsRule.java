@@ -46,10 +46,10 @@ import org.springframework.web.bind.annotation.RequestParam;
  *           required: false
  *
  * OUTPUT:
- * (@PathVariable String id
- *  , @RequestParam Integer requiredQueryParam
- *  , @RequestParam(required=false) String optionalQueryParam
- *  , @RequestParam(required=false) BigDecimal optionalQueryParam2
+ * ({@literal @}PathVariable String id
+ *  , {@literal @}RequestParam Integer requiredQueryParam
+ *  , {@literal @}RequestParam(required=false) String optionalQueryParam
+ *  , {@literal @}RequestParam(required=false) BigDecimal optionalQueryParam2
  * )
  *
  * @author armin.weisser
