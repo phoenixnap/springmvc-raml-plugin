@@ -14,10 +14,11 @@ package com.phoenixnap.oss.ramlapisync.plugin;
 
 import com.phoenixnap.oss.ramlapisync.data.ApiBodyMetadata;
 import com.phoenixnap.oss.ramlapisync.data.ApiControllerMetadata;
-import com.phoenixnap.oss.ramlapisync.generation.RamlGenerator;
 import com.phoenixnap.oss.ramlapisync.generation.RamlParser;
-import com.phoenixnap.oss.ramlapisync.generation.serialize.ApiControllerMetadataSerializer;
+import com.phoenixnap.oss.ramlapisync.generation.rules.Rule;
+import com.phoenixnap.oss.ramlapisync.generation.rules.Spring4ControllerStubRule;
 import com.sun.codemodel.JCodeModel;
+import com.sun.codemodel.JDefinedClass;
 import org.apache.maven.artifact.DependencyResolutionRequiredException;
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
@@ -33,7 +34,6 @@ import org.raml.model.Raml;
 import org.springframework.util.StringUtils;
 
 import java.io.File;
-import java.io.FileWriter;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.util.List;
@@ -87,7 +87,7 @@ public class SpringMvcEndpointGeneratorMojo extends AbstractMojo {
 	 */
 	@Parameter(required = false, readonly = true)
 	protected String baseUri;
-	
+
 	/**
 	 * If set to true, we will generate seperate methods for different content types in the RAML
 	 */
@@ -95,10 +95,10 @@ public class SpringMvcEndpointGeneratorMojo extends AbstractMojo {
 	protected Boolean seperateMethodsByContentType;
 
 	/**
-	 * The full qualified name of the RamlGenerator that should be used.
+	 * The full qualified name of the Rule that should be used for code generation.
 	 */
-	@Parameter(required = false, readonly = true, defaultValue = "com.phoenixnap.oss.ramlapisync.generation.RamlGenerator")
-	protected String ramlGenerator;
+	@Parameter(required = false, readonly = true, defaultValue = "com.phoenixnap.oss.ramlapisync.generation.rules.Spring4ControllerStubRule")
+	protected String rule;
 
 	private ClassRealm classRealm;
 
@@ -117,7 +117,6 @@ public class SpringMvcEndpointGeneratorMojo extends AbstractMojo {
 		
 		Raml loadRamlFromFile = RamlParser.loadRamlFromFile( "file:"+resolvedRamlPath );
 		RamlParser par = new RamlParser(basePackage, getBasePath(loadRamlFromFile), seperateMethodsByContentType);
-		RamlGenerator gen = createRamlGenerator();
 		Set<ApiControllerMetadata> controllers = par.extractControllers(loadRamlFromFile);
 
 		if (StringUtils.hasText(outputRelativePath)) {
@@ -128,13 +127,14 @@ public class SpringMvcEndpointGeneratorMojo extends AbstractMojo {
 		} else {
 			resolvedPath += "/generated-sources/";
 		}
-		
-		
+
 		File rootDir = new File (resolvedPath + (addTimestampFolder == true ? System.currentTimeMillis() : "") + "/");
-		File dir = new File (resolvedPath + (addTimestampFolder == true ? System.currentTimeMillis() : "") + "/" + basePackage.replace(".", "/") + "/");
-		dir.mkdirs();
-		
-		for (ApiControllerMetadata met :controllers) {			
+
+		generateCode(controllers, rootDir);
+	}
+
+	private void generateCode(Set<ApiControllerMetadata> controllers, File rootDir) {
+		for (ApiControllerMetadata met :controllers) {
 			this.getLog().debug("");
 			this.getLog().debug("-----------------------------------------------------------");
 			this.getLog().debug(met.getName());
@@ -145,13 +145,8 @@ public class SpringMvcEndpointGeneratorMojo extends AbstractMojo {
 				generateModelSources(met, body, rootDir);
 			}
 
-			List<ApiControllerMetadataSerializer> serializers = gen.generateClassForRaml(met, "");
-			for(ApiControllerMetadataSerializer serializer: serializers) {
-				generateControllerSource(serializer, dir);
-			}
+			generateControllerSource(met, rootDir);
 		}
-		
-		
 	}
 
 	/*
@@ -176,14 +171,14 @@ public class SpringMvcEndpointGeneratorMojo extends AbstractMojo {
 		return basePath;
 	}
 
-	private RamlGenerator createRamlGenerator() {
-		RamlGenerator generator = new RamlGenerator();
+	private Rule<JCodeModel, JDefinedClass, ApiControllerMetadata> loadRule() {
+		Rule<JCodeModel, JDefinedClass, ApiControllerMetadata> ruleInstance = new Spring4ControllerStubRule();
 		try {
-			generator = (RamlGenerator) getClassRealm().loadClass(ramlGenerator).newInstance();
+			ruleInstance = (Rule<JCodeModel, JDefinedClass, ApiControllerMetadata>) getClassRealm().loadClass(rule).newInstance();
 		} catch (Exception e) {
-			getLog().error("Could not instantiate RamlGenerator "+ramlGenerator +". The default RamlGenerator will be used.", e);
+			getLog().error("Could not instantiate Rule "+ this.rule +". The default Rule will be used for code generation.", e);
 		}
-		return generator;
+		return ruleInstance;
 	}
 
 	private ClassRealm getClassRealm() throws DependencyResolutionRequiredException, MalformedURLException {
@@ -211,24 +206,15 @@ public class SpringMvcEndpointGeneratorMojo extends AbstractMojo {
         }
 	}
 
-	private void generateControllerSource(ApiControllerMetadataSerializer serializer, File dir) {
-		String genX = serializer.serialize();
-		this.getLog().debug(genX);
-		String javaFileName = serializer.getName() + ".java";
-		File file = new File(dir.getAbsolutePath() + "/" + javaFileName);
-		FileWriter writer = null;
+	private void generateControllerSource(ApiControllerMetadata met, File dir) {
+		JCodeModel codeModel = new JCodeModel();
+		loadRule().apply(met, codeModel);
 		try {
-            writer = new FileWriter(file);
-            writer.append(genX);
-        } catch (IOException e) {
-            this.getLog().error("Could not write java file " + javaFileName, e);
-        } finally {
-            try {
-                writer.close();
-            } catch (Exception ex) {
-                this.getLog().error("Could not close FileWriter " + javaFileName, ex);
-            }
-        }
+			codeModel.build(dir);
+		} catch (IOException e) {
+			e.printStackTrace();
+			this.getLog().error("Could not build code model for " + met.getName(), e);
+		}
 	}
 
 	public void execute() throws MojoExecutionException, MojoFailureException {

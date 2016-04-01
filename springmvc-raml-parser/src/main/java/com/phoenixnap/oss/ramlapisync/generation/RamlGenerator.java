@@ -12,10 +12,7 @@
  */
 package com.phoenixnap.oss.ramlapisync.generation;
 
-import com.phoenixnap.oss.ramlapisync.data.ApiControllerMetadata;
 import com.phoenixnap.oss.ramlapisync.data.ApiDocumentMetadata;
-import com.phoenixnap.oss.ramlapisync.generation.serialize.ApiControllerMetadataSerializer;
-import com.phoenixnap.oss.ramlapisync.generation.serialize.Spring4ControllerSerializer;
 import com.phoenixnap.oss.ramlapisync.parser.ResourceParser;
 import org.apache.commons.io.FileUtils;
 import org.raml.emitter.RamlEmitter;
@@ -81,17 +78,6 @@ public class RamlGenerator {
 		this.scanner = scanner;
 	}
 
-	/**
-	 * Generates a string representation for a java class representing this controller TODO Note: Currently Experimental
-	 * - will be moved to templating engine
-	 * 
-	 * @param controller The controller to represent
-	 * @param header A header text string such as a copyright notice to be appended to the top of the class
-	 * @return The generated Java Class in string format
-	 */
-	public List<ApiControllerMetadataSerializer> generateClassForRaml(ApiControllerMetadata controller, String header) {
-		return Arrays.asList(new Spring4ControllerSerializer(controller, header));
-	}
 
 	/**
 	 * Parses classes array supplied and builds a Raml Model from any request mappings defined inside
