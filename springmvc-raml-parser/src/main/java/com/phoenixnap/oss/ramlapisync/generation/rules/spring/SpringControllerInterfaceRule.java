@@ -43,7 +43,7 @@ import com.sun.codemodel.JMethod;
  * This way he can implement the endpoint without altering the generated code.
  *
  * @author armin.weisser
- * @autor kurt paris
+ * @author kurt paris
  * @since 0.4.1
  */
 public abstract class SpringControllerInterfaceRule implements Rule<JCodeModel, JDefinedClass, ApiControllerMetadata> {
