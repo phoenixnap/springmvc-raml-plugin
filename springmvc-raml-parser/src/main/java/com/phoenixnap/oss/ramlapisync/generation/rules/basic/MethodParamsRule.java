@@ -17,6 +17,7 @@ import com.phoenixnap.oss.ramlapisync.data.ApiParameterMetadata;
 import com.phoenixnap.oss.ramlapisync.generation.CodeModelHelper;
 import com.phoenixnap.oss.ramlapisync.generation.rules.Rule;
 import com.sun.codemodel.JClass;
+import com.sun.codemodel.JCodeModel;
 import com.sun.codemodel.JMethod;
 import com.sun.codemodel.JVar;
 
@@ -84,7 +85,7 @@ public class MethodParamsRule implements Rule<CodeModelHelper.JExtMethod, JMetho
 
     protected JVar param(ApiMappingMetadata endpointMetadata, CodeModelHelper.JExtMethod generatableType) {
         String requestBodyName = endpointMetadata.getRequestBody().getName();
-        JClass requestBodyType = findFirstClassBySimpleName(generatableType.owner(), requestBodyName);
+        JClass requestBodyType = findFirstClassBySimpleName(new JCodeModel[]{endpointMetadata.getRequestBody().getCodeModel(), generatableType.owner()}, requestBodyName);
         return generatableType.get().param(requestBodyType, uncapitalize(requestBodyName));
     }
 

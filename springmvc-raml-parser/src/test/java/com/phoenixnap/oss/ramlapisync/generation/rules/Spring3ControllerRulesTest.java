@@ -22,7 +22,7 @@ public class Spring3ControllerRulesTest extends AbstractControllerRuleTestBase {
     }
     
     @Test
-    public void applySpring4ControllerInterfaceRule_shouldCreate_validCode() throws Exception {
+    public void applySpring3ControllerInterfaceRule_shouldCreate_validCode() throws Exception {
         rule = new Spring3ControllerInterfaceRule();
         rule.apply(getControllerMetadata(), jCodeModel);
         verifyGeneratedCode("Spring3BaseControllerInterface");

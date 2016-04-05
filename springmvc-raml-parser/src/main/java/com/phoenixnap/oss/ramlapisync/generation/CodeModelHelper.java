@@ -12,13 +12,17 @@
  */
 package com.phoenixnap.oss.ramlapisync.generation;
 
-import com.phoenixnap.oss.ramlapisync.generation.exception.InvalidCodeModelException;
-import com.sun.codemodel.*;
-
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Iterator;
 import java.util.Properties;
+
+import com.phoenixnap.oss.ramlapisync.generation.exception.InvalidCodeModelException;
+import com.sun.codemodel.JClass;
+import com.sun.codemodel.JCodeModel;
+import com.sun.codemodel.JDefinedClass;
+import com.sun.codemodel.JMethod;
+import com.sun.codemodel.JPackage;
 
 /**
  * The class provides static helper methods for JCodeModel related tasks.
@@ -27,26 +31,41 @@ import java.util.Properties;
  * @since 0.4.1
  */
 public abstract class CodeModelHelper {
-
-    /**
+	
+	/**
      *	Searches inside a JCodeModel for a class with a specified name ignoring package
      *
-     * @param codeModel The codemodel which we will look inside
+     * @param codeModel[] The codemodels which we will look inside
      * @param simpleClassName The class name to search for
      * @return the first class in any package that matches the simple class name.
      */
     public static JClass findFirstClassBySimpleName(JCodeModel codeModel, String simpleClassName) {
-        Iterator<JPackage> packages = codeModel.packages();
-        while(packages.hasNext()) {
-            JPackage jPackage = packages.next();
-            Iterator<JDefinedClass> classes = jPackage.classes();
-            while(classes.hasNext()) {
-                JDefinedClass aClass = classes.next();
-                if(aClass.name().equals(simpleClassName)) {
-                    return aClass;
-                }
-            }
-        }
+    	return findFirstClassBySimpleName(codeModel == null ? null : new JCodeModel[]{codeModel}, simpleClassName);
+    }
+
+    /**
+     *	Searches inside a JCodeModel for a class with a specified name ignoring package
+     *
+     * @param codeModels The codemodels which we will look inside
+     * @param simpleClassName The class name to search for
+     * @return the first class in any package that matches the simple class name.
+     */
+    public static JClass findFirstClassBySimpleName(JCodeModel[] codeModels, String simpleClassName) {
+    	if (codeModels != null && codeModels.length > 0) {
+    		for (JCodeModel codeModel : codeModels) {
+		        Iterator<JPackage> packages = codeModel.packages();
+		        while(packages.hasNext()) {
+		            JPackage jPackage = packages.next();
+		            Iterator<JDefinedClass> classes = jPackage.classes();
+		            while(classes.hasNext()) {
+		                JDefinedClass aClass = classes.next();
+		                if(aClass.name().equals(simpleClassName)) {
+		                    return aClass;
+		                }
+		            }
+		        }
+    		}
+    	}
         throw new InvalidCodeModelException("No unique class found for simple class name " + simpleClassName);
     }
 
