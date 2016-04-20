@@ -109,6 +109,15 @@ public abstract class ResourceParser {
 	public static boolean doesActionTypeSupportRequestBody(ActionType target) {
 		return target.equals(ActionType.POST) || target.equals(ActionType.PUT);
 	}
+	/**
+	 * Method to check if a specific action type supports multipart mime request
+	 *
+	 * @param target The target Verb to check
+	 * @return If true, the verb supports multipart mime request
+	 */
+	public static boolean doesActionTypeSupportMultipartMime(ActionType target) {
+		return target.equals(ActionType.POST);
+	}
 
 	/**
 	 * Allows child Scanners to add their own logic on whether a method should be treated as an API or ignored

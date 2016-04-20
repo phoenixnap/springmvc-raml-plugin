@@ -20,7 +20,7 @@ import com.sun.codemodel.JDefinedClass;
 import com.sun.codemodel.JType;
 import org.springframework.http.ResponseEntity;
 
-import java.util.ArrayList;
+import java.util.List;
 
 import static com.phoenixnap.oss.ramlapisync.generation.CodeModelHelper.findFirstClassBySimpleName;
 
@@ -63,7 +63,7 @@ public class SpringSimpleResponseTypeRule implements Rule<JDefinedClass, JType, 
             ApiBodyMetadata apiBodyMetadata = endpointMetadata.getResponseBody().values().iterator().next();
             JClass genericType = findFirstClassBySimpleName(apiBodyMetadata.getCodeModel(), apiBodyMetadata.getName());
             if (apiBodyMetadata.isArray()) {
-                JClass arrayType = generatableType.owner().ref(ArrayList.class);
+                JClass arrayType = generatableType.owner().ref(List.class);
                 responseType = arrayType.narrow(genericType);
             } else {
                 responseType = genericType;

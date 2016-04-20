@@ -61,19 +61,19 @@ public class SpringMethodParamsRule extends MethodParamsRule {
         JVar jVar = super.param(paramMetaData, generatableType);
         JAnnotationUse jAnnotationUse;
         if (paramMetaData.getRamlParam() != null && paramMetaData.getRamlParam() instanceof UriParameter) {
-            jAnnotationUse = jVar.annotate(PathVariable.class);
+            jVar.annotate(PathVariable.class);
+            return jVar;
         } else {
             jAnnotationUse = jVar.annotate(RequestParam.class);
+            // In RAML parameters are optional unless the required attribute is included and its value set to 'true'.
+            // In Spring a parameter is required by default unlesse the required attribute is included and its value is set to 'false'
+            // So we just need to set required=false if the RAML "required" parameter is not set or explicitly set to false.
+            if(paramMetaData.getRamlParam() != null && !paramMetaData.getRamlParam().isRequired()) {
+                jAnnotationUse.param("required", false);
+            }
+            return jVar;
         }
 
-        // In RAML parameters are optional unless the required attribute is included and its value set to 'true'.
-        // In Spring a parameter is required by default unlesse the required attribute is included and its value is set to 'false'
-        // So we just need to set required=false if the RAML "required" parameter is not set or explicitly set to false.
-        if(paramMetaData.getRamlParam() != null && !paramMetaData.getRamlParam().isRequired()) {
-            jAnnotationUse.param("required", false);
-        }
-
-        return jVar;
     }
 
     @Override

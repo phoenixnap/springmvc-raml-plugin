@@ -19,6 +19,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import org.raml.model.Action;
 import org.raml.model.ActionType;
@@ -26,7 +27,6 @@ import org.raml.model.MimeType;
 import org.raml.model.Resource;
 import org.raml.model.Response;
 import org.raml.model.parameter.FormParameter;
-import org.raml.model.parameter.QueryParameter;
 import org.raml.model.parameter.UriParameter;
 import org.springframework.http.MediaType;
 import org.springframework.util.StringUtils;
@@ -35,9 +35,12 @@ import com.phoenixnap.oss.ramlapisync.naming.NamingHelper;
 import com.phoenixnap.oss.ramlapisync.naming.SchemaHelper;
 import com.phoenixnap.oss.ramlapisync.parser.ResourceParser;
 
+import static com.phoenixnap.oss.ramlapisync.parser.ResourceParser.doesActionTypeSupportMultipartMime;
+import static com.phoenixnap.oss.ramlapisync.parser.ResourceParser.doesActionTypeSupportRequestBody;
+
 /**
  * Class containing the data required to successfully generate code for an api call within a controller
- * 
+ *
  * @author Kurt Paris
  * @since 0.2.1
  *
@@ -53,7 +56,7 @@ public class ApiMappingMetadata {
 	Map<String, ApiBodyMetadata> responseBody = new LinkedHashMap<>();
 	Set<ApiParameterMetadata> pathVariables = null;
 	Set<ApiParameterMetadata> requestParameters = null;
-	
+
 	private String responseContentTypeFilter;
 
 	public ApiMappingMetadata(ApiControllerMetadata parent, Resource resource, ActionType actionType, Action action, String responseContentTypeFilter) {
@@ -62,16 +65,14 @@ public class ApiMappingMetadata {
 		this.resource = resource;
 		this.actionType = actionType;
 		this.action = action;
-		
 		this.responseContentTypeFilter = responseContentTypeFilter;
 		parseRequest();
 		parseResponse(responseContentTypeFilter);
 
 	}
-	
+
 	public ApiMappingMetadata(ApiControllerMetadata parent, Resource resource, ActionType actionType, Action action) {
 		this(parent, resource, actionType, action, null);
-
 	}
 
 	public String toString() {
@@ -109,36 +110,39 @@ public class ApiMappingMetadata {
 	}
 
 	private void parseRequest() {
-		requestParameters = new LinkedHashSet<>();
-		for (Entry<String, QueryParameter> param : action.getQueryParameters().entrySet()) {
-			requestParameters.add(new ApiParameterMetadata(param.getKey(), param.getValue()));
+		requestParameters = action.getQueryParameters().entrySet().stream()
+				.map(param -> new ApiParameterMetadata(param.getKey(), param.getValue()))
+				.collect(Collectors.toCollection(LinkedHashSet::new));
+		if (action.getBody() != null && !action.getBody().isEmpty()) {
+			action.getBody().entrySet().forEach(this::collectBodyParams);
 		}
-		if (ActionType.POST.equals(actionType) && action.getBody() != null
-				&& action.getBody().containsKey(MediaType.APPLICATION_FORM_URLENCODED_VALUE)) {
-			MimeType requestBody = action.getBody().get(MediaType.APPLICATION_FORM_URLENCODED_VALUE);
-			for (Entry<String, List<FormParameter>> params : requestBody.getFormParameters().entrySet()) {
-				for (FormParameter param : params.getValue()) {
-					requestParameters.add(new ApiParameterMetadata(params.getKey(), param));
+	}
+
+	private void collectBodyParams(Entry<String, MimeType> mime) {
+		if (mime.getKey().equals(MediaType.MULTIPART_FORM_DATA_VALUE) && doesActionTypeSupportMultipartMime(actionType)) {
+			collectRequestParamsForMime(action.getBody().get(MediaType.MULTIPART_FORM_DATA_VALUE));
+		} else if (mime.getKey().equals(MediaType.APPLICATION_FORM_URLENCODED_VALUE) && doesActionTypeSupportMultipartMime(actionType)) {
+			collectRequestParamsForMime(action.getBody().get(MediaType.APPLICATION_FORM_URLENCODED_VALUE));
+		}
+
+		if (doesActionTypeSupportRequestBody(actionType) && mime.getKey().toLowerCase().contains("json")) {
+			// Continue here!
+			String schema = mime.getValue().getSchema();
+			if (StringUtils.hasText(schema)) {
+				ApiBodyMetadata requestBody = SchemaHelper.mapSchemaToPojo(parent.getDocument(), schema, parent.getBasePackage()
+						+ NamingHelper.getDefaultModelPackage(), StringUtils.capitalize(getName()) + "Request");
+				if (requestBody != null) {
+					setRequestBody(requestBody);
 				}
 			}
 		}
+	}
 
-		if (ResourceParser.doesActionTypeSupportRequestBody(actionType) && action.getBody() != null
-				&& !action.getBody().isEmpty()) {
-			for (Entry<String, MimeType> body : action.getBody().entrySet()) {
-				if (body.getKey().toLowerCase().contains("json")) {
-
-					// Continue here!
-					String schema = body.getValue().getSchema();
-					if (StringUtils.hasText(schema)) {
-						
-						ApiBodyMetadata requestBody = SchemaHelper.mapSchemaToPojo(parent.getDocument(), schema, parent.getBasePackage()
-								+ NamingHelper.getDefaultModelPackage(), StringUtils.capitalize(getName()) + "Request");
-						if (requestBody != null) {
-							setRequestBody(requestBody);
-						}
-					}
-				}
+	private void collectRequestParamsForMime(MimeType requestBody) {
+		if(requestBody == null) return;
+		for (Entry<String, List<FormParameter>> params : requestBody.getFormParameters().entrySet()) {
+			for (FormParameter param : params.getValue()) {
+				requestParameters.add(new ApiParameterMetadata(params.getKey(), param));
 			}
 		}
 	}
@@ -153,7 +157,6 @@ public class ApiMappingMetadata {
 						// Continue here!
 						String schema = body.getValue().getSchema();
 						if (StringUtils.hasText(schema)) {
-							
 							ApiBodyMetadata responseBody = SchemaHelper.mapSchemaToPojo(parent.getDocument(), schema,
 									parent.getBasePackage() + NamingHelper.getDefaultModelPackage(), StringUtils.capitalize(getName()) + "Response");
 							if (responseBody != null) {
@@ -164,47 +167,6 @@ public class ApiMappingMetadata {
 				}
 			}
 		}
-	}
-	
-	
-
-	public Set<ApiParameterMetadata> getResponse() {
-		if (requestParameters != null) {
-			return requestParameters;
-		}
-		requestParameters = new LinkedHashSet<>();
-		for (Entry<String, QueryParameter> param : action.getQueryParameters().entrySet()) {
-			requestParameters.add(new ApiParameterMetadata(param.getKey(), param.getValue()));
-		}
-		if (ActionType.POST.equals(actionType) && action.getBody() != null
-				&& action.getBody().containsKey(MediaType.APPLICATION_FORM_URLENCODED_VALUE)) {
-			MimeType requestBody = action.getBody().get(MediaType.APPLICATION_FORM_URLENCODED_VALUE);
-			for (Entry<String, List<FormParameter>> params : requestBody.getFormParameters().entrySet()) {
-				for (FormParameter param : params.getValue()) {
-					requestParameters.add(new ApiParameterMetadata(params.getKey(), param));
-				}
-			}
-		}
-
-		if (ResourceParser.doesActionTypeSupportRequestBody(actionType) && action.getBody() != null
-				&& !action.getBody().isEmpty()) {
-			for (Entry<String, MimeType> body : action.getBody().entrySet()) {
-				if (body.getKey().toLowerCase().contains("json")) {
-
-					// Continue here!
-					String schema = body.getValue().getSchema();
-					if (StringUtils.hasText(schema)) {
-						ApiBodyMetadata requestBody = SchemaHelper.mapSchemaToPojo(parent.getDocument(), schema, parent.getBasePackage()
-								+ NamingHelper.getDefaultModelPackage(), getName() + "Request");
-						if (requestBody != null) {
-							setRequestBody(requestBody);
-						}
-					}
-				}
-			}
-		}
-
-		return requestParameters;
 	}
 
 	public String getUrl() {
