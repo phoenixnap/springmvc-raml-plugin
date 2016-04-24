@@ -46,7 +46,7 @@ import com.sun.codemodel.JDefinedClass;
 
 /**
  * Maven Plugin MOJO specific to Generation of Spring MVC Endpoints from RAML documents.
- * 
+ *
  * @author Kurt Paris
  * @since 0.2.1
  */
@@ -61,25 +61,25 @@ public class SpringMvcEndpointGeneratorMojo extends AbstractMojo {
 
 	@Component
 	private PluginDescriptor descriptor;
-	
+
 	/**
 	 * Path to the raml document to be verified
 	 */
 	@Parameter(required = true, readonly = true, defaultValue = "")
 	protected String ramlPath;
-	
+
 	/**
 	 * Relative file path where the Java files will be saved to
 	 */
 	@Parameter(required = false, readonly = true, defaultValue = "")
 	protected String outputRelativePath;
-	
+
 	/**
 	 * IF this is set to true, we will only parse methods that consume, produce or accept the requested defaultMediaType
 	 */
 	@Parameter(required = false, readonly = true, defaultValue = "false")
 	protected Boolean addTimestampFolder;
-	
+
 	/**
 	 * Java package to be applied to the generated files
 	 */
@@ -98,7 +98,7 @@ public class SpringMvcEndpointGeneratorMojo extends AbstractMojo {
 	 */
 	@Parameter(required = false, readonly = true, defaultValue = "false")
 	protected Boolean seperateMethodsByContentType;
-	
+
 	/**
 	 * If set to true, we will generate Jackson 1 annotations inside the model objects
 	 */
@@ -114,7 +114,7 @@ public class SpringMvcEndpointGeneratorMojo extends AbstractMojo {
 	private ClassRealm classRealm;
 
 	protected void generateEndpoints() throws MojoExecutionException, MojoFailureException, IOException {
-		
+
 		String resolvedPath = project.getBasedir().getAbsolutePath();
 		if (resolvedPath.endsWith(File.separator) || resolvedPath.endsWith("/")) {
 			resolvedPath = resolvedPath.substring(0, resolvedPath.length()-1);
@@ -125,7 +125,7 @@ public class SpringMvcEndpointGeneratorMojo extends AbstractMojo {
 		} else {
 			resolvedRamlPath += ramlPath;
 		}
-		
+
 		Raml loadRamlFromFile = RamlParser.loadRamlFromFile( "file:"+resolvedRamlPath );
 		RamlParser par = new RamlParser(basePackage, getBasePath(loadRamlFromFile), seperateMethodsByContentType);
 		Set<ApiControllerMetadata> controllers = par.extractControllers(loadRamlFromFile);
@@ -136,11 +136,14 @@ public class SpringMvcEndpointGeneratorMojo extends AbstractMojo {
 			}
 			resolvedPath += outputRelativePath;
 		} else {
-			resolvedPath += "/generated-sources/";
+			resolvedPath += "/target/generated-sources/spring-mvc";
 		}
 
 		File rootDir = new File (resolvedPath + (addTimestampFolder == true ? System.currentTimeMillis() : "") + "/");
 
+		if (!rootDir.exists() && !rootDir.mkdirs()) {
+			throw new IOException("Could not create directory:" + rootDir.getAbsolutePath());
+		}
 		generateCode(controllers, rootDir);
 	}
 
@@ -235,7 +238,7 @@ public class SpringMvcEndpointGeneratorMojo extends AbstractMojo {
 
 	public void execute() throws MojoExecutionException, MojoFailureException {
 		long startTime = System.currentTimeMillis();
-		
+
 		try {
 			generateEndpoints();
 		} catch (IOException e) {
@@ -243,7 +246,7 @@ public class SpringMvcEndpointGeneratorMojo extends AbstractMojo {
 			throw new MojoExecutionException(e, "Unexpected exception while executing Spring MVC Endpoint Generation Plugin.",
 					e.toString());
 		}
-		
+
 		this.getLog().info("Endpoint Generation Complete in:" + (System.currentTimeMillis() - startTime) + "ms");
 	}
 

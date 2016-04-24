@@ -50,12 +50,13 @@ import com.phoenixnap.oss.ramlapisync.data.ApiParameterMetadata;
 import com.phoenixnap.oss.ramlapisync.javadoc.JavaDocEntry;
 import com.phoenixnap.oss.ramlapisync.javadoc.JavaDocStore;
 import com.sun.codemodel.JCodeModel;
+import org.springframework.web.multipart.MultipartFile;
 
 /**
  * Class containing convenience methods relating to the extracting of information from Java types for use as Parameters.
  * These can either be decomposed into RAML Simple Types (Similar to Java primitives) or JSON Schema for more complex
  * objects
- * 
+ *
  * @author Kurt Paris
  * @since 0.0.1
  *
@@ -66,7 +67,7 @@ public class SchemaHelper {
 
 	/**
 	 * Converts a simple parameter, ie String, or Boxed Primitive into
-	 * 
+	 *
 	 * @param param The Java Parameter to convert
 	 * @param paramComment The associated Javadoc if any
 	 * @return A map of query parameters that map into the supplied type
@@ -102,7 +103,7 @@ public class SchemaHelper {
 
 	/**
 	 * Utility method that will return a schema if the identifier is valid and exists in the raml file definition.
-	 * 
+	 *
 	 * @param schema The name of the schema to resolve
 	 * @param document The Parent Raml Document
 	 * @return The full schema if contained in the raml document or null if not found
@@ -120,11 +121,11 @@ public class SchemaHelper {
 		}
 		return null;
 	}
-	
+
 	/**
 	 * Breaks down a class into component fields which are mapped as Query Parameters. If Javadoc is supplied, this will
 	 * be injected as comments
-	 * 
+	 *
 	 * @param param The Parameter representing the class to be converted into query parameters
 	 * @param javaDocStore The associated JavaDoc (if any)
 	 * @return a Map of Parameter RAML models keyed by parameter name
@@ -180,7 +181,7 @@ public class SchemaHelper {
 	/**
 	 * Uses Jackson object mappers to convert an ajaxcommandparameter annotated type into its JSONSchema representation.
 	 * If Javadoc is supplied, this will be injected as comments
-	 * 
+	 *
 	 * @param clazz The Class to convert
 	 * @param responseDescription The javadoc description supplied if available
 	 * @param javaDocStore The Entire java doc store available
@@ -205,7 +206,7 @@ public class SchemaHelper {
 	/**
 	 * Uses Jackson object mappers to convert a Pojo into its JSONSchema representation. If Javadoc is supplied, this
 	 * will be injected as comments
-	 * 
+	 *
 	 * @param clazz The Class to be inspected
 	 * @param responseDescription The description to be embedded in the response
 	 * @param javaDocStore Associated JavaDoc for this class that can be embedded in the schema
@@ -267,7 +268,7 @@ public class SchemaHelper {
 
 	/**
 	 * Maps primitives and other simple Java types into simple types supported by RAML
-	 * 
+	 *
 	 * @param clazz The Class to map
 	 * @return The Simple RAML ParamType which maps to this class or null if one is not found
 	 */
@@ -293,31 +294,33 @@ public class SchemaHelper {
 
 	/**
 	 * Maps simple types supported by RAML into primitives and other simple Java types
-	 * 
+	 *
 	 * @param param The Type to map
 	 * @return The Java Class which maps to this Simple RAML ParamType or string if one is not found
 	 */
 	public static Class<?> mapSimpleType(ParamType param) {
 
 		switch (param) {
-		case BOOLEAN:
-			return Boolean.class;
-		case DATE:
-			return Date.class;
-		case INTEGER:
-			return Long.class;
-		case NUMBER:
-			return BigDecimal.class;
-		default:
-			return String.class;
+			case BOOLEAN:
+				return Boolean.class;
+			case DATE:
+				return Date.class;
+			case INTEGER:
+				return Long.class;
+			case NUMBER:
+				return BigDecimal.class;
+			case FILE:
+				return MultipartFile.class;
+			default:
+				return String.class;
 		}
 	}
-	
+
 	private static String JSON_SCHEMA_IDENT = "http://jsonschema.net";
 
 	/**
 	 * Maps a JSON Schema to a JCodeModel using JSONSchema2Pojo and encapsulates it along with some metadata into an {@link ApiBodyMetadata} object.
-	 * 
+	 *
 	 * @param document The Raml document being parsed
 	 * @param schema The Schema (full schema or schema name to be resolved)
 	 * @param basePackage The base package for the classes we are generating
@@ -344,7 +347,7 @@ public class SchemaHelper {
 				if (id.length() > (JSON_SCHEMA_IDENT.length()+3)) {
 					id = id.substring(JSON_SCHEMA_IDENT.length());
 				}
-			} else {			
+			} else {
 				resolvedName = StringUtils.capitalize(id);
 			}
 		}
@@ -365,7 +368,7 @@ public class SchemaHelper {
 
 	/**
 	 * Builds a JCodeModel for classes that will be used as Request or Response bodies
-	 * 
+	 *
 	 * @param basePackage The package we will be using for the domain objects
 	 * @param name The class name
 	 * @param schema The JSON Schema representing this class
@@ -376,20 +379,20 @@ public class SchemaHelper {
 	public static JCodeModel buildBodyJCodeModel(String basePackage, String name, String schema, GenerationConfig config, Annotator annotator) {
 		JCodeModel codeModel = new JCodeModel();
 		SchemaStore schemaStore = new SchemaStore();
-		
-		
+
+
 		if (config == null) {
 				config = new DefaultGenerationConfig() {
 				@Override
 				public boolean isGenerateBuilders() { // set config option by overriding method
 					return true;
 				}
-	
+
 				@Override
 				public boolean isIncludeAdditionalProperties() {
 					return false;
 				}
-	
+
 				@Override
 				public boolean isIncludeDynamicAccessors() {
 					return false;
@@ -401,7 +404,7 @@ public class SchemaHelper {
 		}
 		RuleFactory ruleFactory = new RuleFactory(config, annotator, schemaStore);
 
-		
+
 		SchemaMapper mapper = new SchemaMapper(ruleFactory,
 				new SchemaGenerator());
 		try {
@@ -412,7 +415,7 @@ public class SchemaHelper {
 		}
 		return codeModel;
 	}
-	
-	
+
+
 
 }

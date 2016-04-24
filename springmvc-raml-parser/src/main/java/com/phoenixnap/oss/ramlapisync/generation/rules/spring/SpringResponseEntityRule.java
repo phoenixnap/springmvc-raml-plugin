@@ -20,6 +20,8 @@ import com.sun.codemodel.JDefinedClass;
 import com.sun.codemodel.JType;
 import org.springframework.http.ResponseEntity;
 
+import java.util.List;
+
 import static com.phoenixnap.oss.ramlapisync.generation.CodeModelHelper.findFirstClassBySimpleName;
 
 /**
@@ -56,7 +58,12 @@ public class SpringResponseEntityRule implements Rule<JDefinedClass, JType, ApiM
         if (!endpointMetadata.getResponseBody().isEmpty()) {
             ApiBodyMetadata apiBodyMetadata = endpointMetadata.getResponseBody().values().iterator().next();
             JClass genericType = findFirstClassBySimpleName(apiBodyMetadata.getCodeModel(), apiBodyMetadata.getName());
-            return responseEntity.narrow(genericType);
+            if (apiBodyMetadata.isArray()) {
+                JClass arrayType = generatableType.owner().ref(List.class);
+                responseEntity = arrayType.narrow(genericType);
+            } else {
+                responseEntity = responseEntity.narrow(genericType);
+            }
         }
         return responseEntity;
     }
