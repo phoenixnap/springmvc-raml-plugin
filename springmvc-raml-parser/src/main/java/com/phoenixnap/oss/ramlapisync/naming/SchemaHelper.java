@@ -390,7 +390,7 @@ public class SchemaHelper {
 
 				@Override
 				public boolean isIncludeAdditionalProperties() {
-					return false;
+					return true;
 				}
 
 				@Override
