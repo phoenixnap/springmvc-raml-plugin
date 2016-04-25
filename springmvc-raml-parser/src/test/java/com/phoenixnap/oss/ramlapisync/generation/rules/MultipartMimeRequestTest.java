@@ -7,6 +7,13 @@ import com.sun.codemodel.JDefinedClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
+/**
+ * Test for Multipart mime requests
+ * 
+ * @author boskiantonio
+ * @since 0.4.3
+ *
+ */
 public class MultipartMimeRequestTest  extends AbstractControllerRuleTestBase {
 
     private Rule<JCodeModel, JDefinedClass, ApiControllerMetadata> rule;

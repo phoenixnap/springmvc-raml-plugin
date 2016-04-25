@@ -35,8 +35,6 @@ import com.phoenixnap.oss.ramlapisync.naming.NamingHelper;
 import com.phoenixnap.oss.ramlapisync.naming.SchemaHelper;
 import com.phoenixnap.oss.ramlapisync.parser.ResourceParser;
 
-import static com.phoenixnap.oss.ramlapisync.parser.ResourceParser.doesActionTypeSupportMultipartMime;
-import static com.phoenixnap.oss.ramlapisync.parser.ResourceParser.doesActionTypeSupportRequestBody;
 
 /**
  * Class containing the data required to successfully generate code for an api call within a controller
@@ -119,13 +117,13 @@ public class ApiMappingMetadata {
 	}
 
 	private void collectBodyParams(Entry<String, MimeType> mime) {
-		if (mime.getKey().equals(MediaType.MULTIPART_FORM_DATA_VALUE) && doesActionTypeSupportMultipartMime(actionType)) {
+		if (mime.getKey().equals(MediaType.MULTIPART_FORM_DATA_VALUE) && ResourceParser.doesActionTypeSupportMultipartMime(actionType)) {
 			collectRequestParamsForMime(action.getBody().get(MediaType.MULTIPART_FORM_DATA_VALUE));
-		} else if (mime.getKey().equals(MediaType.APPLICATION_FORM_URLENCODED_VALUE) && doesActionTypeSupportMultipartMime(actionType)) {
+		} else if (mime.getKey().equals(MediaType.APPLICATION_FORM_URLENCODED_VALUE) && ResourceParser.doesActionTypeSupportMultipartMime(actionType)) {
 			collectRequestParamsForMime(action.getBody().get(MediaType.APPLICATION_FORM_URLENCODED_VALUE));
 		}
 
-		if (doesActionTypeSupportRequestBody(actionType) && mime.getKey().toLowerCase().contains("json")) {
+		if (ResourceParser.doesActionTypeSupportRequestBody(actionType) && mime.getKey().toLowerCase().contains("json")) {
 			// Continue here!
 			String schema = mime.getValue().getSchema();
 			if (StringUtils.hasText(schema)) {
