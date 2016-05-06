@@ -231,7 +231,7 @@ public class SpringMvcRamlVerifierMojo extends CommonApiSyncMojo {
 						e.toString());
 			}
 		}
-		this.getLog().info("Raml Generation Complete in:" + (System.currentTimeMillis() - startTime) + "ms");
+		this.getLog().info("Raml Verification Complete in:" + (System.currentTimeMillis() - startTime) + "ms");
 	}
 
 }
