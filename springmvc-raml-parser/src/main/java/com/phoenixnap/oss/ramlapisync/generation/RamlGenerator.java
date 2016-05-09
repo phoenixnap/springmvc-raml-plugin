@@ -12,9 +12,11 @@
  */
 package com.phoenixnap.oss.ramlapisync.generation;
 
+import com.google.common.collect.ImmutableList;
 import com.phoenixnap.oss.ramlapisync.data.ApiDocumentMetadata;
 import com.phoenixnap.oss.ramlapisync.parser.ResourceParser;
 import org.apache.commons.io.FileUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.raml.emitter.RamlEmitter;
 import org.raml.model.DocumentationItem;
 import org.raml.model.Raml;
@@ -87,10 +89,11 @@ public class RamlGenerator {
 	 * @param baseUri Base uri of the api at runtime
 	 * @param classesToGenerate List of classes to parse
 	 * @param documents A set of documents to be included
+	 * @param uriPrefix
 	 * @return This object for chaining
 	 */
 	public RamlGenerator generateRamlForClasses(String title, String version, String baseUri,
-			Class<?>[] classesToGenerate, Set<ApiDocumentMetadata> documents) {
+												Class<?>[] classesToGenerate, Set<ApiDocumentMetadata> documents, String uriPrefix) {
 
 		assertResourceParser();
 
@@ -108,16 +111,34 @@ public class RamlGenerator {
 		Arrays.asList(classesToGenerate).forEach(item -> {
 			Resource resource = scanner.extractResourceInfo(item);
 			if (resource.getRelativeUri().equals("/")) { // root should never be added directly
-					for (Resource cResource : resource.getResources().values()) {
+					for (Resource cResource : removePrefix(resource.getResources().values(), uriPrefix)) {
 						mergeResources(raml, cResource, true);
 					}
 				} else {
-					mergeResources(raml, resource, true);
+					for (Resource fResource : removePrefix(ImmutableList.of(resource), uriPrefix)) {
+						mergeResources(raml, fResource, true);
+					}
 				}
 
 			});
 		this.raml = raml;
 		return this;
+	}
+
+	private Collection<Resource> removePrefix(Collection<Resource> source, String uriPrefix){
+		if (StringUtils.isEmpty(uriPrefix)){
+			return source;
+		}
+		String firstLevelUri = "/" + uriPrefix.split("/")[1];
+		List<Resource> result = new ArrayList<>();
+		for (Resource resource : source){
+			if(resource.getRelativeUri().equals(firstLevelUri)){
+				result.addAll(removePrefix(resource.getResources().values(), uriPrefix.replace(firstLevelUri, "")));
+			}else {
+				result.add(resource);
+			}
+		}
+		return result;
 	}
 
 	/**

@@ -128,6 +128,7 @@ Then simply include the following code in the POM of the project you wish to gen
 	<dependencyPackagesList>
 	   <param>com.package.in.dependency.jar.to.include</param>
 	</dependencyPackagesList>
+	<uriPrefix>/api</uriPrefix>
   </configuration>
   <executions>
     <execution>
@@ -185,6 +186,9 @@ Then simply include the following code in the POM of the project you wish to gen
 
 ### logErrors
 (optional, default: false) Flag that will enable or disable logging of error level Issues to standard out if found
+
+### uriPrefix
+(optional, defaul: "") If set skip given prefix from all URIs during checking agains contract
 
 ## Usage 3 - Generating SpringMVC Server Endpoints from a RAML file
 
