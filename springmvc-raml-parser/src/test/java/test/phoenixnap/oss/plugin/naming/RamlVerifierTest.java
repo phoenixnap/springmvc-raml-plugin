@@ -10,30 +10,6 @@
 package test.phoenixnap.oss.plugin.naming;
 
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
-
-import java.util.Collections;
-import java.util.Iterator;
-
-import org.junit.Test;
-import org.raml.model.Raml;
-
-import test.phoenixnap.oss.plugin.naming.testclasses.ContentTypeTestController;
-import test.phoenixnap.oss.plugin.naming.testclasses.MultiContentTypeTestController;
-import test.phoenixnap.oss.plugin.naming.testclasses.ParamTestController;
-import test.phoenixnap.oss.plugin.naming.testclasses.ParamTestControllerDowngradeToWarning;
-import test.phoenixnap.oss.plugin.naming.testclasses.ParamTestControllerPostMissing;
-import test.phoenixnap.oss.plugin.naming.testclasses.ParamTestControllerPostWarning;
-import test.phoenixnap.oss.plugin.naming.testclasses.ResponseBodyTestController;
-import test.phoenixnap.oss.plugin.naming.testclasses.ResponseBodyTestControllerError;
-import test.phoenixnap.oss.plugin.naming.testclasses.SecondVerifierTestController;
-import test.phoenixnap.oss.plugin.naming.testclasses.StyleCheckResourceDuplicateCommand;
-import test.phoenixnap.oss.plugin.naming.testclasses.StyleCheckResourceDuplicateCommandSecond;
-import test.phoenixnap.oss.plugin.naming.testclasses.ThirdVerifierTestController;
-import test.phoenixnap.oss.plugin.naming.testclasses.VerifierTestController;
-
 import com.phoenixnap.oss.ramlapisync.generation.RamlGenerator;
 import com.phoenixnap.oss.ramlapisync.generation.RamlVerifier;
 import com.phoenixnap.oss.ramlapisync.parser.ResourceParser;
@@ -42,11 +18,15 @@ import com.phoenixnap.oss.ramlapisync.verification.Issue;
 import com.phoenixnap.oss.ramlapisync.verification.IssueLocation;
 import com.phoenixnap.oss.ramlapisync.verification.IssueSeverity;
 import com.phoenixnap.oss.ramlapisync.verification.IssueType;
-import com.phoenixnap.oss.ramlapisync.verification.checkers.ActionContentTypeChecker;
-import com.phoenixnap.oss.ramlapisync.verification.checkers.ActionExistenceChecker;
-import com.phoenixnap.oss.ramlapisync.verification.checkers.ActionQueryParameterChecker;
-import com.phoenixnap.oss.ramlapisync.verification.checkers.ActionResponseBodySchemaChecker;
-import com.phoenixnap.oss.ramlapisync.verification.checkers.ResourceExistenceChecker;
+import com.phoenixnap.oss.ramlapisync.verification.checkers.*;
+import org.junit.Test;
+import org.raml.model.Raml;
+import test.phoenixnap.oss.plugin.naming.testclasses.*;
+
+import java.util.Collections;
+import java.util.Iterator;
+
+import static org.junit.Assert.*;
 
 
 
@@ -68,7 +48,7 @@ public class RamlVerifierTest {
 	public void test_ResourceExistenceChecker_Success() {
 		Raml published = RamlVerifier.loadRamlFromFile("test-simple.raml");
 		Class<?>[] classesToGenerate = new Class[] { VerifierTestController.class, SecondVerifierTestController.class };
-		Raml computed = generator.generateRamlForClasses("test", "0.0.1", "/", classesToGenerate, Collections.emptySet()).getRaml();
+		Raml computed = generator.generateRamlForClasses("test", "0.0.1", "/", classesToGenerate, Collections.emptySet(), null).getRaml();
 
 		RamlVerifier verifier = new RamlVerifier(published, computed, Collections.singletonList(new ResourceExistenceChecker()), null, null);
 		assertFalse("Check that there are no errors and implementation matches raml", verifier.hasErrors());
@@ -81,7 +61,7 @@ public class RamlVerifierTest {
 	public void test_ResourceExistenceChecker_DuplicateCommand() {
 		Raml published = RamlVerifier.loadRamlFromFile("test-duplicatecommand.raml");
 		Class<?>[] classesToGenerate = new Class[] { StyleCheckResourceDuplicateCommand.class, StyleCheckResourceDuplicateCommandSecond.class };
-		Raml computed = generator.generateRamlForClasses("test", "0.0.1", "/", classesToGenerate, Collections.emptySet()).getRaml();
+		Raml computed = generator.generateRamlForClasses("test", "0.0.1", "/", classesToGenerate, Collections.emptySet(), null).getRaml();
 
 		RamlVerifier verifier = new RamlVerifier(published, computed, Collections.singletonList(new ResourceExistenceChecker()), null, null);
 		assertFalse("Check that there are no errors and implementation matches raml", verifier.hasErrors());
@@ -94,7 +74,7 @@ public class RamlVerifierTest {
 	public void test_ActionQueryParameterChecker_Success() {
 		Raml published = RamlVerifier.loadRamlFromFile("test-queryparam-success.raml");
 		Class<?>[] classesToGenerate = new Class[] { ParamTestController.class };
-		Raml computed = generator.generateRamlForClasses("test", "0.0.1", "/", classesToGenerate, Collections.emptySet()).getRaml();
+		Raml computed = generator.generateRamlForClasses("test", "0.0.1", "/", classesToGenerate, Collections.emptySet(), null).getRaml();
 
 		RamlVerifier verifier = new RamlVerifier(published, computed, Collections.emptyList(), Collections.singletonList(new ActionQueryParameterChecker()), null);
 		assertFalse("Check that there are no errors and implementation matches raml", verifier.hasErrors());
@@ -107,7 +87,7 @@ public class RamlVerifierTest {
 	public void test_ActionContentTypeChecker_Success() {
 		Raml published = RamlVerifier.loadRamlFromFile("test-contenttype-success.raml");
 		Class<?>[] classesToGenerate = new Class[] { ContentTypeTestController.class };
-		Raml computed = generator.generateRamlForClasses("test", "0.0.1", "/", classesToGenerate, Collections.emptySet()).getRaml();
+		Raml computed = generator.generateRamlForClasses("test", "0.0.1", "/", classesToGenerate, Collections.emptySet(), null).getRaml();
 
 		RamlVerifier verifier = new RamlVerifier(published, computed, Collections.emptyList(), Collections.singletonList(new ActionContentTypeChecker()), null);
 		assertFalse("Check that there are no errors and implementation matches raml", verifier.hasErrors());
@@ -120,7 +100,7 @@ public class RamlVerifierTest {
 	public void test_ActionMultiContentTypeChecker_Success() {
 		Raml published = RamlVerifier.loadRamlFromFile("test-multicontenttype-success.raml");
 		Class<?>[] classesToGenerate = new Class[] { MultiContentTypeTestController.class };
-		Raml computed = generator.generateRamlForClasses("test", "0.0.1", "/", classesToGenerate, Collections.emptySet()).getRaml();
+		Raml computed = generator.generateRamlForClasses("test", "0.0.1", "/", classesToGenerate, Collections.emptySet(), null).getRaml();
 
 		RamlVerifier verifier = new RamlVerifier(published, computed, Collections.emptyList(), Collections.singletonList(new ActionContentTypeChecker()), null);
 		assertFalse("Check that there are no errors and implementation matches raml", verifier.hasErrors());
@@ -133,7 +113,7 @@ public class RamlVerifierTest {
 	public void test_ActionResponseBodySchemaChecker_Success() {
 		Raml published = RamlVerifier.loadRamlFromFile("test-responsebody-success.raml");
 		Class<?>[] classesToGenerate = new Class[] { ResponseBodyTestController.class };
-		Raml computed = generator.generateRamlForClasses("test", "0.0.1", "/", classesToGenerate, Collections.emptySet()).getRaml();
+		Raml computed = generator.generateRamlForClasses("test", "0.0.1", "/", classesToGenerate, Collections.emptySet(), null).getRaml();
 
 		RamlVerifier verifier = new RamlVerifier(published, computed, Collections.emptyList(), Collections.singletonList(new ActionResponseBodySchemaChecker()), null);
 		assertFalse("Check that there are no errors and implementation matches raml", verifier.hasErrors());
@@ -146,7 +126,7 @@ public class RamlVerifierTest {
 	public void test_ActionContentTypeChecker_WarningDifferentType() {
 		Raml published = RamlVerifier.loadRamlFromFile("test-responsebody-differenttype.raml");
 		Class<?>[] classesToGenerate = new Class[] { ResponseBodyTestController.class };
-		Raml computed = generator.generateRamlForClasses("test", "0.0.1", "/", classesToGenerate, Collections.emptySet()).getRaml();
+		Raml computed = generator.generateRamlForClasses("test", "0.0.1", "/", classesToGenerate, Collections.emptySet(), null).getRaml();
 
 		RamlVerifier verifier = new RamlVerifier(published, computed, Collections.emptyList(), Collections.singletonList(new ActionResponseBodySchemaChecker()), null);
 		assertFalse("Check that there are errors", verifier.hasErrors());
@@ -163,7 +143,7 @@ public class RamlVerifierTest {
 	public void test_ActionContentTypeChecker_ErrorMissingFieldInRaml() {
 		Raml published = RamlVerifier.loadRamlFromFile("test-responsebody-missing.raml");
 		Class<?>[] classesToGenerate = new Class[] { ResponseBodyTestController.class };
-		Raml computed = generator.generateRamlForClasses("test", "0.0.1", "/", classesToGenerate, Collections.emptySet()).getRaml();
+		Raml computed = generator.generateRamlForClasses("test", "0.0.1", "/", classesToGenerate, Collections.emptySet(), null).getRaml();
 
 		RamlVerifier verifier = new RamlVerifier(published, computed, Collections.emptyList(), Collections.singletonList(new ActionResponseBodySchemaChecker()), null);
 		assertTrue("Check that there are errors", verifier.hasErrors());
@@ -180,7 +160,7 @@ public class RamlVerifierTest {
 	public void test_ActionContentTypeChecker_ErrorMissingFieldInSource() {
 		Raml published = RamlVerifier.loadRamlFromFile("test-responsebody-success.raml");
 		Class<?>[] classesToGenerate = new Class[] { ResponseBodyTestControllerError.class };
-		Raml computed = generator.generateRamlForClasses("test", "0.0.1", "/", classesToGenerate, Collections.emptySet()).getRaml();
+		Raml computed = generator.generateRamlForClasses("test", "0.0.1", "/", classesToGenerate, Collections.emptySet(), null).getRaml();
 
 		RamlVerifier verifier = new RamlVerifier(published, computed, Collections.emptyList(), Collections.singletonList(new ActionResponseBodySchemaChecker()), null);
 		assertTrue("Check that there are errors", verifier.hasErrors());
@@ -197,7 +177,7 @@ public class RamlVerifierTest {
 	public void test_ActionQueryParameterChecker_SuccessWithPostWarning() {
 		Raml published = RamlVerifier.loadRamlFromFile("test-queryparam-success.raml");
 		Class<?>[] classesToGenerate = new Class[] { ParamTestController.class, ParamTestControllerPostWarning.class };
-		Raml computed = generator.generateRamlForClasses("test", "0.0.1", "/", classesToGenerate, Collections.emptySet()).getRaml();
+		Raml computed = generator.generateRamlForClasses("test", "0.0.1", "/", classesToGenerate, Collections.emptySet(), null).getRaml();
 
 		RamlVerifier verifier = new RamlVerifier(published, computed, Collections.emptyList(), Collections.singletonList(new ActionQueryParameterChecker()), null);
 		assertFalse("Check that there are no errors and implementation matches raml", verifier.hasErrors());
@@ -215,7 +195,7 @@ public class RamlVerifierTest {
 	public void test_ActionQueryParameterChecker_MissingParamsInContract() {
 		Raml published = RamlVerifier.loadRamlFromFile("test-queryparam-missing.raml");
 		Class<?>[] classesToGenerate = new Class[] { ParamTestController.class };
-		Raml computed = generator.generateRamlForClasses("test", "0.0.1", "/", classesToGenerate, Collections.emptySet()).getRaml();
+		Raml computed = generator.generateRamlForClasses("test", "0.0.1", "/", classesToGenerate, Collections.emptySet(), null).getRaml();
 
 		RamlVerifier verifier = new RamlVerifier(published, computed, Collections.emptyList(), Collections.singletonList(new ActionQueryParameterChecker()), null);
 		assertTrue("Check that there are errors", verifier.hasErrors());
@@ -236,7 +216,7 @@ public class RamlVerifierTest {
 	public void test_ActionQueryParameterChecker_MissingParamsInSource() {
 		Raml published = RamlVerifier.loadRamlFromFile("test-queryparam-success.raml");
 		Class<?>[] classesToGenerate = new Class[] { ParamTestController.class, ParamTestControllerPostMissing.class };
-		Raml computed = generator.generateRamlForClasses("test", "0.0.1", "/", classesToGenerate, Collections.emptySet()).getRaml();
+		Raml computed = generator.generateRamlForClasses("test", "0.0.1", "/", classesToGenerate, Collections.emptySet(), null).getRaml();
 
 		RamlVerifier verifier = new RamlVerifier(published, computed, Collections.emptyList(), Collections.singletonList(new ActionQueryParameterChecker()), null);
 		assertTrue("Check that there are errors", verifier.hasErrors());
@@ -254,7 +234,7 @@ public class RamlVerifierTest {
 	public void test_ActionQueryParameterChecker_MissingParamsNotRequiredDowngradeToWarning() {
 		Raml published = RamlVerifier.loadRamlFromFile("test-queryparam-success.raml");
 		Class<?>[] classesToGenerate = new Class[] { ParamTestController.class, ParamTestControllerDowngradeToWarning.class };
-		Raml computed = generator.generateRamlForClasses("test", "0.0.1", "/", classesToGenerate, Collections.emptySet()).getRaml();
+		Raml computed = generator.generateRamlForClasses("test", "0.0.1", "/", classesToGenerate, Collections.emptySet(), null).getRaml();
 
 		RamlVerifier verifier = new RamlVerifier(published, computed, Collections.emptyList(), Collections.singletonList(new ActionQueryParameterChecker()), null);
 		assertTrue("Check that there are errors", verifier.hasErrors());
@@ -277,7 +257,7 @@ public class RamlVerifierTest {
 	public void test_ActionExistenceChecker_Success() {
 		Raml published = RamlVerifier.loadRamlFromFile("test-simple.raml");
 		Class<?>[] classesToGenerate = new Class[] { VerifierTestController.class, SecondVerifierTestController.class };
-		Raml computed = generator.generateRamlForClasses("test", "0.0.1", "/", classesToGenerate, Collections.emptySet()).getRaml();
+		Raml computed = generator.generateRamlForClasses("test", "0.0.1", "/", classesToGenerate, Collections.emptySet(), null).getRaml();
 
 		RamlVerifier verifier = new RamlVerifier(published, computed, Collections.emptyList(), null, Collections.singletonList(new ActionExistenceChecker()));
 		assertFalse("Check that there are no errors and implementation matches raml", verifier.hasErrors());
@@ -290,7 +270,7 @@ public class RamlVerifierTest {
 	public void test_ActionExistenceChecker_MissingAndExtraActions() {
 		Raml published = RamlVerifier.loadRamlFromFile("test-actions-missing.raml");
 		Class<?>[] classesToGenerate = new Class[] { VerifierTestController.class, SecondVerifierTestController.class };
-		Raml computed = generator.generateRamlForClasses("test", "0.0.1", "/", classesToGenerate, Collections.emptySet()).getRaml();
+		Raml computed = generator.generateRamlForClasses("test", "0.0.1", "/", classesToGenerate, Collections.emptySet(), null).getRaml();
 
 		RamlVerifier verifier = new RamlVerifier(published, computed, Collections.emptyList(), null, Collections.singletonList(new ActionExistenceChecker()));
 		assertTrue("Check that there are no errors and implementation matches raml", verifier.hasErrors());
@@ -312,7 +292,7 @@ public class RamlVerifierTest {
 	public void test_ResourceExistenceChecker_MissingResourceInRaml() {
 		Raml published = RamlVerifier.loadRamlFromFile("test-simple.raml");
 		Class<?>[] classesToGenerate = new Class[] { VerifierTestController.class, SecondVerifierTestController.class, ThirdVerifierTestController.class };
-		Raml computed = generator.generateRamlForClasses("test", "0.0.1", "/", classesToGenerate, Collections.emptySet()).getRaml();
+		Raml computed = generator.generateRamlForClasses("test", "0.0.1", "/", classesToGenerate, Collections.emptySet(), null).getRaml();
 
 		RamlVerifier verifier = new RamlVerifier(published, computed, Collections.singletonList(new ResourceExistenceChecker()), null, null);
 		assertFalse("Check that there are no errors since the missing resource will get marked as a warning", verifier.hasErrors());
@@ -328,7 +308,7 @@ public class RamlVerifierTest {
 	public void test_ResourceExistenceChecker_MissingResourceInImplementation() {
 		Raml published = RamlVerifier.loadRamlFromFile("test-simple.raml");
 		Class<?>[] classesToGenerate = new Class[] { VerifierTestController.class };
-		Raml computed = generator.generateRamlForClasses("test", "0.0.1", "/", classesToGenerate, Collections.emptySet()).getRaml();
+		Raml computed = generator.generateRamlForClasses("test", "0.0.1", "/", classesToGenerate, Collections.emptySet(), null).getRaml();
 
 		RamlVerifier verifier = new RamlVerifier(published, computed, Collections.singletonList(new ResourceExistenceChecker()), null, null);
 		assertTrue("Check that there are errors since there is part of our contract not implemented", verifier.hasErrors());
@@ -344,7 +324,7 @@ public class RamlVerifierTest {
 	public void test_ResourceExistenceChecker_UriParamAlwaysWarning() {
 		Raml published = RamlVerifier.loadRamlFromFile("test-uriparam.raml");
 		Class<?>[] classesToGenerate = new Class[] { SecondVerifierTestController.class };
-		Raml computed = generator.generateRamlForClasses("test", "0.0.1", "/", classesToGenerate, Collections.emptySet()).getRaml();
+		Raml computed = generator.generateRamlForClasses("test", "0.0.1", "/", classesToGenerate, Collections.emptySet(), null).getRaml();
 
 		RamlVerifier verifier = new RamlVerifier(published, computed, Collections.singletonList(new ResourceExistenceChecker()), null, null);
 		assertFalse("Check that there are no errors", verifier.hasErrors());

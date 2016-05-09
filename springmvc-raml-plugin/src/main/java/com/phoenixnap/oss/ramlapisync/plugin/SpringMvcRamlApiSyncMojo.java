@@ -101,7 +101,7 @@ public class SpringMvcRamlApiSyncMojo extends CommonApiSyncMojo {
 		RamlGenerator ramlGenerator = new RamlGenerator(scanner);
 		// Process the classes selected and build Raml model
 		ramlGenerator
-				.generateRamlForClasses(project.getArtifactId(), version, restBasePath, classArray, this.documents);
+				.generateRamlForClasses(project.getArtifactId(), version, restBasePath, classArray, this.documents, null);
 
 		// Extract RAML as a string and save to file
 		ramlGenerator.outputRamlToFile(this.getFullRamlOutputPath(), createPathIfMissing, removeOldOutput);

@@ -12,25 +12,6 @@
  */
 package com.phoenixnap.oss.ramlapisync.plugin;
 
-import java.io.File;
-import java.io.IOException;
-import java.lang.annotation.Annotation;
-import java.nio.file.Files;
-import java.nio.file.LinkOption;
-import java.nio.file.Paths;
-import java.util.ArrayList;
-import java.util.List;
-
-import org.apache.maven.plugin.MojoExecutionException;
-import org.apache.maven.plugin.MojoFailureException;
-import org.apache.maven.plugins.annotations.Mojo;
-import org.apache.maven.plugins.annotations.Parameter;
-import org.apache.maven.plugins.annotations.ResolutionScope;
-import org.raml.model.Raml;
-import org.springframework.stereotype.Controller;
-import org.springframework.util.StringUtils;
-import org.springframework.web.bind.annotation.RestController;
-
 import com.phoenixnap.oss.ramlapisync.generation.RamlGenerator;
 import com.phoenixnap.oss.ramlapisync.generation.RamlVerifier;
 import com.phoenixnap.oss.ramlapisync.parser.ResourceParser;
@@ -47,6 +28,24 @@ import com.phoenixnap.oss.ramlapisync.verification.checkers.ActionContentTypeChe
 import com.phoenixnap.oss.ramlapisync.verification.checkers.ActionExistenceChecker;
 import com.phoenixnap.oss.ramlapisync.verification.checkers.ActionQueryParameterChecker;
 import com.phoenixnap.oss.ramlapisync.verification.checkers.ResourceExistenceChecker;
+import org.apache.maven.plugin.MojoExecutionException;
+import org.apache.maven.plugin.MojoFailureException;
+import org.apache.maven.plugins.annotations.Mojo;
+import org.apache.maven.plugins.annotations.Parameter;
+import org.apache.maven.plugins.annotations.ResolutionScope;
+import org.raml.model.Raml;
+import org.springframework.stereotype.Controller;
+import org.springframework.util.StringUtils;
+import org.springframework.web.bind.annotation.RestController;
+
+import java.io.File;
+import java.io.IOException;
+import java.lang.annotation.Annotation;
+import java.nio.file.Files;
+import java.nio.file.LinkOption;
+import java.nio.file.Paths;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Maven Plugin MOJO specific to verification of RAML from implementations in Spring MVC Projects.
@@ -132,7 +131,10 @@ public class SpringMvcRamlVerifierMojo extends CommonApiSyncMojo {
 	 */
 	@Parameter(required = false, readonly = true, defaultValue = "true")
 	protected Boolean logErrors;
-	
+
+	@Parameter(required = false, readonly = true, defaultValue = "")
+	protected String uriPrefix;
+
 	@SuppressWarnings("unchecked")
 	@Override
 	protected Class<? extends Annotation>[] getSupportedClassAnnotations() {
@@ -159,7 +161,7 @@ public class SpringMvcRamlVerifierMojo extends CommonApiSyncMojo {
 		ResourceParser scanner = new SpringMvcResourceParser(targetPath, version, ResourceParser.CATCH_ALL_MEDIA_TYPE, false);
 		RamlGenerator ramlGenerator = new RamlGenerator(scanner);
 		// Process the classes selected and build Raml model
-		ramlGenerator.generateRamlForClasses(project.getArtifactId(), version, "/", classArray, this.documents);
+		ramlGenerator.generateRamlForClasses(project.getArtifactId(), version, "/", classArray, this.documents, uriPrefix);
 		Raml implementedRaml = ramlGenerator.getRaml();
 		
 		List<RamlChecker> checkers = new ArrayList<>();
