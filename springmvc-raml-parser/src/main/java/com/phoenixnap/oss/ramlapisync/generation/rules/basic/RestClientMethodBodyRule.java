@@ -13,6 +13,7 @@
 package com.phoenixnap.oss.ramlapisync.generation.rules.basic;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -21,6 +22,7 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
+import org.springframework.web.util.UriComponents;
 import org.springframework.web.util.UriComponentsBuilder;
 
 import com.phoenixnap.oss.ramlapisync.data.ApiMappingMetadata;
@@ -128,29 +130,34 @@ public class RestClientMethodBodyRule implements Rule<JMethod, JMethod, ApiMappi
         JClass urlClass = new JCodeModel().ref(String.class);
         String urlString = baseUrl + endpointMetadata.getUrl();
         JVar url = generatableType.body().decl(urlClass, "url", JExpr.lit(urlString));
-        JVar uriBuilder = null;
+        JVar uriBuilderVar = null;
+        JVar uriComponentVar = null;
+        
+        //Get the parameters from the model and put them in a map for easy lookup
+        List<JVar> params = generatableType.params();
+        Map<String, JVar> methodParamMap = new LinkedHashMap<>();
+        for (JVar param : params) {
+        	methodParamMap.put(param.name(), param);
+        
+        }	
+        
+        //Initialise the UriComponentsBuilder
+    	JClass builderClass = new JCodeModel().ref(UriComponentsBuilder.class);
+    	JExpression builderInit = builderClass.staticInvoke("fromHttpUrl").arg(url);
+        
         //If we have any Query Parameters, we will use the URIBuilder to encode them in the URL
         if (!CollectionUtils.isEmpty(endpointMetadata.getRequestParameters())) {
-        	//Initialise the UriComponentsBuilder
-        	JClass builderClass = new JCodeModel().ref(UriComponentsBuilder.class);
-        	JExpression builderInit = builderClass.staticInvoke("fromHttpUrl").arg(url);
-        	//Get the parameters from the model and put them in a map for easy lookup
-            List<JVar> params = generatableType.params();
-            Map<String, JVar> paramMap = new LinkedHashMap<>();
-            for (JVar param : params) {
-            	paramMap.put(param.name(), param);
-            
-            }
             //iterate over the parameters and add calls to .queryParam
             for (ApiParameterMetadata parameter : endpointMetadata.getRequestParameters()) {
-            	builderInit = builderInit.invoke("queryParam").arg(parameter.getName()).arg(paramMap.get(parameter.getName()));
-            }
-            
-            //Add these to the code model
-            uriBuilder = generatableType.body().decl(builderClass, "builder", builderInit);
+            	builderInit = builderInit.invoke("queryParam").arg(parameter.getName()).arg(methodParamMap.get(parameter.getName()));
+            }         
         }
+        //Add these to the code model
+        uriBuilderVar = generatableType.body().decl(builderClass, "builder", builderInit);
         
-        
+        JClass componentClass = new JCodeModel().ref(UriComponents.class);
+    	JExpression component = uriBuilderVar.invoke("build");
+    	uriComponentVar = generatableType.body().decl(componentClass, "uriComponents", component);
         
         //build request entity holder                
         JVar httpEntityVar = generatableType.body().decl(httpEntityClass, "httpEntity", init);        
@@ -164,13 +171,23 @@ public class RestClientMethodBodyRule implements Rule<JMethod, JMethod, ApiMappi
             
         } 
         
+        //Create Map with Uri Path Variables
+        JClass uriParamMap = new JCodeModel().ref(Map.class).narrow(String.class, Object.class);
+        JExpression uriParamMapInit = JExpr._new(new JCodeModel().ref(HashMap.class));
+        JVar uriParamMapVar = generatableType.body().decl(uriParamMap, "uriParamMap", uriParamMapInit);
+        
+        //get all uri params from metadata set and add them to the param map in code 
+        if (!CollectionUtils.isEmpty(endpointMetadata.getPathVariables())) {
+        	endpointMetadata.getPathVariables().forEach(p -> generatableType.body().invoke(uriParamMapVar, "put").arg(p.getName()).arg(methodParamMap.get(p.getName())));
+        	JInvocation expandInvocation = uriComponentVar.invoke("expand").arg(uriParamMapVar);
+
+        	generatableType.body().assign(uriComponentVar, expandInvocation);        	
+        }
+             
         //build rest template exchange invocation
         JInvocation jInvocation = JExpr._this().ref(restTemplateFieldName).invoke("exchange");
-        if (uriBuilder == null) {
-        	jInvocation.arg(url);
-        } else {
-        	jInvocation.arg(uriBuilder.invoke("build").invoke("encode").invoke("toUri"));
-        }
+       
+        jInvocation.arg(uriComponentVar.invoke("encode").invoke("toUri"));
         jInvocation.arg(httpEntityVar); //TODO add http headers 
         jInvocation.arg(httpMethod.enumConstant(endpointMetadata.getActionType().name()));
       

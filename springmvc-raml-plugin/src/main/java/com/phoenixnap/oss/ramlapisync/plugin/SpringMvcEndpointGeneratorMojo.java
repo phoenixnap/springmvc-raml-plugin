@@ -125,7 +125,6 @@ public class SpringMvcEndpointGeneratorMojo extends AbstractMojo {
 		} else {
 			resolvedRamlPath += ramlPath;
 		}
-
 		Raml loadRamlFromFile = RamlParser.loadRamlFromFile( "file:"+resolvedRamlPath );
 		RamlParser par = new RamlParser(basePackage, getBasePath(loadRamlFromFile), seperateMethodsByContentType);
 		Set<ApiControllerMetadata> controllers = par.extractControllers(loadRamlFromFile);
