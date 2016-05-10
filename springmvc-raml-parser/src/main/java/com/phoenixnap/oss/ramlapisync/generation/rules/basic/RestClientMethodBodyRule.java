@@ -78,28 +78,33 @@ public class RestClientMethodBodyRule implements Rule<JMethod, JMethod, ApiMappi
     @Override
     public JMethod apply(ApiMappingMetadata endpointMetadata, JMethod generatableType) {
         //build HttpHeaders   
-        JClass httpHeadersClass = new JCodeModel().ref(HttpHeaders.class);
+        JClass httpHeadersClass = new JCodeModel().ref(HttpHeaders.class);        
         JExpression headersInit = JExpr._new(httpHeadersClass);
         JVar httpHeaders = generatableType.body().decl(httpHeadersClass, "httpHeaders", headersInit);
         
-        //TODO the following ---------------------
-        //handle media type
+
+        //Declare Arraylist to contain the acceptable Media Types
         generatableType.body().directStatement("//  Add Accepts Headers and Body Content-Type");
         JClass mediaTypeClass = new JCodeModel().ref(MediaType.class);
         JClass refArrayListClass = new JCodeModel().ref(ArrayList.class).narrow(mediaTypeClass);
         JVar acceptsListVar = generatableType.body().decl(refArrayListClass, "acceptsList", JExpr._new(refArrayListClass));        
 
+        //If we have a request body, lets set the content type of our request
         if (endpointMetadata.getRequestBody() != null) {
         	generatableType.body().invoke(httpHeaders, "setContentType").arg(mediaTypeClass.staticInvoke("valueOf").arg(endpointMetadata.getRequestBodyMime()));
         }
         
-        
+        //If we have response bodies defined, we need to add them to our accepts headers list
+        //TODO possibly restrict
         String documentDefaultType = endpointMetadata.getParent().getDocument().getMediaType();
+        //If a global mediatype is defined add it
         if (StringUtils.hasText(documentDefaultType)){
         	generatableType.body().invoke(acceptsListVar, "add").arg(mediaTypeClass.staticInvoke("valueOf").arg(documentDefaultType));
-        } else { //default to application/json?
+        } else { //default to application/json just in case
         	generatableType.body().invoke(acceptsListVar, "add").arg(mediaTypeClass.staticInvoke("valueOf").arg("application/json"));
         }
+        
+        //Iterate over Response Bodies and add each distinct mime type to accepts headers
         if (endpointMetadata.getResponseBody() != null && !endpointMetadata.getResponseBody().isEmpty()) {
         	for (String responseMime : endpointMetadata.getResponseBody().keySet()) {
         		if (!responseMime.equals(documentDefaultType) && !responseMime.equals("application/json")) {
@@ -108,8 +113,10 @@ public class RestClientMethodBodyRule implements Rule<JMethod, JMethod, ApiMappi
         	}
         }
        
+        //Set accepts list as our accepts headers for the call
         generatableType.body().invoke(httpHeaders, "setAccept").arg(acceptsListVar);
         
+        //Build the Http Entity object
         JClass httpEntityClass = new JCodeModel().ref("org.springframework.http.HttpEntity");
         JInvocation init = JExpr._new(httpEntityClass);
         if (generatableType.params()!=null){
@@ -117,39 +124,35 @@ public class RestClientMethodBodyRule implements Rule<JMethod, JMethod, ApiMappi
         }
         init.arg(httpHeaders);
         
+        //Build the URL variable        
+        JClass urlClass = new JCodeModel().ref(String.class);
+        String urlString = baseUrl + endpointMetadata.getUrl();
+        JVar url = generatableType.body().decl(urlClass, "url", JExpr.lit(urlString));
+        JVar uriBuilder = null;
+        //If we have any Query Parameters, we will use the URIBuilder to encode them in the URL
         if (!CollectionUtils.isEmpty(endpointMetadata.getRequestParameters())) {
+        	//Initialise the UriComponentsBuilder
         	JClass builderClass = new JCodeModel().ref(UriComponentsBuilder.class);
-        	JExpression builderInit = builderClass.staticInvoke("fromHttpUrl").arg(baseUrl + endpointMetadata.getUrl());
-            JVar builder = generatableType.body().decl(builderClass, "builder", builderInit);
+        	JExpression builderInit = builderClass.staticInvoke("fromHttpUrl").arg(url);
+        	//Get the parameters from the model and put them in a map for easy lookup
             List<JVar> params = generatableType.params();
             Map<String, JVar> paramMap = new LinkedHashMap<>();
             for (JVar param : params) {
             	paramMap.put(param.name(), param);
             
             }
+            //iterate over the parameters and add calls to .queryParam
             for (ApiParameterMetadata parameter : endpointMetadata.getRequestParameters()) {
-            	builderInit.invoke("queryParam").arg(parameter.getName()).arg(paramMap.get(parameter.getName()));
+            	builderInit = builderInit.invoke("queryParam").arg(parameter.getName()).arg(paramMap.get(parameter.getName()));
             }
             
-//        	UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl(url)
-//        	        .queryParam("msisdn", msisdn)
-        	        
+            //Add these to the code model
+            uriBuilder = generatableType.body().decl(builderClass, "builder", builderInit);
         }
-
-//
-          //handle query params
-//        if (parameters.isPresent()) {
-//            entity = getHttpEntity(headers, parameters.get());
-//        }
-//        else {
-//            entity = new HttpEntity<>(null, headers);
-//        }
-//end TODO --------------------------------
         
-        //build request entity holder
-       
         
-                
+        
+        //build request entity holder                
         JVar httpEntityVar = generatableType.body().decl(httpEntityClass, "httpEntity", init);        
                         
         //construct the HTTP Method enum 
@@ -163,7 +166,11 @@ public class RestClientMethodBodyRule implements Rule<JMethod, JMethod, ApiMappi
         
         //build rest template exchange invocation
         JInvocation jInvocation = JExpr._this().ref(restTemplateFieldName).invoke("exchange");
-        jInvocation.arg(baseUrl + endpointMetadata.getUrl());
+        if (uriBuilder == null) {
+        	jInvocation.arg(url);
+        } else {
+        	jInvocation.arg(uriBuilder.invoke("build").invoke("encode").invoke("toUri"));
+        }
         jInvocation.arg(httpEntityVar); //TODO add http headers 
         jInvocation.arg(httpMethod.enumConstant(endpointMetadata.getActionType().name()));
       
