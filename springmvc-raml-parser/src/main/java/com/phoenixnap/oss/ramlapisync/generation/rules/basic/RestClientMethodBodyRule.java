@@ -13,14 +13,19 @@
 package com.phoenixnap.oss.ramlapisync.generation.rules.basic;
 
 import java.util.ArrayList;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
 
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
+import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
+import org.springframework.web.util.UriComponentsBuilder;
 
 import com.phoenixnap.oss.ramlapisync.data.ApiMappingMetadata;
+import com.phoenixnap.oss.ramlapisync.data.ApiParameterMetadata;
 import com.phoenixnap.oss.ramlapisync.generation.rules.Rule;
-import com.sun.codemodel.JBlock;
 import com.sun.codemodel.JClass;
 import com.sun.codemodel.JClassAlreadyExistsException;
 import com.sun.codemodel.JCodeModel;
@@ -72,17 +77,16 @@ public class RestClientMethodBodyRule implements Rule<JMethod, JMethod, ApiMappi
 
     @Override
     public JMethod apply(ApiMappingMetadata endpointMetadata, JMethod generatableType) {
-    	JCodeModel jCodeModel = new JCodeModel();
         //build HttpHeaders   
-        JClass httpHeadersClass = jCodeModel.ref(HttpHeaders.class);
+        JClass httpHeadersClass = new JCodeModel().ref(HttpHeaders.class);
         JExpression headersInit = JExpr._new(httpHeadersClass);
         JVar httpHeaders = generatableType.body().decl(httpHeadersClass, "httpHeaders", headersInit);
         
         //TODO the following ---------------------
         //handle media type
         generatableType.body().directStatement("//  Add Accepts Headers and Body Content-Type");
-        JClass mediaTypeClass = jCodeModel.ref(MediaType.class);
-        JClass refArrayListClass = jCodeModel.ref(ArrayList.class).narrow(mediaTypeClass);
+        JClass mediaTypeClass = new JCodeModel().ref(MediaType.class);
+        JClass refArrayListClass = new JCodeModel().ref(ArrayList.class).narrow(mediaTypeClass);
         JVar acceptsListVar = generatableType.body().decl(refArrayListClass, "acceptsList", JExpr._new(refArrayListClass));        
 
         if (endpointMetadata.getRequestBody() != null) {
@@ -98,7 +102,7 @@ public class RestClientMethodBodyRule implements Rule<JMethod, JMethod, ApiMappi
         }
         if (endpointMetadata.getResponseBody() != null && !endpointMetadata.getResponseBody().isEmpty()) {
         	for (String responseMime : endpointMetadata.getResponseBody().keySet()) {
-        		if (!responseMime.equals(documentDefaultType)) {
+        		if (!responseMime.equals(documentDefaultType) && !responseMime.equals("application/json")) {
         			generatableType.body().invoke(acceptsListVar, "add").arg(mediaTypeClass.staticInvoke("valueOf").arg(responseMime));
         		}
         	}
@@ -106,13 +110,32 @@ public class RestClientMethodBodyRule implements Rule<JMethod, JMethod, ApiMappi
        
         generatableType.body().invoke(httpHeaders, "setAccept").arg(acceptsListVar);
         
-//--        List<MediaType> acceptsList = new ArrayList<>();
-//--        acceptsList.add(MediaType.valueOf(version));
-//--        headers.setAccept(acceptsList);
-//
-//--        if (bodyVersion.isPresent()) {
-//--            headers.setContentType(MediaType.valueOf(bodyVersion.get()));
-//--        }
+        JClass httpEntityClass = new JCodeModel().ref("org.springframework.http.HttpEntity");
+        JInvocation init = JExpr._new(httpEntityClass);
+        if (generatableType.params()!=null){
+            generatableType.params().forEach(p -> init.arg(p));
+        }
+        init.arg(httpHeaders);
+        
+        if (!CollectionUtils.isEmpty(endpointMetadata.getRequestParameters())) {
+        	JClass builderClass = new JCodeModel().ref(UriComponentsBuilder.class);
+        	JExpression builderInit = builderClass.staticInvoke("fromHttpUrl").arg(baseUrl + endpointMetadata.getUrl());
+            JVar builder = generatableType.body().decl(builderClass, "builder", builderInit);
+            List<JVar> params = generatableType.params();
+            Map<String, JVar> paramMap = new LinkedHashMap<>();
+            for (JVar param : params) {
+            	paramMap.put(param.name(), param);
+            
+            }
+            for (ApiParameterMetadata parameter : endpointMetadata.getRequestParameters()) {
+            	builderInit.invoke("queryParam").arg(parameter.getName()).arg(paramMap.get(parameter.getName()));
+            }
+            
+//        	UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl(url)
+//        	        .queryParam("msisdn", msisdn)
+        	        
+        }
+
 //
           //handle query params
 //        if (parameters.isPresent()) {
@@ -124,19 +147,15 @@ public class RestClientMethodBodyRule implements Rule<JMethod, JMethod, ApiMappi
 //end TODO --------------------------------
         
         //build request entity holder
-        JClass httpEntityClass = jCodeModel.ref("org.springframework.http.HttpEntity");
-        JInvocation init = JExpr._new(httpEntityClass);
-        if (generatableType.params()!=null){
-            generatableType.params().forEach(p -> init.arg(p));
-        }
-        init.arg(httpHeaders);
+       
+        
                 
         JVar httpEntityVar = generatableType.body().decl(httpEntityClass, "httpEntity", init);        
                         
         //construct the HTTP Method enum 
         JDefinedClass httpMethod = null;
         try {
-            httpMethod = jCodeModel._class("org.springframework.http.HttpMethod");
+            httpMethod = new JCodeModel()._class("org.springframework.http.HttpMethod");
         }
         catch (JClassAlreadyExistsException e) {
             

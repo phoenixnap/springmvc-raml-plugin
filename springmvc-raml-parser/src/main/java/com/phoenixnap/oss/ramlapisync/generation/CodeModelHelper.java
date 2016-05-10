@@ -23,11 +23,13 @@ import com.sun.codemodel.JCodeModel;
 import com.sun.codemodel.JDefinedClass;
 import com.sun.codemodel.JMethod;
 import com.sun.codemodel.JPackage;
+import com.sun.codemodel.JType;
 
 /**
  * The class provides static helper methods for JCodeModel related tasks.
  *
  * @author armin.weisser
+ * @author kurt paris
  * @since 0.4.1
  */
 public abstract class CodeModelHelper {
@@ -40,7 +42,7 @@ public abstract class CodeModelHelper {
      * @return the first class in any package that matches the simple class name.
      */
     public static JClass findFirstClassBySimpleName(JCodeModel codeModel, String simpleClassName) {
-    	return findFirstClassBySimpleName(codeModel == null ? null : new JCodeModel[]{codeModel}, simpleClassName);
+    	return findFirstClassBySimpleName(codeModel == null ? new JCodeModel[]{new JCodeModel()} : new JCodeModel[]{codeModel}, simpleClassName);
     }
 
     /**
@@ -65,8 +67,31 @@ public abstract class CodeModelHelper {
 		            }
 		        }
     		}
+    		//Is this a simple type?
+    		JType parseType;
+			try {
+				parseType = codeModels[0].parseType(simpleClassName);
+				if (parseType != null) {
+	    			if (parseType.isPrimitive()) {
+	    				return parseType.boxify();	    			
+	    			} else if (parseType instanceof JClass){
+	    				return (JClass) parseType;
+	    			}
+				}
+			} catch (ClassNotFoundException e) {
+				; //Do nothing we will throw an exception further down
+			}
+			
+			JClass boxedPrimitive = codeModels[0].ref("java.lang." + simpleClassName);
+			if (boxedPrimitive != null) {
+				return boxedPrimitive;
+			}
+    			
+			throw new InvalidCodeModelException("No unique class found for simple class name " + simpleClassName);
     	}
-        throw new InvalidCodeModelException("No unique class found for simple class name " + simpleClassName);
+    	
+    	throw new InvalidCodeModelException("No code models provided for " + simpleClassName);
+    	
     }
 
     public static JExtMethod ext(JMethod jMethod, JCodeModel jCodeModel) {
