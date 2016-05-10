@@ -29,6 +29,7 @@ import com.phoenixnap.oss.ramlapisync.generation.rules.basic.MethodCommentRule;
 import com.phoenixnap.oss.ramlapisync.generation.rules.basic.MethodParamsRule;
 import com.phoenixnap.oss.ramlapisync.generation.rules.basic.PackageRule;
 import com.phoenixnap.oss.ramlapisync.generation.rules.basic.ResourceClassDeclarationRule;
+import com.phoenixnap.oss.ramlapisync.generation.rules.basic.RestClientMethodBodyRule;
 import com.sun.codemodel.JCodeModel;
 import com.sun.codemodel.JDefinedClass;
 
@@ -89,8 +90,8 @@ public class SpringRestTemplateClientRule implements Rule<JCodeModel, JDefinedCl
                 .setMethodCommentRule(new MethodCommentRule())                
                 .setMethodSignatureRule(new ControllerMethodSignatureRule(
                         new SpringResponseEntityRule(),
-                        new SpringMethodParamsRule()))
-                .setMethodBodyRule(new DelegatingMethodBodyRule("jowsef")); //FIXME
+                        new MethodParamsRule()))
+                .setMethodBodyRule(new RestClientMethodBodyRule("http://localhost",restTemplateName));
 
         return delegateGenerator.apply(metadata, generatableType);
     }
