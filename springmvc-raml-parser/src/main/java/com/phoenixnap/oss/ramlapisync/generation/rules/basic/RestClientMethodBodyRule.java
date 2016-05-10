@@ -83,12 +83,10 @@ public class RestClientMethodBodyRule implements Rule<JMethod, JMethod, ApiMappi
         generatableType.body().directStatement("//  Add Accepts Headers and Body Content-Type");
         JClass mediaTypeClass = jCodeModel.ref(MediaType.class);
         JClass refArrayListClass = jCodeModel.ref(ArrayList.class).narrow(mediaTypeClass);
-        generatableType.body().directStatement(null);
         JVar acceptsListVar = generatableType.body().decl(refArrayListClass, "acceptsList", JExpr._new(refArrayListClass));        
 
         if (endpointMetadata.getRequestBody() != null) {
         	generatableType.body().invoke(httpHeaders, "setContentType").arg(mediaTypeClass.staticInvoke("valueOf").arg(endpointMetadata.getRequestBodyMime()));
-        	generatableType.body().directStatement(null);
         }
         
         
@@ -110,11 +108,11 @@ public class RestClientMethodBodyRule implements Rule<JMethod, JMethod, ApiMappi
         
 //--        List<MediaType> acceptsList = new ArrayList<>();
 //--        acceptsList.add(MediaType.valueOf(version));
-//        headers.setAccept(acceptsList);
+//--        headers.setAccept(acceptsList);
 //
-//        if (bodyVersion.isPresent()) {
-//            headers.setContentType(MediaType.valueOf(bodyVersion.get()));
-//        }
+//--        if (bodyVersion.isPresent()) {
+//--            headers.setContentType(MediaType.valueOf(bodyVersion.get()));
+//--        }
 //
           //handle query params
 //        if (parameters.isPresent()) {
