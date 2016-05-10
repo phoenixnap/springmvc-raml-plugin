@@ -50,6 +50,7 @@ public class ApiMappingMetadata {
 	ActionType actionType;
 	Action action;
 
+	String requestBodyMime = null;
 	ApiBodyMetadata requestBody = null;
 	Map<String, ApiBodyMetadata> responseBody = new LinkedHashMap<>();
 	Set<ApiParameterMetadata> pathVariables = null;
@@ -130,7 +131,7 @@ public class ApiMappingMetadata {
 				ApiBodyMetadata requestBody = SchemaHelper.mapSchemaToPojo(parent.getDocument(), schema, parent.getBasePackage()
 						+ NamingHelper.getDefaultModelPackage(), StringUtils.capitalize(getName()) + "Request");
 				if (requestBody != null) {
-					setRequestBody(requestBody);
+					setRequestBody(requestBody, mime.getKey());
 				}
 			}
 		}
@@ -261,8 +262,9 @@ public class ApiMappingMetadata {
 		return requestBody;
 	}
 
-	private void setRequestBody(ApiBodyMetadata requestBody) {
+	private void setRequestBody(ApiBodyMetadata requestBody, String mimeType) {
 		if (this.requestBody == null) {
+			this.requestBodyMime = mimeType;
 			this.requestBody = requestBody;
 		} else {
 			throw new IllegalStateException("Body Metadata is immutable");
@@ -279,6 +281,14 @@ public class ApiMappingMetadata {
 
 	public Map<String, ApiBodyMetadata> getResponseBody() {
 		return responseBody;
+	}
+
+	public String getRequestBodyMime() {
+		return requestBodyMime;
+	}
+
+	public void setRequestBodyMime(String requestBodyMime) {
+		this.requestBodyMime = requestBodyMime;
 	}
 
 }

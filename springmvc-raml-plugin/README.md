@@ -39,7 +39,8 @@ Then simply include the following code in the POM of the project you wish to gen
 	<javaDocPath>D:/</javaDocPath>
     <restBasePath>/</restBasePath>
     <version>0.0.1</version>
-    <restrictOnMediaType>false</restrictOnMediaType>
+    <includeGlobalMediaType>false</includeGlobalMediaType>
+	<restrictOnMediaType>false</restrictOnMediaType>
 	<ignoredList>
 	   <param>com.package.to.ignore</param>
 	   <param>com.specificClass.to.ignore.ClassName</param>
@@ -68,6 +69,9 @@ Then simply include the following code in the POM of the project you wish to gen
 
 ### removeOldOutput
 (optional, default: false) If this is set to true, we will empty the output directory before generation occurs
+
+### includeGlobalMediaType
+(optional, default: false) If this is set to true, we will append the default media type to the global RAML mediaType property
 
 ### javaDocPath
 (optional) Absolute path to a folder which will be used to search for JavaDoc. This folder should contain all source of controllers being scanned. Using root folders for this may increase scanning time. If this is not supplied, the scanner will default to the current project folder

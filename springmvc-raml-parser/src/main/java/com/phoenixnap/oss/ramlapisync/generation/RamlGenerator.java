@@ -78,6 +78,16 @@ public class RamlGenerator {
 		this.scanner = scanner;
 	}
 
+	/**
+	 * Adds a global media type to the document
+	 * 
+	 * @param mediaType The default media type
+	 */
+	public void setRamlMediaType(String mediaType) {
+		if (this.raml != null) {
+			this.raml.setMediaType(mediaType);
+		}
+	}
 
 	/**
 	 * Parses classes array supplied and builds a Raml Model from any request mappings defined inside

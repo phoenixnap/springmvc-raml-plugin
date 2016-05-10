@@ -120,7 +120,7 @@ public class SpringMvcEndpointGeneratorMojo extends AbstractMojo {
 			resolvedPath = resolvedPath.substring(0, resolvedPath.length()-1);
 		}
 		String resolvedRamlPath = project.getBasedir().getAbsolutePath();
-		if (!ramlPath.startsWith(File.separator) && !ramlPath.startsWith("/")) {
+		if (!ramlPath.startsWith(File.separator) && !ramlPath.startsWith("/") && !ramlPath.startsWith("../")) {
 			resolvedRamlPath += File.separator + ramlPath;
 		} else {
 			resolvedRamlPath += ramlPath;

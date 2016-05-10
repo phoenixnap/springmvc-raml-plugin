@@ -23,7 +23,6 @@ import com.phoenixnap.oss.ramlapisync.generation.rules.basic.ClassCommentRule;
 import com.phoenixnap.oss.ramlapisync.generation.rules.basic.ClassFieldDeclarationRule;
 import com.phoenixnap.oss.ramlapisync.generation.rules.basic.ClientInterfaceDeclarationRule;
 import com.phoenixnap.oss.ramlapisync.generation.rules.basic.ControllerMethodSignatureRule;
-import com.phoenixnap.oss.ramlapisync.generation.rules.basic.DelegatingMethodBodyRule;
 import com.phoenixnap.oss.ramlapisync.generation.rules.basic.ImplementsControllerInterfaceRule;
 import com.phoenixnap.oss.ramlapisync.generation.rules.basic.MethodCommentRule;
 import com.phoenixnap.oss.ramlapisync.generation.rules.basic.MethodParamsRule;

@@ -13,18 +13,14 @@
 package com.phoenixnap.oss.ramlapisync.generation.rules.basic;
 
 import java.util.ArrayList;
-import java.util.List;
 
-import org.raml.model.ActionType;
-import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpMethod;
 import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
 import org.springframework.util.StringUtils;
 
 import com.phoenixnap.oss.ramlapisync.data.ApiMappingMetadata;
 import com.phoenixnap.oss.ramlapisync.generation.rules.Rule;
+import com.sun.codemodel.JBlock;
 import com.sun.codemodel.JClass;
 import com.sun.codemodel.JClassAlreadyExistsException;
 import com.sun.codemodel.JCodeModel;
@@ -76,16 +72,44 @@ public class RestClientMethodBodyRule implements Rule<JMethod, JMethod, ApiMappi
 
     @Override
     public JMethod apply(ApiMappingMetadata endpointMetadata, JMethod generatableType) {
-
+    	JCodeModel jCodeModel = new JCodeModel();
         //build HttpHeaders   
-        JClass httpHeadersClass = new JCodeModel().ref(HttpHeaders.class);
+        JClass httpHeadersClass = jCodeModel.ref(HttpHeaders.class);
         JExpression headersInit = JExpr._new(httpHeadersClass);
         JVar httpHeaders = generatableType.body().decl(httpHeadersClass, "httpHeaders", headersInit);
         
         //TODO the following ---------------------
         //handle media type
-//        List<MediaType> acceptsList = new ArrayList<>();
-//        acceptsList.add(MediaType.valueOf(version));
+        generatableType.body().directStatement("//  Add Accepts Headers and Body Content-Type");
+        JClass mediaTypeClass = jCodeModel.ref(MediaType.class);
+        JClass refArrayListClass = jCodeModel.ref(ArrayList.class).narrow(mediaTypeClass);
+        generatableType.body().directStatement(null);
+        JVar acceptsListVar = generatableType.body().decl(refArrayListClass, "acceptsList", JExpr._new(refArrayListClass));        
+
+        if (endpointMetadata.getRequestBody() != null) {
+        	generatableType.body().invoke(httpHeaders, "setContentType").arg(mediaTypeClass.staticInvoke("valueOf").arg(endpointMetadata.getRequestBodyMime()));
+        	generatableType.body().directStatement(null);
+        }
+        
+        
+        String documentDefaultType = endpointMetadata.getParent().getDocument().getMediaType();
+        if (StringUtils.hasText(documentDefaultType)){
+        	generatableType.body().invoke(acceptsListVar, "add").arg(mediaTypeClass.staticInvoke("valueOf").arg(documentDefaultType));
+        } else { //default to application/json?
+        	generatableType.body().invoke(acceptsListVar, "add").arg(mediaTypeClass.staticInvoke("valueOf").arg("application/json"));
+        }
+        if (endpointMetadata.getResponseBody() != null && !endpointMetadata.getResponseBody().isEmpty()) {
+        	for (String responseMime : endpointMetadata.getResponseBody().keySet()) {
+        		if (!responseMime.equals(documentDefaultType)) {
+        			generatableType.body().invoke(acceptsListVar, "add").arg(mediaTypeClass.staticInvoke("valueOf").arg(responseMime));
+        		}
+        	}
+        }
+       
+        generatableType.body().invoke(httpHeaders, "setAccept").arg(acceptsListVar);
+        
+//--        List<MediaType> acceptsList = new ArrayList<>();
+//--        acceptsList.add(MediaType.valueOf(version));
 //        headers.setAccept(acceptsList);
 //
 //        if (bodyVersion.isPresent()) {
@@ -102,7 +126,7 @@ public class RestClientMethodBodyRule implements Rule<JMethod, JMethod, ApiMappi
 //end TODO --------------------------------
         
         //build request entity holder
-        JClass httpEntityClass = new JCodeModel().ref("org.springframework.http.HttpEntity");
+        JClass httpEntityClass = jCodeModel.ref("org.springframework.http.HttpEntity");
         JInvocation init = JExpr._new(httpEntityClass);
         if (generatableType.params()!=null){
             generatableType.params().forEach(p -> init.arg(p));
@@ -114,7 +138,7 @@ public class RestClientMethodBodyRule implements Rule<JMethod, JMethod, ApiMappi
         //construct the HTTP Method enum 
         JDefinedClass httpMethod = null;
         try {
-            httpMethod = new JCodeModel()._class("org.springframework.http.HttpMethod");
+            httpMethod = jCodeModel._class("org.springframework.http.HttpMethod");
         }
         catch (JClassAlreadyExistsException e) {
             
