@@ -61,7 +61,7 @@ public class SpringResponseEntityRule implements Rule<JDefinedClass, JType, ApiM
             JClass genericType = findFirstClassBySimpleName(apiBodyMetadata.getCodeModel(), apiBodyMetadata.getName());
             if (apiBodyMetadata.isArray()) {
                 JClass arrayType = generatableType.owner().ref(List.class);
-                responseEntity = arrayType.narrow(genericType);
+                responseEntity = responseEntity.narrow(arrayType.narrow(genericType));
             } else {
                 responseEntity = responseEntity.narrow(genericType);
             }

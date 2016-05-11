@@ -85,7 +85,16 @@ public class MethodParamsRule implements Rule<CodeModelHelper.JExtMethod, JMetho
 
     protected JVar param(ApiMappingMetadata endpointMetadata, CodeModelHelper.JExtMethod generatableType) {
         String requestBodyName = endpointMetadata.getRequestBody().getName();
-        JClass requestBodyType = findFirstClassBySimpleName(new JCodeModel[]{endpointMetadata.getRequestBody().getCodeModel(), generatableType.owner()}, requestBodyName);
+        List<JCodeModel> codeModels = new ArrayList<>();
+        if (endpointMetadata.getRequestBody().getCodeModel()!=null){
+            codeModels.add(endpointMetadata.getRequestBody().getCodeModel());
+        }
+        
+        if ( generatableType.owner()!=null){
+            codeModels.add(generatableType.owner());
+        }
+                
+        JClass requestBodyType = findFirstClassBySimpleName(codeModels.toArray(new JCodeModel[codeModels.size()]), requestBodyName);       
         return generatableType.get().param(requestBodyType, uncapitalize(requestBodyName));
     }
 

@@ -12,12 +12,18 @@
  */
 package com.phoenixnap.oss.ramlapisync.generation.rules.basic;
 
+import static com.phoenixnap.oss.ramlapisync.generation.CodeModelHelper.findFirstClassBySimpleName;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.util.CollectionUtils;
@@ -25,6 +31,7 @@ import org.springframework.util.StringUtils;
 import org.springframework.web.util.UriComponents;
 import org.springframework.web.util.UriComponentsBuilder;
 
+import com.phoenixnap.oss.ramlapisync.data.ApiBodyMetadata;
 import com.phoenixnap.oss.ramlapisync.data.ApiMappingMetadata;
 import com.phoenixnap.oss.ramlapisync.data.ApiParameterMetadata;
 import com.phoenixnap.oss.ramlapisync.generation.rules.Rule;
@@ -36,6 +43,7 @@ import com.sun.codemodel.JExpr;
 import com.sun.codemodel.JExpression;
 import com.sun.codemodel.JInvocation;
 import com.sun.codemodel.JMethod;
+import com.sun.codemodel.JType;
 import com.sun.codemodel.JVar;
 
 /**
@@ -56,6 +64,7 @@ import com.sun.codemodel.JVar;
  *
  * The name of the field can be configured. Default is "restTemplate".
  *
+ * @author Kurt Paris 
  * @author Kris Galea
  * @since 0.5.0
  */
@@ -63,28 +72,26 @@ public class RestClientMethodBodyRule implements Rule<JMethod, JMethod, ApiMappi
 
     private String restTemplateFieldName = "restTemplate";
     
-    private String baseUrl;
-
-    public RestClientMethodBodyRule(String baseUrl, String delegateFieldName) {
-        if (baseUrl!=null && !baseUrl.isEmpty()){
-            this.baseUrl=baseUrl;
-        }else{
-            throw new NullPointerException("The baseURL should be set.");
+    private String baseUrlFieldName = "baseUrl";
+    
+    public RestClientMethodBodyRule(String restTemplateFieldName, String baseUrlFieldName) {
+        if(StringUtils.hasText(restTemplateFieldName)) {
+            this.restTemplateFieldName = restTemplateFieldName;            
         }
-        
-        if(StringUtils.hasText(delegateFieldName)) {
-            this.restTemplateFieldName = delegateFieldName;
+        if (!StringUtils.isEmpty(baseUrlFieldName)){
+            this.baseUrlFieldName = baseUrlFieldName;
         }
     }
 
     @Override
     public JMethod apply(ApiMappingMetadata endpointMetadata, JMethod generatableType) {
+        
         //build HttpHeaders   
         JClass httpHeadersClass = new JCodeModel().ref(HttpHeaders.class);        
         JExpression headersInit = JExpr._new(httpHeadersClass);
         JVar httpHeaders = generatableType.body().decl(httpHeadersClass, "httpHeaders", headersInit);
         
-
+        
         //Declare Arraylist to contain the acceptable Media Types
         generatableType.body().directStatement("//  Add Accepts Headers and Body Content-Type");
         JClass mediaTypeClass = new JCodeModel().ref(MediaType.class);
@@ -126,19 +133,19 @@ public class RestClientMethodBodyRule implements Rule<JMethod, JMethod, ApiMappi
         }
         init.arg(httpHeaders);
         
-        //Build the URL variable        
-        JClass urlClass = new JCodeModel().ref(String.class);
-        String urlString = baseUrl + endpointMetadata.getUrl();
-        JVar url = generatableType.body().decl(urlClass, "url", JExpr.lit(urlString));
+        //Build the URL variable                
+        JExpression urlRef = JExpr.ref(baseUrlFieldName);
+        JType urlClass = new JCodeModel()._ref(String.class);
+        JExpression targetUrl = urlRef.invoke("concat").arg(endpointMetadata.getResource().getUri());        
+        JVar url = generatableType.body().decl(urlClass, "url", targetUrl);
         JVar uriBuilderVar = null;
         JVar uriComponentVar = null;
-        
+                
         //Get the parameters from the model and put them in a map for easy lookup
         List<JVar> params = generatableType.params();
         Map<String, JVar> methodParamMap = new LinkedHashMap<>();
         for (JVar param : params) {
         	methodParamMap.put(param.name(), param);
-        
         }	
         
         //Initialise the UriComponentsBuilder
@@ -183,14 +190,45 @@ public class RestClientMethodBodyRule implements Rule<JMethod, JMethod, ApiMappi
 
         	generatableType.body().assign(uriComponentVar, expandInvocation);        	
         }
-             
+        
+        //Determining response entity type 
+        JClass returnType = null;
+        if (!endpointMetadata.getResponseBody().isEmpty()) {
+            ApiBodyMetadata apiBodyMetadata = endpointMetadata.getResponseBody().values().iterator().next();            
+            JClass genericType = findFirstClassBySimpleName(apiBodyMetadata.getCodeModel(), apiBodyMetadata.getName());
+            if (apiBodyMetadata.isArray()) {
+                JClass arrayType = new JCodeModel().ref(List.class);
+                returnType = arrayType.narrow(genericType);
+            } else {
+                returnType = genericType;
+            }
+        } else {
+            returnType = new JCodeModel().ref(Object.class);
+        }
+        
+        JExpression returnExpression = JExpr.dotclass(returnType);//assume not parameterized by default
+        //check if return is parameterized
+        if (!CollectionUtils.isEmpty(returnType.getTypeParameters())) {
+            //if yes - build the parameterized type reference and change returnExpression
+            //ParameterizedTypeReference<List<String>> typeRef = new ParameterizedTypeReference<List<String>>() {};
+            //Create Map with Uri Path Variables
+            JClass paramTypeRefClass = new JCodeModel().ref(ParameterizedTypeReference.class);
+            paramTypeRefClass = paramTypeRefClass.narrow(returnType);
+            
+            JExpression paramTypeRefInit = JExpr._new(new JCodeModel().anonymousClass(paramTypeRefClass));
+            returnExpression = generatableType.body().decl(paramTypeRefClass, "typeReference", paramTypeRefInit);
+        }
+        
+        
         //build rest template exchange invocation
         JInvocation jInvocation = JExpr._this().ref(restTemplateFieldName).invoke("exchange");
        
+        
         jInvocation.arg(uriComponentVar.invoke("encode").invoke("toUri"));
-        jInvocation.arg(httpEntityVar); //TODO add http headers 
+        jInvocation.arg(httpEntityVar); 
         jInvocation.arg(httpMethod.enumConstant(endpointMetadata.getActionType().name()));
-      
+        jInvocation.arg(returnExpression);
+        
         generatableType.body()._return(jInvocation);
 
         return generatableType;

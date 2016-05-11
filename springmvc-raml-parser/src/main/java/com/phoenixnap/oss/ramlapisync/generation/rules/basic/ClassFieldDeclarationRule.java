@@ -13,6 +13,7 @@
 package com.phoenixnap.oss.ramlapisync.generation.rules.basic;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.util.StringUtils;
 
 import com.phoenixnap.oss.ramlapisync.data.ApiControllerMetadata;
@@ -41,6 +42,17 @@ public class ClassFieldDeclarationRule implements Rule<JDefinedClass, JFieldVar,
     
     private boolean autowire = true;
     
+    private boolean valueAnnotation = false;
+    
+    private String valueAnnotationValue;
+    
+    public ClassFieldDeclarationRule(String restTemplateFieldName, Class<?> fieldClazz, String valueAnnotationValue) {
+        this(restTemplateFieldName, fieldClazz);
+        this.autowire = false;
+        this.valueAnnotation = true;
+        this.valueAnnotationValue = valueAnnotationValue;                
+    }
+    
     public ClassFieldDeclarationRule(String restTemplateFieldName, Class<?> fieldClazz, boolean autowire) {
     	this(restTemplateFieldName, fieldClazz);
     	this.autowire = autowire;
@@ -63,8 +75,15 @@ public class ClassFieldDeclarationRule implements Rule<JDefinedClass, JFieldVar,
     @Override
     public JFieldVar apply(ApiControllerMetadata controllerMetadata, JDefinedClass generatableType) {
         JFieldVar field = generatableType.field(JMod.PRIVATE, this.fieldClazz, this.fieldName);
+        
+        //add @Autowired field annoation
         if (autowire) {
         	field.annotate(Autowired.class);
+        }
+        
+        //add @Value(value="") annotation to the field 
+        if (valueAnnotation){
+            field.annotate(Value.class).param("value", valueAnnotationValue);
         }
         return field;
     }

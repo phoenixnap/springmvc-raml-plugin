@@ -33,37 +33,30 @@ import com.sun.codemodel.JCodeModel;
 import com.sun.codemodel.JDefinedClass;
 
 /**
- * A code generation Rule that provides a Spring4 Controller based on a decorator pattern.
- * The goal is to generate code that does not have to be manually extended by the user.
- * A raml endpoint called /people for example implies two generated artefacts:
+ * 
+ * Builds a client from a parsed RAML document. The resulting code makes use of 
+ * Spring's REST template and sets the Accept and Content-type headers accordingly.
+ * Query string params as well as URI params are also resolved. The following url is generatable : 
+ * 
+ *  Uri : /account/{accountId}?hasQueryParams=true
+ *  HTTP Method: PUT
  *
- * // 1. Controller Interface
- * interface PeopleClient {
- *     ResponseEntity getPeople();
- * }
- *
- * // 2. An implementation of the Controller Interface using Spring RestTemplate
- * {@literal @}Component
- * class PeopleClientImpl implements PeopleClient {
- *
- *     {@literal @}Autowired
- *     PeopleController peopleControllerDelegate;
- *
- *     {@literal @}RequestMapping(value="", method=RequestMethod.GET)
- *     public ResponseEntity getPeople() {
- *         return this.peopleControllerDelegate.getPeople();
- *     }
- * }
- *
- * Now all the user has to do is to implement a Spring-Bean called "PeopleControllerDelegate".
- * This way he can implement the endpoint without altering the generated code.
+ *  Request body: 
+ *  
+ *  {
+ *      accountName:name       
+ *  }
+ *  
+ *  results in a client method
+ *  
+ *   
  *
  * @author kurt paris
  * @author kristian galea
  * @since 0.5.0
  */
 public class SpringRestTemplateClientRule implements Rule<JCodeModel, JDefinedClass, ApiControllerMetadata> {
-
+    
     @Override
     public final JDefinedClass apply(ApiControllerMetadata metadata, JCodeModel generatableType) {
 
@@ -77,7 +70,9 @@ public class SpringRestTemplateClientRule implements Rule<JCodeModel, JDefinedCl
                         new MethodParamsRule()))
                 .apply(metadata, generatableType);
 
-        String restTemplateName = "restTemplate";
+        String restTemplateFieldName = "restTemplate";
+        
+        String baseUrlFieldName = "baseUrl";
         
         GenericJavaClassRule delegateGenerator = new GenericJavaClassRule()
                 .setPackageRule(new PackageRule())
@@ -85,12 +80,13 @@ public class SpringRestTemplateClientRule implements Rule<JCodeModel, JDefinedCl
                 .addClassAnnotationRule(new ClassAnnotationRule(Component.class))                
                 .setClassRule(new ResourceClassDeclarationRule(ClientInterfaceDeclarationRule.CLIENT_SUFFIX + "Impl"))   //MODIFIED
                 .setImplementsExtendsRule(new ImplementsControllerInterfaceRule(generatedInterface))
-                .addFieldDeclarationRule(new ClassFieldDeclarationRule(restTemplateName, RestTemplate.class)) //Modified
+                .addFieldDeclarationRule(new ClassFieldDeclarationRule(restTemplateFieldName, RestTemplate.class)) //Modified
+                .addFieldDeclarationRule(new ClassFieldDeclarationRule(baseUrlFieldName, String.class, "${server.url}")) //
                 .setMethodCommentRule(new MethodCommentRule())                
                 .setMethodSignatureRule(new ControllerMethodSignatureRule(
                         new SpringResponseEntityRule(),
                         new MethodParamsRule()))
-                .setMethodBodyRule(new RestClientMethodBodyRule("http://localhost",restTemplateName));
+                .setMethodBodyRule(new RestClientMethodBodyRule(restTemplateFieldName, baseUrlFieldName));
 
         return delegateGenerator.apply(metadata, generatableType);
     }
