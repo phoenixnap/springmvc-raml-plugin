@@ -227,8 +227,8 @@ public class SpringRestClientMethodBodyRule implements Rule<JMethod, JMethod, Ap
        
         
         jInvocation.arg(uriComponentVar.invoke("encode").invoke("toUri"));
-        jInvocation.arg(httpEntityVar); 
         jInvocation.arg(httpMethod.enumConstant(endpointMetadata.getActionType().name()));
+        jInvocation.arg(httpEntityVar);         
         jInvocation.arg(returnExpression);
         
         generatableType.body()._return(jInvocation);
