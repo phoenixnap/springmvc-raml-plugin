@@ -41,6 +41,7 @@ import com.phoenixnap.oss.ramlapisync.generation.RamlParser;
 import com.phoenixnap.oss.ramlapisync.generation.rules.Rule;
 import com.phoenixnap.oss.ramlapisync.generation.rules.Spring4ControllerStubRule;
 import com.phoenixnap.oss.ramlapisync.naming.NamingHelper;
+import com.phoenixnap.oss.ramlapisync.naming.SchemaHelper;
 import com.sun.codemodel.JCodeModel;
 import com.sun.codemodel.JDefinedClass;
 
@@ -79,6 +80,12 @@ public class SpringMvcEndpointGeneratorMojo extends AbstractMojo {
 	 */
 	@Parameter(required = false, readonly = true, defaultValue = "false")
 	protected Boolean addTimestampFolder;
+	
+	/**
+	 * IF this is set to true, we will pass on this configuration to the jsonschema2pojo library for creation of Longs instead of Ints
+	 */
+	@Parameter(required = false, readonly = true, defaultValue = "false")
+	protected Boolean schemaUseLongIntegers;
 
 	/**
 	 * Java package to be applied to the generated files
@@ -155,7 +162,8 @@ public class SpringMvcEndpointGeneratorMojo extends AbstractMojo {
 
 			Set<ApiBodyMetadata> dependencies = met.getDependencies();
 			for (ApiBodyMetadata body : dependencies) {
-				generateModelSources(met, body, rootDir, null, useJackson1xCompatibility == true ? new Jackson1Annotator() : null );
+				GenerationConfig config = SchemaHelper.getGenerationConfig(null, null, null, this.schemaUseLongIntegers);
+				generateModelSources(met, body, rootDir, config, useJackson1xCompatibility == true ? new Jackson1Annotator() : null );
 			}
 
 			generateControllerSource(met, rootDir);
@@ -184,6 +192,7 @@ public class SpringMvcEndpointGeneratorMojo extends AbstractMojo {
 		return basePath;
 	}
 
+	@SuppressWarnings("unchecked")
 	private Rule<JCodeModel, JDefinedClass, ApiControllerMetadata> loadRule() {
 		Rule<JCodeModel, JDefinedClass, ApiControllerMetadata> ruleInstance = new Spring4ControllerStubRule();
 		try {

@@ -20,10 +20,8 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.ParameterizedTypeReference;
+import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.util.CollectionUtils;
@@ -125,11 +123,19 @@ public class RestClientMethodBodyRule implements Rule<JMethod, JMethod, ApiMappi
         //Set accepts list as our accepts headers for the call
         generatableType.body().invoke(httpHeaders, "setAccept").arg(acceptsListVar);
         
+        //Get the parameters from the model and put them in a map for easy lookup
+        List<JVar> params = generatableType.params();
+        Map<String, JVar> methodParamMap = new LinkedHashMap<>();
+        for (JVar param : params) {
+        	methodParamMap.put(param.name(), param);
+        }	
+        
         //Build the Http Entity object
-        JClass httpEntityClass = new JCodeModel().ref("org.springframework.http.HttpEntity");
+        JClass httpEntityClass = new JCodeModel().ref(HttpEntity.class);
         JInvocation init = JExpr._new(httpEntityClass);
-        if (generatableType.params()!=null){
-            generatableType.params().forEach(p -> init.arg(p));
+        
+        if (endpointMetadata.getRequestBody() != null) {
+	       init.arg(methodParamMap.get(endpointMetadata.getRequestBody().getName()));
         }
         init.arg(httpHeaders);
         
@@ -141,12 +147,7 @@ public class RestClientMethodBodyRule implements Rule<JMethod, JMethod, ApiMappi
         JVar uriBuilderVar = null;
         JVar uriComponentVar = null;
                 
-        //Get the parameters from the model and put them in a map for easy lookup
-        List<JVar> params = generatableType.params();
-        Map<String, JVar> methodParamMap = new LinkedHashMap<>();
-        for (JVar param : params) {
-        	methodParamMap.put(param.name(), param);
-        }	
+       
         
         //Initialise the UriComponentsBuilder
     	JClass builderClass = new JCodeModel().ref(UriComponentsBuilder.class);

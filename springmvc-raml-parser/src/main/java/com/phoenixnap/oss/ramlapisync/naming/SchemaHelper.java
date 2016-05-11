@@ -382,22 +382,8 @@ public class SchemaHelper {
 
 
 		if (config == null) {
-				config = new DefaultGenerationConfig() {
-				@Override
-				public boolean isGenerateBuilders() { // set config option by overriding method
-					return true;
-				}
-
-				@Override
-				public boolean isIncludeAdditionalProperties() {
-					return false;
-				}
-
-				@Override
-				public boolean isIncludeDynamicAccessors() {
-					return false;
-				}
-			};
+				config = getDefaultGenerationConfig();
+			
 		}
 		if (annotator == null) {
 			annotator = new Jackson2Annotator();
@@ -416,6 +402,52 @@ public class SchemaHelper {
 		return codeModel;
 	}
 
+	public static GenerationConfig getDefaultGenerationConfig() {
+		return getGenerationConfig(true, false, false, false);
+	}
 
+	/**
+	 * Returns a generation config with the supplied parameters
+	 * 
+	 * @return
+	 */
+	public static GenerationConfig getGenerationConfig(Boolean generateBuilders, Boolean includeAdditionalProperties, Boolean includeDynamicAccessors, Boolean useLongIntegers) {
+		 return new DefaultGenerationConfig() {
+				@Override
+				public boolean isGenerateBuilders() { // set config option by overriding method
+					if (generateBuilders != null) {
+						return generateBuilders;
+					} else {
+						return true;
+					}
+				}
 
+				@Override
+				public boolean isIncludeAdditionalProperties() {
+					if (includeAdditionalProperties != null) {
+						return includeAdditionalProperties;
+					} else {
+						return false;
+					}
+				}
+
+				@Override
+				public boolean isIncludeDynamicAccessors() {
+					if (includeDynamicAccessors != null) {
+						return includeDynamicAccessors;
+					} else {
+						return false;
+					}
+				}
+
+				@Override
+				public boolean isUseLongIntegers() {
+					if (useLongIntegers != null) {
+						return useLongIntegers;
+					} else {
+						return super.isUseLongIntegers();
+					}
+				}
+		 };
+	}
 }
