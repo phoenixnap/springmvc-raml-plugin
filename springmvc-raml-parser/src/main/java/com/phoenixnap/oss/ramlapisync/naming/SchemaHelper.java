@@ -380,7 +380,6 @@ public class SchemaHelper {
 		JCodeModel codeModel = new JCodeModel();
 		SchemaStore schemaStore = new SchemaStore();
 
-
 		if (config == null) {
 				config = getDefaultGenerationConfig();
 			
@@ -402,14 +401,24 @@ public class SchemaHelper {
 		return codeModel;
 	}
 
+	/**
+	 * Returns a configuration for the JSON Schema 2 POJO that is in line with the defaults used in the plugin so far
+	 * 
+	 * @return Default Generation Config
+	 */
 	public static GenerationConfig getDefaultGenerationConfig() {
 		return getGenerationConfig(true, false, false, false);
 	}
 
 	/**
-	 * Returns a generation config with the supplied parameters
+	 * Returns a generation config with the supplied parameters. If any of these parameters are supplied null, it will
+	 * use the value defined in the default configuration
 	 * 
-	 * @return
+	 * @param generateBuilders Enables or disables {@link GenerationConfig#isGenerateBuilders()} 
+	 * @param includeAdditionalProperties Enables or disables {@link GenerationConfig#isIncludeAdditionalProperties()}
+	 * @param includeDynamicAccessors Enables or disables {@link GenerationConfig#isIncludeDynamicAccessors()}
+	 * @param useLongIntegers Enables or disables {@link GenerationConfig#isUseLongIntegers()}
+	 * @return The GenerationConfig
 	 */
 	public static GenerationConfig getGenerationConfig(Boolean generateBuilders, Boolean includeAdditionalProperties, Boolean includeDynamicAccessors, Boolean useLongIntegers) {
 		 return new DefaultGenerationConfig() {
