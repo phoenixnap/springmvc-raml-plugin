@@ -10,14 +10,15 @@
  * an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the
  * specific language governing permissions and limitations under the License.
  */
-package com.phoenixnap.oss.ramlapisync.generation.rules.spring;
+package com.phoenixnap.oss.ramlapisync.generation.rules;
+
+import java.util.Map;
 
 import org.springframework.stereotype.Component;
+import org.springframework.util.CollectionUtils;
 import org.springframework.web.client.RestTemplate;
 
 import com.phoenixnap.oss.ramlapisync.data.ApiControllerMetadata;
-import com.phoenixnap.oss.ramlapisync.generation.rules.GenericJavaClassRule;
-import com.phoenixnap.oss.ramlapisync.generation.rules.Rule;
 import com.phoenixnap.oss.ramlapisync.generation.rules.basic.ClassAnnotationRule;
 import com.phoenixnap.oss.ramlapisync.generation.rules.basic.ClassCommentRule;
 import com.phoenixnap.oss.ramlapisync.generation.rules.basic.ClassFieldDeclarationRule;
@@ -28,7 +29,8 @@ import com.phoenixnap.oss.ramlapisync.generation.rules.basic.MethodCommentRule;
 import com.phoenixnap.oss.ramlapisync.generation.rules.basic.MethodParamsRule;
 import com.phoenixnap.oss.ramlapisync.generation.rules.basic.PackageRule;
 import com.phoenixnap.oss.ramlapisync.generation.rules.basic.ResourceClassDeclarationRule;
-import com.phoenixnap.oss.ramlapisync.generation.rules.basic.RestClientMethodBodyRule;
+import com.phoenixnap.oss.ramlapisync.generation.rules.spring.SpringRestClientMethodBodyRule;
+import com.phoenixnap.oss.ramlapisync.generation.rules.spring.SpringResponseEntityRule;
 import com.sun.codemodel.JCodeModel;
 import com.sun.codemodel.JDefinedClass;
 
@@ -55,8 +57,14 @@ import com.sun.codemodel.JDefinedClass;
  * @author kristian galea
  * @since 0.5.0
  */
-public class SpringRestTemplateClientRule implements Rule<JCodeModel, JDefinedClass, ApiControllerMetadata> {
+public class Spring4RestTemplateClientRule implements ConfigurableRule<JCodeModel, JDefinedClass, ApiControllerMetadata> {
     
+	String restTemplateFieldName = "restTemplate";
+	
+	String baseUrlFieldName = "baseUrl";
+	
+	String baseUrlConfigurationPath = "${client.url}";
+	
     @Override
     public final JDefinedClass apply(ApiControllerMetadata metadata, JCodeModel generatableType) {
 
@@ -70,9 +78,9 @@ public class SpringRestTemplateClientRule implements Rule<JCodeModel, JDefinedCl
                         new MethodParamsRule()))
                 .apply(metadata, generatableType);
 
-        String restTemplateFieldName = "restTemplate";
         
-        String baseUrlFieldName = "baseUrl";
+        
+        
         
         GenericJavaClassRule delegateGenerator = new GenericJavaClassRule()
                 .setPackageRule(new PackageRule())
@@ -81,15 +89,37 @@ public class SpringRestTemplateClientRule implements Rule<JCodeModel, JDefinedCl
                 .setClassRule(new ResourceClassDeclarationRule(ClientInterfaceDeclarationRule.CLIENT_SUFFIX + "Impl"))   //MODIFIED
                 .setImplementsExtendsRule(new ImplementsControllerInterfaceRule(generatedInterface))
                 .addFieldDeclarationRule(new ClassFieldDeclarationRule(restTemplateFieldName, RestTemplate.class)) //Modified
-                .addFieldDeclarationRule(new ClassFieldDeclarationRule(baseUrlFieldName, String.class, "${server.url}")) //
+                .addFieldDeclarationRule(new ClassFieldDeclarationRule(baseUrlFieldName, String.class, getBaseUrlConfigurationName())) //
                 .setMethodCommentRule(new MethodCommentRule())                
                 .setMethodSignatureRule(new ControllerMethodSignatureRule(
                         new SpringResponseEntityRule(),
                         new MethodParamsRule()))
-                .setMethodBodyRule(new RestClientMethodBodyRule(restTemplateFieldName, baseUrlFieldName));
+                .setMethodBodyRule(new SpringRestClientMethodBodyRule(restTemplateFieldName, baseUrlFieldName));
 
         return delegateGenerator.apply(metadata, generatableType);
     }
+
+	private String getBaseUrlConfigurationName() {
+		if(!this.baseUrlConfigurationPath.startsWith("${")) {
+			this.baseUrlConfigurationPath = "${" + this.baseUrlConfigurationPath;
+		}
+		if(!this.baseUrlConfigurationPath.endsWith("}")) {
+			this.baseUrlConfigurationPath = this.baseUrlConfigurationPath + "}";
+		}
+		return baseUrlConfigurationPath;
+	}
+
+	@Override
+	public void applyConfiguration(Map<String, String> configuration) {
+		if(!CollectionUtils.isEmpty(configuration)) {
+			if(configuration.containsKey("restTemplateFieldName")) {
+				this.restTemplateFieldName = configuration.get("restTemplateFieldName");
+			}
+			if(configuration.containsKey("baseUrlConfigurationPath")) {
+				this.baseUrlConfigurationPath = configuration.get("baseUrlConfigurationPath");
+			}
+		}
+	}
     
     
 }

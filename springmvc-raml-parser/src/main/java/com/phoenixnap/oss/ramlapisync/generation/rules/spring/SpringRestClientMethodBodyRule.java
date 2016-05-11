@@ -10,7 +10,7 @@
  * an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the
  * specific language governing permissions and limitations under the License.
  */
-package com.phoenixnap.oss.ramlapisync.generation.rules.basic;
+package com.phoenixnap.oss.ramlapisync.generation.rules.spring;
 
 import static com.phoenixnap.oss.ramlapisync.generation.CodeModelHelper.findFirstClassBySimpleName;
 
@@ -28,8 +28,6 @@ import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
 import org.springframework.web.util.UriComponents;
 import org.springframework.web.util.UriComponentsBuilder;
-
-import android.app.DownloadManager.Request;
 
 import com.google.common.base.CaseFormat;
 import com.phoenixnap.oss.ramlapisync.data.ApiBodyMetadata;
@@ -69,13 +67,13 @@ import com.sun.codemodel.JVar;
  * @author Kris Galea
  * @since 0.5.0
  */
-public class RestClientMethodBodyRule implements Rule<JMethod, JMethod, ApiMappingMetadata> {
+public class SpringRestClientMethodBodyRule implements Rule<JMethod, JMethod, ApiMappingMetadata> {
 
     private String restTemplateFieldName = "restTemplate";
     
     private String baseUrlFieldName = "baseUrl";
     
-    public RestClientMethodBodyRule(String restTemplateFieldName, String baseUrlFieldName) {
+    public SpringRestClientMethodBodyRule(String restTemplateFieldName, String baseUrlFieldName) {
         if(StringUtils.hasText(restTemplateFieldName)) {
             this.restTemplateFieldName = restTemplateFieldName;            
         }

@@ -213,6 +213,9 @@ Then simply include the following code in the POM of the project you wish to gen
     <baseUri>/api</baseUri>
 	<schemaUseLongIntegers>false</schemaUseLongIntegers>
 	<seperateMethodsByContentType>false</seperateMethodsByContentType>
+	<rule>com.phoenixnap.oss.ramlapisync.generation.rules.Spring4ControllerStubRule</rule>
+	<ruleConfiguration>			
+	</ruleConfiguration>
   </configuration>
   <executions>
     <execution>
@@ -253,6 +256,9 @@ Then simply include the following code in the POM of the project you wish to gen
 ### rule
 (optional, default: com.phoenixnap.oss.ramlapisync.generation.rules.Spring4ControllerStubRule) The rule class to be used for code generation. 
 
+### ruleConfiguration
+(optional) This is a key/value map for configuration of individual rules. Not all rules support configuration.
+
 - com.phoenixnap.oss.ramlapisync.generation.rules.Spring3ControllerStubRule:
 - com.phoenixnap.oss.ramlapisync.generation.rule.Spring4ControllerStubRule: 
 The standard rule. It creates simple controller stubs classes with Spring MVC annotations and empty method bodies (like in v.0.2.4).
@@ -270,6 +276,12 @@ So all you have to do is to provide an ControllerDelegate class which implements
 Creates an single interface with Spring MVC annotations for each top level endpoint.
 All you have to do is to provide an implementation for the controller interface
 
+- com.phoenixnap.oss.ramlapisync.generation.rules.Spring4RestTemplateClientRule
+Creates a single interface as well as a client implementation using the Spring RestTemplate. The client assumes that a RestTemplate is available to be autowired.
+
+Configuration:
+	baseUrlConfigurationPath: The path that will be used to load the property for the server url. Default: ${client.url}
+	restTemplateFieldName: The name of the RestTemplate field
 
 ## Contributing
 [Pull requests][] are welcome; Be a good citizen and create unit tests for any bugs squished or features added
