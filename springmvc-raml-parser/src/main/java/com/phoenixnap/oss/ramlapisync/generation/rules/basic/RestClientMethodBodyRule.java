@@ -29,6 +29,9 @@ import org.springframework.util.StringUtils;
 import org.springframework.web.util.UriComponents;
 import org.springframework.web.util.UriComponentsBuilder;
 
+import android.app.DownloadManager.Request;
+
+import com.google.common.base.CaseFormat;
 import com.phoenixnap.oss.ramlapisync.data.ApiBodyMetadata;
 import com.phoenixnap.oss.ramlapisync.data.ApiMappingMetadata;
 import com.phoenixnap.oss.ramlapisync.data.ApiParameterMetadata;
@@ -124,7 +127,7 @@ public class RestClientMethodBodyRule implements Rule<JMethod, JMethod, ApiMappi
         generatableType.body().invoke(httpHeaders, "setAccept").arg(acceptsListVar);
         
         //Get the parameters from the model and put them in a map for easy lookup
-        List<JVar> params = generatableType.params();
+        List<JVar> params = generatableType.params();       
         Map<String, JVar> methodParamMap = new LinkedHashMap<>();
         for (JVar param : params) {
         	methodParamMap.put(param.name(), param);
@@ -135,7 +138,7 @@ public class RestClientMethodBodyRule implements Rule<JMethod, JMethod, ApiMappi
         JInvocation init = JExpr._new(httpEntityClass);
         
         if (endpointMetadata.getRequestBody() != null) {
-	       init.arg(methodParamMap.get(endpointMetadata.getRequestBody().getName()));
+	       init.arg(methodParamMap.get(CaseFormat.UPPER_CAMEL.to(CaseFormat.LOWER_CAMEL, endpointMetadata.getRequestBody().getName())));
         }
         init.arg(httpHeaders);
         
@@ -178,14 +181,14 @@ public class RestClientMethodBodyRule implements Rule<JMethod, JMethod, ApiMappi
         catch (JClassAlreadyExistsException e) {
             
         } 
-        
-        //Create Map with Uri Path Variables
-        JClass uriParamMap = new JCodeModel().ref(Map.class).narrow(String.class, Object.class);
-        JExpression uriParamMapInit = JExpr._new(new JCodeModel().ref(HashMap.class));
-        JVar uriParamMapVar = generatableType.body().decl(uriParamMap, "uriParamMap", uriParamMapInit);
-        
+       
         //get all uri params from metadata set and add them to the param map in code 
         if (!CollectionUtils.isEmpty(endpointMetadata.getPathVariables())) {
+            //Create Map with Uri Path Variables
+            JClass uriParamMap = new JCodeModel().ref(Map.class).narrow(String.class, Object.class);
+            JExpression uriParamMapInit = JExpr._new(new JCodeModel().ref(HashMap.class));
+            JVar uriParamMapVar = generatableType.body().decl(uriParamMap, "uriParamMap", uriParamMapInit);
+            
         	endpointMetadata.getPathVariables().forEach(p -> generatableType.body().invoke(uriParamMapVar, "put").arg(p.getName()).arg(methodParamMap.get(p.getName())));
         	JInvocation expandInvocation = uriComponentVar.invoke("expand").arg(uriParamMapVar);
 
