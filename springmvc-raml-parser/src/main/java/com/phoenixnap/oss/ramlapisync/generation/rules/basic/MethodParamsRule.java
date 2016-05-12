@@ -16,6 +16,7 @@ import com.phoenixnap.oss.ramlapisync.data.ApiMappingMetadata;
 import com.phoenixnap.oss.ramlapisync.data.ApiParameterMetadata;
 import com.phoenixnap.oss.ramlapisync.generation.CodeModelHelper;
 import com.phoenixnap.oss.ramlapisync.generation.rules.Rule;
+import com.phoenixnap.oss.ramlapisync.naming.NamingHelper;
 import com.sun.codemodel.JClass;
 import com.sun.codemodel.JCodeModel;
 import com.sun.codemodel.JMethod;
@@ -23,6 +24,8 @@ import com.sun.codemodel.JVar;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import org.springframework.util.StringUtils;
 
 import static com.phoenixnap.oss.ramlapisync.generation.CodeModelHelper.findFirstClassBySimpleName;
 import static org.springframework.util.StringUtils.uncapitalize;
@@ -57,10 +60,26 @@ import static org.springframework.util.StringUtils.uncapitalize;
  * )
  *
  * @author armin.weisser
+ * @author kurt paris
  * @since 0.4.1
  */
 public class MethodParamsRule implements Rule<CodeModelHelper.JExtMethod, JMethod, ApiMappingMetadata> {
 
+	boolean addParameterJavadoc = false;
+	
+	public MethodParamsRule () {
+		this(false);
+	}
+	
+	/**
+	 * If set to true, the rule will also add a parameter javadoc entry
+	 * 
+	 * @param addParameterJavadoc Set to true for javadocs for parameters
+	 */
+	public MethodParamsRule (boolean addParameterJavadoc) {
+		this.addParameterJavadoc = addParameterJavadoc;
+	}
+	
     @Override
     public JMethod apply(ApiMappingMetadata endpointMetadata, CodeModelHelper.JExtMethod generatableType) {
 
@@ -79,7 +98,14 @@ public class MethodParamsRule implements Rule<CodeModelHelper.JExtMethod, JMetho
         return generatableType.get();
     }
 
-    protected JVar param(ApiParameterMetadata paramMetaData, CodeModelHelper.JExtMethod generatableType) {
+	protected JVar param(ApiParameterMetadata paramMetaData, CodeModelHelper.JExtMethod generatableType) {
+    	if (addParameterJavadoc) {
+			String paramComment = "";
+			if (paramMetaData.getRamlParam() != null && StringUtils.hasText(paramMetaData.getRamlParam().getDescription())) {
+				 paramComment = NamingHelper.cleanForJavadoc(paramMetaData.getRamlParam().getDescription());
+			}
+	    	generatableType.get().javadoc().addParam(paramMetaData.getName() + " " + paramComment);
+    	}
         return generatableType.get().param(paramMetaData.getType(), paramMetaData.getName());
     }
 
@@ -94,7 +120,10 @@ public class MethodParamsRule implements Rule<CodeModelHelper.JExtMethod, JMetho
             codeModels.add(generatableType.owner());
         }
                 
-        JClass requestBodyType = findFirstClassBySimpleName(codeModels.toArray(new JCodeModel[codeModels.size()]), requestBodyName);       
+        JClass requestBodyType = findFirstClassBySimpleName(codeModels.toArray(new JCodeModel[codeModels.size()]), requestBodyName);
+        if (addParameterJavadoc) {
+        	generatableType.get().javadoc().addParam(uncapitalize(requestBodyName) + " The Request Body Payload");
+        }
         return generatableType.get().param(requestBodyType, uncapitalize(requestBodyName));
     }
 

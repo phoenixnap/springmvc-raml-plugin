@@ -129,6 +129,16 @@ public class NamingHelper {
 	}
 	
 	/**
+	 * Utility method to clean a string for use within javadoc 
+	 * 
+	 * @param input String to be cleaned
+	 * @return
+	 */
+	public static String cleanForJavadoc(String input) {
+		return cleanLeadingAndTrailingNewLineAndChars(input);
+	}
+	
+	/**
 	 * Utility method to clean New Line,Spaces and other highly useless characters found (mainly in javadoc)
 	 * 
 	 * @param input The string to be cleaned
