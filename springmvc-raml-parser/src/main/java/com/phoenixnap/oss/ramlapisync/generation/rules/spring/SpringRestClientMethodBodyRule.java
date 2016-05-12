@@ -23,6 +23,7 @@ import java.util.Map;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpMethod;
 import org.springframework.http.MediaType;
 import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
@@ -37,9 +38,7 @@ import com.phoenixnap.oss.ramlapisync.generation.CodeModelHelper;
 import com.phoenixnap.oss.ramlapisync.generation.rules.Rule;
 import com.sun.codemodel.JBlock;
 import com.sun.codemodel.JClass;
-import com.sun.codemodel.JClassAlreadyExistsException;
 import com.sun.codemodel.JCodeModel;
-import com.sun.codemodel.JDefinedClass;
 import com.sun.codemodel.JExpr;
 import com.sun.codemodel.JExpression;
 import com.sun.codemodel.JInvocation;
@@ -175,11 +174,11 @@ public class SpringRestClientMethodBodyRule implements Rule<CodeModelHelper.JExt
         JVar httpEntityVar = body.decl(httpEntityClass, "httpEntity", init);        
                         
         //construct the HTTP Method enum 
-        JDefinedClass httpMethod = null;
+        JClass httpMethod = null;
         try {
-            httpMethod = owner._class("org.springframework.http.HttpMethod");
+            httpMethod = (JClass)owner._ref(HttpMethod.class);
         }
-        catch (JClassAlreadyExistsException e) {
+        catch (ClassCastException e) {
             
         } 
        
@@ -224,13 +223,11 @@ public class SpringRestClientMethodBodyRule implements Rule<CodeModelHelper.JExt
             returnExpression = body.decl(paramTypeRefClass, "typeReference", paramTypeRefInit);
         }
         
-        
         //build rest template exchange invocation
         JInvocation jInvocation = JExpr._this().ref(restTemplateFieldName).invoke("exchange");
-       
         
         jInvocation.arg(uriComponentVar.invoke("encode").invoke("toUri"));
-        jInvocation.arg(httpMethod.enumConstant(endpointMetadata.getActionType().name()));
+        jInvocation.arg(httpMethod.staticRef(endpointMetadata.getActionType().name()));
         jInvocation.arg(httpEntityVar);         
         jInvocation.arg(returnExpression);
         

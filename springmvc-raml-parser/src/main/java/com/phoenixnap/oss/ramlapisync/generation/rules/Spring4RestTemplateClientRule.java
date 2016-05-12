@@ -82,7 +82,7 @@ public class Spring4RestTemplateClientRule implements ConfigurableRule<JCodeMode
         
         
         
-        GenericJavaClassRule delegateGenerator = new GenericJavaClassRule()
+        GenericJavaClassRule clientGenerator = new GenericJavaClassRule()
                 .setPackageRule(new PackageRule())
                 .setClassCommentRule(new ClassCommentRule())
                 .addClassAnnotationRule(new ClassAnnotationRule(Component.class))                
@@ -96,7 +96,7 @@ public class Spring4RestTemplateClientRule implements ConfigurableRule<JCodeMode
                         new MethodParamsRule()))
                 .setMethodBodyRule(new SpringRestClientMethodBodyRule(restTemplateFieldName, baseUrlFieldName));
 
-        return delegateGenerator.apply(metadata, generatableType);
+        return clientGenerator.apply(metadata, generatableType);
     }
 
 	private String getBaseUrlConfigurationName() {
