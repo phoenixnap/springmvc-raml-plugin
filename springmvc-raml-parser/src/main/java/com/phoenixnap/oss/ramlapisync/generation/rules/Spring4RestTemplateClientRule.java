@@ -29,8 +29,8 @@ import com.phoenixnap.oss.ramlapisync.generation.rules.basic.MethodCommentRule;
 import com.phoenixnap.oss.ramlapisync.generation.rules.basic.MethodParamsRule;
 import com.phoenixnap.oss.ramlapisync.generation.rules.basic.PackageRule;
 import com.phoenixnap.oss.ramlapisync.generation.rules.basic.ResourceClassDeclarationRule;
-import com.phoenixnap.oss.ramlapisync.generation.rules.spring.SpringRestClientMethodBodyRule;
 import com.phoenixnap.oss.ramlapisync.generation.rules.spring.SpringResponseEntityRule;
+import com.phoenixnap.oss.ramlapisync.generation.rules.spring.SpringRestClientMethodBodyRule;
 import com.sun.codemodel.JCodeModel;
 import com.sun.codemodel.JDefinedClass;
 

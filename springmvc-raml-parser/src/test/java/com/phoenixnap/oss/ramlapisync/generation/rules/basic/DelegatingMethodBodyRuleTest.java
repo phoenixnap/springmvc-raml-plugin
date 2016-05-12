@@ -1,10 +1,12 @@
 package com.phoenixnap.oss.ramlapisync.generation.rules.basic;
 
+import com.phoenixnap.oss.ramlapisync.generation.CodeModelHelper;
 import com.phoenixnap.oss.ramlapisync.generation.rules.AbstractControllerRuleTestBase;
 import com.sun.codemodel.JClassAlreadyExistsException;
 import com.sun.codemodel.JDefinedClass;
 import com.sun.codemodel.JMethod;
 import com.sun.codemodel.JMod;
+
 import org.junit.Test;
 
 import static org.hamcrest.Matchers.*;
@@ -23,7 +25,7 @@ public class DelegatingMethodBodyRuleTest extends AbstractControllerRuleTestBase
 
         JDefinedClass jClass = jCodeModel.rootPackage()._class(JMod.PUBLIC, "TestClass");
         JMethod jMethod = jClass.method(JMod.PUBLIC, Object.class, "getBase");
-        jMethod = rule.apply(getEndpointMetadata(), jMethod);
+        jMethod = rule.apply(getEndpointMetadata(), CodeModelHelper.ext(jMethod, jClass.owner()));
 
         assertThat(jMethod, is(notNullValue()));
         assertThat(jMethod.body().isEmpty(), is(false));
@@ -38,7 +40,7 @@ public class DelegatingMethodBodyRuleTest extends AbstractControllerRuleTestBase
 
         JDefinedClass jClass = jCodeModel.rootPackage()._class(JMod.PUBLIC, "TestClass");
         JMethod jMethod = jClass.method(JMod.PUBLIC, Object.class, "getBase");
-        jMethod = rule.apply(getEndpointMetadata(), jMethod);
+        jMethod = rule.apply(getEndpointMetadata(), CodeModelHelper.ext(jMethod, jClass.owner()));
 
         assertThat(jMethod, is(notNullValue()));
         assertThat(jMethod.body().isEmpty(), is(false));
@@ -54,7 +56,7 @@ public class DelegatingMethodBodyRuleTest extends AbstractControllerRuleTestBase
 
         JDefinedClass jClass = jCodeModel.rootPackage()._class(JMod.PUBLIC, "TestClass");
         JMethod jMethod = jClass.method(JMod.PUBLIC, Object.class, "getBase");
-        jMethod = rule.apply(getEndpointMetadata(), jMethod);
+        jMethod = rule.apply(getEndpointMetadata(), CodeModelHelper.ext(jMethod, jClass.owner()));
 
         assertThat(jMethod, is(notNullValue()));
         assertThat(jMethod.body().isEmpty(), is(false));
@@ -68,7 +70,7 @@ public class DelegatingMethodBodyRuleTest extends AbstractControllerRuleTestBase
         JDefinedClass jClass = jCodeModel.rootPackage()._class(JMod.PUBLIC, "TestClass");
         JMethod jMethod = jClass.method(JMod.PUBLIC, Object.class, "getBaseById");
         jMethod.param(String.class, "id");
-        jMethod = rule.apply(getEndpointMetadata(2), jMethod);
+        jMethod = rule.apply(getEndpointMetadata(2), CodeModelHelper.ext(jMethod, jClass.owner()));
 
         assertThat(jMethod, is(notNullValue()));
         assertThat(jMethod.body().isEmpty(), is(false));

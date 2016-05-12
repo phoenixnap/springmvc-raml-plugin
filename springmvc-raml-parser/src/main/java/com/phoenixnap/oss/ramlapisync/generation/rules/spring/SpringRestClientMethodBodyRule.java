@@ -33,7 +33,9 @@ import com.google.common.base.CaseFormat;
 import com.phoenixnap.oss.ramlapisync.data.ApiBodyMetadata;
 import com.phoenixnap.oss.ramlapisync.data.ApiMappingMetadata;
 import com.phoenixnap.oss.ramlapisync.data.ApiParameterMetadata;
+import com.phoenixnap.oss.ramlapisync.generation.CodeModelHelper;
 import com.phoenixnap.oss.ramlapisync.generation.rules.Rule;
+import com.sun.codemodel.JBlock;
 import com.sun.codemodel.JClass;
 import com.sun.codemodel.JClassAlreadyExistsException;
 import com.sun.codemodel.JCodeModel;
@@ -67,7 +69,7 @@ import com.sun.codemodel.JVar;
  * @author Kris Galea
  * @since 0.5.0
  */
-public class SpringRestClientMethodBodyRule implements Rule<JMethod, JMethod, ApiMappingMetadata> {
+public class SpringRestClientMethodBodyRule implements Rule<CodeModelHelper.JExtMethod, JMethod, ApiMappingMetadata> {
 
     private String restTemplateFieldName = "restTemplate";
     
@@ -83,23 +85,24 @@ public class SpringRestClientMethodBodyRule implements Rule<JMethod, JMethod, Ap
     }
 
     @Override
-    public JMethod apply(ApiMappingMetadata endpointMetadata, JMethod generatableType) {
-        
+    public JMethod apply(ApiMappingMetadata endpointMetadata, CodeModelHelper.JExtMethod generatableType) {
+        JBlock body = generatableType.get().body();
+        JCodeModel owner = generatableType.owner();
         //build HttpHeaders   
-        JClass httpHeadersClass = new JCodeModel().ref(HttpHeaders.class);        
+        JClass httpHeadersClass = owner.ref(HttpHeaders.class);        
         JExpression headersInit = JExpr._new(httpHeadersClass);
-        JVar httpHeaders = generatableType.body().decl(httpHeadersClass, "httpHeaders", headersInit);
+        JVar httpHeaders = body.decl(httpHeadersClass, "httpHeaders", headersInit);
         
         
         //Declare Arraylist to contain the acceptable Media Types
-        generatableType.body().directStatement("//  Add Accepts Headers and Body Content-Type");
-        JClass mediaTypeClass = new JCodeModel().ref(MediaType.class);
-        JClass refArrayListClass = new JCodeModel().ref(ArrayList.class).narrow(mediaTypeClass);
-        JVar acceptsListVar = generatableType.body().decl(refArrayListClass, "acceptsList", JExpr._new(refArrayListClass));        
+        body.directStatement("//  Add Accepts Headers and Body Content-Type");
+        JClass mediaTypeClass = owner.ref(MediaType.class);
+        JClass refArrayListClass = owner.ref(ArrayList.class).narrow(mediaTypeClass);
+        JVar acceptsListVar = body.decl(refArrayListClass, "acceptsList", JExpr._new(refArrayListClass));        
 
         //If we have a request body, lets set the content type of our request
         if (endpointMetadata.getRequestBody() != null) {
-        	generatableType.body().invoke(httpHeaders, "setContentType").arg(mediaTypeClass.staticInvoke("valueOf").arg(endpointMetadata.getRequestBodyMime()));
+        	body.invoke(httpHeaders, "setContentType").arg(mediaTypeClass.staticInvoke("valueOf").arg(endpointMetadata.getRequestBodyMime()));
         }
         
         //If we have response bodies defined, we need to add them to our accepts headers list
@@ -107,32 +110,32 @@ public class SpringRestClientMethodBodyRule implements Rule<JMethod, JMethod, Ap
         String documentDefaultType = endpointMetadata.getParent().getDocument().getMediaType();
         //If a global mediatype is defined add it
         if (StringUtils.hasText(documentDefaultType)){
-        	generatableType.body().invoke(acceptsListVar, "add").arg(mediaTypeClass.staticInvoke("valueOf").arg(documentDefaultType));
+        	body.invoke(acceptsListVar, "add").arg(mediaTypeClass.staticInvoke("valueOf").arg(documentDefaultType));
         } else { //default to application/json just in case
-        	generatableType.body().invoke(acceptsListVar, "add").arg(mediaTypeClass.staticInvoke("valueOf").arg("application/json"));
+        	body.invoke(acceptsListVar, "add").arg(mediaTypeClass.staticInvoke("valueOf").arg("application/json"));
         }
         
         //Iterate over Response Bodies and add each distinct mime type to accepts headers
         if (endpointMetadata.getResponseBody() != null && !endpointMetadata.getResponseBody().isEmpty()) {
         	for (String responseMime : endpointMetadata.getResponseBody().keySet()) {
         		if (!responseMime.equals(documentDefaultType) && !responseMime.equals("application/json")) {
-        			generatableType.body().invoke(acceptsListVar, "add").arg(mediaTypeClass.staticInvoke("valueOf").arg(responseMime));
+        			body.invoke(acceptsListVar, "add").arg(mediaTypeClass.staticInvoke("valueOf").arg(responseMime));
         		}
         	}
         }
        
         //Set accepts list as our accepts headers for the call
-        generatableType.body().invoke(httpHeaders, "setAccept").arg(acceptsListVar);
+        body.invoke(httpHeaders, "setAccept").arg(acceptsListVar);
         
         //Get the parameters from the model and put them in a map for easy lookup
-        List<JVar> params = generatableType.params();       
+        List<JVar> params = generatableType.get().params();       
         Map<String, JVar> methodParamMap = new LinkedHashMap<>();
         for (JVar param : params) {
         	methodParamMap.put(param.name(), param);
         }	
         
         //Build the Http Entity object
-        JClass httpEntityClass = new JCodeModel().ref(HttpEntity.class);
+        JClass httpEntityClass = owner.ref(HttpEntity.class);
         JInvocation init = JExpr._new(httpEntityClass);
         
         if (endpointMetadata.getRequestBody() != null) {
@@ -142,16 +145,16 @@ public class SpringRestClientMethodBodyRule implements Rule<JMethod, JMethod, Ap
         
         //Build the URL variable                
         JExpression urlRef = JExpr.ref(baseUrlFieldName);
-        JType urlClass = new JCodeModel()._ref(String.class);
+        JType urlClass = owner._ref(String.class);
         JExpression targetUrl = urlRef.invoke("concat").arg(endpointMetadata.getResource().getUri());        
-        JVar url = generatableType.body().decl(urlClass, "url", targetUrl);
+        JVar url = body.decl(urlClass, "url", targetUrl);
         JVar uriBuilderVar = null;
         JVar uriComponentVar = null;
                 
        
         
         //Initialise the UriComponentsBuilder
-    	JClass builderClass = new JCodeModel().ref(UriComponentsBuilder.class);
+    	JClass builderClass = owner.ref(UriComponentsBuilder.class);
     	JExpression builderInit = builderClass.staticInvoke("fromHttpUrl").arg(url);
         
         //If we have any Query Parameters, we will use the URIBuilder to encode them in the URL
@@ -162,19 +165,19 @@ public class SpringRestClientMethodBodyRule implements Rule<JMethod, JMethod, Ap
             }         
         }
         //Add these to the code model
-        uriBuilderVar = generatableType.body().decl(builderClass, "builder", builderInit);
+        uriBuilderVar = body.decl(builderClass, "builder", builderInit);
         
-        JClass componentClass = new JCodeModel().ref(UriComponents.class);
+        JClass componentClass = owner.ref(UriComponents.class);
     	JExpression component = uriBuilderVar.invoke("build");
-    	uriComponentVar = generatableType.body().decl(componentClass, "uriComponents", component);
+    	uriComponentVar = body.decl(componentClass, "uriComponents", component);
         
         //build request entity holder                
-        JVar httpEntityVar = generatableType.body().decl(httpEntityClass, "httpEntity", init);        
+        JVar httpEntityVar = body.decl(httpEntityClass, "httpEntity", init);        
                         
         //construct the HTTP Method enum 
         JDefinedClass httpMethod = null;
         try {
-            httpMethod = new JCodeModel()._class("org.springframework.http.HttpMethod");
+            httpMethod = owner._class("org.springframework.http.HttpMethod");
         }
         catch (JClassAlreadyExistsException e) {
             
@@ -183,14 +186,14 @@ public class SpringRestClientMethodBodyRule implements Rule<JMethod, JMethod, Ap
         //get all uri params from metadata set and add them to the param map in code 
         if (!CollectionUtils.isEmpty(endpointMetadata.getPathVariables())) {
             //Create Map with Uri Path Variables
-            JClass uriParamMap = new JCodeModel().ref(Map.class).narrow(String.class, Object.class);
-            JExpression uriParamMapInit = JExpr._new(new JCodeModel().ref(HashMap.class));
-            JVar uriParamMapVar = generatableType.body().decl(uriParamMap, "uriParamMap", uriParamMapInit);
+            JClass uriParamMap = owner.ref(Map.class).narrow(String.class, Object.class);
+            JExpression uriParamMapInit = JExpr._new(owner.ref(HashMap.class));
+            JVar uriParamMapVar = body.decl(uriParamMap, "uriParamMap", uriParamMapInit);
             
-        	endpointMetadata.getPathVariables().forEach(p -> generatableType.body().invoke(uriParamMapVar, "put").arg(p.getName()).arg(methodParamMap.get(p.getName())));
+        	endpointMetadata.getPathVariables().forEach(p -> body.invoke(uriParamMapVar, "put").arg(p.getName()).arg(methodParamMap.get(p.getName())));
         	JInvocation expandInvocation = uriComponentVar.invoke("expand").arg(uriParamMapVar);
 
-        	generatableType.body().assign(uriComponentVar, expandInvocation);        	
+        	body.assign(uriComponentVar, expandInvocation);        	
         }
         
         //Determining response entity type 
@@ -199,13 +202,13 @@ public class SpringRestClientMethodBodyRule implements Rule<JMethod, JMethod, Ap
             ApiBodyMetadata apiBodyMetadata = endpointMetadata.getResponseBody().values().iterator().next();            
             JClass genericType = findFirstClassBySimpleName(apiBodyMetadata.getCodeModel(), apiBodyMetadata.getName());
             if (apiBodyMetadata.isArray()) {
-                JClass arrayType = new JCodeModel().ref(List.class);
+                JClass arrayType = owner.ref(List.class);
                 returnType = arrayType.narrow(genericType);
             } else {
                 returnType = genericType;
             }
         } else {
-            returnType = new JCodeModel().ref(Object.class);
+            returnType = owner.ref(Object.class);
         }
         
         JExpression returnExpression = JExpr.dotclass(returnType);//assume not parameterized by default
@@ -214,11 +217,11 @@ public class SpringRestClientMethodBodyRule implements Rule<JMethod, JMethod, Ap
             //if yes - build the parameterized type reference and change returnExpression
             //ParameterizedTypeReference<List<String>> typeRef = new ParameterizedTypeReference<List<String>>() {};
             //Create Map with Uri Path Variables
-            JClass paramTypeRefClass = new JCodeModel().ref(ParameterizedTypeReference.class);
+            JClass paramTypeRefClass = owner.ref(ParameterizedTypeReference.class);
             paramTypeRefClass = paramTypeRefClass.narrow(returnType);
             
-            JExpression paramTypeRefInit = JExpr._new(new JCodeModel().anonymousClass(paramTypeRefClass));
-            returnExpression = generatableType.body().decl(paramTypeRefClass, "typeReference", paramTypeRefInit);
+            JExpression paramTypeRefInit = JExpr._new(owner.anonymousClass(paramTypeRefClass));
+            returnExpression = body.decl(paramTypeRefClass, "typeReference", paramTypeRefInit);
         }
         
         
@@ -231,9 +234,9 @@ public class SpringRestClientMethodBodyRule implements Rule<JMethod, JMethod, Ap
         jInvocation.arg(httpEntityVar);         
         jInvocation.arg(returnExpression);
         
-        generatableType.body()._return(jInvocation);
+        body._return(jInvocation);
 
-        return generatableType;
+        return generatableType.get();
     }
   
 }
