@@ -10,7 +10,7 @@ import com.sun.codemodel.JDefinedClass;
  * @author kris galea
  * @since 0.5.0
  */
-public class Spring4RestTemplateClientRulesTest extends AbstractControllerRuleTestBase {
+public class Spring4RestTemplateClientRulesTest extends AbstractRuleTestBase {
 
     private Rule<JCodeModel, JDefinedClass, ApiControllerMetadata> rule;
     

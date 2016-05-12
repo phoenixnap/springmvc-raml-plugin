@@ -23,15 +23,22 @@ import com.sun.codemodel.JFieldVar;
 import com.sun.codemodel.JMod;
 
 /**
- * Creates a private field declaration for a RestTemplateClass with a Spring {@literal @}Autowired annotation.
+ * Creates a private field declaration for a RestTemplateClass with a Spring {@literal @}Autowired annotation or a {@literal @}Value
+ * annotation with a customizable value.
  * 
- * The name of the field can be injected by the caller. Default is "delegate".
+ * The name of the field can be injected by the caller. Default is "restTemplate".
  *
  * EXAMPLE OUTPUT:
  * {@literal @}Autowired
  * BaseClass className;
+ * 
+ * or 
+ * 
+ * {@literal @}Value("${some.value}"
+ * String className
  *
  * @author kurtpa
+ * @author krisg
  * @since 0.5.0
  */
 public class ClassFieldDeclarationRule implements Rule<JDefinedClass, JFieldVar, ApiControllerMetadata> {

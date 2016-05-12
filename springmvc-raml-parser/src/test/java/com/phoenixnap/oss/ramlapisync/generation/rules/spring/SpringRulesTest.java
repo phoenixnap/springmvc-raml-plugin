@@ -1,23 +1,32 @@
 package com.phoenixnap.oss.ramlapisync.generation.rules.spring;
 
-import com.phoenixnap.oss.ramlapisync.generation.rules.AbstractControllerRuleTestBase;
-import com.sun.codemodel.*;
-import org.junit.Test;
-import org.springframework.http.ResponseEntity;
-
-import java.io.Serializable;
-
 import static com.phoenixnap.oss.ramlapisync.generation.CodeModelHelper.ext;
-import static org.hamcrest.CoreMatchers.*;
+import static org.hamcrest.CoreMatchers.equalTo;
+import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.hamcrest.Matchers.containsString;
 import static org.hamcrest.Matchers.hasSize;
 import static org.junit.Assert.assertThat;
 
+import java.io.Serializable;
+
+import org.junit.Test;
+import org.springframework.http.ResponseEntity;
+
+import com.phoenixnap.oss.ramlapisync.generation.CodeModelHelper;
+import com.phoenixnap.oss.ramlapisync.generation.rules.AbstractRuleTestBase;
+import com.sun.codemodel.JClassAlreadyExistsException;
+import com.sun.codemodel.JDefinedClass;
+import com.sun.codemodel.JMethod;
+import com.sun.codemodel.JMod;
+import com.sun.codemodel.JPackage;
+
 /**
  * @author armin.weisser
+ * @author kris galea
  * @since 0.4.1
  */
-public class SpringRulesTest extends AbstractControllerRuleTestBase {
+public class SpringRulesTest extends AbstractRuleTestBase {
 
     @Test
     public void applyRestControllerAnnotationRule_shouldCreate_validClassAnnotation() throws JClassAlreadyExistsException {
@@ -88,6 +97,27 @@ public class SpringRulesTest extends AbstractControllerRuleTestBase {
         assertThat(serializeModel, containsString("public ResponseEntity getBaseById("));
         assertThat(serializeModel, containsString("@PathVariable"));
         assertThat(serializeModel, containsString("String id) {"));
+    }
+    
+    @Test
+    public void applySpringMethodBodyRule_shouldCreate_valid_body() throws JClassAlreadyExistsException {
+        SpringRestClientMethodBodyRule rule = new SpringRestClientMethodBodyRule("restTemplate", "baseUrl");
+        
+        JPackage jPackage = jCodeModel.rootPackage();
+        JDefinedClass jClass = jPackage._class(JMod.PUBLIC, "MyClass");
+        JMethod jMethod = jClass.method(JMod.PUBLIC, Object.class, "getBase");                
+        jMethod.param(jCodeModel._ref(String.class), "id");
+        rule.apply(getEndpointMetadata(2), CodeModelHelper.ext(jMethod, jCodeModel));
+
+        String serializeModel = serializeModel();        
+        //ensure that we are adding the ACCEPT headers
+        assertThat(serializeModel, containsString("httpHeaders.setAccept(acceptsList);"));
+        //ensure that we are concatinating the base URL with the request URI to form the full url 
+        assertThat(serializeModel, containsString("String url = baseUrl.concat(\"/base/{id}\""));
+        //ensure that we are setting url paths vars in the uri
+        assertThat(serializeModel, containsString("uriComponents = uriComponents.expand(uriParamMap)"));
+        //ensure that the exchange invocation is as expected 
+        assertThat(serializeModel, containsString("return this.restTemplate.exchange(uriComponents.encode().toUri(), HttpMethod.GET, httpEntity, NamedResponseType.class);"));
     }
 
 

@@ -9,7 +9,7 @@ import org.springframework.http.ResponseEntity;
 
 /**
  * The BaseController class
- * (Generated with springmvc-raml-parser v.0.5.0)
+ * (Generated with springmvc-raml-parser v.${project.version})
  * 
  */
 public interface BaseClient {
@@ -63,7 +63,7 @@ import org.springframework.web.util.UriComponentsBuilder;
 
 /**
  * The BaseController class
- * (Generated with springmvc-raml-parser v.0.5.0)
+ * (Generated with springmvc-raml-parser v.${project.version})
  * 
  */
 @Component

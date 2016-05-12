@@ -1,6 +1,6 @@
 package com.phoenixnap.oss.ramlapisync.generation.rules.basic;
 
-import com.phoenixnap.oss.ramlapisync.generation.rules.AbstractControllerRuleTestBase;
+import com.phoenixnap.oss.ramlapisync.generation.rules.AbstractRuleTestBase;
 import com.phoenixnap.oss.ramlapisync.generation.rules.spring.SpringResponseEntityRule;
 import com.sun.codemodel.JClassAlreadyExistsException;
 import com.sun.codemodel.JDefinedClass;
@@ -15,7 +15,7 @@ import static org.junit.Assert.assertThat;
  * @author armin.weisser
  * @since 0.4.1
  */
-public class ControllerMethodSignatureRuleTest extends AbstractControllerRuleTestBase {
+public class ControllerMethodSignatureRuleTest extends AbstractRuleTestBase {
 
     private ControllerMethodSignatureRule rule = new ControllerMethodSignatureRule(new SpringResponseEntityRule(), new MethodParamsRule());
 

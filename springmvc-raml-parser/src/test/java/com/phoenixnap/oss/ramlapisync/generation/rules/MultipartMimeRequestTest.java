@@ -14,13 +14,13 @@ import org.junit.Test;
  * @since 0.4.3
  *
  */
-public class MultipartMimeRequestTest  extends AbstractControllerRuleTestBase {
+public class MultipartMimeRequestTest  extends AbstractRuleTestBase {
 
     private Rule<JCodeModel, JDefinedClass, ApiControllerMetadata> rule;
 
     @BeforeClass
     public static void initRaml() {
-        AbstractControllerRuleTestBase.RAML = RamlVerifier.loadRamlFromFile("test-multipart-mime-request.raml");
+        AbstractRuleTestBase.RAML = RamlVerifier.loadRamlFromFile("test-multipart-mime-request.raml");
     }
 
     @Test

@@ -1,6 +1,6 @@
 package com.phoenixnap.oss.ramlapisync.generation.rules.basic;
 
-import com.phoenixnap.oss.ramlapisync.generation.rules.AbstractControllerRuleTestBase;
+import com.phoenixnap.oss.ramlapisync.generation.rules.AbstractRuleTestBase;
 import com.sun.codemodel.*;
 import org.junit.Test;
 import org.springframework.http.ResponseEntity;
@@ -12,7 +12,7 @@ import static org.junit.Assert.assertThat;
  * @author armin.weisser
  * @since 0.4.1
  */
-public class MethodCommentRuleTest extends AbstractControllerRuleTestBase {
+public class MethodCommentRuleTest extends AbstractRuleTestBase {
 
     private MethodCommentRule rule = new MethodCommentRule();
 

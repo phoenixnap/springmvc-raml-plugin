@@ -35,7 +35,7 @@ import com.sun.codemodel.writer.SingleStreamCodeWriter;
  * @author armin.weisser
  * @since 0.4.1
  */
-public abstract class AbstractControllerRuleTestBase {
+public abstract class AbstractRuleTestBase {
 
     public static final String RESOURCE_BASE = "rules/";
     public static Raml RAML;
