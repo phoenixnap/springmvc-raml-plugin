@@ -12,13 +12,21 @@
  */
 package com.phoenixnap.oss.ramlapisync.generation.rules;
 
-import com.phoenixnap.oss.ramlapisync.data.ApiControllerMetadata;
-import com.phoenixnap.oss.ramlapisync.data.ApiMappingMetadata;
-import com.sun.codemodel.*;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+
+import com.phoenixnap.oss.ramlapisync.data.ApiControllerMetadata;
+import com.phoenixnap.oss.ramlapisync.data.ApiMappingMetadata;
+import com.phoenixnap.oss.ramlapisync.generation.CodeModelHelper;
+import com.phoenixnap.oss.ramlapisync.generation.CodeModelHelper.JExtMethod;
+import com.sun.codemodel.JAnnotationUse;
+import com.sun.codemodel.JCodeModel;
+import com.sun.codemodel.JDefinedClass;
+import com.sun.codemodel.JDocComment;
+import com.sun.codemodel.JFieldVar;
+import com.sun.codemodel.JMethod;
+import com.sun.codemodel.JPackage;
 
 /**
  * This is a configurable template rule which generates a Java artefact (class or interface)
@@ -95,8 +103,8 @@ public class GenericJavaClassRule implements Rule<JCodeModel, JDefinedClass, Api
     /**
      * an optional method body rule
      */
-    private Optional<Rule<JMethod, JMethod, ApiMappingMetadata>> methodBodyRule = Optional.empty();
-
+    private Optional<Rule<JExtMethod, JMethod, ApiMappingMetadata>> methodBodyRule = Optional.empty();
+    
     /**
      * @throws IllegalStateException if a packageRule or classRule is missing or if the ApiControllerMetadata
      *         requires a missing methodSignatureRule.
@@ -121,7 +129,7 @@ public class GenericJavaClassRule implements Rule<JCodeModel, JDefinedClass, Api
             JMethod jMethod = methodSignatureRule.apply(apiMappingMetadata, jClass);
             methodCommentRule.ifPresent(rule-> rule.apply(apiMappingMetadata, jMethod));
             methodAnnotationRules.forEach(rule -> rule.apply(apiMappingMetadata, jMethod));
-            methodBodyRule.ifPresent( rule -> rule.apply(apiMappingMetadata, jMethod));
+            methodBodyRule.ifPresent( rule -> rule.apply(apiMappingMetadata, CodeModelHelper.ext(jMethod, jClass.owner())));
         });
         return jClass;
     }
@@ -154,11 +162,11 @@ public class GenericJavaClassRule implements Rule<JCodeModel, JDefinedClass, Api
         return this;
     }
 
-    public GenericJavaClassRule setMethodBodyRule(Rule<JMethod, JMethod, ApiMappingMetadata> metodBodyRule) {
-        this.methodBodyRule = Optional.ofNullable(metodBodyRule);
+    public GenericJavaClassRule setMethodBodyRule(Rule<JExtMethod, JMethod, ApiMappingMetadata> methodBodyRule) {
+        this.methodBodyRule = Optional.ofNullable(methodBodyRule);
         return this;
     }
-
+    
     public GenericJavaClassRule addFieldDeclarationRule(Rule<JDefinedClass, JFieldVar, ApiControllerMetadata> fieldDeclerationRule) {
         this.fieldDeclerationRules.add(fieldDeclerationRule);
         return this;

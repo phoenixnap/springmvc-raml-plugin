@@ -10,7 +10,7 @@ import com.sun.codemodel.JDefinedClass;
  * @author armin.weisser
  * @since 0.4.1
  */
-public class Spring3ControllerRulesTest extends AbstractControllerRuleTestBase {
+public class Spring3ControllerRulesTest extends AbstractRuleTestBase {
 
     private Rule<JCodeModel, JDefinedClass, ApiControllerMetadata> rule;
     

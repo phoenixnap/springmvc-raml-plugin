@@ -60,6 +60,12 @@ public class SpringMvcRamlApiSyncMojo extends CommonApiSyncMojo {
 	 */
 	@Parameter(required = false, readonly = true, defaultValue = "false")
 	private boolean removeOldOutput;
+	
+	/**
+	 * If this is set to true, we will append the default media type to the global raml mediaType property
+	 */
+	@Parameter(required = false, readonly = true, defaultValue = "false")
+	private boolean includeGlobalMediaType;
 
 	/**
 	 * Base URL relative to the generated RAML file for the APIs to be accessed at runtime
@@ -102,6 +108,11 @@ public class SpringMvcRamlApiSyncMojo extends CommonApiSyncMojo {
 		// Process the classes selected and build Raml model
 		ramlGenerator
 				.generateRamlForClasses(project.getArtifactId(), version, restBasePath, classArray, this.documents);
+		
+		//Add a global media type
+		if (includeGlobalMediaType) {
+			ramlGenerator.setRamlMediaType(defaultMediaType);
+		}
 
 		// Extract RAML as a string and save to file
 		ramlGenerator.outputRamlToFile(this.getFullRamlOutputPath(), createPathIfMissing, removeOldOutput);

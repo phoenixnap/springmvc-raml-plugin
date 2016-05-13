@@ -1,6 +1,6 @@
 package com.phoenixnap.oss.ramlapisync.generation.rules.basic;
 
-import com.phoenixnap.oss.ramlapisync.generation.rules.AbstractControllerRuleTestBase;
+import com.phoenixnap.oss.ramlapisync.generation.rules.AbstractRuleTestBase;
 import com.sun.codemodel.JClassAlreadyExistsException;
 import com.sun.codemodel.JDefinedClass;
 import com.sun.codemodel.JDocComment;
@@ -13,7 +13,7 @@ import static org.junit.Assert.assertThat;
  * @author armin.weisser
  * @since 0.4.1
  */
-public class ClassCommentRuleTest extends AbstractControllerRuleTestBase {
+public class ClassCommentRuleTest extends AbstractRuleTestBase {
 
     private ClassCommentRule rule = new ClassCommentRule();
 

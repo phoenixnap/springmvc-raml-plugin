@@ -39,7 +39,8 @@ Then simply include the following code in the POM of the project you wish to gen
 	<javaDocPath>D:/</javaDocPath>
     <restBasePath>/</restBasePath>
     <version>0.0.1</version>
-    <restrictOnMediaType>false</restrictOnMediaType>
+    <includeGlobalMediaType>false</includeGlobalMediaType>
+	<restrictOnMediaType>false</restrictOnMediaType>
 	<ignoredList>
 	   <param>com.package.to.ignore</param>
 	   <param>com.specificClass.to.ignore.ClassName</param>
@@ -68,6 +69,9 @@ Then simply include the following code in the POM of the project you wish to gen
 
 ### removeOldOutput
 (optional, default: false) If this is set to true, we will empty the output directory before generation occurs
+
+### includeGlobalMediaType
+(optional, default: false) If this is set to true, we will append the default media type to the global RAML mediaType property
 
 ### javaDocPath
 (optional) Absolute path to a folder which will be used to search for JavaDoc. This folder should contain all source of controllers being scanned. Using root folders for this may increase scanning time. If this is not supplied, the scanner will default to the current project folder
@@ -207,7 +211,11 @@ Then simply include the following code in the POM of the project you wish to gen
     <addTimestampFolder>false</addTimestampFolder>
     <basePackage>com.gen.wow</basePackage>
     <baseUri>/api</baseUri>
+	<schemaUseLongIntegers>false</schemaUseLongIntegers>
 	<seperateMethodsByContentType>false</seperateMethodsByContentType>
+	<rule>com.phoenixnap.oss.ramlapisync.generation.rules.Spring4ControllerStubRule</rule>
+	<ruleConfiguration>			
+	</ruleConfiguration>
   </configuration>
   <executions>
     <execution>
@@ -236,6 +244,9 @@ Then simply include the following code in the POM of the project you wish to gen
 ### baseUri
 (optional) Base URI for generated Spring controllers. This overrules the baseUri attribute from inside the .raml spec.
 
+### schemaUseLongIntegers
+(optional, default: false) If true, jsonschema2pojo will generate Longs instead of Integers in model classes. 
+
 ### seperateMethodsByContentType
 (optional, default: false) Should we generate seperate API methods for endpoints which define multiple content types in their 200 response. 
 
@@ -244,6 +255,9 @@ Then simply include the following code in the POM of the project you wish to gen
 
 ### rule
 (optional, default: com.phoenixnap.oss.ramlapisync.generation.rules.Spring4ControllerStubRule) The rule class to be used for code generation. 
+
+### ruleConfiguration
+(optional) This is a key/value map for configuration of individual rules. Not all rules support configuration.
 
 - com.phoenixnap.oss.ramlapisync.generation.rules.Spring3ControllerStubRule:
 - com.phoenixnap.oss.ramlapisync.generation.rule.Spring4ControllerStubRule: 
@@ -262,6 +276,12 @@ So all you have to do is to provide an ControllerDelegate class which implements
 Creates an single interface with Spring MVC annotations for each top level endpoint.
 All you have to do is to provide an implementation for the controller interface
 
+- com.phoenixnap.oss.ramlapisync.generation.rules.Spring4RestTemplateClientRule
+Creates a single interface as well as a client implementation using the Spring RestTemplate. The client assumes that a RestTemplate is available to be autowired.
+
+Configuration:
+	baseUrlConfigurationPath: The path that will be used to load the property for the server url. Default: ${client.url}
+	restTemplateFieldName: The name of the RestTemplate field
 
 ## Contributing
 [Pull requests][] are welcome; Be a good citizen and create unit tests for any bugs squished or features added

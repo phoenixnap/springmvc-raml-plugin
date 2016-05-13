@@ -1,6 +1,6 @@
 package com.phoenixnap.oss.ramlapisync.generation.rules.basic;
 
-import com.phoenixnap.oss.ramlapisync.generation.rules.AbstractControllerRuleTestBase;
+import com.phoenixnap.oss.ramlapisync.generation.rules.AbstractRuleTestBase;
 import com.sun.codemodel.JClass;
 import com.sun.codemodel.JPackage;
 import org.junit.Test;
@@ -13,7 +13,7 @@ import static org.junit.Assert.assertThat;
  * @author armin.weisser
  * @since 0.4.1
  */
-public class ControllerInterfaceDeclarationRuleTest extends AbstractControllerRuleTestBase {
+public class ControllerInterfaceDeclarationRuleTest extends AbstractRuleTestBase {
 
     private ControllerInterfaceDeclarationRule rule = new ControllerInterfaceDeclarationRule();
 

@@ -380,24 +380,9 @@ public class SchemaHelper {
 		JCodeModel codeModel = new JCodeModel();
 		SchemaStore schemaStore = new SchemaStore();
 
-
 		if (config == null) {
-				config = new DefaultGenerationConfig() {
-				@Override
-				public boolean isGenerateBuilders() { // set config option by overriding method
-					return true;
-				}
-
-				@Override
-				public boolean isIncludeAdditionalProperties() {
-					return false;
-				}
-
-				@Override
-				public boolean isIncludeDynamicAccessors() {
-					return false;
-				}
-			};
+				config = getDefaultGenerationConfig();
+			
 		}
 		if (annotator == null) {
 			annotator = new Jackson2Annotator();
@@ -416,6 +401,62 @@ public class SchemaHelper {
 		return codeModel;
 	}
 
+	/**
+	 * Returns a configuration for the JSON Schema 2 POJO that is in line with the defaults used in the plugin so far
+	 * 
+	 * @return Default Generation Config
+	 */
+	public static GenerationConfig getDefaultGenerationConfig() {
+		return getGenerationConfig(true, false, false, false);
+	}
 
+	/**
+	 * Returns a generation config with the supplied parameters. If any of these parameters are supplied null, it will
+	 * use the value defined in the default configuration
+	 * 
+	 * @param generateBuilders Enables or disables {@link GenerationConfig#isGenerateBuilders()} 
+	 * @param includeAdditionalProperties Enables or disables {@link GenerationConfig#isIncludeAdditionalProperties()}
+	 * @param includeDynamicAccessors Enables or disables {@link GenerationConfig#isIncludeDynamicAccessors()}
+	 * @param useLongIntegers Enables or disables {@link GenerationConfig#isUseLongIntegers()}
+	 * @return The GenerationConfig
+	 */
+	public static GenerationConfig getGenerationConfig(Boolean generateBuilders, Boolean includeAdditionalProperties, Boolean includeDynamicAccessors, Boolean useLongIntegers) {
+		 return new DefaultGenerationConfig() {
+				@Override
+				public boolean isGenerateBuilders() { // set config option by overriding method
+					if (generateBuilders != null) {
+						return generateBuilders;
+					} else {
+						return true;
+					}
+				}
 
+				@Override
+				public boolean isIncludeAdditionalProperties() {
+					if (includeAdditionalProperties != null) {
+						return includeAdditionalProperties;
+					} else {
+						return false;
+					}
+				}
+
+				@Override
+				public boolean isIncludeDynamicAccessors() {
+					if (includeDynamicAccessors != null) {
+						return includeDynamicAccessors;
+					} else {
+						return false;
+					}
+				}
+
+				@Override
+				public boolean isUseLongIntegers() {
+					if (useLongIntegers != null) {
+						return useLongIntegers;
+					} else {
+						return super.isUseLongIntegers();
+					}
+				}
+		 };
+	}
 }

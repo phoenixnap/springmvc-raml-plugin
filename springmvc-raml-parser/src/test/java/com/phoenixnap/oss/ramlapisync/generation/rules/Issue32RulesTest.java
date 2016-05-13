@@ -12,13 +12,13 @@ import com.sun.codemodel.JDefinedClass;
  * @author kurtpa
  * @since 0.4.2
  */
-public class Issue32RulesTest extends AbstractControllerRuleTestBase {
+public class Issue32RulesTest extends AbstractRuleTestBase {
 
 	private Rule<JCodeModel, JDefinedClass, ApiControllerMetadata> rule;
 
 	@BeforeClass
 	public static void initRaml() {
-		AbstractControllerRuleTestBase.RAML = RamlVerifier.loadRamlFromFile(AbstractControllerRuleTestBase.RESOURCE_BASE + "issue-32.raml");
+		AbstractRuleTestBase.RAML = RamlVerifier.loadRamlFromFile(AbstractRuleTestBase.RESOURCE_BASE + "issue-32.raml");
 	}
 	
 	@Test

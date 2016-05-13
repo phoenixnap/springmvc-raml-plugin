@@ -65,18 +65,21 @@ public class ApiControllerMetadata {
 	}
     
     public String getName() {
-    	
     	String name = NamingHelper.getResourceName(resource);
     	if (name != null) {
     		return name + CONTROLLER_SUFFIX;
     	}
-    	return CONTROLLER_SUFFIX; //TODO Is there a better way? should this even happen though? really?
-    	
+    	return CONTROLLER_SUFFIX;
+    	    	
     }
 
 
 	public Resource getResource() {
 		return resource;
+	}
+	
+	public String getResourceName() {
+		return NamingHelper.getResourceName(resource);
 	}
 	
 	public String getResourceUri() {

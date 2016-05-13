@@ -7,8 +7,9 @@ package com.phoenixnap.oss.ramlapisync.generation.exception;
  */
 public class InvalidCodeModelException extends RuntimeException {
 
+	private static final long serialVersionUID = 1L;
 
-    public InvalidCodeModelException(String message) {
+	public InvalidCodeModelException(String message) {
         super(message);
     }
 

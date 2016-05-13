@@ -17,7 +17,9 @@ import com.phoenixnap.oss.ramlapisync.generation.exception.InvalidCodeModelExcep
 import com.phoenixnap.oss.ramlapisync.generation.rules.Rule;
 import com.sun.codemodel.JAnnotationUse;
 import com.sun.codemodel.JDefinedClass;
+
 import org.springframework.http.MediaType;
+import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 /**
@@ -58,6 +60,9 @@ public class SpringRequestMappingClassAnnotationRule implements Rule<JDefinedCla
 
     private String generateMediaType(ApiControllerMetadata controllerMetadata) {
         String ramlMediaType = controllerMetadata.getDocument().getMediaType();
+        if (!StringUtils.hasText(ramlMediaType)) {
+        	return null;
+        }
         return MediaType.parseMediaType(ramlMediaType).toString();
     }
 }

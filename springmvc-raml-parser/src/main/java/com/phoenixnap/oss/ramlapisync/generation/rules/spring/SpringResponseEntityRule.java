@@ -12,17 +12,18 @@
  */
 package com.phoenixnap.oss.ramlapisync.generation.rules.spring;
 
+import static com.phoenixnap.oss.ramlapisync.generation.CodeModelHelper.findFirstClassBySimpleName;
+
+import java.util.List;
+
+import org.springframework.http.ResponseEntity;
+
 import com.phoenixnap.oss.ramlapisync.data.ApiBodyMetadata;
 import com.phoenixnap.oss.ramlapisync.data.ApiMappingMetadata;
 import com.phoenixnap.oss.ramlapisync.generation.rules.Rule;
 import com.sun.codemodel.JClass;
 import com.sun.codemodel.JDefinedClass;
 import com.sun.codemodel.JType;
-import org.springframework.http.ResponseEntity;
-
-import java.util.List;
-
-import static com.phoenixnap.oss.ramlapisync.generation.CodeModelHelper.findFirstClassBySimpleName;
 
 /**
  * Creates a org.springframework.http.ResponseEntity as a return type for an endpoint.
@@ -60,7 +61,7 @@ public class SpringResponseEntityRule implements Rule<JDefinedClass, JType, ApiM
             JClass genericType = findFirstClassBySimpleName(apiBodyMetadata.getCodeModel(), apiBodyMetadata.getName());
             if (apiBodyMetadata.isArray()) {
                 JClass arrayType = generatableType.owner().ref(List.class);
-                responseEntity = arrayType.narrow(genericType);
+                responseEntity = responseEntity.narrow(arrayType.narrow(genericType));
             } else {
                 responseEntity = responseEntity.narrow(genericType);
             }

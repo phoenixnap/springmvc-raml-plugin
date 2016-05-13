@@ -8,8 +8,9 @@ package com.phoenixnap.oss.ramlapisync.generation.exception;
  */
 public class RuleCanNotProcessModelException extends RuntimeException {
 
+	private static final long serialVersionUID = 1L;
 
-    public RuleCanNotProcessModelException(String message) {
+	public RuleCanNotProcessModelException(String message) {
         super(message);
     }
 
