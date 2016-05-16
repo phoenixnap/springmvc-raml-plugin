@@ -267,20 +267,17 @@ All you have to do is to implement the empty method body for each endpoint. This
 The drawback: When you regenerate the controller stubs your code will be overriden.
 
 - **com.phoenixnap.oss.ramlapisync.generation.rules.Spring3ControllerDecoratorRule**: 
-- **com.phoenixnap.oss.ramlapisync.generation.rules.Spring4ControllerDecoratorRule**: 
-
+- **com.phoenixnap.oss.ramlapisync.generation.rules.Spring4ControllerDecoratorRule**:
 Creates a controller interface and a decorator with Spring MVC annotations for each top level endpoint.
 The decorator implements the controller interface and delegates all method calls to an @Autowired ControllerDelegate.
 So all you have to do is to provide an ControllerDelegate class which implements the controller interface.
 
 - **com.phoenixnap.oss.ramlapisync.generation.rules.Spring3ControllerInterfaceRule**:
 - **com.phoenixnap.oss.ramlapisync.generation.rules.Spring4ControllerInterfaceRule**:
-
 Creates an single interface with Spring MVC annotations for each top level endpoint.
 All you have to do is to provide an implementation for the controller interface
 
 - **com.phoenixnap.oss.ramlapisync.generation.rules.Spring4RestTemplateClientRule**:
-
 Creates a single interface as well as a client implementation using the Spring RestTemplate. The client assumes that a RestTemplate is available to be autowired.
 
 ```
