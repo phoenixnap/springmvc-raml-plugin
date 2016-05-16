@@ -253,35 +253,41 @@ Then simply include the following code in the POM of the project you wish to gen
 ### useJackson1xCompatibility
 (optional, default: false) If set to true, we will generate Jackson 1 annotations inside the model objects.
 
-### rule
-(optional, default: com.phoenixnap.oss.ramlapisync.generation.rules.Spring4ControllerStubRule) The rule class to be used for code generation. 
-
 ### ruleConfiguration
 (optional) This is a key/value map for configuration of individual rules. Not all rules support configuration.
 
-- com.phoenixnap.oss.ramlapisync.generation.rules.Spring3ControllerStubRule:
-- com.phoenixnap.oss.ramlapisync.generation.rule.Spring4ControllerStubRule: 
+### rule
+(optional, default: com.phoenixnap.oss.ramlapisync.generation.rules.Spring4ControllerStubRule) The rule class to be used for code generation. 
+
+#### Available Rules
+- **com.phoenixnap.oss.ramlapisync.generation.rules.Spring3ControllerStubRule**:
+- **com.phoenixnap.oss.ramlapisync.generation.rule.Spring4ControllerStubRule**: 
 The standard rule. It creates simple controller stubs classes with Spring MVC annotations and empty method bodies (like in v.0.2.4).
 All you have to do is to implement the empty method body for each endpoint. This is simple and easy.
 The drawback: When you regenerate the controller stubs your code will be overriden.
 
-- com.phoenixnap.oss.ramlapisync.generation.rules.Spring3ControllerDecoratorRule: 
-- com.phoenixnap.oss.ramlapisync.generation.rules.Spring4ControllerDecoratorRule: 
+- **com.phoenixnap.oss.ramlapisync.generation.rules.Spring3ControllerDecoratorRule**: 
+- **com.phoenixnap.oss.ramlapisync.generation.rules.Spring4ControllerDecoratorRule**: 
+
 Creates a controller interface and a decorator with Spring MVC annotations for each top level endpoint.
 The decorator implements the controller interface and delegates all method calls to an @Autowired ControllerDelegate.
 So all you have to do is to provide an ControllerDelegate class which implements the controller interface.
 
-- com.phoenixnap.oss.ramlapisync.generation.rules.Spring3ControllerInterfaceRule:
-- com.phoenixnap.oss.ramlapisync.generation.rules.Spring4ControllerInterfaceRule:
+- **com.phoenixnap.oss.ramlapisync.generation.rules.Spring3ControllerInterfaceRule**:
+- **com.phoenixnap.oss.ramlapisync.generation.rules.Spring4ControllerInterfaceRule**:
+
 Creates an single interface with Spring MVC annotations for each top level endpoint.
 All you have to do is to provide an implementation for the controller interface
 
-- com.phoenixnap.oss.ramlapisync.generation.rules.Spring4RestTemplateClientRule
+- **com.phoenixnap.oss.ramlapisync.generation.rules.Spring4RestTemplateClientRule**:
+
 Creates a single interface as well as a client implementation using the Spring RestTemplate. The client assumes that a RestTemplate is available to be autowired.
 
+```
 Configuration:
 	baseUrlConfigurationPath: The path that will be used to load the property for the server url. Default: ${client.url}
 	restTemplateFieldName: The name of the RestTemplate field
+```
 
 ## Contributing
 [Pull requests][] are welcome; Be a good citizen and create unit tests for any bugs squished or features added
