@@ -27,6 +27,7 @@ import com.phoenixnap.oss.ramlapisync.parser.SpringMvcResourceParser;
 import com.phoenixnap.oss.ramlapisync.style.checkers.ActionSecurityResponseChecker;
 import com.phoenixnap.oss.ramlapisync.style.checkers.ResourceCollectionPluralisationChecker;
 import com.phoenixnap.oss.ramlapisync.style.checkers.ResourceUrlStyleChecker;
+import com.phoenixnap.oss.ramlapisync.style.checkers.ResponseBodySchemaStyleChecker;
 import com.phoenixnap.oss.ramlapisync.verification.Issue;
 import com.phoenixnap.oss.ramlapisync.verification.IssueLocation;
 import com.phoenixnap.oss.ramlapisync.verification.IssueSeverity;
@@ -99,6 +100,39 @@ public class RamlStyleCheckerTest {
 			new Issue(IssueSeverity.WARNING, IssueLocation.CONTRACT, IssueType.STYLE, ActionSecurityResponseChecker.DESCRIPTION, "GET /ignored/houses/{houseId}"),
 			new Issue(IssueSeverity.WARNING, IssueLocation.CONTRACT, IssueType.STYLE, ActionSecurityResponseChecker.DESCRIPTION, "GET /ignored/houses")});
 	}
+	
+	@Test
+	public void test_ResponseBodyCheck_Success() {
+		Raml published = RamlVerifier.loadRamlFromFile("test-style-missing-response-bodies.raml");
+		
+		RamlVerifier verifier = new RamlVerifier(published, null, Collections.emptyList(), null, null, Collections.singletonList(new ResponseBodySchemaStyleChecker("GET,POST")));
+		assertFalse("Check that raml passes rules", verifier.hasErrors());
+		assertFalse("Check that implementation matches rules", verifier.hasWarnings());
+		
+		//Check string parse resilience
+		verifier = new RamlVerifier(published, null, Collections.emptyList(), null, null, Collections.singletonList(new ResponseBodySchemaStyleChecker("GET,  ,POSTIX,  POST  ,, ")));
+		assertFalse("Check that raml passes rules", verifier.hasErrors());
+		assertFalse("Check that implementation matches rules", verifier.hasWarnings());
+		
+		verifier = new RamlVerifier(published, null, Collections.emptyList(), null, null, Collections.singletonList(new ResponseBodySchemaStyleChecker(null)));
+		assertFalse("Check that raml passes rules", verifier.hasErrors());
+		assertFalse("Check that implementation matches rules", verifier.hasWarnings());
+	}
+	
+	@Test
+	public void test_ResponseBodyCheck_Fails() {
+		Raml published = RamlVerifier.loadRamlFromFile("test-style-missing-response-bodies-fails.raml");
+		
+		RamlVerifier verifier = new RamlVerifier(published, null, Collections.emptyList(), null, null, Collections.singletonList(new ResponseBodySchemaStyleChecker("GET,POST")));
+		assertFalse("Check that raml passes rules", verifier.hasErrors());
+		assertTrue("Check that implementation matches rules", verifier.hasWarnings());
+		assertEquals("Check that implementation shuld have 2 warnings", 2, verifier.getWarnings().size());
+		TestHelper.verifyIssuesUnordered(verifier.getWarnings(), new Issue[] {
+			new Issue(IssueSeverity.WARNING, IssueLocation.CONTRACT, IssueType.STYLE, String.format(ResponseBodySchemaStyleChecker.DESCRIPTION, "GET"), "GET /base/endpointThatWillBoom"),
+			new Issue(IssueSeverity.WARNING, IssueLocation.CONTRACT, IssueType.STYLE, String.format(ResponseBodySchemaStyleChecker.DESCRIPTION, "POST"), "POST /base/endpointThatWillBoom")});
+	}
+	
+	
 	
 
 }

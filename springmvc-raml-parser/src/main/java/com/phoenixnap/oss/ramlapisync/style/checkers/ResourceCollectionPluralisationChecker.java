@@ -18,6 +18,7 @@ import java.util.Set;
 import java.util.regex.Pattern;
 
 import org.raml.model.ActionType;
+import org.raml.model.Raml;
 import org.raml.model.Resource;
 import org.raml.parser.utils.Inflector;
 import org.slf4j.Logger;
@@ -48,7 +49,7 @@ public class ResourceCollectionPluralisationChecker extends RamlStyleCheckerAdap
 	
 	@Override
 	public Set<StyleIssue> checkResourceStyle(String name, Resource resource,
-			IssueLocation location) {
+			IssueLocation location, Raml raml) {
 		logger.debug("Checking resource " + name);
 		Set<StyleIssue> issues = new LinkedHashSet<>();
 		

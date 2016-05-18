@@ -27,7 +27,11 @@ import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
 import org.apache.maven.plugins.annotations.ResolutionScope;
 import org.raml.model.Raml;
+import org.springframework.http.HttpMethod;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
+import org.springframework.util.LinkedMultiValueMap;
+import org.springframework.util.MultiValueMap;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -37,8 +41,11 @@ import com.phoenixnap.oss.ramlapisync.parser.ResourceParser;
 import com.phoenixnap.oss.ramlapisync.parser.SpringMvcResourceParser;
 import com.phoenixnap.oss.ramlapisync.style.RamlStyleChecker;
 import com.phoenixnap.oss.ramlapisync.style.checkers.ActionSecurityResponseChecker;
+import com.phoenixnap.oss.ramlapisync.style.checkers.RequestBodySchemaStyleChecker;
 import com.phoenixnap.oss.ramlapisync.style.checkers.ResourceCollectionPluralisationChecker;
 import com.phoenixnap.oss.ramlapisync.style.checkers.ResourceUrlStyleChecker;
+import com.phoenixnap.oss.ramlapisync.style.checkers.ResponseBodySchemaStyleChecker;
+import com.phoenixnap.oss.ramlapisync.style.checkers.ResponseCodeDefinitionStyleChecker;
 import com.phoenixnap.oss.ramlapisync.verification.Issue;
 import com.phoenixnap.oss.ramlapisync.verification.RamlActionVisitorCheck;
 import com.phoenixnap.oss.ramlapisync.verification.RamlChecker;
@@ -66,7 +73,13 @@ public class SpringMvcRamlVerifierMojo extends CommonApiSyncMojo {
 	
 	
 	/**
-	 * TODO
+	 * Flag that will enable or disable checking of the RAML file against the Server Implementation. If this is set to false it will override other check flags
+	 */
+	@Parameter(required = false, readonly = true, defaultValue = "true")
+	protected Boolean checkRamlAgainstImplementation;
+	
+	/**
+	 * Flag that will enable or disable Style Checking of the RAML file. If this is set to false it will override other style check flags
 	 */
 	@Parameter(required = false, readonly = true, defaultValue = "true")
 	protected Boolean performStyleChecks;
@@ -114,7 +127,31 @@ public class SpringMvcRamlVerifierMojo extends CommonApiSyncMojo {
 	@Parameter(required = false, readonly = true, defaultValue = "true")
 	protected Boolean checkForDefinitionOf40xResponseInSecuredResource;
 	
+	/**
+	 * Comma seperated list of HTTP Methods to check for schemas being present in the successful response Body.
+	 */
+	@Parameter(required = false, readonly = true, defaultValue = "")
+	protected String checkForSchemaInSuccessfulResponseBody;
 	
+	/**
+	 * Flag that will enable or disable checks for 400 and 500 error codes in certain verbs
+	 */
+	@Parameter(required = false, readonly = true, defaultValue = "false")
+	protected Boolean checkForDefinitionOfErrorCodes;
+	
+	
+	/**
+	 * Comma seperated list of HTTP Methods to check for schemas being present in the request Body.
+	 */
+	@Parameter(required = false, readonly = true, defaultValue = "")
+	protected String checkForSchemaInRequestBody;
+	
+	/**
+	 * Flag that will enable or disable checks for 404 responses get requests
+	 */
+	@Parameter(required = false, readonly = true, defaultValue = "false")
+	protected Boolean checkForDefinitionOf404ResponseInGetRequest;
+		
 	/**
 	 * Flag that will enable or disable braking of the build if Warnings are found
 	 */
@@ -156,29 +193,38 @@ public class SpringMvcRamlVerifierMojo extends CommonApiSyncMojo {
 			targetPath = project.getBasedir();
 		}
 		
-		ResourceParser scanner = new SpringMvcResourceParser(targetPath, version, ResourceParser.CATCH_ALL_MEDIA_TYPE, false);
-		RamlGenerator ramlGenerator = new RamlGenerator(scanner);
-		// Process the classes selected and build Raml model
-		ramlGenerator.generateRamlForClasses(project.getArtifactId(), version, "/", classArray, this.documents);
-		Raml implementedRaml = ramlGenerator.getRaml();
-		
 		List<RamlChecker> checkers = new ArrayList<>();
 		List<RamlActionVisitorCheck> actionCheckers = new ArrayList<>();
 		List<RamlResourceVisitorCheck> resourceCheckers = new ArrayList<>();
+		Raml implementedRaml = null;
+		
+		if (checkRamlAgainstImplementation) {
+			ResourceParser scanner = new SpringMvcResourceParser(targetPath, version, ResourceParser.CATCH_ALL_MEDIA_TYPE, false);
+			RamlGenerator ramlGenerator = new RamlGenerator(scanner);
+			// Process the classes selected and build Raml model
+			ramlGenerator.generateRamlForClasses(project.getArtifactId(), version, "/", classArray, this.documents);
+			implementedRaml = ramlGenerator.getRaml();
+			
+
+			if (checkForResourceExistence) {
+				checkers.add(new ResourceExistenceChecker());
+			}
+			if (checkForActionExistence) {
+				resourceCheckers.add(new ActionExistenceChecker());
+			}
+			if (checkForQueryParameterExistence) {
+				actionCheckers.add(new ActionQueryParameterChecker());
+			}
+			if (checkForActionContentType) {
+				actionCheckers.add(new ActionContentTypeChecker());
+			}
+		}
+		
+		
+		
+		
 		List<RamlStyleChecker> styleCheckers = new ArrayList<>();
 		
-		if (checkForResourceExistence) {
-			checkers.add(new ResourceExistenceChecker());
-		}
-		if (checkForActionExistence) {
-			resourceCheckers.add(new ActionExistenceChecker());
-		}
-		if (checkForQueryParameterExistence) {
-			actionCheckers.add(new ActionQueryParameterChecker());
-		}
-		if (checkForActionContentType) {
-			actionCheckers.add(new ActionContentTypeChecker());
-		}
 		
 		if (performStyleChecks) {
 			if (checkForPluralisedResourceNames) {
@@ -189,6 +235,31 @@ public class SpringMvcRamlVerifierMojo extends CommonApiSyncMojo {
 			}
 			if (checkForSpecialCharactersInResourceNames) {
 				styleCheckers.add(new ResourceUrlStyleChecker());
+			}
+			if (StringUtils.hasText(checkForSchemaInRequestBody)) {
+				styleCheckers.add(new RequestBodySchemaStyleChecker(checkForSchemaInRequestBody));
+			}
+			if (StringUtils.hasText(checkForSchemaInSuccessfulResponseBody)) {
+				styleCheckers.add(new ResponseBodySchemaStyleChecker(checkForSchemaInSuccessfulResponseBody));
+			}
+			MultiValueMap<String, HttpStatus> statusChecks = new LinkedMultiValueMap<>();
+			if (checkForDefinitionOf404ResponseInGetRequest) {
+				statusChecks.add(HttpMethod.GET.name(), HttpStatus.NOT_FOUND);
+			}
+			if (checkForDefinitionOfErrorCodes) {
+				statusChecks.add(HttpMethod.PUT.name(), HttpStatus.BAD_REQUEST);
+				statusChecks.add(HttpMethod.POST.name(), HttpStatus.BAD_REQUEST);
+				statusChecks.add(HttpMethod.PATCH.name(), HttpStatus.BAD_REQUEST);
+				
+				statusChecks.add(HttpMethod.GET.name(), HttpStatus.INTERNAL_SERVER_ERROR);
+				statusChecks.add(HttpMethod.PATCH.name(), HttpStatus.INTERNAL_SERVER_ERROR);
+				statusChecks.add(HttpMethod.PUT.name(), HttpStatus.INTERNAL_SERVER_ERROR);
+				statusChecks.add(HttpMethod.POST.name(), HttpStatus.INTERNAL_SERVER_ERROR);
+				statusChecks.add(HttpMethod.DELETE.name(), HttpStatus.INTERNAL_SERVER_ERROR);				
+			}
+			
+			if (!statusChecks.isEmpty()) {
+				styleCheckers.add(new ResponseCodeDefinitionStyleChecker(statusChecks));
 			}
 		}
 		
@@ -235,3 +306,4 @@ public class SpringMvcRamlVerifierMojo extends CommonApiSyncMojo {
 	}
 
 }
+
