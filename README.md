@@ -17,6 +17,8 @@ The project provides three artifacts:
 - springmvc-raml-parser: This is a seperate project that contains the parser which converts Spring MVC annotations to a RAML Model
 - springmvc-raml-annotations: This project allows the use of custom annotations such as @Example which can be used to embed example inputs or outputs.
 
+## Sample Project
+A sample project that includes a SpringMVC Server implementation using the Decorator pattern as well as a RestTemplate based REST client is available here:  [SpringMVC RAML Contract First Sample]( https://github.com/phoenixnap/springmvc-raml-plugin-sample/). This sample is based on the contract first scenario whereby the RAML document is authored and used as the basis for implementation
 
 ## Documentation & Getting Support
 Usage and documentation are available in the Javadoc and README.md of the child projects. Kindly contact the developers via email (available in the pom files) if required or open an [Issue][] in our tracking system.
