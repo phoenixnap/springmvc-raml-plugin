@@ -132,7 +132,7 @@ public class NamingHelper {
 	 * Utility method to clean a string for use within javadoc 
 	 * 
 	 * @param input String to be cleaned
-	 * @return
+	 * @return The cleaned string
 	 */
 	public static String cleanForJavadoc(String input) {
 		return cleanLeadingAndTrailingNewLineAndChars(input);

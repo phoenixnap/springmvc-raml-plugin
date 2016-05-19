@@ -328,7 +328,7 @@ public class SchemaHelper {
 	 * @param schema The Actual JSON Schema
 	 * @param schemaName The name of the schema within the document
 	 * @param fallbackName any arbitrary name
-	 * @return
+	 * @return The Name for this Class (POJO)
 	 */
 	public static String extractNameFromSchema(String schema, String schemaName, String fallbackName) {
 		String resolvedName = null;
