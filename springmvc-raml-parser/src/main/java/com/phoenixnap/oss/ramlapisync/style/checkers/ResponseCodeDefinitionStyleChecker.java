@@ -32,7 +32,7 @@ public class ResponseCodeDefinitionStyleChecker extends RamlStyleCheckerAdapter 
 	 */
 	protected static final Logger logger = LoggerFactory.getLogger(ResponseCodeDefinitionStyleChecker.class);
 	
-	public static String DESCRIPTION = "%s Verb should define %s (%i) response";
+	public static String DESCRIPTION = "%s Verb should define %s (%d) response";
 
 	private MultiValueMap<String, HttpStatus> statusChecks;
 
@@ -49,11 +49,11 @@ public class ResponseCodeDefinitionStyleChecker extends RamlStyleCheckerAdapter 
 		
 		//Do we have a check for this verb?
 		if (statusChecks.containsKey(key.name())) {			
-			List<HttpStatus> statuses = statusChecks.get(key);
+			List<HttpStatus> statuses = statusChecks.get(key.name());
 			if (!CollectionUtils.isEmpty(statuses)) {
 				for (HttpStatus check : statuses) {
 					if (value.getResponses() == null
-							|| !value.getResponses().containsKey(check.value())) {
+							|| !value.getResponses().containsKey(String.valueOf(check.value()))) {
 						issues.add(new StyleIssue(location, String.format(DESCRIPTION, key, check.name(), check.value()), value.getResource(), value));
 					} 
 				}
