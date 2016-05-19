@@ -41,9 +41,11 @@ public class JsonSchema2PojoTest {
     public void after() {
     }
 	
+	private static String path = "pojogen"+ File.separator;
+	
 	@Test
     public void schemaHelper_ExtractsName_fromId() throws Exception {
-		URL url = Resources.getResource("pojogen\\B.json");
+		URL url = Resources.getResource(path + "B.json");
 		String text = Resources.toString(url, Charsets.UTF_8);
         String nameFromSchema = SchemaHelper.extractNameFromSchema(text, "Not", "Even");
         
@@ -53,7 +55,7 @@ public class JsonSchema2PojoTest {
 	
 	@Test
     public void schemaHelper_ExtractsName_schemaName_noId() throws Exception {
-		URL url = Resources.getResource("pojogen\\B-noid.json");
+		URL url = Resources.getResource(path + "B-noid.json");
 		String text = Resources.toString(url, Charsets.UTF_8);
         String nameFromSchema = SchemaHelper.extractNameFromSchema(text, "Not", "Even");
         
@@ -63,7 +65,7 @@ public class JsonSchema2PojoTest {
 	
 	@Test
     public void schemaHelper_ExtractsName_schemaName_badId() throws Exception {
-		URL url = Resources.getResource("pojogen\\B-badid.json");
+		URL url = Resources.getResource(path + "B-badid.json");
 		String text = Resources.toString(url, Charsets.UTF_8);
         String nameFromSchema = SchemaHelper.extractNameFromSchema(text, "Not", "Even");
         
@@ -73,7 +75,7 @@ public class JsonSchema2PojoTest {
 	
 	@Test
     public void schemaHelper_ExtractsName_fallback() throws Exception {
-		URL url = Resources.getResource("pojogen\\B-noid.json");
+		URL url = Resources.getResource(path + "B-noid.json");
 		String text = Resources.toString(url, Charsets.UTF_8);
         String nameFromSchema = SchemaHelper.extractNameFromSchema(text, "1Not", "Even");
         
@@ -83,7 +85,7 @@ public class JsonSchema2PojoTest {
 	
 	@Test
     public void schemaHelper_ExtractsPojo() throws Exception {
-		URL url = Resources.getResource("pojogen\\B.json");
+		URL url = Resources.getResource(path + "B.json");
 		String text = Resources.toString(url, Charsets.UTF_8);
         ApiBodyMetadata mapSchemaToPojo = SchemaHelper.mapSchemaToPojo(null, text, "com.test", "Fallback", null);
         
@@ -93,7 +95,7 @@ public class JsonSchema2PojoTest {
 	
 	@Test
     public void schemaHelper_ExtractsPojo_NestedUsingClasspath() throws Exception {
-		URL url = Resources.getResource("pojogen\\A.json");
+		URL url = Resources.getResource(path + "A.json");
 		String text = Resources.toString(url, Charsets.UTF_8);
         ApiBodyMetadata mapSchemaToPojo = SchemaHelper.mapSchemaToPojo(null, text, "com.test", "Fallback", null);
         assertNotNull(mapSchemaToPojo);
@@ -109,7 +111,7 @@ public class JsonSchema2PojoTest {
 	
 	@Test
     public void schemaHelper_ExtractsPojo_NestedUsingFile() throws Exception {
-		String resourceName = "pojogen"+File.separator+"A.json";
+		String resourceName = path + "A.json";
 		URL url = Resources.getResource(resourceName);
 		String text = Resources.toString(url, Charsets.UTF_8);
 		String path = "file:" + URLDecoder.decode(url.getPath(), Charsets.UTF_8.name()).replace(resourceName, "");
