@@ -225,7 +225,8 @@ Then simply include the following code in the POM of the project you wish to gen
   <artifactId>springmvc-raml-plugin</artifactId>
   <version>x.x.x</version>
   <configuration>
-    <ramlPath></ramlPath>
+    <ramlPath>{path.to.raml.file}</ramlPath>
+	<schemaLocation>{path.to.schema.directory||schema.absolute.url}</schemaLocation>
 	<outputRelativePath>/src/generated</outputRelativePath>
     <addTimestampFolder>false</addTimestampFolder>
     <basePackage>com.gen.wow</basePackage>
@@ -259,6 +260,9 @@ Then simply include the following code in the POM of the project you wish to gen
 
 ### basePackage
 (required) Base package to be used for the java classes to be generated. Model objects will be added in the .model subpackage
+
+### schemaLocation
+(optional, default: "") The URI or relative path to the folder/network location containing JSON Schemas
 
 ### baseUri
 (optional) Base URI for generated Spring controllers. This overrules the baseUri attribute from inside the .raml spec.

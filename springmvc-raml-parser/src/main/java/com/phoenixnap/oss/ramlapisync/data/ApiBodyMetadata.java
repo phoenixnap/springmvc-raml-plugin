@@ -84,8 +84,17 @@ public class ApiBodyMetadata {
 		return array;
 	}
 	
-	public JCodeModel getCodeModel(String basePackage, GenerationConfig config, Annotator annotator) {
-		return SchemaHelper.buildBodyJCodeModel(basePackage, name, schema, config, annotator);
+	/**
+	 * Builds a JCodeModel for this body
+	 *
+	 * @param basePackage The package we will be using for the domain objects
+	 * @param schemaLocation The location of this schema, will be used to create absolute URIs for $ref tags eg "classpath:/"
+	 * @param config JsonSchema2Pojo configuration. if null a default config will be used
+	 * @param annotator JsonSchema2Pojo annotator. if null a default annotator will be used
+	 * @return built JCodeModel
+	 */
+	public JCodeModel getCodeModel(String basePackage, String schemaLocation, GenerationConfig config, Annotator annotator) {
+		return SchemaHelper.buildBodyJCodeModel(schemaLocation, basePackage, name, schema, config, annotator);
 	}
 
 }

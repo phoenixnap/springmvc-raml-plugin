@@ -16,6 +16,7 @@ import java.lang.reflect.Field;
 import java.lang.reflect.Parameter;
 import java.lang.reflect.Type;
 import java.math.BigDecimal;
+import java.net.URI;
 import java.util.Collections;
 import java.util.Date;
 import java.util.Map;
@@ -369,9 +370,10 @@ public class SchemaHelper {
 	 * @param schema The Schema (full schema or schema name to be resolved)
 	 * @param basePackage The base package for the classes we are generating
 	 * @param name The suggested name of the class based on the api call and whether it's a request/response. This will only be used if no suitable alternative is found in the schema
+	 * @param schemaLocation Base location of this schema, will be used to create absolute URIs for $ref tags eg "classpath:/" 
 	 * @return Object representing this Body
 	 */
-	public static ApiBodyMetadata mapSchemaToPojo(Raml document, String schema, String basePackage, String name) {
+	public static ApiBodyMetadata mapSchemaToPojo(Raml document, String schema, String basePackage, String name, String schemaLocation) {
 		String resolvedName = null;
 		String schemaName = schema;
 		
@@ -385,7 +387,7 @@ public class SchemaHelper {
 		//Extract name from schema
 		resolvedName = extractNameFromSchema(resolvedSchema, schemaName, name);
 		
-		JCodeModel codeModel = buildBodyJCodeModel(basePackage, resolvedName, resolvedSchema, null, null);
+		JCodeModel codeModel = buildBodyJCodeModel(basePackage, StringUtils.hasText(schemaLocation) ? schemaLocation : "classpath:/", resolvedName, resolvedSchema, null, null);
 		if (codeModel != null) {
 			return new ApiBodyMetadata(resolvedName, resolvedSchema, codeModel);
 		} else {
@@ -397,13 +399,14 @@ public class SchemaHelper {
 	 * Builds a JCodeModel for classes that will be used as Request or Response bodies
 	 *
 	 * @param basePackage The package we will be using for the domain objects
+	 * @param schemaLocation The location of this schema, will be used to create absolute URIs for $ref tags eg "classpath:/"
 	 * @param name The class name
 	 * @param schema The JSON Schema representing this class
 	 * @param config JsonSchema2Pojo configuration. if null a default config will be used
 	 * @param annotator JsonSchema2Pojo annotator. if null a default annotator will be used
 	 * @return built JCodeModel
 	 */
-	public static JCodeModel buildBodyJCodeModel(String basePackage, String name, String schema, GenerationConfig config, Annotator annotator) {
+	public static JCodeModel buildBodyJCodeModel(String basePackage, String schemaLocation, String name, String schema, GenerationConfig config, Annotator annotator) {
 		JCodeModel codeModel = new JCodeModel();
 		SchemaStore schemaStore = new SchemaStore();
 
@@ -420,7 +423,12 @@ public class SchemaHelper {
 		SchemaMapper mapper = new SchemaMapper(ruleFactory,
 				new SchemaGenerator());
 		try {
-			mapper.generate(codeModel, name, basePackage, schema);
+			if (StringUtils.hasText(schemaLocation)) {
+				mapper.generate(codeModel, name, basePackage, schema, new URI(schemaLocation));
+			} else {
+				mapper.generate(codeModel, name, basePackage, schema);
+			}
+				
 		} catch (Exception e) {
 			logger.error("Error generating pojo from schema "+ name, e);
 			return null;
@@ -505,7 +513,7 @@ public class SchemaHelper {
 			if (mime != null && StringUtils.hasText(mime.getSchema())) {
 				if (checkForValidSchema) {
 					try {
-						ApiBodyMetadata pojo = SchemaHelper.mapSchemaToPojo(document, mime.getSchema(), "com.phoenixnap.oss.stylecheck", "ClazzUnderCheck");
+						ApiBodyMetadata pojo = SchemaHelper.mapSchemaToPojo(document, mime.getSchema(), "com.phoenixnap.oss.stylecheck", "ClazzUnderCheck", null);
 						if (pojo == null) {
 							return false;
 						} else {

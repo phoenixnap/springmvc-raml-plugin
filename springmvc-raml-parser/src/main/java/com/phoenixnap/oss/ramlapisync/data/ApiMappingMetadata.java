@@ -129,7 +129,7 @@ public class ApiMappingMetadata {
 			String schema = mime.getValue().getSchema();
 			if (StringUtils.hasText(schema)) {
 				ApiBodyMetadata requestBody = SchemaHelper.mapSchemaToPojo(parent.getDocument(), schema, parent.getBasePackage()
-						+ NamingHelper.getDefaultModelPackage(), StringUtils.capitalize(getName()) + "Request");
+						+ NamingHelper.getDefaultModelPackage(), StringUtils.capitalize(getName()) + "Request", null);
 				if (requestBody != null) {
 					setRequestBody(requestBody, mime.getKey());
 				}
@@ -157,7 +157,7 @@ public class ApiMappingMetadata {
 						String schema = body.getValue().getSchema();
 						if (StringUtils.hasText(schema)) {
 							ApiBodyMetadata responseBody = SchemaHelper.mapSchemaToPojo(parent.getDocument(), schema,
-									parent.getBasePackage() + NamingHelper.getDefaultModelPackage(), StringUtils.capitalize(getName()) + "Response");
+									parent.getBasePackage() + NamingHelper.getDefaultModelPackage(), StringUtils.capitalize(getName()) + "Response", null);
 							if (responseBody != null) {
 								this.responseBody.put(body.getKey(), responseBody);
 							}
