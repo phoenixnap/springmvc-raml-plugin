@@ -14,6 +14,8 @@ package com.phoenixnap.oss.ramlapisync.data;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Parameter;
+import java.lang.reflect.ParameterizedType;
+import java.lang.reflect.Type;
 
 import org.apache.commons.lang.NullArgumentException;
 import org.raml.model.parameter.AbstractParam;
@@ -62,7 +64,7 @@ public class ApiParameterMetadata {
 	/**
 	 * If the type contains generics, this is the type of the generic as defined in the code.
 	 */
-	private Class<?> genericType;
+	private Type genericType;
 
 	/**
 	 * Can this parameter be passed in as null
@@ -163,7 +165,7 @@ public class ApiParameterMetadata {
 		this.param = param;
 		if (param != null) {
 			this.type = param.getType();
-			this.genericType = (Class<?>) TypeHelper.inferGenericType(param.getParameterizedType());
+			this.genericType = TypeHelper.inferGenericType(param.getParameterizedType());
 		}
 
 		Example parameterExample = param.getAnnotation(Example.class);
@@ -186,7 +188,7 @@ public class ApiParameterMetadata {
 	 * 
 	 * @return The Java Type of the generic portion of the parameter
 	 */
-	public Class<?> getGenericType() {
+	public Type getGenericType() {
 		return genericType;
 	}
 
