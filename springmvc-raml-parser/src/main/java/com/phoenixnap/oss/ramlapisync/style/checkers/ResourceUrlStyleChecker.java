@@ -17,6 +17,7 @@ import java.util.Set;
 import java.util.regex.Pattern;
 
 import org.apache.commons.lang.CharUtils;
+import org.raml.model.Raml;
 import org.raml.model.Resource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -47,7 +48,7 @@ public class ResourceUrlStyleChecker extends RamlStyleCheckerAdapter {
 	
 	@Override
 	public Set<StyleIssue> checkResourceStyle(String name, Resource resource,
-			IssueLocation location) {
+			IssueLocation location, Raml raml) {
 		logger.debug("Checking resource " + name);
 		Set<StyleIssue> issues = new LinkedHashSet<>();
 		

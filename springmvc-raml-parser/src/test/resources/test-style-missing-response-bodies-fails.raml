@@ -1,0 +1,46 @@
+#%RAML 0.8
+title: myapi
+baseUri: /
+version: 1
+
+/base:
+  /endpointWithGetAndPost:
+    get:
+      responses:
+        200:
+          body:
+            application/json:
+              schema: |
+                      {
+                        "type" : "object",
+                        "properties" : {
+                          "stuffId" : {
+                            "type" : "integer"
+                          },
+                          "coolerId" : {
+                            "type" : "integer"
+                          }
+                        }
+                      }
+    post:
+      responses:
+        200:
+          body:
+            application/json:
+              schema: |
+                      {
+                        "type" : "object",
+                        "properties" : {
+                          "stuffId" : {
+                            "type" : "integer"
+                          },
+                          "coolerId" : {
+                            "type" : "integer"
+                          }
+                        }
+                      }
+    delete:
+  /endpointThatWillBoom:
+    get:
+    post:
+    delete:

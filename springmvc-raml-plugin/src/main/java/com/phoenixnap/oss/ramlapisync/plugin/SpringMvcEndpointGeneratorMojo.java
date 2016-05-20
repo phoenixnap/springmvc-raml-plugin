@@ -14,7 +14,10 @@ package com.phoenixnap.oss.ramlapisync.plugin;
 
 import java.io.File;
 import java.io.IOException;
+import java.lang.reflect.Method;
 import java.net.MalformedURLException;
+import java.net.URL;
+import java.net.URLClassLoader;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -96,6 +99,13 @@ public class SpringMvcEndpointGeneratorMojo extends AbstractMojo {
 	 */
 	@Parameter(required = true, readonly = true, defaultValue = "")
 	protected String basePackage;
+	
+	/**
+	 * The URI or relative path to the folder/network location containing JSON Schemas
+	 */
+	@Parameter(required = false, readonly = true, defaultValue = "")
+	protected String schemaLocation;
+
 
 	/**
 	 * The explicit base path under which the rest endpoints should be located.
@@ -129,6 +139,8 @@ public class SpringMvcEndpointGeneratorMojo extends AbstractMojo {
 	protected Map<String, String> ruleConfiguration = new LinkedHashMap<>();
 
 	private ClassRealm classRealm;
+	
+	private String resolvedSchemaLocation;
 
 	protected void generateEndpoints() throws MojoExecutionException, MojoFailureException, IOException {
 
@@ -142,6 +154,10 @@ public class SpringMvcEndpointGeneratorMojo extends AbstractMojo {
 		} else {
 			resolvedRamlPath += ramlPath;
 		}
+		
+		//Resolve schema location and add to classpath
+		resolvedSchemaLocation = getSchemaLocation();
+		
 		Raml loadRamlFromFile = RamlParser.loadRamlFromFile( "file:"+resolvedRamlPath );
 		RamlParser par = new RamlParser(basePackage, getBasePath(loadRamlFromFile), seperateMethodsByContentType);
 		Set<ApiControllerMetadata> controllers = par.extractControllers(loadRamlFromFile);
@@ -160,6 +176,7 @@ public class SpringMvcEndpointGeneratorMojo extends AbstractMojo {
 		if (!rootDir.exists() && !rootDir.mkdirs()) {
 			throw new IOException("Could not create directory:" + rootDir.getAbsolutePath());
 		}
+		
 		generateCode(controllers, rootDir);
 	}
 
@@ -223,6 +240,7 @@ public class SpringMvcEndpointGeneratorMojo extends AbstractMojo {
 	private ClassRealm getClassRealm() throws DependencyResolutionRequiredException, MalformedURLException {
 		if(classRealm == null) {
 			List<String> runtimeClasspathElements = project.getRuntimeClasspathElements();
+			
 			classRealm = descriptor.getClassRealm();
 			for (String element : runtimeClasspathElements)
 			{
@@ -239,7 +257,7 @@ public class SpringMvcEndpointGeneratorMojo extends AbstractMojo {
             if (config ==null && annotator == null) {
             	codeModel = body.getCodeModel();
             } else {
-            	codeModel = body.getCodeModel(basePackage + NamingHelper.getDefaultModelPackage(), config, annotator);
+            	codeModel = body.getCodeModel(resolvedSchemaLocation, basePackage + NamingHelper.getDefaultModelPackage(), config, annotator);
             }
             if (codeModel != null) {
                 codeModel.build(rootDir);
@@ -248,6 +266,44 @@ public class SpringMvcEndpointGeneratorMojo extends AbstractMojo {
             e.printStackTrace();
             this.getLog().error("Could not build code model for " + met.getName(), e);
         }
+	}
+
+	private String getSchemaLocation() {
+		
+		if (StringUtils.hasText(schemaLocation)) {
+			
+			if (!schemaLocation.contains(":")) {
+				String resolvedPath = project.getBasedir().getAbsolutePath();
+				if (resolvedPath.endsWith(File.separator) || resolvedPath.endsWith("/")) {
+					resolvedPath = resolvedPath.substring(0, resolvedPath.length()-1);
+				}
+				
+				if (!schemaLocation.startsWith(File.separator) && !schemaLocation.startsWith("/")) {
+					resolvedPath += File.separator;
+				}
+				
+				resolvedPath += schemaLocation;
+				
+
+				if (!schemaLocation.endsWith(File.separator) && !schemaLocation.endsWith("/")) {
+					resolvedPath += File.separator;
+				}
+				resolvedPath = resolvedPath.replace(File.separator,"/").replace("\\", "/");
+				try {
+				    URLClassLoader urlClassLoader = (URLClassLoader) ClassLoader.getSystemClassLoader();
+				    Class<?> urlClass = URLClassLoader.class;
+				    Method method = urlClass.getDeclaredMethod("addURL", new Class[]{URL.class});
+				    method.setAccessible(true);
+				    method.invoke(urlClassLoader, new Object[]{new URL("file:"+resolvedPath)});
+				    return "classpath:/"; //since we have added this folder to the classpath this should be used by the plugin
+				} catch (Exception ex) {
+					this.getLog().error("Could not add schema location to classpath", ex);
+					return "file:"+resolvedPath;
+				}
+			}
+			return schemaLocation;
+		}
+		return null;
 	}
 
 	private void generateControllerSource(ApiControllerMetadata met, File dir) {

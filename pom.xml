@@ -4,7 +4,7 @@
 
 	<groupId>com.phoenixnap.oss</groupId>
 	<artifactId>springmvc-raml-parent</artifactId>
-	<version>0.5.1</version>
+	<version>0.5.2</version>
 	
 	<name>Spring MVC to RAML Synchronizer</name>
 	<description>Parent pom to the SpringMVC RAML Generation/Verification Project</description>
@@ -57,7 +57,7 @@
 		<powermock.version>1.6.2</powermock.version>
 		<maven.core.version>3.3.9</maven.core.version>
 		<spring.platform.version>2.0.3.RELEASE</spring.platform.version>
-		<jsonschema2pojo.version>0.4.22</jsonschema2pojo.version>
+		<jsonschema2pojo.version>0.4.23</jsonschema2pojo.version>
 		<ramlparser.version>0.8.13</ramlparser.version>
 		<reflections.version>0.9.10</reflections.version>
 		<javaparser.version>2.4.0</javaparser.version>

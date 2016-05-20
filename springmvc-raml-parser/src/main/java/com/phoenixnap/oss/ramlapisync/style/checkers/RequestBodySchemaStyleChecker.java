@@ -13,34 +13,48 @@
 package com.phoenixnap.oss.ramlapisync.style.checkers;
 
 import java.util.LinkedHashSet;
+import java.util.Map;
 import java.util.Set;
 
 import org.raml.model.Action;
 import org.raml.model.ActionType;
+import org.raml.model.MimeType;
 import org.raml.model.Raml;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.util.StringUtils;
 
+import com.phoenixnap.oss.ramlapisync.naming.SchemaHelper;
 import com.phoenixnap.oss.ramlapisync.style.RamlStyleCheckerAdapter;
 import com.phoenixnap.oss.ramlapisync.style.StyleIssue;
 import com.phoenixnap.oss.ramlapisync.verification.IssueLocation;
 
-
 /**
- * Action style checker that enforces that 401 and 403 responses are defined when a security scheme is defined for an API
  * 
- * @author Kurt Paris
- * @since 0.0.2
+ * Style checker that will check for existance of valid schemas in request bodies
+ * 
+ * @author kurtpa
+ * @since 0.5.2
  *
  */
-public class ActionSecurityResponseChecker extends RamlStyleCheckerAdapter {
-	
+public class RequestBodySchemaStyleChecker extends RamlStyleCheckerAdapter {
+
+
 	/**
 	 * Class Logger
 	 */
-	protected static final Logger logger = LoggerFactory.getLogger(ActionSecurityResponseChecker.class);
+	protected static final Logger logger = LoggerFactory.getLogger(ResponseBodySchemaStyleChecker.class);
 	
-	public static String DESCRIPTION = "Secured Resources should define 401 and 403 responses";
+	public static String DESCRIPTION = "Action %s should define response body schema";
+	
+	private Set<String> actionsToEnforce = new LinkedHashSet<String>();
+
+	public RequestBodySchemaStyleChecker(String actionTypesToCheck) {
+		String[] tokens = StringUtils.delimitedListToStringArray(actionTypesToCheck, ",", " ");
+		for (String token : tokens) {
+			actionsToEnforce.add(token);
+		}
+	}
 	
 	@Override
 	public Set<StyleIssue> checkActionStyle(ActionType key, Action value,
@@ -48,22 +62,25 @@ public class ActionSecurityResponseChecker extends RamlStyleCheckerAdapter {
 		logger.debug("Checking Action: " + key);
 		Set<StyleIssue> issues = new LinkedHashSet<>();
 		
-		//check if we have a security scheme defined for this action
-		if (value.getSecuredBy() != null 
-				&& value.getSecuredBy().size() > 0 
-				&& value.getSecuredBy().get(0).getName() != null
-				&& (!value.getSecuredBy().get(0).getName().equals("null")
-						|| value.getSecuredBy().size() > 1 )) {
-			if (value.getResponses() == null
-					|| !value.getResponses().containsKey("401")
-					|| !value.getResponses().containsKey("403")) {
-				issues.add(new StyleIssue(location, DESCRIPTION, value.getResource(), value));
-			} 
+		//Do we have a check for this verb?
+		if (actionsToEnforce.contains(key.name())) {			
+			boolean schemaFound = false;
+			// Now the response
+			if (value.hasBody()) {
+				Map<String, MimeType> successResponse = value.getBody();
+				if (SchemaHelper.containsBodySchema(successResponse, raml, true)) {
+					schemaFound = true;
+				}
+			}
+				
+			
+			if (!schemaFound) {
+				issues.add(new StyleIssue(location, String.format(DESCRIPTION, key), value.getResource(), value));
+			}
 		}
-		
+			
 		return issues;
 	}
-
 	
-
+	
 }

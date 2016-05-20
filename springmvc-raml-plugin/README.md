@@ -116,12 +116,16 @@ Then simply include the following code in the POM of the project you wish to gen
     <ramlToVerifyPath>/src/main/resources/public/raml/api.raml</ramlToVerifyPath>
 	<javaDocPath>D:/</javaDocPath>
     <performStyleChecks>true</performStyleChecks>
+	<checkRamlAgainstImplementation>true</checkRamlAgainstImplementation>
 	<checkForResourceExistence>true</checkForResourceExistence>
 	<checkForActionExistence>true</checkForActionExistence>
 	<checkForQueryParameterExistence>true</checkForQueryParameterExistence>
 	<checkForPluralisedResourceNames>true</checkForPluralisedResourceNames>
 	<checkForSpecialCharactersInResourceNames>true</checkForSpecialCharactersInResourceNames>
 	<checkForDefinitionOf40xResponseInSecuredResource>true</checkForDefinitionOf40xResponseInSecuredResource>
+	<checkForSchemaInSuccessfulResponseBody>true</checkForSchemaInSuccessfulResponseBody>
+	<checkForSchemaInRequestBody>true</checkForSchemaInRequestBody>
+	<checkForDefinitionOf404ResponseInGetRequest>true</checkForDefinitionOf404ResponseInGetRequest>
 	<breakBuildOnWarnings>false</breakBuildOnWarnings>
     <logWarnings>true</logWarnings>
     <logErrors>true</logErrors>	
@@ -151,6 +155,9 @@ Then simply include the following code in the POM of the project you wish to gen
 ### javaDocPath
 (optional) Absolute path to a folder which will be used to search for JavaDoc. This folder should contain all source of controllers being scanned. Using root folders for this may increase scanning time. If this is not supplied, the scanner will default to the current project folder
 
+### checkRamlAgainstImplementation
+(optional, default: true) Flag that will enable or disable checking of the RAML file against the Server Implementation. If this is set to false it will override other check flags
+
 ### performStyleChecks
 (optional, default: true) Flag that will enable or disable Style Checking of the RAML file. If this is set to false it will override other style check flags
 
@@ -174,6 +181,18 @@ Then simply include the following code in the POM of the project you wish to gen
 
 ### checkForDefinitionOf40xResponseInSecuredResource
 (optional, default: true) Flag that will enable or disable checks for 401 and 403 responses for secured resources
+
+### checkForSchemaInSuccessfulResponseBody
+(optional, default: "", recommended: "GET, PUT, POST") Comma separated list of HTTP Methods to check for schemas being present in the successful response Body.
+
+### checkForSchemaInRequestBody
+(optional, default: "", recommended: "PUT, POST") Comma separated list of HTTP Methods to check for schemas being present in the request Body.
+
+### checkForDefinitionOf404ResponseInGetRequest
+(optional, default: false) Flag that will enable or disable checks for 404 responses get requests
+
+### checkForDefinitionOfErrorCodes
+(optional, default: false) Flag that will enable or disable checks for 400 and 500 error codes in certain verbs (PUT, POST, PATCH for 400 & All verbs for 500)
 
 ### ignoredList
 (optional, default: empty) If classes or packages are included in this list, they will not be included in the generated model
@@ -206,7 +225,8 @@ Then simply include the following code in the POM of the project you wish to gen
   <artifactId>springmvc-raml-plugin</artifactId>
   <version>x.x.x</version>
   <configuration>
-    <ramlPath></ramlPath>
+    <ramlPath>{path.to.raml.file}</ramlPath>
+	<schemaLocation>{path.to.schema.directory||schema.absolute.url}</schemaLocation>
 	<outputRelativePath>/src/generated</outputRelativePath>
     <addTimestampFolder>false</addTimestampFolder>
     <basePackage>com.gen.wow</basePackage>
@@ -240,6 +260,9 @@ Then simply include the following code in the POM of the project you wish to gen
 
 ### basePackage
 (required) Base package to be used for the java classes to be generated. Model objects will be added in the .model subpackage
+
+### schemaLocation
+(optional, default: "") The URI or relative path to the folder/network location containing JSON Schemas
 
 ### baseUri
 (optional) Base URI for generated Spring controllers. This overrules the baseUri attribute from inside the .raml spec.

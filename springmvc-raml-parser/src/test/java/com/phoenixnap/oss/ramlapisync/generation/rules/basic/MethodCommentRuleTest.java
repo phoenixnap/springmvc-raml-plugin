@@ -2,10 +2,12 @@ package com.phoenixnap.oss.ramlapisync.generation.rules.basic;
 
 import com.phoenixnap.oss.ramlapisync.generation.rules.AbstractRuleTestBase;
 import com.sun.codemodel.*;
+
 import org.junit.Test;
 import org.springframework.http.ResponseEntity;
 
 import static org.hamcrest.Matchers.containsString;
+import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertThat;
 
 /**
@@ -22,7 +24,7 @@ public class MethodCommentRuleTest extends AbstractRuleTestBase {
         JDefinedClass jClass = jCodeModel.rootPackage()._class("TestController");
         JMethod jMethod = jClass.method(JMod.PUBLIC, ResponseEntity.class, "getBaseById");
         JDocComment jDocComment = rule.apply(getEndpointMetadata(2), jMethod);
-
+        assertNotNull(jDocComment);
         assertThat(serializeModel(), containsString("* Get base entity by ID"));
     }
 

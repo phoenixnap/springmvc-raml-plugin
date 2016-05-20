@@ -17,6 +17,7 @@ import java.util.Set;
 
 import org.raml.model.Action;
 import org.raml.model.ActionType;
+import org.raml.model.Raml;
 import org.raml.model.Resource;
 import org.raml.model.parameter.AbstractParam;
 
@@ -38,14 +39,14 @@ public class RamlStyleCheckerAdapter implements RamlStyleChecker {
 
 	@Override
 	public Set<StyleIssue> checkActionStyle(ActionType key, Action value,
-			IssueLocation location) {
+			IssueLocation location, Raml raml) {
 		return Collections.emptySet();
 	}
 
 	@Override
 	public Set<StyleIssue> checkResourceStyle(String name, Resource resource,
-			IssueLocation location) {
+			IssueLocation location, Raml raml) {
 		return Collections.emptySet();
 	}
-
+	
 }

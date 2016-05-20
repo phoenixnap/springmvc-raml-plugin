@@ -47,5 +47,16 @@ public class Pair<K, Y> {
 	public void setSecond(Y second) {
 		this.second = second;
 	}
+	
+	/**
+	 * Convenience method to create a pair
+	 * 
+	 * @param first The first object in the pair
+	 * @param second The second object in the pair
+	 * @return A Pair containing both objects in order
+	 */
+	public static <A, B> Pair<A, B> pairify (A first, B second) {
+		return new Pair<A, B>(first, second);
+	}
 
 }
