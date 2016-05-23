@@ -53,6 +53,8 @@ public class Pair<K, Y> {
 	 * 
 	 * @param first The first object in the pair
 	 * @param second The second object in the pair
+	 * @param <A> The type of the first portion of the pair
+	 * @param <B> The type of the second portion of the pair
 	 * @return A Pair containing both objects in order
 	 */
 	public static <A, B> Pair<A, B> pairify (A first, B second) {
