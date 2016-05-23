@@ -65,6 +65,8 @@ public class Spring4RestTemplateClientRule implements ConfigurableRule<JCodeMode
 	
 	String baseUrlConfigurationPath = "${client.url}";
 	
+	String restTemplateQualifierBeanName;
+	
     @Override
     public final JDefinedClass apply(ApiControllerMetadata metadata, JCodeModel generatableType) {
 
@@ -88,7 +90,7 @@ public class Spring4RestTemplateClientRule implements ConfigurableRule<JCodeMode
                 .addClassAnnotationRule(new ClassAnnotationRule(Component.class))                
                 .setClassRule(new ResourceClassDeclarationRule(ClientInterfaceDeclarationRule.CLIENT_SUFFIX + "Impl"))   //MODIFIED
                 .setImplementsExtendsRule(new ImplementsControllerInterfaceRule(generatedInterface))
-                .addFieldDeclarationRule(new ClassFieldDeclarationRule(restTemplateFieldName, RestTemplate.class)) //Modified
+                .addFieldDeclarationRule(new ClassFieldDeclarationRule(restTemplateFieldName, RestTemplate.class, true, restTemplateQualifierBeanName)) //Modified
                 .addFieldDeclarationRule(new ClassFieldDeclarationRule(baseUrlFieldName, String.class, getBaseUrlConfigurationName())) //
                 .setMethodCommentRule(new MethodCommentRule())                
                 .setMethodSignatureRule(new ControllerMethodSignatureRule(
@@ -115,6 +117,11 @@ public class Spring4RestTemplateClientRule implements ConfigurableRule<JCodeMode
 			if(configuration.containsKey("restTemplateFieldName")) {
 				this.restTemplateFieldName = configuration.get("restTemplateFieldName");
 			}
+			
+			if(configuration.containsKey("restTemplateQualifierBeanName")) {
+                this.restTemplateQualifierBeanName = configuration.get("restTemplateQualifierBeanName");
+            }
+			
 			if(configuration.containsKey("baseUrlConfigurationPath")) {
 				this.baseUrlConfigurationPath = configuration.get("baseUrlConfigurationPath");
 			}

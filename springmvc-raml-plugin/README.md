@@ -307,6 +307,7 @@ Creates a single interface as well as a client implementation using the Spring R
 Configuration:
 	baseUrlConfigurationPath: The path that will be used to load the property for the server url. Default: ${client.url}
 	restTemplateFieldName: The name of the RestTemplate field
+	restTemplateQualifierBeanName: [OPTIONAL] The name of the bean for the rest template used in the generated client. Default: NONE
 ```
 
 ## Contributing
