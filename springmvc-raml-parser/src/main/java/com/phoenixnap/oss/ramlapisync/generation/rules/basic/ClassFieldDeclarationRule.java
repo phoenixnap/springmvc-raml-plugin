@@ -13,6 +13,7 @@
 package com.phoenixnap.oss.ramlapisync.generation.rules.basic;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.util.StringUtils;
 
@@ -51,6 +52,10 @@ public class ClassFieldDeclarationRule implements Rule<JDefinedClass, JFieldVar,
     
     private boolean valueAnnotation = false;
     
+    private boolean qualifierAnnotation = false;
+    
+    private String qualifier;
+    
     private String valueAnnotationValue;
     
     public ClassFieldDeclarationRule(String restTemplateFieldName, Class<?> fieldClazz, String valueAnnotationValue) {
@@ -65,10 +70,19 @@ public class ClassFieldDeclarationRule implements Rule<JDefinedClass, JFieldVar,
     	this.autowire = autowire;
     }
     
+    public ClassFieldDeclarationRule(String restTemplateFieldName, Class<?> fieldClazz, boolean autowire, String qualifierBeanName) {
+        this(restTemplateFieldName, fieldClazz);
+        if (qualifierBeanName != null){
+            this.qualifierAnnotation = true;
+            this.qualifier = qualifierBeanName;
+        }
+        this.autowire = autowire;
+    }
+    
     public ClassFieldDeclarationRule(String restTemplateFieldName, Class<?> fieldClazz) {
     	if (fieldClazz != null) {
         	this.fieldClazz = fieldClazz;
-        }else{
+        } else {
         	throw new IllegalStateException("Class not specified"); 
         }
     	if(StringUtils.hasText(restTemplateFieldName)) {
@@ -86,6 +100,11 @@ public class ClassFieldDeclarationRule implements Rule<JDefinedClass, JFieldVar,
         //add @Autowired field annoation
         if (autowire) {
         	field.annotate(Autowired.class);
+        }
+        
+        //add @Qualifier("qualifierBeanName")
+        if (qualifierAnnotation && !StringUtils.isEmpty(qualifier)){
+            field.annotate(Qualifier.class).param("value", qualifier);
         }
         
         //add @Value(value="") annotation to the field 
