@@ -88,12 +88,6 @@ public class SpringMvcEndpointGeneratorMojo extends AbstractMojo {
 	protected Boolean addTimestampFolder;
 
 	/**
-	 * IF this is set to true, we will pass on this configuration to the jsonschema2pojo library for creation of Longs instead of Ints
-	 */
-	@Parameter(required = false, readonly = true, defaultValue = "false")
-	protected Boolean schemaUseLongIntegers;
-
-	/**
 	 * Java package to be applied to the generated files
 	 */
 	@Parameter(required = true, readonly = true, defaultValue = "")
@@ -191,7 +185,6 @@ public class SpringMvcEndpointGeneratorMojo extends AbstractMojo {
 
 			Set<ApiBodyMetadata> dependencies = met.getDependencies();
 			for (ApiBodyMetadata body : dependencies) {
-				//final GenerationConfig config = SchemaHelper.getGenerationConfig(null, null, null, this.schemaUseLongIntegers);
 				generateModelSources(met, body, rootDir, generationConfig, useJackson1xCompatibility == true ? new Jackson1Annotator() : null );
 			}
 
