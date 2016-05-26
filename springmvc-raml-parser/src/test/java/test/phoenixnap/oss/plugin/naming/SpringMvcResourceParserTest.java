@@ -47,6 +47,7 @@ import test.phoenixnap.oss.plugin.naming.testclasses.BugController;
 import test.phoenixnap.oss.plugin.naming.testclasses.MultipleContentTypeTestController;
 import test.phoenixnap.oss.plugin.naming.testclasses.NoValueController;
 import test.phoenixnap.oss.plugin.naming.testclasses.TestController;
+import test.phoenixnap.oss.plugin.naming.testclasses.UriPrefixIgnoredController;
 
 import com.phoenixnap.oss.ramlapisync.data.ApiControllerMetadata;
 import com.phoenixnap.oss.ramlapisync.data.ApiMappingMetadata;
@@ -55,8 +56,8 @@ import com.phoenixnap.oss.ramlapisync.generation.RamlVerifier;
 import com.phoenixnap.oss.ramlapisync.javadoc.JavaDocEntry;
 import com.phoenixnap.oss.ramlapisync.javadoc.JavaDocExtractor;
 import com.phoenixnap.oss.ramlapisync.javadoc.JavaDocStore;
+import com.phoenixnap.oss.ramlapisync.naming.RamlHelper;
 import com.phoenixnap.oss.ramlapisync.parser.FileSearcher;
-import com.phoenixnap.oss.ramlapisync.parser.ResourceParser;
 import com.phoenixnap.oss.ramlapisync.parser.SpringMvcResourceParser;
 
 /**
@@ -84,7 +85,7 @@ public class SpringMvcResourceParserTest {
 
 	private void validateSimpleAjaxResponse(Action action) {
 		assertEquals(1, action.getResponses().size());
-		Response response = ResourceParser.getSuccessfulResponse(action);
+		Response response = RamlHelper.getSuccessfulResponse(action);
 		assertEquals("Checking return javadoc", RETURN_JAVADOC, response.getDescription());
 		assertEquals(1, response.getBody().size());
 		assertNotNull("Check Response is there", response.getBody().get(DEFAULT_MEDIA_TYPE));
@@ -93,7 +94,7 @@ public class SpringMvcResourceParserTest {
 	
 	private void validateMultipleResponse(Action action) {
 		assertEquals(1, action.getResponses().size());
-		Response response = ResourceParser.getSuccessfulResponse(action);
+		Response response = RamlHelper.getSuccessfulResponse(action);
 		assertEquals("Checking return javadoc", RETURN_JAVADOC, response.getDescription());
 		assertEquals(2, response.getBody().size());
 		assertNotNull("Check Response is there", response.getBody().get(MediaType.APPLICATION_JSON_VALUE));		
@@ -185,6 +186,28 @@ public class SpringMvcResourceParserTest {
 
 		Resource testResource = resourceInfo.getResource("/base").getResource("/endpoint");
 		assertEquals("Assert resources size", 2, testResource.getActions().size());
+		Action getAction = testResource.getActions().get(ActionType.GET);
+		Action postAction = testResource.getActions().get(ActionType.POST);
+		assertNotNull(getAction);
+		assertNotNull(postAction);
+		assertEquals("Assert Javadoc", COMMENT_JAVADOC, getAction.getDescription());
+		assertEquals("Assert Javadoc", COMMENT_JAVADOC, postAction.getDescription());
+		validateMultipleResponse(getAction);
+		validateMultipleResponse(postAction);
+	}
+	
+	@Test
+	public void test_uriPrefixIgnored() {
+		Resource resourceInfo = parser.extractResourceInfo(UriPrefixIgnoredController.class);
+		Raml raml = new Raml();
+		RamlHelper.mergeResources(raml, resourceInfo, true);
+		RamlHelper.removeResourceTree(raml, UriPrefixIgnoredController.IGNORED);
+
+		Resource testResource = raml.getResource("/").getResource("/base").getResource("/endpoint");
+		assertEquals("Assert removal", null, raml.getResource("/").getResource("/the"));
+		assertFalse("Check URI", testResource.getUri().contains("the"));
+		assertEquals("Assert resources size", 1, raml.getResources().size());
+		assertEquals("Assert actions size", 2, testResource.getActions().size());
 		Action getAction = testResource.getActions().get(ActionType.GET);
 		Action postAction = testResource.getActions().get(ActionType.POST);
 		assertNotNull(getAction);

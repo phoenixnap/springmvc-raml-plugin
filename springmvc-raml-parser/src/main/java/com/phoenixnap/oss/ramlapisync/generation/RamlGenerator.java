@@ -13,7 +13,9 @@
 package com.phoenixnap.oss.ramlapisync.generation;
 
 import com.phoenixnap.oss.ramlapisync.data.ApiDocumentMetadata;
+import com.phoenixnap.oss.ramlapisync.naming.RamlHelper;
 import com.phoenixnap.oss.ramlapisync.parser.ResourceParser;
+
 import org.apache.commons.io.FileUtils;
 import org.raml.emitter.RamlEmitter;
 import org.raml.model.DocumentationItem;
@@ -119,10 +121,10 @@ public class RamlGenerator {
 			Resource resource = scanner.extractResourceInfo(item);
 			if (resource.getRelativeUri().equals("/")) { // root should never be added directly
 					for (Resource cResource : resource.getResources().values()) {
-						mergeResources(raml, cResource, true);
+						RamlHelper.mergeResources(raml, cResource, true);
 					}
 				} else {
-					mergeResources(raml, resource, true);
+					RamlHelper.mergeResources(raml, resource, true);
 				}
 
 			});
@@ -139,43 +141,7 @@ public class RamlGenerator {
 		}
 	}
 
-	/**
-	 * Tree merging algorithm, if a resource already exists it will not overwrite and add all children to the existing resource 
-	 * @param existing
-	 * @param resource
-	 * @param addActions
-	 */
-	private void mergeResources(Resource existing, Resource resource, boolean addActions) {	
-		Map<String, Resource> existingChildResources = existing.getResources();
-		Map<String, Resource> newChildResources = resource.getResources();
-		for (String newChildKey : newChildResources.keySet()) {
-			if (!existingChildResources.containsKey(newChildKey)) {
-				existingChildResources.put(newChildKey, newChildResources.get(newChildKey));
-			} else {
-				mergeResources(existingChildResources.get(newChildKey), newChildResources.get(newChildKey), addActions);
-			}			
-		}
-		
-		if (addActions) {
-			existing.getActions().putAll(resource.getActions());
-		}
-	}
 	
-	/**
-	 * Merges two RAML Resources trees together. This is non-recursive and could currently lose children in lower
-	 * levels.
-	 * @param raml
-	 * @param resource
-	 * @param addActions
-	 */
-	private void mergeResources(Raml raml, Resource resource, boolean addActions) {
-		Resource existingResource = raml.getResource(resource.getRelativeUri());
-		if (existingResource == null) {
-			raml.getResources().put(resource.getRelativeUri(), resource);
-		} else {
-			mergeResources(existingResource, resource, addActions);
-		}
-	}
 
 	/**
 	 * Parses the list of document models and adds them as RAML documentItem nodes in the RAML document.
