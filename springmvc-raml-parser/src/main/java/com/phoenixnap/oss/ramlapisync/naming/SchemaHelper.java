@@ -12,6 +12,7 @@
  */
 package com.phoenixnap.oss.ramlapisync.naming;
 
+import java.io.IOException;
 import java.lang.reflect.Field;
 import java.lang.reflect.Parameter;
 import java.lang.reflect.Type;
@@ -422,15 +423,27 @@ public class SchemaHelper {
 
 		SchemaMapper mapper = new SchemaMapper(ruleFactory,
 				new SchemaGenerator());
+		boolean useParent = StringUtils.hasText(schemaLocation);		
 		try {
-			if (StringUtils.hasText(schemaLocation)) {
+			if (useParent) {				
 				mapper.generate(codeModel, name, basePackage, schema, new URI(schemaLocation));
 			} else {
 				mapper.generate(codeModel, name, basePackage, schema);
 			}
 				
 		} catch (Exception e) {
-			logger.error("Error generating pojo from schema "+ name, e);
+			//TODO make this smarter by checking refs
+			if (useParent && e.getMessage().contains("classpath")) {
+				logger.debug("Referenced Schema contains self $refs or not found in classpath. Regenerating model withouth classpath: for "+ name);
+				codeModel = new JCodeModel();
+				try {
+					mapper.generate(codeModel, name, basePackage, schema);
+					return codeModel;
+				} catch (IOException e1) {
+					//do nothing
+				}
+			}
+			logger.error("Error generating pojo from schema"+ name, e);
 			return null;
 		}
 		return codeModel;
