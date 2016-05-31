@@ -5,7 +5,7 @@
 	<parent>
 		<groupId>com.phoenixnap.oss</groupId>
 		<artifactId>springmvc-raml-parent</artifactId>
-		<version>0.5.2</version>
+		<version>0.6.0-SNAPSHOT</version>
 	</parent>
 	
 	<artifactId>springmvc-raml-plugin</artifactId>
@@ -126,6 +126,17 @@
 							<goal>helpmojo</goal>
 						</goals>
 						<phase>process-classes</phase>
+					</execution>
+				</executions>
+			</plugin>
+			<plugin>
+				<artifactId>maven-site-plugin</artifactId>
+				<executions>
+					<execution>
+						<id>attach-descriptor</id>
+						<goals>
+							<goal>attach-descriptor</goal>
+						</goals>
 					</execution>
 				</executions>
 			</plugin>
