@@ -32,6 +32,7 @@ import org.springframework.http.MediaType;
 import org.springframework.util.StringUtils;
 
 import com.phoenixnap.oss.ramlapisync.naming.NamingHelper;
+import com.phoenixnap.oss.ramlapisync.naming.RamlHelper;
 import com.phoenixnap.oss.ramlapisync.naming.SchemaHelper;
 import com.phoenixnap.oss.ramlapisync.parser.ResourceParser;
 
@@ -147,7 +148,7 @@ public class ApiMappingMetadata {
 	}
 
 	private void parseResponse(String responseContentTypeFilter) {
-		Response response = ResourceParser.getSuccessfulResponse(action);
+		Response response = RamlHelper.getSuccessfulResponse(action);
 
 		if (response != null && response.getBody() != null && !response.getBody().isEmpty()) {
 			for (Entry<String, MimeType> body : response.getBody().entrySet()) {

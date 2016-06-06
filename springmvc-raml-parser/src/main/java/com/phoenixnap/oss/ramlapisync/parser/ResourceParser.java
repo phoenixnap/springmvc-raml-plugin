@@ -19,7 +19,6 @@ import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
 import java.util.regex.Pattern;
 
 import org.raml.model.Action;
@@ -31,7 +30,6 @@ import org.raml.model.Response;
 import org.raml.model.parameter.QueryParameter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
 
 import com.phoenixnap.oss.ramlapisync.data.ApiParameterMetadata;
@@ -340,44 +338,6 @@ public abstract class ResourceParser {
 		return response;
 	}
 
-	/**
-	 * Merges together existing actions. At present we are doing the following:
-	 * 
-	 * - Add Response bodies from the new to existing
-	 * 
-	 * TODO Other operations that we should consider. Not adding these until an actual usecase crops up.
-	 * - Merging Descriptions?
-	 * - Copying over Request Data?
-	 * - Copying over other responses?
-	 * 
-	 * @param existingAction The action we already have in our model
-	 * @param newAction The action we we want to include in the model
-	 */
-	protected void mergeActions (Action existingAction, Action newAction) {
-		Response existingSuccessfulResponse = getSuccessfulResponse(existingAction);
-		Response successfulResponse = getSuccessfulResponse(newAction);
-
-		if (existingSuccessfulResponse != null && existingSuccessfulResponse.hasBody() && successfulResponse != null && successfulResponse.hasBody()) {
-			for (Entry<String, MimeType> body : successfulResponse.getBody().entrySet()) {
-				existingSuccessfulResponse.getBody().putIfAbsent(body.getKey(), body.getValue());
-			}
-		}
-	}
-	
-	/**
-	 * Gets the successful response from an action (200 or 201)
-	 * @param action The action to parse
-	 * @return The Successful response or null if not found
-	 */
-	public static Response getSuccessfulResponse(Action action) {
-		String[] successfulResponses = new String[] {"200", "201"};
-		for (String code : successfulResponses) {
-			if (action != null && !CollectionUtils.isEmpty(action.getResponses()) && action.getResponses().containsKey(code)) {
-				return action.getResponses().get(code);
-			}
-		}
-		return null;
-	}
 	
 	/**
 	 * 

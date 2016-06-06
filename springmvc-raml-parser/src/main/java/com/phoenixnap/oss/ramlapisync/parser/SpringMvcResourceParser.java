@@ -49,6 +49,7 @@ import com.phoenixnap.oss.ramlapisync.data.ApiParameterMetadata;
 import com.phoenixnap.oss.ramlapisync.javadoc.JavaDocEntry;
 import com.phoenixnap.oss.ramlapisync.naming.NamingHelper;
 import com.phoenixnap.oss.ramlapisync.naming.Pair;
+import com.phoenixnap.oss.ramlapisync.naming.RamlHelper;
 import com.phoenixnap.oss.ramlapisync.naming.SchemaHelper;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -544,7 +545,7 @@ public class SpringMvcResourceParser extends ResourceParser {
 			if (actionTargetResource.getActions().containsKey(apiAction)) {
 				//merge action
 				Action existingAction = actionTargetResource.getActions().get(apiAction);
-				mergeActions(existingAction, action);
+				RamlHelper.mergeActions(existingAction, action);
 				
 			} else {
 				actionTargetResource.getActions().put(apiAction, action);
