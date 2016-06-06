@@ -9,84 +9,84 @@ public class PojoGenerationConfig extends DefaultGenerationConfig
     * We will pass on this configuration to the jsonschema2pojo library for creation of BigDecimals instead of Floats
     */
    @Parameter(required = false, readonly = true, defaultValue = "false")
-   protected Boolean useBigDecimals;
+   protected Boolean useBigDecimals = Boolean.FALSE;
 
    /**
     * We will pass on this configuration to the jsonschema2pojo library for creation of Doubles instead of Floats
     */
    @Parameter(required = false, readonly = true, defaultValue = "false")
-   protected Boolean useDoubleNumbers;
+   protected Boolean useDoubleNumbers = Boolean.FALSE;
 
    /**
     * We will pass on this configuration to the jsonschema2pojo library for creation of Longs instead of Ints
     */
    @Parameter(required = false, readonly = true, defaultValue = "false")
-   protected Boolean useLongIntegers;
+   protected Boolean useLongIntegers = Boolean.FALSE;
 
    /**
     * We will pass on this configuration to the jsonschema2pojo library for creation of primitives instead of Objects
     */
    @Parameter(required = false, readonly = true, defaultValue = "false")
-   protected Boolean usePrimitives;
+   protected Boolean usePrimitives = Boolean.FALSE;
 
    /**
     * We will pass on this configuration to the jsonschema2pojo library for use of commons-lang 3.x imports instead of commons-lang 2.x
     */
    @Parameter(required = false, readonly = true, defaultValue = "false")
-   protected Boolean useCommonsLang3;
+   protected Boolean useCommonsLang3 = Boolean.FALSE;
 
    /**
     * We will pass on this configuration to the jsonschema2pojo library for generation of builder-style methods of the form <code>withXxx(value)</code> that return <code>this</code>
     */
    @Parameter(required = false, readonly = true, defaultValue = "false")
-   protected Boolean generateBuilders;
+   protected Boolean generateBuilders = Boolean.FALSE;
    /**
     * We will pass on this configuration to the jsonschema2pojo library for generation of getters and setters
     */
    @Parameter(required = false, readonly = true, defaultValue = "true")
-   protected Boolean includeAccessors;
+   protected Boolean includeAccessors = Boolean.TRUE;
 
    /**
     * We will pass on this configuration to the jsonschema2pojo library for support of additional properties
     */
    @Parameter(required = false, readonly = true, defaultValue = "true")
-   protected Boolean includeAdditionalProperties;
+   protected Boolean includeAdditionalProperties = Boolean.TRUE;
 
    /**
     * We will pass on this configuration to the jsonschema2pojo library for generation of constructors
     */
    @Parameter(required = false, readonly = true, defaultValue = "false")
-   protected Boolean includeConstructors;
+   protected Boolean includeConstructors = Boolean.FALSE;
 
    /**
     * We will pass on this configuration to the jsonschema2pojo library for generation of constructors with only required properties
     */
    @Parameter(required = false, readonly = true, defaultValue = "false")
-   protected Boolean constructorsRequiredPropertiesOnly;
+   protected Boolean constructorsRequiredPropertiesOnly = Boolean.FALSE;
 
    /**
     * We will pass on this configuration to the jsonschema2pojo library for generation of <code>hashCode</code> and <code>equals</code> methods
     */
    @Parameter(required = false, readonly = true, defaultValue = "true")
-   protected Boolean includeHashcodeAndEquals;
+   protected Boolean includeHashcodeAndEquals = Boolean.TRUE;
 
    /**
     * We will pass on this configuration to the jsonschema2pojo library for generation of <code>toString</code> method
     */
    @Parameter(required = false, readonly = true, defaultValue = "true")
-   protected Boolean includeToString;
+   protected Boolean includeToString = Boolean.TRUE;
 
    /**
     * We will pass on this configuration to the jsonschema2pojo library for initialization of collections
     */
    @Parameter(required = false, readonly = true, defaultValue = "true")
-   protected Boolean initializeCollections;
+   protected Boolean initializeCollections = Boolean.TRUE;
 
    /**
     * We will pass on this configuration to the jsonschema2pojo library for defining the target version of generated source files
     */
    @Parameter(required = false, readonly = true, defaultValue = "1.6")
-   protected String targetVersion;
+   protected String targetVersion = "1.6";
 
    /**
     * We will pass on this configuration to the jsonschema2pojo library for defining the object type used to create string type fields with date-time format
@@ -106,6 +106,8 @@ public class PojoGenerationConfig extends DefaultGenerationConfig
    @Parameter(required = false, readonly = true)
    protected String timeType;
 
+   public PojoGenerationConfig(){
+   }
 
    @Override
    public boolean isUseBigDecimals()
