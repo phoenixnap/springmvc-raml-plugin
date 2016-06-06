@@ -15,6 +15,7 @@ package com.phoenixnap.oss.ramlapisync.naming;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import org.apache.commons.lang3.text.WordUtils;
 import org.raml.model.Action;
 import org.raml.model.ActionType;
 import org.raml.model.Resource;
@@ -247,7 +248,7 @@ public class NamingHelper {
     	if (StringUtils.hasText(url)) {
 			if (url.contains("/") 
 					&& (url.lastIndexOf("/") < url.length())) {
-				return Inflector.singularize(StringUtils.capitalize(url.substring(url.lastIndexOf("/")+1)));
+				return Inflector.singularize(capitalizeFully(url.substring(url.lastIndexOf("/")+1)));
 			}
 		}
     	
@@ -309,13 +310,13 @@ public class NamingHelper {
     				
     				if (singularizeNext) { //consume singularisation
     					if (!segment.endsWith("details")) {
-    						name = Inflector.singularize(StringUtils.capitalize(segment)) + name;
+    						name = Inflector.singularize(capitalizeFully(segment)) + name;
     					} else {
-    						name = StringUtils.capitalize(segment) + name;
+    						name = capitalizeFully(segment) + name;
     					}
         				singularizeNext = false;
         			} else {
-        				name = StringUtils.capitalize(segment) + name;
+        				name = capitalizeFully(segment) + name;
         			}
     				
     				nonIdsParsed ++;
@@ -371,5 +372,14 @@ public class NamingHelper {
 		return ".model";
 	}
 
-	
+	/**
+	 * return a string composed with underscores and dashes as camelCase.<br/>
+    * Example 1: "a_parameter_name" is transformed to "AParameterName"
+    * Example 2: "a-parameter-name" is transformed to "AParameterName"
+	 * @param resource the name to transform
+	 * @return the capitalized resource
+    */
+	public static String capitalizeFully(final String resource){
+		return StringUtils.deleteAny(WordUtils.capitalize(resource, '_','-'),"_-");
+	}
 }

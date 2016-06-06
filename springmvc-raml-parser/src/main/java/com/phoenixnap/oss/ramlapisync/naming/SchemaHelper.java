@@ -36,7 +36,6 @@ import org.raml.model.MimeType;
 import org.raml.model.ParamType;
 import org.raml.model.Raml;
 import org.raml.model.parameter.QueryParameter;
-import org.raml.parser.utils.Inflector;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.util.CollectionUtils;
@@ -348,13 +347,13 @@ public class SchemaHelper {
 						id = id.substring(JSON_SCHEMA_IDENT.length());
 					}
 				} else {
-					resolvedName = StringUtils.capitalize(id);
+					resolvedName = NamingHelper.capitalizeFully(id);
 				}
 			}
 		}
 		if (!NamingHelper.isValidJavaClassName(resolvedName)) {
 			if (NamingHelper.isValidJavaClassName(schemaName)) {
-				return Inflector.capitalize(schemaName); //try schema name
+				return NamingHelper.capitalizeFully(schemaName); //try schema name
 			} else {
 				resolvedName = fallbackName; //fallback to generated
 			}
