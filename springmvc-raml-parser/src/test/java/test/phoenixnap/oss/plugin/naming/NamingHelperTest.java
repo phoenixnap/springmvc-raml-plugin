@@ -15,6 +15,7 @@ package test.phoenixnap.oss.plugin.naming;
 import static org.junit.Assert.assertEquals;
 
 import org.junit.Test;
+import org.raml.model.Resource;
 
 import test.phoenixnap.oss.plugin.naming.testclasses.CamelCaseTest;
 import test.phoenixnap.oss.plugin.naming.testclasses.ServicesControllerImpl;
@@ -35,6 +36,23 @@ public class NamingHelperTest {
 		assertEquals("Should not kill all names", "services",
 				NamingHelper.convertClassName(ServicesControllerImpl.class));
 		assertEquals("CamelCaseCheck", "camelCaseTest", NamingHelper.convertClassName(CamelCaseTest.class));
+	}
+	
+	@Test
+	public void test_getResourceName_Success() {
+		Resource testResource = new Resource();
+		
+		testResource.setRelativeUri("/service_thingy");
+		assertEquals("Should deal with underscores", "ServiceThingy", NamingHelper.getResourceName(testResource));
+		
+		testResource.setRelativeUri("/quotes");
+		assertEquals("Should deal with plural", "Quote", NamingHelper.getResourceName(testResource));
+		
+		testResource.setRelativeUri("/2342quotes");
+		assertEquals("Should deal with invalid java identifiers", "_2342quote", NamingHelper.getResourceName(testResource));
+		
+		testResource.setRelativeUri("/;qu%ot'es");
+		assertEquals("Should deal with invalid java characters", "quote", NamingHelper.getResourceName(testResource));
 	}
 
 	@Test
