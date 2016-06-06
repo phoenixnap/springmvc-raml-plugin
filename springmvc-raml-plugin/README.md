@@ -155,6 +155,9 @@ Then simply include the following code in the POM of the project you wish to gen
 ### javaDocPath
 (optional) Absolute path to a folder which will be used to search for JavaDoc. This folder should contain all source of controllers being scanned. Using root folders for this may increase scanning time. If this is not supplied, the scanner will default to the current project folder
 
+### uriPrefixToIgnore
+(optional) A Portion of the URL of the implemented RAML that will be ignored when verifying
+
 ### checkRamlAgainstImplementation
 (optional, default: true) Flag that will enable or disable checking of the RAML file against the Server Implementation. If this is set to false it will override other check flags
 

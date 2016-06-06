@@ -20,6 +20,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.phoenixnap.oss.ramlapisync.naming.Pair;
+import com.phoenixnap.oss.ramlapisync.naming.RamlHelper;
 import com.phoenixnap.oss.ramlapisync.parser.ResourceParser;
 import com.phoenixnap.oss.ramlapisync.verification.Issue;
 import com.phoenixnap.oss.ramlapisync.verification.IssueLocation;
@@ -82,10 +83,10 @@ public class ActionContentTypeChecker
 		}
 		
 		//Now the response
-		Response response = ResourceParser.getSuccessfulResponse(reference);
+		Response response = RamlHelper.getSuccessfulResponse(reference);
 		//successful response
 		if (response != null && response.getBody() != null && !response.getBody().isEmpty()) {
-			Response targetResponse = ResourceParser.getSuccessfulResponse(target);
+			Response targetResponse = RamlHelper.getSuccessfulResponse(target);
 			
 			if (targetResponse == null) {
 				issue = new Issue(maxSeverity, location, IssueType.MISSING, RESPONSE_BODY_MISSING, reference.getResource(), reference);

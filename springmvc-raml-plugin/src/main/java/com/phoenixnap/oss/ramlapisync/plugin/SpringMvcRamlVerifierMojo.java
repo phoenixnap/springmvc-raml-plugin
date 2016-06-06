@@ -79,6 +79,12 @@ public class SpringMvcRamlVerifierMojo extends CommonApiSyncMojo {
 	protected Boolean checkRamlAgainstImplementation;
 	
 	/**
+	 * A Portion of the URL of the implemented RAML that will be ignored when verifying
+	 */
+	@Parameter(required = false, readonly = true, defaultValue = "")
+	protected String uriPrefixToIgnore;
+	
+	/**
 	 * Flag that will enable or disable Style Checking of the RAML file. If this is set to false it will override other style check flags
 	 */
 	@Parameter(required = false, readonly = true, defaultValue = "true")
@@ -263,7 +269,7 @@ public class SpringMvcRamlVerifierMojo extends CommonApiSyncMojo {
 			}
 		}
 		
-		RamlVerifier verifier = new RamlVerifier(RamlVerifier.loadRamlFromFile(ramlToVerifyPath), implementedRaml, checkers, actionCheckers, resourceCheckers, styleCheckers);
+		RamlVerifier verifier = new RamlVerifier(RamlVerifier.loadRamlFromFile(ramlToVerifyPath), implementedRaml, checkers, actionCheckers, resourceCheckers, styleCheckers, StringUtils.hasText(uriPrefixToIgnore) ? uriPrefixToIgnore : null);
 		if (verifier.hasWarnings() && logWarnings) {
 				for (Issue issue : verifier.getWarnings()) {
 					this.getLog().warn(issue.toString());
