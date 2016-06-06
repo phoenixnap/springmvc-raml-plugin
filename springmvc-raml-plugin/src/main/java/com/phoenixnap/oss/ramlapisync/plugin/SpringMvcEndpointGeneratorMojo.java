@@ -28,7 +28,6 @@ import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
 import org.apache.maven.plugin.descriptor.PluginDescriptor;
-import org.apache.maven.plugins.annotations.Component;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
 import org.apache.maven.plugins.annotations.ResolutionScope;
@@ -66,7 +65,7 @@ public class SpringMvcEndpointGeneratorMojo extends AbstractMojo {
 	@Parameter(defaultValue = "${project}", required = true, readonly = true)
 	protected MavenProject project;
 
-	@Component
+	@Parameter(defaultValue = "${plugin}", readonly = true )
 	private PluginDescriptor descriptor;
 
 	/**
@@ -131,8 +130,11 @@ public class SpringMvcEndpointGeneratorMojo extends AbstractMojo {
 	@Parameter(required = false, readonly = true)
 	protected Map<String, String> ruleConfiguration = new LinkedHashMap<>();
 
-	@Parameter(required = false)
-	private final PojoGenerationConfig generationConfig = new PojoGenerationConfig();
+	/**
+	 * Configuration passed to JSONSchema2Pojo for generation of pojos.
+	 */
+	@Parameter(required = false, readonly = true)
+	protected PojoGenerationConfig generationConfig = new PojoGenerationConfig();
 
 	private ClassRealm classRealm;
 	
@@ -237,6 +239,11 @@ public class SpringMvcEndpointGeneratorMojo extends AbstractMojo {
 			List<String> runtimeClasspathElements = project.getRuntimeClasspathElements();
 			
 			classRealm = descriptor.getClassRealm();
+
+			if (classRealm == null){
+				classRealm = project.getClassRealm();
+			}
+
 			for (String element : runtimeClasspathElements)
 			{
 				File elementFile = new File(element);

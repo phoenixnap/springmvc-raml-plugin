@@ -70,6 +70,13 @@
 		</dependency>
 
 		<dependency>
+			<groupId>org.apache.maven</groupId>
+			<artifactId>maven-compat</artifactId>
+			<version>${maven.core.version}</version>
+			<scope>test</scope>
+		</dependency>
+
+		<dependency>
 			<groupId>org.apache.maven.plugin-testing</groupId>
 			<artifactId>maven-plugin-testing-harness</artifactId>
 			<scope>test</scope>
@@ -107,12 +114,12 @@
 				</configuration>
 				<executions>
 					<execution>
-                        <id>mojo-descriptor</id>
-                        <phase>process-classes</phase>
-                        <goals>
-                            <goal>descriptor</goal>
-                        </goals>
-                    </execution>
+						<id>mojo-descriptor</id>
+						<phase>process-classes</phase>
+						<goals>
+							 <goal>descriptor</goal>
+						</goals>
+				   </execution>
 					<execution>
 						<id>default-descriptor</id>
 						<goals>
