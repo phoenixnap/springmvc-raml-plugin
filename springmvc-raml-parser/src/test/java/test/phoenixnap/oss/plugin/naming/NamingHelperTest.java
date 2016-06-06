@@ -16,10 +16,10 @@ import static org.junit.Assert.assertEquals;
 
 import org.junit.Test;
 
+import com.phoenixnap.oss.ramlapisync.naming.NamingHelper;
+
 import test.phoenixnap.oss.plugin.naming.testclasses.CamelCaseTest;
 import test.phoenixnap.oss.plugin.naming.testclasses.ServicesControllerImpl;
-
-import com.phoenixnap.oss.ramlapisync.naming.NamingHelper;
 
 /**
  * Unit tests for the NamingHelper class
@@ -86,6 +86,13 @@ public class NamingHelperTest {
 		
 		assertEquals("Should deal extract versions", "_StuffAsJson", NamingHelper.convertContentTypeToQualifier("application/stuff+json"));
 		
+	}
+
+	@Test
+	public void test_capitalizeResourceWithUnderscores() {
+		assertEquals("Should convert to camel case", "AnObjectParam", NamingHelper.capitalizeFully("an_object_param"));
+		assertEquals("Should convert to camel case", "AnObjectParam", NamingHelper.capitalizeFully("an-object-param"));
+		assertEquals("Should convert to camel case", "AnObjectParam", NamingHelper.capitalizeFully("an-object_param"));
 	}
 
 }
