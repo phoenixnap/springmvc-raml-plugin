@@ -15,8 +15,8 @@ package com.phoenixnap.oss.ramlapisync.data;
 import org.jsonschema2pojo.Annotator;
 import org.jsonschema2pojo.GenerationConfig;
 import org.raml.model.ParamType;
-import org.raml.parser.utils.Inflector;
 
+import com.phoenixnap.oss.ramlapisync.naming.NamingHelper;
 import com.phoenixnap.oss.ramlapisync.naming.SchemaHelper;
 import com.sun.codemodel.JCodeModel;
 
@@ -50,9 +50,9 @@ public class ApiBodyMetadata {
 				int nextQuoteIdxIdx = schema.indexOf("\"", quoteIdx+1);
 				if (nextQuoteIdxIdx != -1) {
 					String possibleType = schema.substring(quoteIdx+1, nextQuoteIdxIdx);
+					this.name = NamingHelper.getResourceName(this.name);
 					if ("array".equals(possibleType.toLowerCase())) {
 						array = true;
-						this.name = Inflector.singularize(this.name);
 					}
 					if (codeModel.countArtifacts() == 0) {
 						if (!"object".equals(possibleType.toLowerCase())) {

@@ -15,6 +15,7 @@ package com.phoenixnap.oss.ramlapisync.naming;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import org.jsonschema2pojo.util.NameHelper;
 import org.raml.model.Action;
 import org.raml.model.ActionType;
 import org.raml.model.Resource;
@@ -36,6 +37,18 @@ public class NamingHelper {
 	
 	private static final Pattern CONTENT_TYPE_VERSION = Pattern.compile(
 			"[^v]*(v[\\d\\.]*).*", Pattern.CASE_INSENSITIVE);
+	
+	private static NameHelper cachedNameHelper;
+	
+	private static NameHelper getNameHelper() {
+		if (cachedNameHelper != null) {
+			return cachedNameHelper;
+		}
+		
+		cachedNameHelper = new NameHelper(SchemaHelper.getDefaultGenerationConfig());
+		return cachedNameHelper;
+		
+	}
 	
 	/**
 	 * Converts an http contentType into a qualifier that can be used within a Java method
@@ -247,12 +260,40 @@ public class NamingHelper {
     	if (StringUtils.hasText(url)) {
 			if (url.contains("/") 
 					&& (url.lastIndexOf("/") < url.length())) {
-				return Inflector.singularize(StringUtils.capitalize(url.substring(url.lastIndexOf("/")+1)));
+				return getResourceName(url.substring(url.lastIndexOf("/")+1));
 			}
+		}
+    	return null;
+	}
+	
+	/**
+	 * Attempts to infer the name of a resource from a resources's relative URL
+	 * 
+	 * @param resource The Url representation of this object
+	 * @return A name representing this resource or null if one cannot be inferred
+	 */
+	public static String getResourceName(String resource) {
+		if (StringUtils.hasText(resource)) {
+				String resourceName = Inflector.singularize(StringUtils.capitalize(resource));
+				resourceName = cleanNameForJava(resourceName);
+				return resourceName;
 		}
     	
     	return null;
 	}
+
+
+	private static String cleanNameForJava(String resourceName) {
+		String outString = resourceName;
+		if (StringUtils.hasText(resourceName)) {
+			outString = getNameHelper().normalizeName(resourceName);
+			if (StringUtils.hasText(outString)) {
+				outString = outString.replaceAll(NameHelper.ILLEGAL_CHARACTER_REGEX, "");
+			}
+		}
+		return outString;
+	}
+	
 
 	/**
 	 * Attempts to infer the name of an action (intent) from a resource's relative URL and action details
@@ -306,7 +347,7 @@ public class NamingHelper {
     				//Since we probably found an ID, it means that method acts on a single resource in the collection. probably :)
     				singularizeNext = true;
     			} else {
-    				
+    				segment = cleanNameForJava(segment);
     				if (singularizeNext) { //consume singularisation
     					if (!segment.endsWith("details")) {
     						name = Inflector.singularize(StringUtils.capitalize(segment)) + name;
