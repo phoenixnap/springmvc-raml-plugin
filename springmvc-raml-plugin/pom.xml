@@ -5,7 +5,7 @@
 	<parent>
 		<groupId>com.phoenixnap.oss</groupId>
 		<artifactId>springmvc-raml-parent</artifactId>
-		<version>0.5.4</version>
+		<version>0.6.0</version>
 	</parent>
 	
 	<artifactId>springmvc-raml-plugin</artifactId>
@@ -70,6 +70,13 @@
 		</dependency>
 
 		<dependency>
+			<groupId>org.apache.maven</groupId>
+			<artifactId>maven-compat</artifactId>
+			<version>${maven.core.version}</version>
+			<scope>test</scope>
+		</dependency>
+
+		<dependency>
 			<groupId>org.apache.maven.plugin-testing</groupId>
 			<artifactId>maven-plugin-testing-harness</artifactId>
 			<scope>test</scope>
@@ -107,12 +114,12 @@
 				</configuration>
 				<executions>
 					<execution>
-                        <id>mojo-descriptor</id>
-                        <phase>process-classes</phase>
-                        <goals>
-                            <goal>descriptor</goal>
-                        </goals>
-                    </execution>
+						<id>mojo-descriptor</id>
+						<phase>process-classes</phase>
+						<goals>
+							 <goal>descriptor</goal>
+						</goals>
+				   </execution>
 					<execution>
 						<id>default-descriptor</id>
 						<goals>
@@ -126,6 +133,17 @@
 							<goal>helpmojo</goal>
 						</goals>
 						<phase>process-classes</phase>
+					</execution>
+				</executions>
+			</plugin>
+			<plugin>
+				<artifactId>maven-site-plugin</artifactId>
+				<executions>
+					<execution>
+						<id>attach-descriptor</id>
+						<goals>
+							<goal>attach-descriptor</goal>
+						</goals>
 					</execution>
 				</executions>
 			</plugin>

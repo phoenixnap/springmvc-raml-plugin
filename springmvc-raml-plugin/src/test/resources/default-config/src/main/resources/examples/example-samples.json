@@ -1,0 +1,24 @@
+[
+    {
+        "tString": "a string",
+        "tInteger": 1,
+        "tNumber": 1.0151,
+        "tBoolean": true,
+        "tArrayRef": [
+            {
+                "refId": "112315"
+            }
+        ]
+    },
+    {
+        "tString": "another string",
+        "tArrayRef": [
+            {
+                "refId": "1561561"
+            },
+            {
+                "refId": "168464"
+            }
+        ]
+    }
+]

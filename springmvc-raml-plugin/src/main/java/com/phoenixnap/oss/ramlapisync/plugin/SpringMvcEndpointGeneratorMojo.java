@@ -28,7 +28,6 @@ import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
 import org.apache.maven.plugin.descriptor.PluginDescriptor;
-import org.apache.maven.plugins.annotations.Component;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
 import org.apache.maven.plugins.annotations.ResolutionScope;
@@ -48,7 +47,6 @@ import com.phoenixnap.oss.ramlapisync.generation.rules.ConfigurableRule;
 import com.phoenixnap.oss.ramlapisync.generation.rules.Rule;
 import com.phoenixnap.oss.ramlapisync.generation.rules.Spring4ControllerStubRule;
 import com.phoenixnap.oss.ramlapisync.naming.NamingHelper;
-import com.phoenixnap.oss.ramlapisync.naming.SchemaHelper;
 import com.sun.codemodel.JCodeModel;
 import com.sun.codemodel.JDefinedClass;
 
@@ -67,7 +65,7 @@ public class SpringMvcEndpointGeneratorMojo extends AbstractMojo {
 	@Parameter(defaultValue = "${project}", required = true, readonly = true)
 	protected MavenProject project;
 
-	@Component
+	@Parameter(defaultValue = "${plugin}", readonly = true )
 	private PluginDescriptor descriptor;
 
 	/**
@@ -87,12 +85,6 @@ public class SpringMvcEndpointGeneratorMojo extends AbstractMojo {
 	 */
 	@Parameter(required = false, readonly = true, defaultValue = "false")
 	protected Boolean addTimestampFolder;
-	
-	/**
-	 * IF this is set to true, we will pass on this configuration to the jsonschema2pojo library for creation of Longs instead of Ints
-	 */
-	@Parameter(required = false, readonly = true, defaultValue = "false")
-	protected Boolean schemaUseLongIntegers;
 
 	/**
 	 * Java package to be applied to the generated files
@@ -137,6 +129,12 @@ public class SpringMvcEndpointGeneratorMojo extends AbstractMojo {
 	 */
 	@Parameter(required = false, readonly = true)
 	protected Map<String, String> ruleConfiguration = new LinkedHashMap<>();
+
+	/**
+	 * Configuration passed to JSONSchema2Pojo for generation of pojos.
+	 */
+	@Parameter(required = false, readonly = true)
+	protected PojoGenerationConfig generationConfig = new PojoGenerationConfig();
 
 	private ClassRealm classRealm;
 	
@@ -189,8 +187,7 @@ public class SpringMvcEndpointGeneratorMojo extends AbstractMojo {
 
 			Set<ApiBodyMetadata> dependencies = met.getDependencies();
 			for (ApiBodyMetadata body : dependencies) {
-				GenerationConfig config = SchemaHelper.getGenerationConfig(null, null, null, this.schemaUseLongIntegers);
-				generateModelSources(met, body, rootDir, config, useJackson1xCompatibility == true ? new Jackson1Annotator() : null );
+				generateModelSources(met, body, rootDir, generationConfig, useJackson1xCompatibility == true ? new Jackson1Annotator() : null );
 			}
 
 			generateControllerSource(met, rootDir);
@@ -242,6 +239,11 @@ public class SpringMvcEndpointGeneratorMojo extends AbstractMojo {
 			List<String> runtimeClasspathElements = project.getRuntimeClasspathElements();
 			
 			classRealm = descriptor.getClassRealm();
+
+			if (classRealm == null){
+				classRealm = project.getClassRealm();
+			}
+
 			for (String element : runtimeClasspathElements)
 			{
 				File elementFile = new File(element);

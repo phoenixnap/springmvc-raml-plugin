@@ -1,0 +1,44 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+   <modelVersion>4.0.0</modelVersion>
+
+   <groupId>org.apache.maven.plugin.my.unit</groupId>
+   <artifactId>project-to-test</artifactId>
+   <version>1.0.0</version>
+   <packaging>jar</packaging>
+   <name>Test MyMojo</name>
+
+   <dependencies>
+      <dependency>
+         <groupId>junit</groupId>
+         <artifactId>junit</artifactId>
+         <version>3.8.1</version>
+         <scope>test</scope>
+      </dependency>
+   </dependencies>
+
+   <build>
+      <plugins>
+         <plugin>
+            <groupId>com.phoenixnap.oss</groupId>
+            <artifactId>springmvc-raml-plugin</artifactId>
+            <version>0.6.0-SNAPSHOT</version>
+            <configuration>
+               <ramlPath>src/main/resources/api.raml</ramlPath>
+               <basePackage>com.test.samples</basePackage>
+               <schemaLocation>src/main/resources/schemas</schemaLocation>
+            </configuration>
+            <executions>
+               <execution>
+                  <id>generate-springmvc-endpoints</id>
+                  <phase>generate-resources</phase>
+                  <goals>
+                     <goal>generate-springmvc-endpoints</goal>
+                  </goals>
+               </execution>
+            </executions>
+         </plugin>
+      </plugins>
+   </build>
+</project>

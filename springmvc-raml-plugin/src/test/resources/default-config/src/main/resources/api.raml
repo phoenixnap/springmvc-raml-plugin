@@ -1,0 +1,51 @@
+#%RAML 0.8
+
+title: Sample API
+version: v0.1
+baseUri: sample
+mediaType:  application/json
+
+schemas:
+  - Sample: !include schemas/sample.json
+  - Samples: !include schemas/samples.json
+
+/samples:
+  displayName: Samples
+  description: A collection of samples
+  get:
+    description: Retrieves samples
+    responses:
+      200:
+        description: The sample collection has been successfully retrieved.
+        body:
+          application/json:
+            schema: Samples
+            example: !include examples/example-samples.json
+  post:
+    description: Creates a sample
+    body:
+      application/json:
+        schema: Sample
+        example: !include examples/example-sample.json
+    responses:
+      201:
+        description: The sample has been successfully created.
+  /{id}:
+    displayName: Sample
+    description: A sample referenced by its identifier.
+    uriParameters:
+      id:
+        displayName: Sample Identifier
+        description: The UUID of a sample
+        type: string
+    get:
+      description: Retrieves a given sample by its identifier.
+      responses:
+        200:
+          description: The sample has been successfully retrieved.
+          body:
+            application/json:
+              schema: Sample
+              example: !include examples/example-sample.json
+        404:
+          description: The sample does not exist.
