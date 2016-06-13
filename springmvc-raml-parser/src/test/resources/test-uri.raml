@@ -1,0 +1,26 @@
+#%RAML 0.8
+title: myapi
+baseUri: /
+version: 1
+
+/base:
+  /{aURiParam}:
+    /endpointWithGet:
+      get:
+    /endpointWithGetAndPost:
+      get:
+        responses:
+          200:
+            body:
+              application/json:
+                example: |
+                  {
+                    "status" : "UP"
+                  }
+      post:
+/secondBase:
+  /endpointWithGet:    
+    get:
+  /endpointWithURIParam:
+    /{uriParam}:
+      get:
