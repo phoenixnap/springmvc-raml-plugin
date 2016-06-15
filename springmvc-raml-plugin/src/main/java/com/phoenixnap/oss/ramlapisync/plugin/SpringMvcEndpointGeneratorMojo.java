@@ -221,11 +221,11 @@ public class SpringMvcEndpointGeneratorMojo extends AbstractMojo {
 		Rule<JCodeModel, JDefinedClass, ApiControllerMetadata> ruleInstance = new Spring4ControllerStubRule();
 		try {
 			ruleInstance = (Rule<JCodeModel, JDefinedClass, ApiControllerMetadata>) getClassRealm().loadClass(rule).newInstance();
-			System.out.println(StringUtils.collectionToCommaDelimitedString(ruleConfiguration.keySet()));
-			System.out.println(StringUtils.collectionToCommaDelimitedString(ruleConfiguration.values()));
+			this.getLog().debug(StringUtils.collectionToCommaDelimitedString(ruleConfiguration.keySet()));
+			this.getLog().debug(StringUtils.collectionToCommaDelimitedString(ruleConfiguration.values()));
 			
 			if (ruleInstance instanceof ConfigurableRule<?,?,?> && !CollectionUtils.isEmpty(ruleConfiguration)) {
-				System.out.println("SETTING CONFIG");
+				this.getLog().debug("SETTING CONFIG");
 				((ConfigurableRule<?, ?, ?>)ruleInstance).applyConfiguration(ruleConfiguration);
 			}
 		} catch (Exception e) {

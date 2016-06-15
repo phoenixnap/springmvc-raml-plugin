@@ -103,7 +103,8 @@ public class PojoGenerationConfigTest
 
    @Test(expected = ComponentConfigurationException.class)
    public void testUnknownParameterConfig() throws Exception {
-      final SpringMvcEndpointGeneratorMojo mojo =
+      @SuppressWarnings("unused")
+	final SpringMvcEndpointGeneratorMojo mojo =
          (SpringMvcEndpointGeneratorMojo) configureMojo("unknown", "invalid");
    }
 

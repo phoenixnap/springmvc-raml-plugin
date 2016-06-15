@@ -234,7 +234,10 @@ Then simply include the following code in the POM of the project you wish to gen
     <addTimestampFolder>false</addTimestampFolder>
     <basePackage>com.gen.wow</basePackage>
     <baseUri>/api</baseUri>
-	<schemaUseLongIntegers>false</schemaUseLongIntegers>
+	<generationConfig>
+		<includeAdditionalProperties>false</includeAdditionalProperties>
+		...
+	</generationConfig>
 	<seperateMethodsByContentType>false</seperateMethodsByContentType>
 	<rule>com.phoenixnap.oss.ramlapisync.generation.rules.Spring4ControllerStubRule</rule>
 	<ruleConfiguration>			
@@ -270,8 +273,8 @@ Then simply include the following code in the POM of the project you wish to gen
 ### baseUri
 (optional) Base URI for generated Spring controllers. This overrules the baseUri attribute from inside the .raml spec.
 
-### schemaUseLongIntegers
-(optional, default: false) If true, jsonschema2pojo will generate Longs instead of Integers in model classes. 
+### generationConfig
+(optional) This object contains a map of configuration for the JsonSchema2Pojo generator. The full list of configurable attributes, their description and default values can be found here [GenerationConfig][]
 
 ### seperateMethodsByContentType
 (optional, default: false) Should we generate seperate API methods for endpoints which define multiple content types in their 200 response. 
@@ -316,6 +319,7 @@ Configuration:
 ## Contributing
 [Pull requests][] are welcome; Be a good citizen and create unit tests for any bugs squished or features added
 
+[GenerationConfig]: https://github.com/phoenixnap/springmvc-raml-plugin/blob/master/springmvc-raml-plugin/src/main/java/com/phoenixnap/oss/ramlapisync/plugin/PojoGenerationConfig.java
 [Pull requests]: http://help.github.com/send-pull-requests
 [Apache License]: http://www.apache.org/licenses/LICENSE-2.0
 [Git]: http://help.github.com/set-up-git-redirect
