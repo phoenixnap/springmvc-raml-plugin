@@ -387,9 +387,16 @@ public class SchemaHelper {
 		
 		//Extract name from schema
 		resolvedName = extractNameFromSchema(resolvedSchema, schemaName, name);
-		
 		JCodeModel codeModel = buildBodyJCodeModel(basePackage, StringUtils.hasText(schemaLocation) ? schemaLocation : "classpath:/", resolvedName, resolvedSchema, null, null);
 		if (codeModel != null) {
+			if(codeModel.countArtifacts() == 1) {
+				try {
+					//checking has next twice might be more efficient but this is more readable, if we ever run into speed issues here..optimise
+					resolvedName = codeModel.packages().next().classes().next().name();
+				} catch (NullPointerException npe) {
+					//do nothing, use previous name
+				}
+			}
 			return new ApiBodyMetadata(resolvedName, resolvedSchema, codeModel);
 		} else {
 			return null;
