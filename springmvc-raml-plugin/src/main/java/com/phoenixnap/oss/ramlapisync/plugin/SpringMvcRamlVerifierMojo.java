@@ -148,7 +148,13 @@ public class SpringMvcRamlVerifierMojo extends CommonApiSyncMojo {
 	 */
 	@Parameter(required = false, readonly = true, defaultValue = "false")
 	protected Boolean checkForDefinitionOf404ResponseInGetRequest;
-		
+
+	/**
+	 * Flag that will enable or disable checks for response body schema
+	 */
+	@Parameter(required = false, readonly = true, defaultValue = "false")
+	protected Boolean checkForResponseBodySchema;
+
 	/**
 	 * Flag that will enable or disable braking of the build if Warnings are found
 	 */
@@ -215,8 +221,9 @@ public class SpringMvcRamlVerifierMojo extends CommonApiSyncMojo {
 			if (checkForActionContentType) {
 				actionCheckers.add(new ActionContentTypeChecker());
 			}
-
-			actionCheckers.add(new ActionResponseBodySchemaChecker());
+			if(checkForResponseBodySchema) {
+				actionCheckers.add(new ActionResponseBodySchemaChecker());
+			}
 		}
 		
 		List<RamlStyleChecker> styleCheckers = new ArrayList<>();
