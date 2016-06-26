@@ -126,6 +126,7 @@ Then simply include the following code in the POM of the project you wish to gen
 	<checkForSchemaInSuccessfulResponseBody>true</checkForSchemaInSuccessfulResponseBody>
 	<checkForSchemaInRequestBody>true</checkForSchemaInRequestBody>
 	<checkForDefinitionOf404ResponseInGetRequest>true</checkForDefinitionOf404ResponseInGetRequest>
+	<checkForResponseBodySchema>true</checkForResponseBodySchema>
 	<breakBuildOnWarnings>false</breakBuildOnWarnings>
     <logWarnings>true</logWarnings>
     <logErrors>true</logErrors>	
@@ -196,6 +197,9 @@ Then simply include the following code in the POM of the project you wish to gen
 
 ### checkForDefinitionOfErrorCodes
 (optional, default: false) Flag that will enable or disable checks for 400 and 500 error codes in certain verbs (PUT, POST, PATCH for 400 & All verbs for 500)
+
+### checkForResponseBodySchema
+(optional, default: false) Flag that will enable or disable response body schema validation against implementation
 
 ### ignoredList
 (optional, default: empty) If classes or packages are included in this list, they will not be included in the generated model
