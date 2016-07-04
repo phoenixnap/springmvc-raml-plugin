@@ -156,7 +156,7 @@ public class SpringMvcEndpointGeneratorMojo extends AbstractMojo {
 		//Resolve schema location and add to classpath
 		resolvedSchemaLocation = getSchemaLocation();
 		
-		Raml loadRamlFromFile = RamlParser.loadRamlFromFile( "file:"+resolvedRamlPath );
+		Raml loadRamlFromFile = RamlParser.loadRamlFromFile(new File(resolvedRamlPath).toURI().toString());
 		RamlParser par = new RamlParser(basePackage, getBasePath(loadRamlFromFile), seperateMethodsByContentType);
 		Set<ApiResourceMetadata> controllers = par.extractControllers(loadRamlFromFile);
 
@@ -296,11 +296,11 @@ public class SpringMvcEndpointGeneratorMojo extends AbstractMojo {
 				    Class<?> urlClass = URLClassLoader.class;
 				    Method method = urlClass.getDeclaredMethod("addURL", new Class[]{URL.class});
 				    method.setAccessible(true);
-				    method.invoke(urlClassLoader, new Object[]{new URL("file:"+resolvedPath)});
+				    method.invoke(urlClassLoader, new Object[]{new File(resolvedPath).toURI().toURL()});
 				    return "classpath:/"; //since we have added this folder to the classpath this should be used by the plugin
 				} catch (Exception ex) {
 					this.getLog().error("Could not add schema location to classpath", ex);
-					return "file:"+resolvedPath;
+					return new File(resolvedPath).toURI().toString();
 				}
 			}
 			return schemaLocation;

@@ -12,15 +12,17 @@
  */
 package com.phoenixnap.oss.ramlapisync.plugin;
 
-import java.io.File;
-import java.io.IOException;
-import java.lang.annotation.Annotation;
-import java.nio.file.Files;
-import java.nio.file.LinkOption;
-import java.nio.file.Paths;
-import java.util.ArrayList;
-import java.util.List;
-
+import com.phoenixnap.oss.ramlapisync.generation.RamlGenerator;
+import com.phoenixnap.oss.ramlapisync.generation.RamlVerifier;
+import com.phoenixnap.oss.ramlapisync.parser.ResourceParser;
+import com.phoenixnap.oss.ramlapisync.parser.SpringMvcResourceParser;
+import com.phoenixnap.oss.ramlapisync.style.RamlStyleChecker;
+import com.phoenixnap.oss.ramlapisync.style.checkers.*;
+import com.phoenixnap.oss.ramlapisync.verification.Issue;
+import com.phoenixnap.oss.ramlapisync.verification.RamlActionVisitorCheck;
+import com.phoenixnap.oss.ramlapisync.verification.RamlChecker;
+import com.phoenixnap.oss.ramlapisync.verification.RamlResourceVisitorCheck;
+import com.phoenixnap.oss.ramlapisync.verification.checkers.*;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
 import org.apache.maven.plugins.annotations.Mojo;
@@ -35,25 +37,14 @@ import org.springframework.util.MultiValueMap;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.phoenixnap.oss.ramlapisync.generation.RamlGenerator;
-import com.phoenixnap.oss.ramlapisync.generation.RamlVerifier;
-import com.phoenixnap.oss.ramlapisync.parser.ResourceParser;
-import com.phoenixnap.oss.ramlapisync.parser.SpringMvcResourceParser;
-import com.phoenixnap.oss.ramlapisync.style.RamlStyleChecker;
-import com.phoenixnap.oss.ramlapisync.style.checkers.ActionSecurityResponseChecker;
-import com.phoenixnap.oss.ramlapisync.style.checkers.RequestBodySchemaStyleChecker;
-import com.phoenixnap.oss.ramlapisync.style.checkers.ResourceCollectionPluralisationChecker;
-import com.phoenixnap.oss.ramlapisync.style.checkers.ResourceUrlStyleChecker;
-import com.phoenixnap.oss.ramlapisync.style.checkers.ResponseBodySchemaStyleChecker;
-import com.phoenixnap.oss.ramlapisync.style.checkers.ResponseCodeDefinitionStyleChecker;
-import com.phoenixnap.oss.ramlapisync.verification.Issue;
-import com.phoenixnap.oss.ramlapisync.verification.RamlActionVisitorCheck;
-import com.phoenixnap.oss.ramlapisync.verification.RamlChecker;
-import com.phoenixnap.oss.ramlapisync.verification.RamlResourceVisitorCheck;
-import com.phoenixnap.oss.ramlapisync.verification.checkers.ActionContentTypeChecker;
-import com.phoenixnap.oss.ramlapisync.verification.checkers.ActionExistenceChecker;
-import com.phoenixnap.oss.ramlapisync.verification.checkers.ActionQueryParameterChecker;
-import com.phoenixnap.oss.ramlapisync.verification.checkers.ResourceExistenceChecker;
+import java.io.File;
+import java.io.IOException;
+import java.lang.annotation.Annotation;
+import java.nio.file.Files;
+import java.nio.file.LinkOption;
+import java.nio.file.Paths;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Maven Plugin MOJO specific to verification of RAML from implementations in Spring MVC Projects.
@@ -157,7 +148,13 @@ public class SpringMvcRamlVerifierMojo extends CommonApiSyncMojo {
 	 */
 	@Parameter(required = false, readonly = true, defaultValue = "false")
 	protected Boolean checkForDefinitionOf404ResponseInGetRequest;
-		
+
+	/**
+	 * Flag that will enable or disable checks for response body schema
+	 */
+	@Parameter(required = false, readonly = true, defaultValue = "false")
+	protected Boolean checkForResponseBodySchema;
+
 	/**
 	 * Flag that will enable or disable braking of the build if Warnings are found
 	 */
@@ -224,10 +221,10 @@ public class SpringMvcRamlVerifierMojo extends CommonApiSyncMojo {
 			if (checkForActionContentType) {
 				actionCheckers.add(new ActionContentTypeChecker());
 			}
+			if(checkForResponseBodySchema) {
+				actionCheckers.add(new ActionResponseBodySchemaChecker());
+			}
 		}
-		
-		
-		
 		
 		List<RamlStyleChecker> styleCheckers = new ArrayList<>();
 		
