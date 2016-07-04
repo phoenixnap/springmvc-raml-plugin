@@ -12,8 +12,8 @@
  */
 package com.phoenixnap.oss.ramlapisync.generation.rules;
 
-import com.phoenixnap.oss.ramlapisync.data.ApiControllerMetadata;
-import com.phoenixnap.oss.ramlapisync.data.ApiMappingMetadata;
+import com.phoenixnap.oss.ramlapisync.data.ApiResourceMetadata;
+import com.phoenixnap.oss.ramlapisync.data.ApiActionMetadata;
 import com.phoenixnap.oss.ramlapisync.generation.rules.spring.SpringControllerInterfaceRule;
 import com.phoenixnap.oss.ramlapisync.generation.rules.spring.SpringRestControllerAnnotationRule;
 import com.sun.codemodel.JAnnotationUse;
@@ -41,12 +41,12 @@ import com.sun.codemodel.JMethod;
  */
 public class Spring4ControllerInterfaceRule extends SpringControllerInterfaceRule {
 
-	protected Rule<JDefinedClass, JAnnotationUse, ApiControllerMetadata> getControllerAnnotationRule() {
+	protected Rule<JDefinedClass, JAnnotationUse, ApiResourceMetadata> getControllerAnnotationRule() {
 		return new SpringRestControllerAnnotationRule(4);
 	}
 
 	@Override
-	protected Rule<JMethod, JAnnotationUse, ApiMappingMetadata> getResponseBodyAnnotationRule() {
+	protected Rule<JMethod, JAnnotationUse, ApiActionMetadata> getResponseBodyAnnotationRule() {
 		return null; //ResponseBody not needed for RestController
 	}
 	

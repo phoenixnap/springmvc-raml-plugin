@@ -17,7 +17,7 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.util.StringUtils;
 
-import com.phoenixnap.oss.ramlapisync.data.ApiControllerMetadata;
+import com.phoenixnap.oss.ramlapisync.data.ApiResourceMetadata;
 import com.phoenixnap.oss.ramlapisync.generation.rules.Rule;
 import com.sun.codemodel.JDefinedClass;
 import com.sun.codemodel.JFieldVar;
@@ -42,7 +42,7 @@ import com.sun.codemodel.JMod;
  * @author krisg
  * @since 0.5.0
  */
-public class ClassFieldDeclarationRule implements Rule<JDefinedClass, JFieldVar, ApiControllerMetadata> {
+public class ClassFieldDeclarationRule implements Rule<JDefinedClass, JFieldVar, ApiResourceMetadata> {
 
     private String fieldName = "restTemplate";
 
@@ -94,7 +94,7 @@ public class ClassFieldDeclarationRule implements Rule<JDefinedClass, JFieldVar,
     }
 
     @Override
-    public JFieldVar apply(ApiControllerMetadata controllerMetadata, JDefinedClass generatableType) {
+    public JFieldVar apply(ApiResourceMetadata controllerMetadata, JDefinedClass generatableType) {
         JFieldVar field = generatableType.field(JMod.PRIVATE, this.fieldClazz, this.fieldName);
         
         //add @Autowired field annoation

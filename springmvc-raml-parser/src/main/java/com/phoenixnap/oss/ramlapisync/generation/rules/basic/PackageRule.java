@@ -12,7 +12,7 @@
  */
 package com.phoenixnap.oss.ramlapisync.generation.rules.basic;
 
-import com.phoenixnap.oss.ramlapisync.data.ApiControllerMetadata;
+import com.phoenixnap.oss.ramlapisync.data.ApiResourceMetadata;
 import com.phoenixnap.oss.ramlapisync.generation.rules.Rule;
 import com.sun.codemodel.JCodeModel;
 import com.sun.codemodel.JPackage;
@@ -31,10 +31,10 @@ import org.springframework.util.StringUtils;
  * @author armin.weisser
  * @since 0.4.1
  */
-public class PackageRule implements Rule<JCodeModel, JPackage, ApiControllerMetadata> {
+public class PackageRule implements Rule<JCodeModel, JPackage, ApiResourceMetadata> {
 
     @Override
-    public JPackage apply(ApiControllerMetadata controllerMetadata, JCodeModel generatableType) {
+    public JPackage apply(ApiResourceMetadata controllerMetadata, JCodeModel generatableType) {
         if(StringUtils.hasText(controllerMetadata.getBasePackage())) {
             return generatableType._package(controllerMetadata.getBasePackage());
         }

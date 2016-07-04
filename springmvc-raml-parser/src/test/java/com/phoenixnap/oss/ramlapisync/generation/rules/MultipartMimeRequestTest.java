@@ -1,6 +1,6 @@
 package com.phoenixnap.oss.ramlapisync.generation.rules;
 
-import com.phoenixnap.oss.ramlapisync.data.ApiControllerMetadata;
+import com.phoenixnap.oss.ramlapisync.data.ApiResourceMetadata;
 import com.phoenixnap.oss.ramlapisync.generation.RamlVerifier;
 import com.sun.codemodel.JCodeModel;
 import com.sun.codemodel.JDefinedClass;
@@ -16,7 +16,7 @@ import org.junit.Test;
  */
 public class MultipartMimeRequestTest  extends AbstractRuleTestBase {
 
-    private Rule<JCodeModel, JDefinedClass, ApiControllerMetadata> rule;
+    private Rule<JCodeModel, JDefinedClass, ApiResourceMetadata> rule;
 
     @BeforeClass
     public static void initRaml() {

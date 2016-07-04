@@ -12,7 +12,7 @@
  */
 package com.phoenixnap.oss.ramlapisync.generation.rules.spring;
 
-import com.phoenixnap.oss.ramlapisync.data.ApiMappingMetadata;
+import com.phoenixnap.oss.ramlapisync.data.ApiActionMetadata;
 import com.phoenixnap.oss.ramlapisync.data.ApiParameterMetadata;
 import com.phoenixnap.oss.ramlapisync.generation.CodeModelHelper;
 import com.phoenixnap.oss.ramlapisync.generation.rules.basic.MethodParamsRule;
@@ -77,7 +77,7 @@ public class SpringMethodParamsRule extends MethodParamsRule {
     }
 
     @Override
-    protected JVar param(ApiMappingMetadata endpointMetadata, CodeModelHelper.JExtMethod generatableType) {
+    protected JVar param(ApiActionMetadata endpointMetadata, CodeModelHelper.JExtMethod generatableType) {
         JVar param = super.param(endpointMetadata, generatableType);
         param.annotate(RequestBody.class);
         return param;

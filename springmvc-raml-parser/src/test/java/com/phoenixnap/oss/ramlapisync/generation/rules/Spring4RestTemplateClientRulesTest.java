@@ -2,7 +2,7 @@ package com.phoenixnap.oss.ramlapisync.generation.rules;
 
 import org.junit.Test;
 
-import com.phoenixnap.oss.ramlapisync.data.ApiControllerMetadata;
+import com.phoenixnap.oss.ramlapisync.data.ApiResourceMetadata;
 import com.sun.codemodel.JCodeModel;
 import com.sun.codemodel.JDefinedClass;
 
@@ -12,7 +12,7 @@ import com.sun.codemodel.JDefinedClass;
  */
 public class Spring4RestTemplateClientRulesTest extends AbstractRuleTestBase {
 
-    private Rule<JCodeModel, JDefinedClass, ApiControllerMetadata> rule;
+    private Rule<JCodeModel, JDefinedClass, ApiResourceMetadata> rule;
     
     @Test
     public void applySpring4SpringTemplateClient_shouldCreate_validCode() throws Exception {

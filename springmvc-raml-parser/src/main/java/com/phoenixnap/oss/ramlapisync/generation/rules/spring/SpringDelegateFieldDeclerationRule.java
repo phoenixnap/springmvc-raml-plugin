@@ -12,7 +12,7 @@
  */
 package com.phoenixnap.oss.ramlapisync.generation.rules.spring;
 
-import com.phoenixnap.oss.ramlapisync.data.ApiControllerMetadata;
+import com.phoenixnap.oss.ramlapisync.data.ApiResourceMetadata;
 import com.phoenixnap.oss.ramlapisync.generation.exception.RuleCanNotProcessModelException;
 import com.phoenixnap.oss.ramlapisync.generation.rules.Rule;
 import com.sun.codemodel.JClass;
@@ -34,7 +34,7 @@ import org.springframework.util.StringUtils;
  * @author armin.weisser
  * @since 0.4.1
  */
-public class SpringDelegateFieldDeclerationRule implements Rule<JDefinedClass, JFieldVar, ApiControllerMetadata> {
+public class SpringDelegateFieldDeclerationRule implements Rule<JDefinedClass, JFieldVar, ApiResourceMetadata> {
 
     private String delegateFieldName = "delegate";
 
@@ -45,7 +45,7 @@ public class SpringDelegateFieldDeclerationRule implements Rule<JDefinedClass, J
     }
 
     @Override
-    public JFieldVar apply(ApiControllerMetadata controllerMetadata, JDefinedClass generatableType) {
+    public JFieldVar apply(ApiResourceMetadata controllerMetadata, JDefinedClass generatableType) {
         if(!generatableType._implements().hasNext()) {
             throw new RuleCanNotProcessModelException("The class "+generatableType.fullName()+ " does not implement a super class that can be delegated to.");
         }

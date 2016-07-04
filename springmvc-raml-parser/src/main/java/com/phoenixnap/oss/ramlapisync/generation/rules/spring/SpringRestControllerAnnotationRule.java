@@ -17,7 +17,7 @@ import java.lang.annotation.Annotation;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.phoenixnap.oss.ramlapisync.data.ApiControllerMetadata;
+import com.phoenixnap.oss.ramlapisync.data.ApiResourceMetadata;
 import com.phoenixnap.oss.ramlapisync.generation.rules.Rule;
 import com.sun.codemodel.JAnnotationUse;
 import com.sun.codemodel.JDefinedClass;
@@ -29,7 +29,7 @@ import com.sun.codemodel.JDefinedClass;
  * @author armin.weisser
  * @since 0.4.1
  */
-public class SpringRestControllerAnnotationRule implements Rule<JDefinedClass, JAnnotationUse, ApiControllerMetadata> {
+public class SpringRestControllerAnnotationRule implements Rule<JDefinedClass, JAnnotationUse, ApiResourceMetadata> {
 	
 	/**
 	 * Major version of spring to support
@@ -45,7 +45,7 @@ public class SpringRestControllerAnnotationRule implements Rule<JDefinedClass, J
 	}
 	
     @Override
-    public JAnnotationUse apply(ApiControllerMetadata controllerMetadata, JDefinedClass generatableType) {
+    public JAnnotationUse apply(ApiResourceMetadata controllerMetadata, JDefinedClass generatableType) {
     	Class<? extends Annotation> annotationType;
     	switch (springVersion) {
 	    	case 3 :	annotationType = Controller.class;

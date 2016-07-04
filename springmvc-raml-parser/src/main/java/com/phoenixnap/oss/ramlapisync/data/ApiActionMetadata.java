@@ -44,9 +44,9 @@ import com.phoenixnap.oss.ramlapisync.parser.ResourceParser;
  * @since 0.2.1
  *
  */
-public class ApiMappingMetadata {
+public class ApiActionMetadata {
 
-	ApiControllerMetadata parent;
+	ApiResourceMetadata parent;
 	Resource resource;
 	ActionType actionType;
 	Action action;
@@ -59,7 +59,7 @@ public class ApiMappingMetadata {
 
 	private String responseContentTypeFilter;
 
-	public ApiMappingMetadata(ApiControllerMetadata parent, Resource resource, ActionType actionType, Action action, String responseContentTypeFilter) {
+	public ApiActionMetadata(ApiResourceMetadata parent, Resource resource, ActionType actionType, Action action, String responseContentTypeFilter) {
 		super();
 		this.parent = parent;
 		this.resource = resource;
@@ -71,7 +71,7 @@ public class ApiMappingMetadata {
 
 	}
 
-	public ApiMappingMetadata(ApiControllerMetadata parent, Resource resource, ActionType actionType, Action action) {
+	public ApiActionMetadata(ApiResourceMetadata parent, Resource resource, ActionType actionType, Action action) {
 		this(parent, resource, actionType, action, null);
 	}
 
@@ -227,11 +227,11 @@ public class ApiMappingMetadata {
 		return action.getDescription();
 	}
 
-	public ApiControllerMetadata getParent() {
+	public ApiResourceMetadata getParent() {
 		return parent;
 	}
 
-	public void setParent(ApiControllerMetadata parent) {
+	public void setParent(ApiResourceMetadata parent) {
 		this.parent = parent;
 	}
 

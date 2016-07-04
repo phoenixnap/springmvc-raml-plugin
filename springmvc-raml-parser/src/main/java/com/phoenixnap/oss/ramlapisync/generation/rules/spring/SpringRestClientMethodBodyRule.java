@@ -32,7 +32,7 @@ import org.springframework.web.util.UriComponentsBuilder;
 
 import com.google.common.base.CaseFormat;
 import com.phoenixnap.oss.ramlapisync.data.ApiBodyMetadata;
-import com.phoenixnap.oss.ramlapisync.data.ApiMappingMetadata;
+import com.phoenixnap.oss.ramlapisync.data.ApiActionMetadata;
 import com.phoenixnap.oss.ramlapisync.data.ApiParameterMetadata;
 import com.phoenixnap.oss.ramlapisync.generation.CodeModelHelper;
 import com.phoenixnap.oss.ramlapisync.generation.rules.Rule;
@@ -68,7 +68,7 @@ import com.sun.codemodel.JVar;
  * @author Kris Galea
  * @since 0.5.0
  */
-public class SpringRestClientMethodBodyRule implements Rule<CodeModelHelper.JExtMethod, JMethod, ApiMappingMetadata> {
+public class SpringRestClientMethodBodyRule implements Rule<CodeModelHelper.JExtMethod, JMethod, ApiActionMetadata> {
 
     private String restTemplateFieldName = "restTemplate";
     
@@ -84,7 +84,7 @@ public class SpringRestClientMethodBodyRule implements Rule<CodeModelHelper.JExt
     }
 
     @Override
-    public JMethod apply(ApiMappingMetadata endpointMetadata, CodeModelHelper.JExtMethod generatableType) {
+    public JMethod apply(ApiActionMetadata endpointMetadata, CodeModelHelper.JExtMethod generatableType) {
         JBlock body = generatableType.get().body();
         JCodeModel owner = generatableType.owner();
         //build HttpHeaders   

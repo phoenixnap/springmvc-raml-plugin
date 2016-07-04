@@ -19,7 +19,7 @@ import java.util.List;
 import org.springframework.http.ResponseEntity;
 
 import com.phoenixnap.oss.ramlapisync.data.ApiBodyMetadata;
-import com.phoenixnap.oss.ramlapisync.data.ApiMappingMetadata;
+import com.phoenixnap.oss.ramlapisync.data.ApiActionMetadata;
 import com.phoenixnap.oss.ramlapisync.generation.rules.Rule;
 import com.sun.codemodel.JClass;
 import com.sun.codemodel.JDefinedClass;
@@ -51,10 +51,10 @@ import com.sun.codemodel.JType;
  * @author armin.weisser
  * @since 0.4.1
  */
-public class SpringResponseEntityRule implements Rule<JDefinedClass, JType, ApiMappingMetadata> {
+public class SpringResponseEntityRule implements Rule<JDefinedClass, JType, ApiActionMetadata> {
 
     @Override
-    public JType apply(ApiMappingMetadata endpointMetadata, JDefinedClass generatableType) {
+    public JType apply(ApiActionMetadata endpointMetadata, JDefinedClass generatableType) {
         JClass responseEntity = generatableType.owner().ref(ResponseEntity.class);
         if (!endpointMetadata.getResponseBody().isEmpty()) {
             ApiBodyMetadata apiBodyMetadata = endpointMetadata.getResponseBody().values().iterator().next();

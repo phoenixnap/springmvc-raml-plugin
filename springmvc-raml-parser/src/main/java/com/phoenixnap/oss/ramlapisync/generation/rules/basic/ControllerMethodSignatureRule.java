@@ -12,7 +12,7 @@
  */
 package com.phoenixnap.oss.ramlapisync.generation.rules.basic;
 
-import com.phoenixnap.oss.ramlapisync.data.ApiMappingMetadata;
+import com.phoenixnap.oss.ramlapisync.data.ApiActionMetadata;
 import com.phoenixnap.oss.ramlapisync.generation.CodeModelHelper;
 import com.phoenixnap.oss.ramlapisync.generation.rules.Rule;
 import com.sun.codemodel.JDefinedClass;
@@ -48,21 +48,21 @@ import static com.phoenixnap.oss.ramlapisync.generation.CodeModelHelper.ext;
  * @author armin.weisser
  * @since 0.4.1
  */
-public class ControllerMethodSignatureRule implements Rule<JDefinedClass, JMethod, ApiMappingMetadata> {
+public class ControllerMethodSignatureRule implements Rule<JDefinedClass, JMethod, ApiActionMetadata> {
 
-    private Rule<JDefinedClass, JType, ApiMappingMetadata> responseTypeRule;
-    private Rule<CodeModelHelper.JExtMethod, JMethod, ApiMappingMetadata> paramsRule;
+    private Rule<JDefinedClass, JType, ApiActionMetadata> responseTypeRule;
+    private Rule<CodeModelHelper.JExtMethod, JMethod, ApiActionMetadata> paramsRule;
 
     public ControllerMethodSignatureRule(
-            Rule<JDefinedClass, JType, ApiMappingMetadata> responseTypeRule,
-            Rule<CodeModelHelper.JExtMethod, JMethod, ApiMappingMetadata> paramsRule)
+            Rule<JDefinedClass, JType, ApiActionMetadata> responseTypeRule,
+            Rule<CodeModelHelper.JExtMethod, JMethod, ApiActionMetadata> paramsRule)
     {
         this.responseTypeRule = responseTypeRule;
         this.paramsRule = paramsRule;
     }
 
     @Override
-    public JMethod apply(ApiMappingMetadata endpointMetadata, JDefinedClass generatableType) {
+    public JMethod apply(ApiActionMetadata endpointMetadata, JDefinedClass generatableType) {
         JType responseType = responseTypeRule.apply(endpointMetadata, generatableType);
         JMethod jMethod = generatableType.method(JMod.PUBLIC, responseType, endpointMetadata.getName());
         jMethod = paramsRule.apply(endpointMetadata, ext(jMethod, generatableType.owner()));

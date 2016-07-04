@@ -24,8 +24,8 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.raml.model.Raml;
 
-import com.phoenixnap.oss.ramlapisync.data.ApiControllerMetadata;
-import com.phoenixnap.oss.ramlapisync.data.ApiMappingMetadata;
+import com.phoenixnap.oss.ramlapisync.data.ApiResourceMetadata;
+import com.phoenixnap.oss.ramlapisync.data.ApiActionMetadata;
 import com.phoenixnap.oss.ramlapisync.generation.RamlParser;
 import com.phoenixnap.oss.ramlapisync.generation.RamlVerifier;
 import com.sun.codemodel.JCodeModel;
@@ -44,7 +44,7 @@ public abstract class AbstractRuleTestBase {
     protected JCodeModel jCodeModel;
 
     private RamlParser defaultRamlParser = new RamlParser("com.gen.test", "/api");
-    private ApiControllerMetadata controllerMetadata;
+    private ApiResourceMetadata controllerMetadata;
 
     @BeforeClass
     public static void initRaml() {
@@ -60,7 +60,7 @@ public abstract class AbstractRuleTestBase {
         controllerMetadata = par.extractControllers(RAML).iterator().next();
     }
 
-    protected ApiControllerMetadata getControllerMetadata() {
+    protected ApiResourceMetadata getControllerMetadata() {
         if(controllerMetadata == null) {
             initControllerMetadata(defaultRamlParser);
         }
@@ -68,11 +68,11 @@ public abstract class AbstractRuleTestBase {
     }
 
 
-    protected ApiMappingMetadata getEndpointMetadata() {
+    protected ApiActionMetadata getEndpointMetadata() {
         return getEndpointMetadata(1);
     }
 
-    protected ApiMappingMetadata getEndpointMetadata(int number) {
+    protected ApiActionMetadata getEndpointMetadata(int number) {
         return getControllerMetadata().getApiCalls().stream().skip(number-1).findFirst().get();
     }
 

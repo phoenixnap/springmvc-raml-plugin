@@ -14,8 +14,8 @@ package com.phoenixnap.oss.ramlapisync.generation.rules.spring;
 
 import org.apache.commons.lang.StringUtils;
 
-import com.phoenixnap.oss.ramlapisync.data.ApiControllerMetadata;
-import com.phoenixnap.oss.ramlapisync.data.ApiMappingMetadata;
+import com.phoenixnap.oss.ramlapisync.data.ApiResourceMetadata;
+import com.phoenixnap.oss.ramlapisync.data.ApiActionMetadata;
 import com.phoenixnap.oss.ramlapisync.generation.rules.GenericJavaClassRule;
 import com.phoenixnap.oss.ramlapisync.generation.rules.Rule;
 import com.phoenixnap.oss.ramlapisync.generation.rules.basic.ClassCommentRule;
@@ -63,10 +63,10 @@ import com.sun.codemodel.JMethod;
  * @author armin.weisser
  * @since 0.4.1
  */
-public abstract class SpringControllerDecoratorRule implements Rule<JCodeModel, JDefinedClass, ApiControllerMetadata> {
+public abstract class SpringControllerDecoratorRule implements Rule<JCodeModel, JDefinedClass, ApiResourceMetadata> {
 
     @Override
-    public final JDefinedClass apply(ApiControllerMetadata metadata, JCodeModel generatableType) {
+    public final JDefinedClass apply(ApiResourceMetadata metadata, JCodeModel generatableType) {
 
         JDefinedClass generatedInterface = new GenericJavaClassRule()
                 .setPackageRule(new PackageRule())
@@ -99,7 +99,7 @@ public abstract class SpringControllerDecoratorRule implements Rule<JCodeModel, 
         return delegateGenerator.apply(metadata, generatableType);
     }
     
-    protected abstract Rule<JDefinedClass, JAnnotationUse, ApiControllerMetadata> getControllerAnnotationRule();
+    protected abstract Rule<JDefinedClass, JAnnotationUse, ApiResourceMetadata> getControllerAnnotationRule();
     
-    protected abstract Rule<JMethod, JAnnotationUse, ApiMappingMetadata> getResponseBodyAnnotationRule();
+    protected abstract Rule<JMethod, JAnnotationUse, ApiActionMetadata> getResponseBodyAnnotationRule();
 }

@@ -25,7 +25,7 @@ import org.raml.parser.visitor.RamlDocumentBuilder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.phoenixnap.oss.ramlapisync.data.ApiControllerMetadata;
+import com.phoenixnap.oss.ramlapisync.data.ApiResourceMetadata;
 import com.phoenixnap.oss.ramlapisync.naming.RamlHelper;
 
 
@@ -81,9 +81,9 @@ public class RamlParser {
 	 * @param raml The raml document to be parsed
 	 * @return A set of Controllers representing the inferred resources in the system
 	 */
-	public Set<ApiControllerMetadata> extractControllers (Raml raml) {
+	public Set<ApiResourceMetadata> extractControllers (Raml raml) {
 		
-		Set<ApiControllerMetadata> controllers = new LinkedHashSet<>();
+		Set<ApiResourceMetadata> controllers = new LinkedHashSet<>();
 		if (raml == null) {
 			return controllers;
 		}
@@ -128,12 +128,12 @@ public class RamlParser {
 	 * @param document The raml Document being parse
 	 * @return A set of Controllers representing resources in this branch of the tree
 	 */
-	public Set<ApiControllerMetadata> checkResource(String baseUrl, Resource resource, ApiControllerMetadata controller, Raml document) {
-		Set<ApiControllerMetadata> controllers = new LinkedHashSet<>();
+	public Set<ApiResourceMetadata> checkResource(String baseUrl, Resource resource, ApiResourceMetadata controller, Raml document) {
+		Set<ApiResourceMetadata> controllers = new LinkedHashSet<>();
 		//append resource URL to url.
 		String url = baseUrl + resource.getRelativeUri();
 		if (controller == null && shouldCreateController(resource)) {
-			controller = new ApiControllerMetadata(url, resource, basePackage, document);
+			controller = new ApiResourceMetadata(url, resource, basePackage, document);
 			controllers.add(controller);
 		}
 		//extract actions for this resource

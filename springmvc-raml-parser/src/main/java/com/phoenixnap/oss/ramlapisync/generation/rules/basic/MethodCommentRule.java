@@ -12,7 +12,7 @@
  */
 package com.phoenixnap.oss.ramlapisync.generation.rules.basic;
 
-import com.phoenixnap.oss.ramlapisync.data.ApiMappingMetadata;
+import com.phoenixnap.oss.ramlapisync.data.ApiActionMetadata;
 import com.phoenixnap.oss.ramlapisync.generation.rules.Rule;
 import com.sun.codemodel.JDocComment;
 import com.sun.codemodel.JMethod;
@@ -24,9 +24,9 @@ import com.sun.codemodel.JMethod;
  * @author armin.weisser
  * @since 0.4.1
  */
-public class MethodCommentRule implements Rule<JMethod,JDocComment,ApiMappingMetadata> {
+public class MethodCommentRule implements Rule<JMethod,JDocComment,ApiActionMetadata> {
     @Override
-    public JDocComment apply(ApiMappingMetadata endpointMetadata, JMethod generatableType) {
+    public JDocComment apply(ApiActionMetadata endpointMetadata, JMethod generatableType) {
         String comments = "No description";
         if(endpointMetadata.getDescription() != null) {
             comments = endpointMetadata.getDescription();

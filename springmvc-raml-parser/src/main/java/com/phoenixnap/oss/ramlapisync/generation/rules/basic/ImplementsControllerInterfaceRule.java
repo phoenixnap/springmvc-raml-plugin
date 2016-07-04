@@ -12,7 +12,7 @@
  */
 package com.phoenixnap.oss.ramlapisync.generation.rules.basic;
 
-import com.phoenixnap.oss.ramlapisync.data.ApiControllerMetadata;
+import com.phoenixnap.oss.ramlapisync.data.ApiResourceMetadata;
 import com.phoenixnap.oss.ramlapisync.generation.rules.Rule;
 import com.sun.codemodel.JDefinedClass;
 
@@ -28,7 +28,7 @@ import com.sun.codemodel.JDefinedClass;
  * @author armin.weisser
  * @since 0.4.1
  */
-public class ImplementsControllerInterfaceRule implements Rule<JDefinedClass, JDefinedClass, ApiControllerMetadata> {
+public class ImplementsControllerInterfaceRule implements Rule<JDefinedClass, JDefinedClass, ApiResourceMetadata> {
 
     private final JDefinedClass interfaceType;
 
@@ -37,7 +37,7 @@ public class ImplementsControllerInterfaceRule implements Rule<JDefinedClass, JD
     }
 
     @Override
-    public JDefinedClass apply(ApiControllerMetadata controllerMetadata, JDefinedClass generatableType) {
+    public JDefinedClass apply(ApiResourceMetadata controllerMetadata, JDefinedClass generatableType) {
         return generatableType._implements(this.interfaceType);
     }
 

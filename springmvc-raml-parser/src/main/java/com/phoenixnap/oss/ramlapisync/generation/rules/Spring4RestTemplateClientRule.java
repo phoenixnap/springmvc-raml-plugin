@@ -18,7 +18,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.util.CollectionUtils;
 import org.springframework.web.client.RestTemplate;
 
-import com.phoenixnap.oss.ramlapisync.data.ApiControllerMetadata;
+import com.phoenixnap.oss.ramlapisync.data.ApiResourceMetadata;
 import com.phoenixnap.oss.ramlapisync.generation.rules.basic.ClassAnnotationRule;
 import com.phoenixnap.oss.ramlapisync.generation.rules.basic.ClassCommentRule;
 import com.phoenixnap.oss.ramlapisync.generation.rules.basic.ClassFieldDeclarationRule;
@@ -57,7 +57,7 @@ import com.sun.codemodel.JDefinedClass;
  * @author kristian galea
  * @since 0.5.0
  */
-public class Spring4RestTemplateClientRule implements ConfigurableRule<JCodeModel, JDefinedClass, ApiControllerMetadata> {
+public class Spring4RestTemplateClientRule implements ConfigurableRule<JCodeModel, JDefinedClass, ApiResourceMetadata> {
     
 	String restTemplateFieldName = "restTemplate";
 	
@@ -68,7 +68,7 @@ public class Spring4RestTemplateClientRule implements ConfigurableRule<JCodeMode
 	String restTemplateQualifierBeanName;
 	
     @Override
-    public final JDefinedClass apply(ApiControllerMetadata metadata, JCodeModel generatableType) {
+    public final JDefinedClass apply(ApiResourceMetadata metadata, JCodeModel generatableType) {
 
         JDefinedClass generatedInterface = new GenericJavaClassRule()
                 .setPackageRule(new PackageRule())

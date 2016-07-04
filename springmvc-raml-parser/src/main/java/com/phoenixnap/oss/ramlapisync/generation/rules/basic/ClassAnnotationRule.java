@@ -14,7 +14,7 @@ package com.phoenixnap.oss.ramlapisync.generation.rules.basic;
 
 import java.lang.annotation.Annotation;
 
-import com.phoenixnap.oss.ramlapisync.data.ApiControllerMetadata;
+import com.phoenixnap.oss.ramlapisync.data.ApiResourceMetadata;
 import com.phoenixnap.oss.ramlapisync.generation.rules.Rule;
 import com.sun.codemodel.JAnnotationUse;
 import com.sun.codemodel.JDefinedClass;
@@ -25,7 +25,7 @@ import com.sun.codemodel.JDefinedClass;
  * @author kurt paris
  * @since 0.5.0
  */
-public class ClassAnnotationRule implements Rule<JDefinedClass, JAnnotationUse, ApiControllerMetadata> {
+public class ClassAnnotationRule implements Rule<JDefinedClass, JAnnotationUse, ApiResourceMetadata> {
 	
 	/**
 	 *  Annotation to support
@@ -38,7 +38,7 @@ public class ClassAnnotationRule implements Rule<JDefinedClass, JAnnotationUse, 
 	
 	
     @Override
-    public JAnnotationUse apply(ApiControllerMetadata controllerMetadata, JDefinedClass generatableType) {    	
+    public JAnnotationUse apply(ApiResourceMetadata controllerMetadata, JDefinedClass generatableType) {    	
         return generatableType.annotate(annotationType);
     }
 }

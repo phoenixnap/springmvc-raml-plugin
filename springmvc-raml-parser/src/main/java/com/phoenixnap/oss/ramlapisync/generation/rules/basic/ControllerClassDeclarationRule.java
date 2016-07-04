@@ -12,7 +12,7 @@
  */
 package com.phoenixnap.oss.ramlapisync.generation.rules.basic;
 
-import com.phoenixnap.oss.ramlapisync.data.ApiControllerMetadata;
+import com.phoenixnap.oss.ramlapisync.data.ApiResourceMetadata;
 
 /**
  * Generates an class declaration based on the controller name in ApiControllerMetadata.
@@ -40,7 +40,7 @@ public class ControllerClassDeclarationRule extends ResourceClassDeclarationRule
     }
 
     public ControllerClassDeclarationRule(String classNameSuffix) {
-        super(ApiControllerMetadata.CONTROLLER_SUFFIX + classNameSuffix);
+        super(ApiResourceMetadata.CONTROLLER_SUFFIX + classNameSuffix);
     }
 
 }

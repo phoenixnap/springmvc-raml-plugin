@@ -12,8 +12,8 @@
  */
 package com.phoenixnap.oss.ramlapisync.generation.rules;
 
-import com.phoenixnap.oss.ramlapisync.data.ApiControllerMetadata;
-import com.phoenixnap.oss.ramlapisync.data.ApiMappingMetadata;
+import com.phoenixnap.oss.ramlapisync.data.ApiResourceMetadata;
+import com.phoenixnap.oss.ramlapisync.data.ApiActionMetadata;
 import com.phoenixnap.oss.ramlapisync.generation.rules.spring.SpringControllerDecoratorRule;
 import com.phoenixnap.oss.ramlapisync.generation.rules.spring.SpringResponseBodyMethodAnnotationRule;
 import com.phoenixnap.oss.ramlapisync.generation.rules.spring.SpringRestControllerAnnotationRule;
@@ -56,12 +56,12 @@ import com.sun.codemodel.JMethod;
 public class Spring3ControllerDecoratorRule extends SpringControllerDecoratorRule {
     
 	@Override
-	protected Rule<JDefinedClass, JAnnotationUse, ApiControllerMetadata> getControllerAnnotationRule() {
+	protected Rule<JDefinedClass, JAnnotationUse, ApiResourceMetadata> getControllerAnnotationRule() {
 		return new SpringRestControllerAnnotationRule(3);
 	}
 	
 	@Override
-	protected Rule<JMethod, JAnnotationUse, ApiMappingMetadata> getResponseBodyAnnotationRule() {
+	protected Rule<JMethod, JAnnotationUse, ApiActionMetadata> getResponseBodyAnnotationRule() {
 		return new SpringResponseBodyMethodAnnotationRule();
 	}
 }

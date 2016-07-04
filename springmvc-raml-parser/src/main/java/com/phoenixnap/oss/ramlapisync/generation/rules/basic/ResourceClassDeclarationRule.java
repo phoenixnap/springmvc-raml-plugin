@@ -12,7 +12,7 @@
  */
 package com.phoenixnap.oss.ramlapisync.generation.rules.basic;
 
-import com.phoenixnap.oss.ramlapisync.data.ApiControllerMetadata;
+import com.phoenixnap.oss.ramlapisync.data.ApiResourceMetadata;
 import com.phoenixnap.oss.ramlapisync.generation.rules.Rule;
 import com.sun.codemodel.JClassAlreadyExistsException;
 import com.sun.codemodel.JDefinedClass;
@@ -36,7 +36,7 @@ import com.sun.codemodel.JPackage;
  * @author kurtpa
  * @since 0.5.0
  */
-public class ResourceClassDeclarationRule implements Rule<JPackage,JDefinedClass, ApiControllerMetadata> {
+public class ResourceClassDeclarationRule implements Rule<JPackage,JDefinedClass, ApiResourceMetadata> {
 
     private final String classNameSuffix;
 
@@ -49,7 +49,7 @@ public class ResourceClassDeclarationRule implements Rule<JPackage,JDefinedClass
     }
 
     @Override
-    public JDefinedClass apply(ApiControllerMetadata controllerMetadata, JPackage generatableType) {
+    public JDefinedClass apply(ApiResourceMetadata controllerMetadata, JPackage generatableType) {
         String resourceClassName = controllerMetadata.getResourceName() + classNameSuffix;
         JDefinedClass definedClass;
         try {

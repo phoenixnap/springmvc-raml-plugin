@@ -32,7 +32,7 @@ import com.phoenixnap.oss.ramlapisync.naming.NamingHelper;
  * @since 0.2.1
  *
  */	
-public class ApiControllerMetadata {
+public class ApiResourceMetadata {
 	
 	public static final String CONTROLLER_SUFFIX = "Controller";
 	
@@ -41,9 +41,9 @@ public class ApiControllerMetadata {
 	private String basePackage;
 	private Raml document;
 	
-	Set<ApiMappingMetadata> apiCalls = new LinkedHashSet<>();
+	Set<ApiActionMetadata> apiCalls = new LinkedHashSet<>();
 	
-	public ApiControllerMetadata(String controllerUrl, Resource resource, String basePackage, Raml document) {
+	public ApiResourceMetadata(String controllerUrl, Resource resource, String basePackage, Raml document) {
 		super();
 		this.controllerUrl = controllerUrl;
 		this.resource = resource;
@@ -53,14 +53,14 @@ public class ApiControllerMetadata {
 	
 	
 	public void addApiCall(Resource resource, ActionType actionType, Action action) {
-		apiCalls.add(new ApiMappingMetadata(this, resource, actionType, action));
+		apiCalls.add(new ApiActionMetadata(this, resource, actionType, action));
 	}
 	
 	public void addApiCall(Resource resource, ActionType actionType, Action action, String responseContentType) {
-		apiCalls.add(new ApiMappingMetadata(this, resource, actionType, action, responseContentType));
+		apiCalls.add(new ApiActionMetadata(this, resource, actionType, action, responseContentType));
 	}
 	
-    public Set<ApiMappingMetadata> getApiCalls() {
+    public Set<ApiActionMetadata> getApiCalls() {
 		return Collections.unmodifiableSet(apiCalls);
 	}
     
@@ -102,7 +102,7 @@ public class ApiControllerMetadata {
 	
 	public Set<ApiBodyMetadata> getDependencies() {
 		Set<ApiBodyMetadata> dependencies = new LinkedHashSet<>();
-		for (ApiMappingMetadata method : apiCalls) {
+		for (ApiActionMetadata method : apiCalls) {
 			if (method.getRequestBody() != null) {
 				dependencies.add(method.getRequestBody());
 			}

@@ -19,8 +19,8 @@ import java.util.Set;
 import org.junit.Test;
 import org.raml.model.Raml;
 
-import com.phoenixnap.oss.ramlapisync.data.ApiControllerMetadata;
-import com.phoenixnap.oss.ramlapisync.data.ApiMappingMetadata;
+import com.phoenixnap.oss.ramlapisync.data.ApiResourceMetadata;
+import com.phoenixnap.oss.ramlapisync.data.ApiActionMetadata;
 import com.phoenixnap.oss.ramlapisync.data.ApiParameterMetadata;
 import com.phoenixnap.oss.ramlapisync.generation.RamlGenerator;
 import com.phoenixnap.oss.ramlapisync.generation.RamlParser;
@@ -43,11 +43,11 @@ public class BugfixTest {
 	public void test_Issue15_MissingQueryParameters() {
 		Raml loadRamlFromFile = RamlParser.loadRamlFromFile( "issue-15.raml" );
 		RamlParser par = new RamlParser("com.gen.test"); 
-		Set<ApiControllerMetadata> controllers = par.extractControllers(loadRamlFromFile);
+		Set<ApiResourceMetadata> controllers = par.extractControllers(loadRamlFromFile);
 		assertEquals("Expect 1 controller", 1, controllers.size());
-		ApiControllerMetadata controller = controllers.iterator().next();
+		ApiResourceMetadata controller = controllers.iterator().next();
 		assertEquals("Expect 1 api call in the controller", 1, controller.getApiCalls().size());
-		ApiMappingMetadata apiCall = controller.getApiCalls().iterator().next();
+		ApiActionMetadata apiCall = controller.getApiCalls().iterator().next();
 		assertEquals("Expect 1 request parameter", 1, apiCall.getRequestParameters().size());
 		ApiParameterMetadata parameter = apiCall.getRequestParameters().iterator().next();
 		assertEquals("Expect it to be the id", "id", parameter.getName());

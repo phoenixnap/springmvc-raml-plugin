@@ -12,7 +12,7 @@
  */
 package com.phoenixnap.oss.ramlapisync.generation.rules.spring;
 
-import com.phoenixnap.oss.ramlapisync.data.ApiControllerMetadata;
+import com.phoenixnap.oss.ramlapisync.data.ApiResourceMetadata;
 import com.phoenixnap.oss.ramlapisync.generation.exception.InvalidCodeModelException;
 import com.phoenixnap.oss.ramlapisync.generation.rules.Rule;
 import com.sun.codemodel.JAnnotationUse;
@@ -41,9 +41,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
  * @author armin.weisser
  * @since 0.4.1
  */
-public class SpringRequestMappingClassAnnotationRule implements Rule<JDefinedClass, JAnnotationUse, ApiControllerMetadata> {
+public class SpringRequestMappingClassAnnotationRule implements Rule<JDefinedClass, JAnnotationUse, ApiResourceMetadata> {
     @Override
-    public JAnnotationUse apply(ApiControllerMetadata controllerMetadata, JDefinedClass generatableType) {
+    public JAnnotationUse apply(ApiResourceMetadata controllerMetadata, JDefinedClass generatableType) {
         JAnnotationUse requestMapping = generatableType.annotate(RequestMapping.class);
         requestMapping.param("value", controllerMetadata.getControllerUrl());
         try {
@@ -58,7 +58,7 @@ public class SpringRequestMappingClassAnnotationRule implements Rule<JDefinedCla
         return requestMapping;
     }
 
-    private String generateMediaType(ApiControllerMetadata controllerMetadata) {
+    private String generateMediaType(ApiResourceMetadata controllerMetadata) {
         String ramlMediaType = controllerMetadata.getDocument().getMediaType();
         if (!StringUtils.hasText(ramlMediaType)) {
         	return null;

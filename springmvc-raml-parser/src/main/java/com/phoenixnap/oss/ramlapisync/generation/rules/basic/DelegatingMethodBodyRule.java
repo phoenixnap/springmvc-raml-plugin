@@ -12,7 +12,7 @@
  */
 package com.phoenixnap.oss.ramlapisync.generation.rules.basic;
 
-import com.phoenixnap.oss.ramlapisync.data.ApiMappingMetadata;
+import com.phoenixnap.oss.ramlapisync.data.ApiActionMetadata;
 import com.phoenixnap.oss.ramlapisync.generation.CodeModelHelper.JExtMethod;
 import com.phoenixnap.oss.ramlapisync.generation.rules.Rule;
 import com.sun.codemodel.JExpr;
@@ -43,7 +43,7 @@ import org.springframework.util.StringUtils;
  * @author armin.weisser
  * @since 0.4.1
  */
-public class DelegatingMethodBodyRule implements Rule<JExtMethod, JMethod, ApiMappingMetadata> {
+public class DelegatingMethodBodyRule implements Rule<JExtMethod, JMethod, ApiActionMetadata> {
 
     private String delegateFieldName = "delegate";
 
@@ -54,7 +54,7 @@ public class DelegatingMethodBodyRule implements Rule<JExtMethod, JMethod, ApiMa
     }
 
     @Override
-    public JMethod apply(ApiMappingMetadata endpointMetadata, JExtMethod generatableType) {
+    public JMethod apply(ApiActionMetadata endpointMetadata, JExtMethod generatableType) {
     	JMethod jMethod = generatableType.get();
         JInvocation jInvocation = JExpr._this().ref(delegateFieldName).invoke(jMethod);
         jMethod.params().forEach(p -> jInvocation.arg(p));

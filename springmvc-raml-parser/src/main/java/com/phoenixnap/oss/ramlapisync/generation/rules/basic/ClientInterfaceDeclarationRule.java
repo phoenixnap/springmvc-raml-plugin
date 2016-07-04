@@ -12,7 +12,7 @@
  */
 package com.phoenixnap.oss.ramlapisync.generation.rules.basic;
 
-import com.phoenixnap.oss.ramlapisync.data.ApiControllerMetadata;
+import com.phoenixnap.oss.ramlapisync.data.ApiResourceMetadata;
 import com.phoenixnap.oss.ramlapisync.generation.rules.Rule;
 import com.sun.codemodel.JClassAlreadyExistsException;
 import com.sun.codemodel.JDefinedClass;
@@ -36,12 +36,12 @@ import com.sun.codemodel.JPackage;
  * @author kurtpa
  * @since 0.5.0
  */
-public class ClientInterfaceDeclarationRule implements Rule<JPackage,JDefinedClass, ApiControllerMetadata> {
+public class ClientInterfaceDeclarationRule implements Rule<JPackage,JDefinedClass, ApiResourceMetadata> {
 
 	public static final String CLIENT_SUFFIX = "Client";
 	
     @Override
-    public JDefinedClass apply(ApiControllerMetadata controllerMetadata, JPackage generatableType) {
+    public JDefinedClass apply(ApiResourceMetadata controllerMetadata, JPackage generatableType) {
         String clientClassName = controllerMetadata.getResourceName() + CLIENT_SUFFIX;
         JDefinedClass definedClass;
         try {

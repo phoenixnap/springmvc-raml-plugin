@@ -12,7 +12,7 @@
  */
 package com.phoenixnap.oss.ramlapisync.generation.rules.spring;
 
-import com.phoenixnap.oss.ramlapisync.data.ApiMappingMetadata;
+import com.phoenixnap.oss.ramlapisync.data.ApiActionMetadata;
 import com.phoenixnap.oss.ramlapisync.generation.rules.Rule;
 import com.sun.codemodel.JAnnotationUse;
 import com.sun.codemodel.JMethod;
@@ -24,9 +24,9 @@ import org.springframework.web.bind.annotation.ResponseBody;
  * @author armin.weisser
  * @since 0.4.1
  */
-public class SpringResponseBodyMethodAnnotationRule implements Rule<JMethod, JAnnotationUse, ApiMappingMetadata> {
+public class SpringResponseBodyMethodAnnotationRule implements Rule<JMethod, JAnnotationUse, ApiActionMetadata> {
     @Override
-    public JAnnotationUse apply(ApiMappingMetadata endpointMetadata, JMethod generatableType) {
+    public JAnnotationUse apply(ApiActionMetadata endpointMetadata, JMethod generatableType) {
         if (!endpointMetadata.getResponseBody().isEmpty()) {
             return generatableType.annotate(ResponseBody.class);
         }

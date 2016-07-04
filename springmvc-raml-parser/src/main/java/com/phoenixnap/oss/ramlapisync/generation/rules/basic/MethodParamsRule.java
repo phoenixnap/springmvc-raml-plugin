@@ -12,7 +12,7 @@
  */
 package com.phoenixnap.oss.ramlapisync.generation.rules.basic;
 
-import com.phoenixnap.oss.ramlapisync.data.ApiMappingMetadata;
+import com.phoenixnap.oss.ramlapisync.data.ApiActionMetadata;
 import com.phoenixnap.oss.ramlapisync.data.ApiParameterMetadata;
 import com.phoenixnap.oss.ramlapisync.generation.CodeModelHelper;
 import com.phoenixnap.oss.ramlapisync.generation.rules.Rule;
@@ -63,7 +63,7 @@ import static org.springframework.util.StringUtils.uncapitalize;
  * @author kurt paris
  * @since 0.4.1
  */
-public class MethodParamsRule implements Rule<CodeModelHelper.JExtMethod, JMethod, ApiMappingMetadata> {
+public class MethodParamsRule implements Rule<CodeModelHelper.JExtMethod, JMethod, ApiActionMetadata> {
 
 	boolean addParameterJavadoc = false;
 	
@@ -81,7 +81,7 @@ public class MethodParamsRule implements Rule<CodeModelHelper.JExtMethod, JMetho
 	}
 	
     @Override
-    public JMethod apply(ApiMappingMetadata endpointMetadata, CodeModelHelper.JExtMethod generatableType) {
+    public JMethod apply(ApiActionMetadata endpointMetadata, CodeModelHelper.JExtMethod generatableType) {
 
         List<ApiParameterMetadata> parameterMetadataList = new ArrayList<>();
         parameterMetadataList.addAll(endpointMetadata.getPathVariables());
@@ -109,7 +109,7 @@ public class MethodParamsRule implements Rule<CodeModelHelper.JExtMethod, JMetho
         return generatableType.get().param(paramMetaData.getType(), paramMetaData.getName());
     }
 
-    protected JVar param(ApiMappingMetadata endpointMetadata, CodeModelHelper.JExtMethod generatableType) {
+    protected JVar param(ApiActionMetadata endpointMetadata, CodeModelHelper.JExtMethod generatableType) {
         String requestBodyName = endpointMetadata.getRequestBody().getName();
         List<JCodeModel> codeModels = new ArrayList<>();
         if (endpointMetadata.getRequestBody().getCodeModel()!=null){

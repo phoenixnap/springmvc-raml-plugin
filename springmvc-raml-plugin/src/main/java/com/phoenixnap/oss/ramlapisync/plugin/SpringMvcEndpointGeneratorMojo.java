@@ -41,7 +41,7 @@ import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
 
 import com.phoenixnap.oss.ramlapisync.data.ApiBodyMetadata;
-import com.phoenixnap.oss.ramlapisync.data.ApiControllerMetadata;
+import com.phoenixnap.oss.ramlapisync.data.ApiResourceMetadata;
 import com.phoenixnap.oss.ramlapisync.generation.RamlParser;
 import com.phoenixnap.oss.ramlapisync.generation.rules.ConfigurableRule;
 import com.phoenixnap.oss.ramlapisync.generation.rules.Rule;
@@ -158,7 +158,7 @@ public class SpringMvcEndpointGeneratorMojo extends AbstractMojo {
 		
 		Raml loadRamlFromFile = RamlParser.loadRamlFromFile( "file:"+resolvedRamlPath );
 		RamlParser par = new RamlParser(basePackage, getBasePath(loadRamlFromFile), seperateMethodsByContentType);
-		Set<ApiControllerMetadata> controllers = par.extractControllers(loadRamlFromFile);
+		Set<ApiResourceMetadata> controllers = par.extractControllers(loadRamlFromFile);
 
 		if (StringUtils.hasText(outputRelativePath)) {
 			if (!outputRelativePath.startsWith(File.separator) && !outputRelativePath.startsWith("/")) {
@@ -178,8 +178,8 @@ public class SpringMvcEndpointGeneratorMojo extends AbstractMojo {
 		generateCode(controllers, rootDir);
 	}
 
-	private void generateCode(Set<ApiControllerMetadata> controllers, File rootDir) {
-		for (ApiControllerMetadata met :controllers) {
+	private void generateCode(Set<ApiResourceMetadata> controllers, File rootDir) {
+		for (ApiResourceMetadata met :controllers) {
 			this.getLog().debug("");
 			this.getLog().debug("-----------------------------------------------------------");
 			this.getLog().debug(met.getName());
@@ -217,10 +217,10 @@ public class SpringMvcEndpointGeneratorMojo extends AbstractMojo {
 	}
 
 	@SuppressWarnings("unchecked")
-	private Rule<JCodeModel, JDefinedClass, ApiControllerMetadata> loadRule() {
-		Rule<JCodeModel, JDefinedClass, ApiControllerMetadata> ruleInstance = new Spring4ControllerStubRule();
+	private Rule<JCodeModel, JDefinedClass, ApiResourceMetadata> loadRule() {
+		Rule<JCodeModel, JDefinedClass, ApiResourceMetadata> ruleInstance = new Spring4ControllerStubRule();
 		try {
-			ruleInstance = (Rule<JCodeModel, JDefinedClass, ApiControllerMetadata>) getClassRealm().loadClass(rule).newInstance();
+			ruleInstance = (Rule<JCodeModel, JDefinedClass, ApiResourceMetadata>) getClassRealm().loadClass(rule).newInstance();
 			this.getLog().debug(StringUtils.collectionToCommaDelimitedString(ruleConfiguration.keySet()));
 			this.getLog().debug(StringUtils.collectionToCommaDelimitedString(ruleConfiguration.values()));
 			
@@ -253,7 +253,7 @@ public class SpringMvcEndpointGeneratorMojo extends AbstractMojo {
 		return classRealm;
 	}
 
-	private void generateModelSources(ApiControllerMetadata met, ApiBodyMetadata body, File rootDir, GenerationConfig config, Annotator annotator) {
+	private void generateModelSources(ApiResourceMetadata met, ApiBodyMetadata body, File rootDir, GenerationConfig config, Annotator annotator) {
 		try {
             JCodeModel codeModel;
             if (config ==null && annotator == null) {
@@ -308,7 +308,7 @@ public class SpringMvcEndpointGeneratorMojo extends AbstractMojo {
 		return null;
 	}
 
-	private void generateControllerSource(ApiControllerMetadata met, File dir) {
+	private void generateControllerSource(ApiResourceMetadata met, File dir) {
 		JCodeModel codeModel = new JCodeModel();
 		loadRule().apply(met, codeModel);
 		try {

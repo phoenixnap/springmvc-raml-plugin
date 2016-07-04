@@ -13,7 +13,7 @@
 package com.phoenixnap.oss.ramlapisync.generation.rules.spring;
 
 import com.phoenixnap.oss.ramlapisync.data.ApiBodyMetadata;
-import com.phoenixnap.oss.ramlapisync.data.ApiMappingMetadata;
+import com.phoenixnap.oss.ramlapisync.data.ApiActionMetadata;
 import com.phoenixnap.oss.ramlapisync.generation.rules.Rule;
 import com.sun.codemodel.JClass;
 import com.sun.codemodel.JDefinedClass;
@@ -54,10 +54,10 @@ import static com.phoenixnap.oss.ramlapisync.generation.CodeModelHelper.findFirs
  * @author armin.weisser
  * @since 0.4.1
  */
-public class SpringSimpleResponseTypeRule implements Rule<JDefinedClass, JType, ApiMappingMetadata> {
+public class SpringSimpleResponseTypeRule implements Rule<JDefinedClass, JType, ApiActionMetadata> {
 
     @Override
-    public JType apply(ApiMappingMetadata endpointMetadata, JDefinedClass generatableType) {
+    public JType apply(ApiActionMetadata endpointMetadata, JDefinedClass generatableType) {
         JClass responseType = generatableType.owner().ref(ResponseEntity.class);
         if (!endpointMetadata.getResponseBody().isEmpty()) {
             ApiBodyMetadata apiBodyMetadata = endpointMetadata.getResponseBody().values().iterator().next();

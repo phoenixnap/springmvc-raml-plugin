@@ -16,8 +16,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-import com.phoenixnap.oss.ramlapisync.data.ApiControllerMetadata;
-import com.phoenixnap.oss.ramlapisync.data.ApiMappingMetadata;
+import com.phoenixnap.oss.ramlapisync.data.ApiResourceMetadata;
+import com.phoenixnap.oss.ramlapisync.data.ApiActionMetadata;
 import com.phoenixnap.oss.ramlapisync.generation.CodeModelHelper;
 import com.phoenixnap.oss.ramlapisync.generation.CodeModelHelper.JExtMethod;
 import com.sun.codemodel.JAnnotationUse;
@@ -53,64 +53,64 @@ import com.sun.codemodel.JPackage;
  * @author armin.weisser
  * @since 0.4.1
  */
-public class GenericJavaClassRule implements Rule<JCodeModel, JDefinedClass, ApiControllerMetadata> {
+public class GenericJavaClassRule implements Rule<JCodeModel, JDefinedClass, ApiResourceMetadata> {
 
     /**
      * a package declaration rule
      */
-    private Rule<JCodeModel, JPackage, ApiControllerMetadata> packageRule;
+    private Rule<JCodeModel, JPackage, ApiResourceMetadata> packageRule;
 
     /**
      * an optional class comment rule.
      */
-    private Optional<Rule<JDefinedClass, JDocComment, ApiControllerMetadata>> classCommentRule =  Optional.empty();
+    private Optional<Rule<JDefinedClass, JDocComment, ApiResourceMetadata>> classCommentRule =  Optional.empty();
 
     /**
      * a set of class annotation rules. May be empty.
      */
-    private List<Rule<JDefinedClass,JAnnotationUse, ApiControllerMetadata>> classAnnotationRules = new ArrayList<>();
+    private List<Rule<JDefinedClass,JAnnotationUse, ApiResourceMetadata>> classAnnotationRules = new ArrayList<>();
 
     /**
      * an optional class declaration rule.
      */
-    private Rule<JPackage,JDefinedClass, ApiControllerMetadata> classRule;
+    private Rule<JPackage,JDefinedClass, ApiResourceMetadata> classRule;
 
     /**
      * an optional rule to define implements/extends part of the class declaration
      */
-    private Optional<Rule<JDefinedClass, JDefinedClass, ApiControllerMetadata>> implementsExtendsRule = Optional.empty();
+    private Optional<Rule<JDefinedClass, JDefinedClass, ApiResourceMetadata>> implementsExtendsRule = Optional.empty();
 
     /**
      * a set of field declaration rules. May be empty.
      */
-    private List<Rule<JDefinedClass, JFieldVar, ApiControllerMetadata>> fieldDeclerationRules = new ArrayList<>();
+    private List<Rule<JDefinedClass, JFieldVar, ApiResourceMetadata>> fieldDeclerationRules = new ArrayList<>();
 
     /**
      * an optional method comment rule
      */
-    private Optional<Rule<JMethod, JDocComment, ApiMappingMetadata>> methodCommentRule = Optional.empty();
+    private Optional<Rule<JMethod, JDocComment, ApiActionMetadata>> methodCommentRule = Optional.empty();
 
     /**
      * a set of method annotation rules. May be empty.
      */
-    private List<Rule<JMethod, JAnnotationUse, ApiMappingMetadata>> methodAnnotationRules = new ArrayList<>();
+    private List<Rule<JMethod, JAnnotationUse, ApiActionMetadata>> methodAnnotationRules = new ArrayList<>();
 
     /**
      * a method signature rule (just the signature, no annotations, no body)
      */
-    private Rule<JDefinedClass, JMethod, ApiMappingMetadata> methodSignatureRule;
+    private Rule<JDefinedClass, JMethod, ApiActionMetadata> methodSignatureRule;
 
     /**
      * an optional method body rule
      */
-    private Optional<Rule<JExtMethod, JMethod, ApiMappingMetadata>> methodBodyRule = Optional.empty();
+    private Optional<Rule<JExtMethod, JMethod, ApiActionMetadata>> methodBodyRule = Optional.empty();
     
     /**
      * @throws IllegalStateException if a packageRule or classRule is missing or if the ApiControllerMetadata
      *         requires a missing methodSignatureRule.
      */
     @Override
-    public JDefinedClass apply(ApiControllerMetadata metadata, JCodeModel codeModel) {
+    public JDefinedClass apply(ApiResourceMetadata metadata, JCodeModel codeModel) {
 
         if(packageRule == null || classRule == null) {
             throw new IllegalStateException("A packageRule and classRule are mandatory.");
@@ -135,49 +135,49 @@ public class GenericJavaClassRule implements Rule<JCodeModel, JDefinedClass, Api
     }
 
 
-    public GenericJavaClassRule setPackageRule(Rule<JCodeModel, JPackage, ApiControllerMetadata> packageRule) {
+    public GenericJavaClassRule setPackageRule(Rule<JCodeModel, JPackage, ApiResourceMetadata> packageRule) {
         this.packageRule = packageRule;
         return this;
     }
 
-    public GenericJavaClassRule addClassAnnotationRule(Rule<JDefinedClass,JAnnotationUse, ApiControllerMetadata> annotationRule) {
+    public GenericJavaClassRule addClassAnnotationRule(Rule<JDefinedClass,JAnnotationUse, ApiResourceMetadata> annotationRule) {
         if(annotationRule != null) {
             this.classAnnotationRules.add(annotationRule);
         }
         return this;
     }
 
-    public GenericJavaClassRule setClassCommentRule(Rule<JDefinedClass, JDocComment, ApiControllerMetadata> classCommentRule) {
+    public GenericJavaClassRule setClassCommentRule(Rule<JDefinedClass, JDocComment, ApiResourceMetadata> classCommentRule) {
         this.classCommentRule = Optional.ofNullable(classCommentRule);
         return this;
     }
 
-    public GenericJavaClassRule setClassRule(Rule<JPackage, JDefinedClass, ApiControllerMetadata> classRule) {
+    public GenericJavaClassRule setClassRule(Rule<JPackage, JDefinedClass, ApiResourceMetadata> classRule) {
         this.classRule = classRule;
         return this;
     }
 
-    public GenericJavaClassRule setMethodSignatureRule(Rule<JDefinedClass, JMethod, ApiMappingMetadata> methodSignatureRule) {
+    public GenericJavaClassRule setMethodSignatureRule(Rule<JDefinedClass, JMethod, ApiActionMetadata> methodSignatureRule) {
         this.methodSignatureRule = methodSignatureRule;
         return this;
     }
 
-    public GenericJavaClassRule setMethodBodyRule(Rule<JExtMethod, JMethod, ApiMappingMetadata> methodBodyRule) {
+    public GenericJavaClassRule setMethodBodyRule(Rule<JExtMethod, JMethod, ApiActionMetadata> methodBodyRule) {
         this.methodBodyRule = Optional.ofNullable(methodBodyRule);
         return this;
     }
     
-    public GenericJavaClassRule addFieldDeclarationRule(Rule<JDefinedClass, JFieldVar, ApiControllerMetadata> fieldDeclerationRule) {
+    public GenericJavaClassRule addFieldDeclarationRule(Rule<JDefinedClass, JFieldVar, ApiResourceMetadata> fieldDeclerationRule) {
         this.fieldDeclerationRules.add(fieldDeclerationRule);
         return this;
     }
 
-    public GenericJavaClassRule setImplementsExtendsRule(Rule<JDefinedClass, JDefinedClass, ApiControllerMetadata> implementsExtendsRule) {
+    public GenericJavaClassRule setImplementsExtendsRule(Rule<JDefinedClass, JDefinedClass, ApiResourceMetadata> implementsExtendsRule) {
         this.implementsExtendsRule = Optional.ofNullable(implementsExtendsRule);
         return this;
     }
 
-    public GenericJavaClassRule addMethodAnnotationRule(Rule<JMethod, JAnnotationUse, ApiMappingMetadata> methodAnnotationRule) {
+    public GenericJavaClassRule addMethodAnnotationRule(Rule<JMethod, JAnnotationUse, ApiActionMetadata> methodAnnotationRule) {
         if(methodAnnotationRule != null) {
             this.methodAnnotationRules.add(methodAnnotationRule);
         }
@@ -185,7 +185,7 @@ public class GenericJavaClassRule implements Rule<JCodeModel, JDefinedClass, Api
     }
 
 
-    public GenericJavaClassRule setMethodCommentRule(Rule<JMethod,JDocComment,ApiMappingMetadata> methodCommentRule) {
+    public GenericJavaClassRule setMethodCommentRule(Rule<JMethod,JDocComment,ApiActionMetadata> methodCommentRule) {
         this.methodCommentRule = Optional.ofNullable(methodCommentRule);
         return this;
     }
