@@ -17,6 +17,7 @@ import java.util.Set;
 
 import org.raml.model.Action;
 import org.raml.model.ActionType;
+import org.raml.model.Raml;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -43,7 +44,7 @@ public class ActionSecurityResponseChecker extends RamlStyleCheckerAdapter {
 	
 	@Override
 	public Set<StyleIssue> checkActionStyle(ActionType key, Action value,
-			IssueLocation location) {
+			IssueLocation location, Raml raml) {
 		logger.debug("Checking Action: " + key);
 		Set<StyleIssue> issues = new LinkedHashSet<>();
 		

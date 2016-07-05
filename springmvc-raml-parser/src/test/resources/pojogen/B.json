@@ -1,0 +1,12 @@
+{
+  "type" : "object",
+  "id": "B",
+  "properties" : {
+    "id" : {
+      "type" : "integer"
+    },
+    "stuff" : {
+      "type" : "integer"
+    }
+  }
+}

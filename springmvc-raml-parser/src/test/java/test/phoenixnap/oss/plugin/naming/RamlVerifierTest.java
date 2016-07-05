@@ -33,6 +33,7 @@ import test.phoenixnap.oss.plugin.naming.testclasses.StyleCheckResourceDuplicate
 import test.phoenixnap.oss.plugin.naming.testclasses.StyleCheckResourceDuplicateCommandSecond;
 import test.phoenixnap.oss.plugin.naming.testclasses.ThirdVerifierTestController;
 import test.phoenixnap.oss.plugin.naming.testclasses.VerifierTestController;
+import test.phoenixnap.oss.plugin.naming.testclasses.VerifierUriParamTestController;
 
 import com.phoenixnap.oss.ramlapisync.generation.RamlGenerator;
 import com.phoenixnap.oss.ramlapisync.generation.RamlVerifier;
@@ -277,6 +278,18 @@ public class RamlVerifierTest {
 	public void test_ActionExistenceChecker_Success() {
 		Raml published = RamlVerifier.loadRamlFromFile("test-simple.raml");
 		Class<?>[] classesToGenerate = new Class[] { VerifierTestController.class, SecondVerifierTestController.class };
+		Raml computed = generator.generateRamlForClasses("test", "0.0.1", "/", classesToGenerate, Collections.emptySet()).getRaml();
+
+		RamlVerifier verifier = new RamlVerifier(published, computed, Collections.emptyList(), null, Collections.singletonList(new ActionExistenceChecker()));
+		assertFalse("Check that there are no errors and implementation matches raml", verifier.hasErrors());
+		assertFalse("Check that there are no warnings and implementation matches raml", verifier.hasWarnings());
+
+	}
+	
+	@Test
+	public void test_ActionExistenceChecker_misnamedUriParams() {
+		Raml published = RamlVerifier.loadRamlFromFile("test-uri.raml");
+		Class<?>[] classesToGenerate = new Class[] { VerifierUriParamTestController.class, SecondVerifierTestController.class };
 		Raml computed = generator.generateRamlForClasses("test", "0.0.1", "/", classesToGenerate, Collections.emptySet()).getRaml();
 
 		RamlVerifier verifier = new RamlVerifier(published, computed, Collections.emptyList(), null, Collections.singletonList(new ActionExistenceChecker()));

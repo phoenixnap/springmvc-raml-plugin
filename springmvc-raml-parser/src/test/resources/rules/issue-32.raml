@@ -1,0 +1,28 @@
+#%RAML 0.8
+baseUri: https://api.example.com
+title: Filesystem API
+version: 0.1
+mediaType:  application/json
+schemas:
+  - Www: |
+      {
+        "type": "object"
+      }
+/files:
+  post:
+    displayName: Create file
+    description: Create file.
+    body:
+      application/json:
+        schema: Www
+    responses:
+      201:
+        description: file was created.
+        headers:
+          Location:
+            type: string
+            required: true
+            example: /file/bd2907ea-5f86-11e5-9d70-feff819cdc9f
+        body:
+          application/json:
+            schema: Www

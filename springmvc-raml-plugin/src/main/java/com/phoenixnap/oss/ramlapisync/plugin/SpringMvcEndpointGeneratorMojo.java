@@ -12,36 +12,47 @@
  */
 package com.phoenixnap.oss.ramlapisync.plugin;
 
-import com.phoenixnap.oss.ramlapisync.data.ApiBodyMetadata;
-import com.phoenixnap.oss.ramlapisync.data.ApiControllerMetadata;
-import com.phoenixnap.oss.ramlapisync.generation.RamlGenerator;
-import com.phoenixnap.oss.ramlapisync.generation.RamlParser;
-import com.phoenixnap.oss.ramlapisync.generation.serialize.ApiControllerMetadataSerializer;
-import com.sun.codemodel.JCodeModel;
+import java.io.File;
+import java.io.IOException;
+import java.lang.reflect.Method;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.net.URLClassLoader;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
 import org.apache.maven.artifact.DependencyResolutionRequiredException;
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
 import org.apache.maven.plugin.descriptor.PluginDescriptor;
-import org.apache.maven.plugins.annotations.Component;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
 import org.apache.maven.plugins.annotations.ResolutionScope;
 import org.apache.maven.project.MavenProject;
 import org.codehaus.plexus.classworlds.realm.ClassRealm;
+import org.jsonschema2pojo.Annotator;
+import org.jsonschema2pojo.GenerationConfig;
+import org.jsonschema2pojo.Jackson1Annotator;
 import org.raml.model.Raml;
+import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
 
-import java.io.File;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.net.MalformedURLException;
-import java.util.List;
-import java.util.Set;
+import com.phoenixnap.oss.ramlapisync.data.ApiBodyMetadata;
+import com.phoenixnap.oss.ramlapisync.data.ApiResourceMetadata;
+import com.phoenixnap.oss.ramlapisync.generation.RamlParser;
+import com.phoenixnap.oss.ramlapisync.generation.rules.ConfigurableRule;
+import com.phoenixnap.oss.ramlapisync.generation.rules.Rule;
+import com.phoenixnap.oss.ramlapisync.generation.rules.Spring4ControllerStubRule;
+import com.phoenixnap.oss.ramlapisync.naming.NamingHelper;
+import com.sun.codemodel.JCodeModel;
+import com.sun.codemodel.JDefinedClass;
 
 /**
  * Maven Plugin MOJO specific to Generation of Spring MVC Endpoints from RAML documents.
- * 
+ *
  * @author Kurt Paris
  * @since 0.2.1
  */
@@ -54,32 +65,39 @@ public class SpringMvcEndpointGeneratorMojo extends AbstractMojo {
 	@Parameter(defaultValue = "${project}", required = true, readonly = true)
 	protected MavenProject project;
 
-	@Component
+	@Parameter(defaultValue = "${plugin}", readonly = true )
 	private PluginDescriptor descriptor;
-	
+
 	/**
 	 * Path to the raml document to be verified
 	 */
 	@Parameter(required = true, readonly = true, defaultValue = "")
 	protected String ramlPath;
-	
+
 	/**
 	 * Relative file path where the Java files will be saved to
 	 */
 	@Parameter(required = false, readonly = true, defaultValue = "")
 	protected String outputRelativePath;
-	
+
 	/**
 	 * IF this is set to true, we will only parse methods that consume, produce or accept the requested defaultMediaType
 	 */
 	@Parameter(required = false, readonly = true, defaultValue = "false")
 	protected Boolean addTimestampFolder;
-	
+
 	/**
 	 * Java package to be applied to the generated files
 	 */
 	@Parameter(required = true, readonly = true, defaultValue = "")
 	protected String basePackage;
+	
+	/**
+	 * The URI or relative path to the folder/network location containing JSON Schemas
+	 */
+	@Parameter(required = false, readonly = true, defaultValue = "")
+	protected String schemaLocation;
+
 
 	/**
 	 * The explicit base path under which the rest endpoints should be located.
@@ -87,7 +105,7 @@ public class SpringMvcEndpointGeneratorMojo extends AbstractMojo {
 	 */
 	@Parameter(required = false, readonly = true)
 	protected String baseUri;
-	
+
 	/**
 	 * If set to true, we will generate seperate methods for different content types in the RAML
 	 */
@@ -95,15 +113,35 @@ public class SpringMvcEndpointGeneratorMojo extends AbstractMojo {
 	protected Boolean seperateMethodsByContentType;
 
 	/**
-	 * The full qualified name of the RamlGenerator that should be used.
+	 * If set to true, we will generate Jackson 1 annotations inside the model objects
 	 */
-	@Parameter(required = false, readonly = true, defaultValue = "com.phoenixnap.oss.ramlapisync.generation.RamlGenerator")
-	protected String ramlGenerator;
+	@Parameter(required = false, readonly = true, defaultValue = "false")
+	protected Boolean useJackson1xCompatibility;
+
+	/**
+	 * The full qualified name of the Rule that should be used for code generation.
+	 */
+	@Parameter(required = false, readonly = true, defaultValue = "com.phoenixnap.oss.ramlapisync.generation.rules.Spring4ControllerStubRule")
+	protected String rule;
+	
+	/**
+	 * Map of key/value configuration parameters that can be used to modify behaviour or certain rules
+	 */
+	@Parameter(required = false, readonly = true)
+	protected Map<String, String> ruleConfiguration = new LinkedHashMap<>();
+
+	/**
+	 * Configuration passed to JSONSchema2Pojo for generation of pojos.
+	 */
+	@Parameter(required = false, readonly = true)
+	protected PojoGenerationConfig generationConfig = new PojoGenerationConfig();
 
 	private ClassRealm classRealm;
+	
+	private String resolvedSchemaLocation;
 
 	protected void generateEndpoints() throws MojoExecutionException, MojoFailureException, IOException {
-		
+
 		String resolvedPath = project.getBasedir().getAbsolutePath();
 		if (resolvedPath.endsWith(File.separator) || resolvedPath.endsWith("/")) {
 			resolvedPath = resolvedPath.substring(0, resolvedPath.length()-1);
@@ -115,10 +153,12 @@ public class SpringMvcEndpointGeneratorMojo extends AbstractMojo {
 			resolvedRamlPath += ramlPath;
 		}
 		
-		Raml loadRamlFromFile = RamlParser.loadRamlFromFile( "file:"+resolvedRamlPath );
+		//Resolve schema location and add to classpath
+		resolvedSchemaLocation = getSchemaLocation();
+		
+		Raml loadRamlFromFile = RamlParser.loadRamlFromFile(new File(resolvedRamlPath).toURI().toString());
 		RamlParser par = new RamlParser(basePackage, getBasePath(loadRamlFromFile), seperateMethodsByContentType);
-		RamlGenerator gen = createRamlGenerator();
-		Set<ApiControllerMetadata> controllers = par.extractControllers(loadRamlFromFile);
+		Set<ApiResourceMetadata> controllers = par.extractControllers(loadRamlFromFile);
 
 		if (StringUtils.hasText(outputRelativePath)) {
 			if (!outputRelativePath.startsWith(File.separator) && !outputRelativePath.startsWith("/")) {
@@ -126,15 +166,20 @@ public class SpringMvcEndpointGeneratorMojo extends AbstractMojo {
 			}
 			resolvedPath += outputRelativePath;
 		} else {
-			resolvedPath += "/generated-sources/";
+			resolvedPath += "/target/generated-sources/spring-mvc";
+		}
+
+		File rootDir = new File (resolvedPath + (addTimestampFolder == true ? System.currentTimeMillis() : "") + "/");
+
+		if (!rootDir.exists() && !rootDir.mkdirs()) {
+			throw new IOException("Could not create directory:" + rootDir.getAbsolutePath());
 		}
 		
-		
-		File rootDir = new File (resolvedPath + (addTimestampFolder == true ? System.currentTimeMillis() : "") + "/");
-		File dir = new File (resolvedPath + (addTimestampFolder == true ? System.currentTimeMillis() : "") + "/" + basePackage.replace(".", "/") + "/");
-		dir.mkdirs();
-		
-		for (ApiControllerMetadata met :controllers) {			
+		generateCode(controllers, rootDir);
+	}
+
+	private void generateCode(Set<ApiResourceMetadata> controllers, File rootDir) {
+		for (ApiResourceMetadata met :controllers) {
 			this.getLog().debug("");
 			this.getLog().debug("-----------------------------------------------------------");
 			this.getLog().debug(met.getName());
@@ -142,16 +187,11 @@ public class SpringMvcEndpointGeneratorMojo extends AbstractMojo {
 
 			Set<ApiBodyMetadata> dependencies = met.getDependencies();
 			for (ApiBodyMetadata body : dependencies) {
-				generateModelSources(met, body, rootDir);
+				generateModelSources(met, body, rootDir, generationConfig, useJackson1xCompatibility == true ? new Jackson1Annotator() : null );
 			}
 
-			List<ApiControllerMetadataSerializer> serializers = gen.generateClassForRaml(met, "");
-			for(ApiControllerMetadataSerializer serializer: serializers) {
-				generateControllerSource(serializer, dir);
-			}
+			generateControllerSource(met, rootDir);
 		}
-		
-		
 	}
 
 	/*
@@ -176,20 +216,34 @@ public class SpringMvcEndpointGeneratorMojo extends AbstractMojo {
 		return basePath;
 	}
 
-	private RamlGenerator createRamlGenerator() {
-		RamlGenerator generator = new RamlGenerator();
+	@SuppressWarnings("unchecked")
+	private Rule<JCodeModel, JDefinedClass, ApiResourceMetadata> loadRule() {
+		Rule<JCodeModel, JDefinedClass, ApiResourceMetadata> ruleInstance = new Spring4ControllerStubRule();
 		try {
-			generator = (RamlGenerator) getClassRealm().loadClass(ramlGenerator).newInstance();
+			ruleInstance = (Rule<JCodeModel, JDefinedClass, ApiResourceMetadata>) getClassRealm().loadClass(rule).newInstance();
+			this.getLog().debug(StringUtils.collectionToCommaDelimitedString(ruleConfiguration.keySet()));
+			this.getLog().debug(StringUtils.collectionToCommaDelimitedString(ruleConfiguration.values()));
+			
+			if (ruleInstance instanceof ConfigurableRule<?,?,?> && !CollectionUtils.isEmpty(ruleConfiguration)) {
+				this.getLog().debug("SETTING CONFIG");
+				((ConfigurableRule<?, ?, ?>)ruleInstance).applyConfiguration(ruleConfiguration);
+			}
 		} catch (Exception e) {
-			getLog().error("Could not instantiate RamlGenerator "+ramlGenerator +". The default RamlGenerator will be used.", e);
+			getLog().error("Could not instantiate Rule "+ this.rule +". The default Rule will be used for code generation.", e);
 		}
-		return generator;
+		return ruleInstance;
 	}
 
 	private ClassRealm getClassRealm() throws DependencyResolutionRequiredException, MalformedURLException {
 		if(classRealm == null) {
 			List<String> runtimeClasspathElements = project.getRuntimeClasspathElements();
+			
 			classRealm = descriptor.getClassRealm();
+
+			if (classRealm == null){
+				classRealm = project.getClassRealm();
+			}
+
 			for (String element : runtimeClasspathElements)
 			{
 				File elementFile = new File(element);
@@ -199,9 +253,14 @@ public class SpringMvcEndpointGeneratorMojo extends AbstractMojo {
 		return classRealm;
 	}
 
-	private void generateModelSources(ApiControllerMetadata met, ApiBodyMetadata body, File rootDir) {
+	private void generateModelSources(ApiResourceMetadata met, ApiBodyMetadata body, File rootDir, GenerationConfig config, Annotator annotator) {
 		try {
-            JCodeModel codeModel = body.getCodeModel();
+            JCodeModel codeModel;
+            if (config ==null && annotator == null) {
+            	codeModel = body.getCodeModel();
+            } else {
+            	codeModel = body.getCodeModel(resolvedSchemaLocation, basePackage + NamingHelper.getDefaultModelPackage(), config, annotator);
+            }
             if (codeModel != null) {
                 codeModel.build(rootDir);
             }
@@ -211,29 +270,58 @@ public class SpringMvcEndpointGeneratorMojo extends AbstractMojo {
         }
 	}
 
-	private void generateControllerSource(ApiControllerMetadataSerializer serializer, File dir) {
-		String genX = serializer.serialize();
-		this.getLog().debug(genX);
-		String javaFileName = serializer.getName() + ".java";
-		File file = new File(dir.getAbsolutePath() + "/" + javaFileName);
-		FileWriter writer = null;
+	private String getSchemaLocation() {
+		
+		if (StringUtils.hasText(schemaLocation)) {
+			
+			if (!schemaLocation.contains(":")) {
+				String resolvedPath = project.getBasedir().getAbsolutePath();
+				if (resolvedPath.endsWith(File.separator) || resolvedPath.endsWith("/")) {
+					resolvedPath = resolvedPath.substring(0, resolvedPath.length()-1);
+				}
+				
+				if (!schemaLocation.startsWith(File.separator) && !schemaLocation.startsWith("/")) {
+					resolvedPath += File.separator;
+				}
+				
+				resolvedPath += schemaLocation;
+				
+
+				if (!schemaLocation.endsWith(File.separator) && !schemaLocation.endsWith("/")) {
+					resolvedPath += File.separator;
+				}
+				resolvedPath = resolvedPath.replace(File.separator,"/").replace("\\", "/");
+				try {
+				    URLClassLoader urlClassLoader = (URLClassLoader) ClassLoader.getSystemClassLoader();
+				    Class<?> urlClass = URLClassLoader.class;
+				    Method method = urlClass.getDeclaredMethod("addURL", new Class[]{URL.class});
+				    method.setAccessible(true);
+				    method.invoke(urlClassLoader, new Object[]{new File(resolvedPath).toURI().toURL()});
+				    return "classpath:/"; //since we have added this folder to the classpath this should be used by the plugin
+				} catch (Exception ex) {
+					this.getLog().error("Could not add schema location to classpath", ex);
+					return new File(resolvedPath).toURI().toString();
+				}
+			}
+			return schemaLocation;
+		}
+		return null;
+	}
+
+	private void generateControllerSource(ApiResourceMetadata met, File dir) {
+		JCodeModel codeModel = new JCodeModel();
+		loadRule().apply(met, codeModel);
 		try {
-            writer = new FileWriter(file);
-            writer.append(genX);
-        } catch (IOException e) {
-            this.getLog().error("Could not write java file " + javaFileName, e);
-        } finally {
-            try {
-                writer.close();
-            } catch (Exception ex) {
-                this.getLog().error("Could not close FileWriter " + javaFileName, ex);
-            }
-        }
+			codeModel.build(dir);
+		} catch (IOException e) {
+			e.printStackTrace();
+			this.getLog().error("Could not build code model for " + met.getName(), e);
+		}
 	}
 
 	public void execute() throws MojoExecutionException, MojoFailureException {
 		long startTime = System.currentTimeMillis();
-		
+
 		try {
 			generateEndpoints();
 		} catch (IOException e) {
@@ -241,7 +329,7 @@ public class SpringMvcEndpointGeneratorMojo extends AbstractMojo {
 			throw new MojoExecutionException(e, "Unexpected exception while executing Spring MVC Endpoint Generation Plugin.",
 					e.toString());
 		}
-		
+
 		this.getLog().info("Endpoint Generation Complete in:" + (System.currentTimeMillis() - startTime) + "ms");
 	}
 

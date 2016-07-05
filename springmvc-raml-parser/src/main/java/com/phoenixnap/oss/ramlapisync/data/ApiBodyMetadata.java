@@ -12,9 +12,11 @@
  */
 package com.phoenixnap.oss.ramlapisync.data;
 
+import org.jsonschema2pojo.Annotator;
+import org.jsonschema2pojo.GenerationConfig;
 import org.raml.model.ParamType;
-import org.raml.parser.utils.Inflector;
 
+import com.phoenixnap.oss.ramlapisync.naming.NamingHelper;
 import com.phoenixnap.oss.ramlapisync.naming.SchemaHelper;
 import com.sun.codemodel.JCodeModel;
 
@@ -48,9 +50,9 @@ public class ApiBodyMetadata {
 				int nextQuoteIdxIdx = schema.indexOf("\"", quoteIdx+1);
 				if (nextQuoteIdxIdx != -1) {
 					String possibleType = schema.substring(quoteIdx+1, nextQuoteIdxIdx);
+					this.name = NamingHelper.getResourceName(this.name);
 					if ("array".equals(possibleType.toLowerCase())) {
 						array = true;
-						this.name = Inflector.singularize(this.name);
 					}
 					if (codeModel.countArtifacts() == 0) {
 						if (!"object".equals(possibleType.toLowerCase())) {
@@ -80,6 +82,19 @@ public class ApiBodyMetadata {
 
 	public boolean isArray() {
 		return array;
+	}
+	
+	/**
+	 * Builds a JCodeModel for this body
+	 *
+	 * @param basePackage The package we will be using for the domain objects
+	 * @param schemaLocation The location of this schema, will be used to create absolute URIs for $ref tags eg "classpath:/"
+	 * @param config JsonSchema2Pojo configuration. if null a default config will be used
+	 * @param annotator JsonSchema2Pojo annotator. if null a default annotator will be used
+	 * @return built JCodeModel
+	 */
+	public JCodeModel getCodeModel(String basePackage, String schemaLocation, GenerationConfig config, Annotator annotator) {
+		return SchemaHelper.buildBodyJCodeModel(schemaLocation, basePackage, name, schema, config, annotator);
 	}
 
 }

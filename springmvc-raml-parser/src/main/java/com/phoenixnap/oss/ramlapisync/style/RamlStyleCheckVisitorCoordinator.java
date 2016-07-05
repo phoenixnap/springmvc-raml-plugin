@@ -44,7 +44,7 @@ import com.phoenixnap.oss.ramlapisync.verification.RamlChecker;
 public class RamlStyleCheckVisitorCoordinator implements RamlChecker {
 	
 	/**
-	 * Boolean flag to enable style checking of code too. Sicne RAML and code should be in sync this could be kept off to improve performance
+	 * Boolean flag to enable style checking of code too. Since RAML and code should be in sync this could be kept off to improve performance
 	 */
 	private boolean ignoreCodeStyle = true;
 	
@@ -66,9 +66,9 @@ public class RamlStyleCheckVisitorCoordinator implements RamlChecker {
 	 */
 	public Pair<Set<Issue>, Set<Issue>> check (Raml published, Raml implemented) {
 		
-		checkChildren(published.getResources(), IssueLocation.CONTRACT);
-		if (!ignoreCodeStyle) {
-			checkChildren(implemented.getResources(), IssueLocation.SOURCE);
+		checkChildren(published.getResources(), published, IssueLocation.CONTRACT);
+		if (!ignoreCodeStyle && implemented != null) {
+			checkChildren(implemented.getResources(), implemented, IssueLocation.SOURCE);
 		}
 		
 		return new Pair<Set<Issue>, Set<Issue>>(warnings, Collections.emptySet());		
@@ -76,12 +76,12 @@ public class RamlStyleCheckVisitorCoordinator implements RamlChecker {
 
 
 
-	private void checkChildren(Map<String, Resource> resources, IssueLocation location) {
+	private void checkChildren(Map<String, Resource> resources, Raml raml, IssueLocation location) {
 		if (resources != null) {
 			for (Entry<String, Resource> entry : resources.entrySet()) {
 				Resource resource = entry.getValue();
 				for (RamlStyleChecker checker : checkers) {
-					warnings.addAll(checker.checkResourceStyle(entry.getKey(), resource, location));
+					warnings.addAll(checker.checkResourceStyle(entry.getKey(), resource, location, raml));
 				}
 				
 				Map<String, UriParameter> uriParameters = resource.getUriParameters();
@@ -97,7 +97,7 @@ public class RamlStyleCheckVisitorCoordinator implements RamlChecker {
 				if (actions != null) {
 					for (Entry<ActionType, Action> actionEntry : actions.entrySet()) {
 						for (RamlStyleChecker checker : checkers) {
-							warnings.addAll(checker.checkActionStyle(actionEntry.getKey(), actionEntry.getValue(), location));
+							warnings.addAll(checker.checkActionStyle(actionEntry.getKey(), actionEntry.getValue(), location, raml));
 						}
 						
 						/*
@@ -115,7 +115,7 @@ public class RamlStyleCheckVisitorCoordinator implements RamlChecker {
 						
 					}
 				}
-				checkChildren(resource.getResources(), location);
+				checkChildren(resource.getResources(), raml, location);
 			}
 		}
 	}

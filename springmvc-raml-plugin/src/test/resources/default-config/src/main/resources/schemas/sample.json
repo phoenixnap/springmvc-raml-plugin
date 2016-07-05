@@ -1,0 +1,58 @@
+{
+    "$schema": "http://json-schema.org/draft-04/schema#",
+    "title": "Sample Schema",
+    "id": "Sample",
+    "type": "object",
+    "description": "The schema of a Sample",
+    "properties": {
+        "tString": {
+            "type": "string",
+            "description": "The type string."
+        },
+        "tInteger": {
+            "type": "integer",
+            "description": "The type integer."
+        },
+        "tNumber": {
+            "type": "number",
+            "description": "The type number.",
+            "minimum": 0
+        },
+        "tDate": {
+            "type": "string",
+            "format": "date-time",
+            "description": "The type date.",
+            "default": "2011-02-24T09:25:23.112+0000"
+        },
+        "tBoolean": {
+            "type": "boolean",
+            "description": "The type boolean.",
+            "default": true
+        },
+        "tArrayRef": {
+            "type": "array",
+            "items": {
+                "$ref": "#/definitions/tRef"
+            },
+            "minItems": 1
+        }
+    },
+    "required": [
+        "tInteger",
+        "tArrayRef"
+    ],
+    "definitions": {
+        "tRef": {
+            "$schema": "http://json-schema.org/draft-04/schema#",
+            "title": "tRef",
+            "type": "object",
+            "description": "A definition reference.",
+            "properties": {
+                "refId": {
+                    "type": "string",
+                    "description": "The identifier of a reference."
+                }
+            }
+        }
+    }
+}

@@ -117,9 +117,25 @@ public class RamlCheckerResourceVisitorCoordinator implements RamlChecker {
 		for (String resource : referenceResources) {			
 			Resource reference = referenceResourcesMap.get(resource);
 			String resourceLocation = Issue.buildRamlLocation(reference, null, null);
+			Resource target = null;
 			if (targetResources.contains(resource)) {
 				logger.debug("Visiting resource: "+ resourceLocation + " in " + (location.equals(IssueLocation.SOURCE) ? IssueLocation.CONTRACT : IssueLocation.SOURCE)); 
-				Resource target = targetResourcesMap.get(resource);
+				target = targetResourcesMap.get(resource);
+			} else if (resource.contains("{") && resource.contains("}")) {
+				//this should be a specific case where we have uri params.
+				for (String resourceKey : targetResources) {
+					if (resourceKey.contains("{") && resourceKey.contains("}")) {
+						if (target == null) {
+							logger.debug("Visiting URI Param resource: "+ resourceKey + " in " + (location.equals(IssueLocation.SOURCE) ? IssueLocation.CONTRACT : IssueLocation.SOURCE) + " instead of " + resource + " as expected"); 
+							target = targetResourcesMap.get(resourceKey);
+						} else {
+							logger.warn("Second URI parameter resource found: "+ resourceKey + ". Ignoring.");
+						}
+					}
+				}
+			}
+			
+			if (target != null) {
 				for (RamlResourceVisitorCheck resourceCheck : resourceCheckers) {
 					Pair<Set<Issue>, Set<Issue>> check = resourceCheck.check(resource, reference, target, location, severity);
 					if (check != null && check.getFirst() != null) {
@@ -154,7 +170,7 @@ public class RamlCheckerResourceVisitorCoordinator implements RamlChecker {
 				}
 				
 				//Happy Days Exact Match - recurse to check children
-				check(referenceResourcesMap.get(resource).getResources(), targetResourcesMap.get(resource).getResources(), location, severity);
+				check(referenceResourcesMap.get(resource).getResources(), target.getResources(), location, severity);
 			} else {
 				logger.debug("Skipping visiting resource "+ resourceLocation + " in " + (location.equals(IssueLocation.SOURCE) ? IssueLocation.CONTRACT : IssueLocation.SOURCE));
 			}

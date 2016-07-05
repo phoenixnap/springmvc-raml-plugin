@@ -16,6 +16,7 @@ import java.util.Set;
 
 import org.raml.model.Action;
 import org.raml.model.ActionType;
+import org.raml.model.Raml;
 import org.raml.model.Resource;
 import org.raml.model.parameter.AbstractParam;
 
@@ -45,9 +46,10 @@ public interface RamlStyleChecker {
 	 * @param key The action's verb
 	 * @param value The Action from the RAML model
 	 * @param location The location where the issue (if any) lies
+	 * @param raml The Raml Document being checked
 	 * @return A list of style issues or an Empty List if none are found. This method must not return null.
 	 */
-	public Set<StyleIssue> checkActionStyle(ActionType key, Action value, IssueLocation location);
+	public Set<StyleIssue> checkActionStyle(ActionType key, Action value, IssueLocation location, Raml raml);
 
 	/**
 	 * Check the style of a particular resource. This will be called on all child resources by the coordinator.
@@ -55,8 +57,9 @@ public interface RamlStyleChecker {
 	 * @param name The name of the resource (relative URL)
 	 * @param resource The Resource from the RAML model
 	 * @param location The location where the issue (if any) lies
+	 * @param raml The Raml Document being checked
 	 * @return A list of style issues or an Empty List if none are found. This method must not return null.
 	 */
-	public Set<StyleIssue> checkResourceStyle(String name, Resource resource, IssueLocation location);
+	public Set<StyleIssue> checkResourceStyle(String name, Resource resource, IssueLocation location, Raml raml);
 
 }

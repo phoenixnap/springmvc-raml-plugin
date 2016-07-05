@@ -39,7 +39,8 @@ Then simply include the following code in the POM of the project you wish to gen
 	<javaDocPath>D:/</javaDocPath>
     <restBasePath>/</restBasePath>
     <version>0.0.1</version>
-    <restrictOnMediaType>false</restrictOnMediaType>
+    <includeGlobalMediaType>false</includeGlobalMediaType>
+	<restrictOnMediaType>false</restrictOnMediaType>
 	<ignoredList>
 	   <param>com.package.to.ignore</param>
 	   <param>com.specificClass.to.ignore.ClassName</param>
@@ -68,6 +69,9 @@ Then simply include the following code in the POM of the project you wish to gen
 
 ### removeOldOutput
 (optional, default: false) If this is set to true, we will empty the output directory before generation occurs
+
+### includeGlobalMediaType
+(optional, default: false) If this is set to true, we will append the default media type to the global RAML mediaType property
 
 ### javaDocPath
 (optional) Absolute path to a folder which will be used to search for JavaDoc. This folder should contain all source of controllers being scanned. Using root folders for this may increase scanning time. If this is not supplied, the scanner will default to the current project folder
@@ -112,12 +116,17 @@ Then simply include the following code in the POM of the project you wish to gen
     <ramlToVerifyPath>/src/main/resources/public/raml/api.raml</ramlToVerifyPath>
 	<javaDocPath>D:/</javaDocPath>
     <performStyleChecks>true</performStyleChecks>
+	<checkRamlAgainstImplementation>true</checkRamlAgainstImplementation>
 	<checkForResourceExistence>true</checkForResourceExistence>
 	<checkForActionExistence>true</checkForActionExistence>
 	<checkForQueryParameterExistence>true</checkForQueryParameterExistence>
 	<checkForPluralisedResourceNames>true</checkForPluralisedResourceNames>
 	<checkForSpecialCharactersInResourceNames>true</checkForSpecialCharactersInResourceNames>
 	<checkForDefinitionOf40xResponseInSecuredResource>true</checkForDefinitionOf40xResponseInSecuredResource>
+	<checkForSchemaInSuccessfulResponseBody>true</checkForSchemaInSuccessfulResponseBody>
+	<checkForSchemaInRequestBody>true</checkForSchemaInRequestBody>
+	<checkForDefinitionOf404ResponseInGetRequest>true</checkForDefinitionOf404ResponseInGetRequest>
+	<checkForResponseBodySchema>true</checkForResponseBodySchema>
 	<breakBuildOnWarnings>false</breakBuildOnWarnings>
     <logWarnings>true</logWarnings>
     <logErrors>true</logErrors>	
@@ -147,6 +156,12 @@ Then simply include the following code in the POM of the project you wish to gen
 ### javaDocPath
 (optional) Absolute path to a folder which will be used to search for JavaDoc. This folder should contain all source of controllers being scanned. Using root folders for this may increase scanning time. If this is not supplied, the scanner will default to the current project folder
 
+### uriPrefixToIgnore
+(optional) A Portion of the URL of the implemented RAML that will be ignored when verifying
+
+### checkRamlAgainstImplementation
+(optional, default: true) Flag that will enable or disable checking of the RAML file against the Server Implementation. If this is set to false it will override other check flags
+
 ### performStyleChecks
 (optional, default: true) Flag that will enable or disable Style Checking of the RAML file. If this is set to false it will override other style check flags
 
@@ -170,6 +185,21 @@ Then simply include the following code in the POM of the project you wish to gen
 
 ### checkForDefinitionOf40xResponseInSecuredResource
 (optional, default: true) Flag that will enable or disable checks for 401 and 403 responses for secured resources
+
+### checkForSchemaInSuccessfulResponseBody
+(optional, default: "", recommended: "GET, PUT, POST") Comma separated list of HTTP Methods to check for schemas being present in the successful response Body.
+
+### checkForSchemaInRequestBody
+(optional, default: "", recommended: "PUT, POST") Comma separated list of HTTP Methods to check for schemas being present in the request Body.
+
+### checkForDefinitionOf404ResponseInGetRequest
+(optional, default: false) Flag that will enable or disable checks for 404 responses get requests
+
+### checkForDefinitionOfErrorCodes
+(optional, default: false) Flag that will enable or disable checks for 400 and 500 error codes in certain verbs (PUT, POST, PATCH for 400 & All verbs for 500)
+
+### checkForResponseBodySchema
+(optional, default: false) Flag that will enable or disable response body schema validation against implementation
 
 ### ignoredList
 (optional, default: empty) If classes or packages are included in this list, they will not be included in the generated model
@@ -202,12 +232,20 @@ Then simply include the following code in the POM of the project you wish to gen
   <artifactId>springmvc-raml-plugin</artifactId>
   <version>x.x.x</version>
   <configuration>
-    <ramlPath></ramlPath>
+    <ramlPath>{path.to.raml.file}</ramlPath>
+	<schemaLocation>{path.to.schema.directory||schema.absolute.url}</schemaLocation>
 	<outputRelativePath>/src/generated</outputRelativePath>
     <addTimestampFolder>false</addTimestampFolder>
     <basePackage>com.gen.wow</basePackage>
     <baseUri>/api</baseUri>
+	<generationConfig>
+		<includeAdditionalProperties>false</includeAdditionalProperties>
+		...
+	</generationConfig>
 	<seperateMethodsByContentType>false</seperateMethodsByContentType>
+	<rule>com.phoenixnap.oss.ramlapisync.generation.rules.Spring4ControllerStubRule</rule>
+	<ruleConfiguration>			
+	</ruleConfiguration>
   </configuration>
   <executions>
     <execution>
@@ -233,33 +271,59 @@ Then simply include the following code in the POM of the project you wish to gen
 ### basePackage
 (required) Base package to be used for the java classes to be generated. Model objects will be added in the .model subpackage
 
+### schemaLocation
+(optional, default: "") The URI or relative path to the folder/network location containing JSON Schemas
+
 ### baseUri
 (optional) Base URI for generated Spring controllers. This overrules the baseUri attribute from inside the .raml spec.
 
-### ramlGenerator
-(optional, default: com.phoenixnap.oss.ramlapisync.generation.RamlGenerator) The generator class to be used. 
+### generationConfig
+(optional) This object contains a map of configuration for the JsonSchema2Pojo generator. The full list of configurable attributes, their description and default values can be found here [GenerationConfig][]
 
 ### seperateMethodsByContentType
 (optional, default: false) Should we generate seperate API methods for endpoints which define multiple content types in their 200 response. 
 
-- com.phoenixnap.oss.ramlapisync.generation.RamlGenerator: 
-The standard generator. It creates simple controller stubs classes with Spring MVC annotations and empty method bodies (like in v.0.2.4).
+### useJackson1xCompatibility
+(optional, default: false) If set to true, we will generate Jackson 1 annotations inside the model objects.
+
+### ruleConfiguration
+(optional) This is a key/value map for configuration of individual rules. Not all rules support configuration.
+
+### rule
+(optional, default: com.phoenixnap.oss.ramlapisync.generation.rules.Spring4ControllerStubRule) The rule class to be used for code generation. 
+
+#### Available Rules
+- **com.phoenixnap.oss.ramlapisync.generation.rules.Spring3ControllerStubRule**:
+- **com.phoenixnap.oss.ramlapisync.generation.rule.Spring4ControllerStubRule**: 
+The standard rule. It creates simple controller stubs classes with Spring MVC annotations and empty method bodies (like in v.0.2.4).
 All you have to do is to implement the empty method body for each endpoint. This is simple and easy.
 The drawback: When you regenerate the controller stubs your code will be overriden.
 
-- com.phoenixnap.oss.ramlapisync.generation.RamlSpring4DecoratorGenerator: 
+- **com.phoenixnap.oss.ramlapisync.generation.rules.Spring3ControllerDecoratorRule**: 
+- **com.phoenixnap.oss.ramlapisync.generation.rules.Spring4ControllerDecoratorRule**:
 Creates a controller interface and a decorator with Spring MVC annotations for each top level endpoint.
 The decorator implements the controller interface and delegates all method calls to an @Autowired ControllerDelegate.
 So all you have to do is to provide an ControllerDelegate class which implements the controller interface.
 
-- com.phoenixnap.oss.ramlapisync.generation.RamlSpring4InterfaceOnlyGenerator:
+- **com.phoenixnap.oss.ramlapisync.generation.rules.Spring3ControllerInterfaceRule**:
+- **com.phoenixnap.oss.ramlapisync.generation.rules.Spring4ControllerInterfaceRule**:
 Creates an single interface with Spring MVC annotations for each top level endpoint.
 All you have to do is to provide an implementation for the controller interface
 
+- **com.phoenixnap.oss.ramlapisync.generation.rules.Spring4RestTemplateClientRule**:
+Creates a single interface as well as a client implementation using the Spring RestTemplate. The client assumes that a RestTemplate is available to be autowired.
+
+```
+Configuration:
+	baseUrlConfigurationPath: The path that will be used to load the property for the server url. Default: ${client.url}
+	restTemplateFieldName: The name of the RestTemplate field
+	restTemplateQualifierBeanName: [OPTIONAL] The name of the bean for the rest template used in the generated client. Default: NONE
+```
 
 ## Contributing
 [Pull requests][] are welcome; Be a good citizen and create unit tests for any bugs squished or features added
 
+[GenerationConfig]: https://github.com/phoenixnap/springmvc-raml-plugin/blob/master/springmvc-raml-plugin/src/main/java/com/phoenixnap/oss/ramlapisync/plugin/PojoGenerationConfig.java
 [Pull requests]: http://help.github.com/send-pull-requests
 [Apache License]: http://www.apache.org/licenses/LICENSE-2.0
 [Git]: http://help.github.com/set-up-git-redirect

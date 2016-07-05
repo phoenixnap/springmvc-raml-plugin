@@ -12,11 +12,10 @@
  */
 package com.phoenixnap.oss.ramlapisync.generation;
 
-import com.phoenixnap.oss.ramlapisync.data.ApiControllerMetadata;
 import com.phoenixnap.oss.ramlapisync.data.ApiDocumentMetadata;
-import com.phoenixnap.oss.ramlapisync.generation.serialize.ApiControllerMetadataSerializer;
-import com.phoenixnap.oss.ramlapisync.generation.serialize.Spring4ControllerSerializer;
+import com.phoenixnap.oss.ramlapisync.naming.RamlHelper;
 import com.phoenixnap.oss.ramlapisync.parser.ResourceParser;
+
 import org.apache.commons.io.FileUtils;
 import org.raml.emitter.RamlEmitter;
 import org.raml.model.DocumentationItem;
@@ -82,15 +81,14 @@ public class RamlGenerator {
 	}
 
 	/**
-	 * Generates a string representation for a java class representing this controller TODO Note: Currently Experimental
-	 * - will be moved to templating engine
+	 * Adds a global media type to the document
 	 * 
-	 * @param controller The controller to represent
-	 * @param header A header text string such as a copyright notice to be appended to the top of the class
-	 * @return The generated Java Class in string format
+	 * @param mediaType The default media type
 	 */
-	public List<ApiControllerMetadataSerializer> generateClassForRaml(ApiControllerMetadata controller, String header) {
-		return Arrays.asList(new Spring4ControllerSerializer(controller, header));
+	public void setRamlMediaType(String mediaType) {
+		if (this.raml != null) {
+			this.raml.setMediaType(mediaType);
+		}
 	}
 
 	/**
@@ -123,10 +121,10 @@ public class RamlGenerator {
 			Resource resource = scanner.extractResourceInfo(item);
 			if (resource.getRelativeUri().equals("/")) { // root should never be added directly
 					for (Resource cResource : resource.getResources().values()) {
-						mergeResources(raml, cResource, true);
+						RamlHelper.mergeResources(raml, cResource, true);
 					}
 				} else {
-					mergeResources(raml, resource, true);
+					RamlHelper.mergeResources(raml, resource, true);
 				}
 
 			});
@@ -143,43 +141,7 @@ public class RamlGenerator {
 		}
 	}
 
-	/**
-	 * Tree merging algorithm, if a resource already exists it will not overwrite and add all children to the existing resource 
-	 * @param existing
-	 * @param resource
-	 * @param addActions
-	 */
-	private void mergeResources(Resource existing, Resource resource, boolean addActions) {	
-		Map<String, Resource> existingChildResources = existing.getResources();
-		Map<String, Resource> newChildResources = resource.getResources();
-		for (String newChildKey : newChildResources.keySet()) {
-			if (!existingChildResources.containsKey(newChildKey)) {
-				existingChildResources.put(newChildKey, newChildResources.get(newChildKey));
-			} else {
-				mergeResources(existingChildResources.get(newChildKey), newChildResources.get(newChildKey), addActions);
-			}			
-		}
-		
-		if (addActions) {
-			existing.getActions().putAll(resource.getActions());
-		}
-	}
 	
-	/**
-	 * Merges two RAML Resources trees together. This is non-recursive and could currently lose children in lower
-	 * levels.
-	 * @param raml
-	 * @param resource
-	 * @param addActions
-	 */
-	private void mergeResources(Raml raml, Resource resource, boolean addActions) {
-		Resource existingResource = raml.getResource(resource.getRelativeUri());
-		if (existingResource == null) {
-			raml.getResources().put(resource.getRelativeUri(), resource);
-		} else {
-			mergeResources(existingResource, resource, addActions);
-		}
-	}
 
 	/**
 	 * Parses the list of document models and adds them as RAML documentItem nodes in the RAML document.

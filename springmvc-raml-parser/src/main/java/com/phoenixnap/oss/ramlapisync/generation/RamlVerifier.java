@@ -22,8 +22,10 @@ import org.raml.model.Raml;
 import org.raml.parser.visitor.RamlDocumentBuilder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.util.StringUtils;
 
 import com.phoenixnap.oss.ramlapisync.naming.Pair;
+import com.phoenixnap.oss.ramlapisync.naming.RamlHelper;
 import com.phoenixnap.oss.ramlapisync.style.RamlStyleCheckVisitorCoordinator;
 import com.phoenixnap.oss.ramlapisync.style.RamlStyleChecker;
 import com.phoenixnap.oss.ramlapisync.verification.Issue;
@@ -55,6 +57,21 @@ public class RamlVerifier {
 	
 	private List<RamlChecker> checkers;
 	
+	/**
+	 * Constructor which will accept target/implementation RAML models as well as the the checkers and style checkers to verify. 
+	 * Once the data is set validation is triggered
+	 * 
+	 * @param published The RAML model from the published RAML file
+	 * @param implemented The RAML model built from the Spring MVC
+	 * @param checkers Checkers that will be applied to the models
+	 * @param actionCheckers Checker Visitors that will trigger to compare individual actions
+	 * @param resourceCheckers Checker Visitors that will trigger to compare individual resources
+	 * @param styleChecks Style Checks that will be applied to the models
+	 * 
+	 */
+	public RamlVerifier(Raml published, Raml implemented, List<RamlChecker> checkers, List<RamlActionVisitorCheck> actionCheckers, List<RamlResourceVisitorCheck> resourceCheckers, List<RamlStyleChecker> styleChecks) {
+		this(published, implemented, checkers, actionCheckers, resourceCheckers, styleChecks, null);
+	}
 	
 	/**
 	 * Constructor which will accept target/implementation RAML models as well as the the checkers and style checkers to verify. 
@@ -66,11 +83,17 @@ public class RamlVerifier {
 	 * @param actionCheckers Checker Visitors that will trigger to compare individual actions
 	 * @param resourceCheckers Checker Visitors that will trigger to compare individual resources
 	 * @param styleChecks Style Checks that will be applied to the models
+	 * @param implementedUrlPrefixToIgnore The Portion of the url to ignore from the implementation. use this to align urls as an alternative to baseUri
+	 * 
 	 */
-	public RamlVerifier(Raml published, Raml implemented, List<RamlChecker> checkers, List<RamlActionVisitorCheck> actionCheckers, List<RamlResourceVisitorCheck> resourceCheckers, List<RamlStyleChecker> styleChecks) {
+	public RamlVerifier(Raml published, Raml implemented, List<RamlChecker> checkers, List<RamlActionVisitorCheck> actionCheckers, List<RamlResourceVisitorCheck> resourceCheckers, List<RamlStyleChecker> styleChecks, String implementedUrlPrefixToIgnore) {
 		this.published = published;
 		this.implemented = implemented;
 		this.checkers = new ArrayList<>();
+		
+		if (implemented != null && StringUtils.hasText(implementedUrlPrefixToIgnore)) {
+			RamlHelper.removeResourceTree(implemented, implementedUrlPrefixToIgnore);
+		}
 		
 		this.checkers.add(new RamlCheckerResourceVisitorCoordinator(actionCheckers == null ? Collections.emptyList() : actionCheckers, resourceCheckers == null ? Collections.emptyList() : resourceCheckers));
 		if (checkers == null) {			
