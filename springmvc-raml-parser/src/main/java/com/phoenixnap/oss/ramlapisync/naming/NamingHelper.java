@@ -282,6 +282,15 @@ public class NamingHelper {
     	return null;
 	}
 
+	/**
+	 * Converts the name of a parameter into a name suitable for a Java parameter
+	 *
+	 * @param name The name of a RAML query parameter or request header
+	 * @return A name suitable for a Java parameter
+    */
+	public static String getParameterName(String name) {
+		return StringUtils.uncapitalize(cleanNameForJava(name));
+	}
 
 	private static String cleanNameForJava(String resourceName) {
 		String outString = resourceName;

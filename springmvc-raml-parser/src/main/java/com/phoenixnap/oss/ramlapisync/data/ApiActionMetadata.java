@@ -56,6 +56,7 @@ public class ApiActionMetadata {
 	Map<String, ApiBodyMetadata> responseBody = new LinkedHashMap<>();
 	Set<ApiParameterMetadata> pathVariables = null;
 	Set<ApiParameterMetadata> requestParameters = null;
+	Set<ApiParameterMetadata> requestHeaders = null;
 
 	private String responseContentTypeFilter;
 
@@ -79,7 +80,8 @@ public class ApiActionMetadata {
 		return "Method " + getName() + "  Verb [" + actionType + "] Url [" + getUrl() + "] \nConsumes ["
 				+ getConsumes() + "] Produces [" + getProduces() + "] with Schema [" + null + "] \nPath Vars ["
 				+ StringUtils.collectionToCommaDelimitedString(getPathVariables()) + "] \nRequest Params ["
-				+ StringUtils.collectionToCommaDelimitedString(getRequestParameters()) + "] \n";
+				+ StringUtils.collectionToCommaDelimitedString(getRequestParameters()) + "] \nRequest Headers ["
+				+ StringUtils.collectionToCommaDelimitedString(getRequestHeaders()) + "] \n";
 
 	}
 
@@ -109,8 +111,20 @@ public class ApiActionMetadata {
 		return requestParameters;
 	}
 
+	public Set<ApiParameterMetadata> getRequestHeaders() {
+		if (requestHeaders == null) {
+			return Collections.emptySet();
+		}
+
+		return requestHeaders;
+	}
+
+
 	private void parseRequest() {
 		requestParameters = action.getQueryParameters().entrySet().stream()
+				.map(param -> new ApiParameterMetadata(param.getKey(), param.getValue()))
+				.collect(Collectors.toCollection(LinkedHashSet::new));
+		requestHeaders = action.getHeaders().entrySet().stream()
 				.map(param -> new ApiParameterMetadata(param.getKey(), param.getValue()))
 				.collect(Collectors.toCollection(LinkedHashSet::new));
 		if (action.getBody() != null && !action.getBody().isEmpty()) {

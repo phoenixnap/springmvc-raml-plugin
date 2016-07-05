@@ -12,6 +12,15 @@
  */
 package com.phoenixnap.oss.ramlapisync.generation.rules.basic;
 
+import static org.springframework.util.StringUtils.uncapitalize;
+
+import static com.phoenixnap.oss.ramlapisync.generation.CodeModelHelper.findFirstClassBySimpleName;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import org.springframework.util.StringUtils;
+
 import com.phoenixnap.oss.ramlapisync.data.ApiActionMetadata;
 import com.phoenixnap.oss.ramlapisync.data.ApiParameterMetadata;
 import com.phoenixnap.oss.ramlapisync.generation.CodeModelHelper;
@@ -21,14 +30,6 @@ import com.sun.codemodel.JClass;
 import com.sun.codemodel.JCodeModel;
 import com.sun.codemodel.JMethod;
 import com.sun.codemodel.JVar;
-
-import java.util.ArrayList;
-import java.util.List;
-
-import org.springframework.util.StringUtils;
-
-import static com.phoenixnap.oss.ramlapisync.generation.CodeModelHelper.findFirstClassBySimpleName;
-import static org.springframework.util.StringUtils.uncapitalize;
 
 /**
  * Generates all method parameters needed for an endpoint defined by ApiMappingMetadata.
@@ -86,6 +87,7 @@ public class MethodParamsRule implements Rule<CodeModelHelper.JExtMethod, JMetho
         List<ApiParameterMetadata> parameterMetadataList = new ArrayList<>();
         parameterMetadataList.addAll(endpointMetadata.getPathVariables());
         parameterMetadataList.addAll(endpointMetadata.getRequestParameters());
+        parameterMetadataList.addAll(endpointMetadata.getRequestHeaders());
 
         parameterMetadataList.forEach( paramMetaData -> {
             param(paramMetaData, generatableType);
@@ -99,14 +101,15 @@ public class MethodParamsRule implements Rule<CodeModelHelper.JExtMethod, JMetho
     }
 
 	protected JVar param(ApiParameterMetadata paramMetaData, CodeModelHelper.JExtMethod generatableType) {
+      String javaName = NamingHelper.getParameterName(paramMetaData.getName());
     	if (addParameterJavadoc) {
 			String paramComment = "";
 			if (paramMetaData.getRamlParam() != null && StringUtils.hasText(paramMetaData.getRamlParam().getDescription())) {
 				 paramComment = NamingHelper.cleanForJavadoc(paramMetaData.getRamlParam().getDescription());
 			}
-	    	generatableType.get().javadoc().addParam(paramMetaData.getName() + " " + paramComment);
+	    	generatableType.get().javadoc().addParam(javaName + " " + paramComment);
     	}
-        return generatableType.get().param(paramMetaData.getType(), paramMetaData.getName());
+        return generatableType.get().param(paramMetaData.getType(), javaName);
     }
 
     protected JVar param(ApiActionMetadata endpointMetadata, CodeModelHelper.JExtMethod generatableType) {
