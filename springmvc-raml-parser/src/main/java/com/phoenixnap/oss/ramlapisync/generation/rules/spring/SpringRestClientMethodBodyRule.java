@@ -31,11 +31,12 @@ import org.springframework.web.util.UriComponents;
 import org.springframework.web.util.UriComponentsBuilder;
 
 import com.google.common.base.CaseFormat;
-import com.phoenixnap.oss.ramlapisync.data.ApiBodyMetadata;
 import com.phoenixnap.oss.ramlapisync.data.ApiActionMetadata;
+import com.phoenixnap.oss.ramlapisync.data.ApiBodyMetadata;
 import com.phoenixnap.oss.ramlapisync.data.ApiParameterMetadata;
 import com.phoenixnap.oss.ramlapisync.generation.CodeModelHelper;
 import com.phoenixnap.oss.ramlapisync.generation.rules.Rule;
+import com.phoenixnap.oss.ramlapisync.naming.NamingHelper;
 import com.sun.codemodel.JBlock;
 import com.sun.codemodel.JClass;
 import com.sun.codemodel.JCodeModel;
@@ -125,13 +126,22 @@ public class SpringRestClientMethodBodyRule implements Rule<CodeModelHelper.JExt
        
         //Set accepts list as our accepts headers for the call
         body.invoke(httpHeaders, "setAccept").arg(acceptsListVar);
+
         
         //Get the parameters from the model and put them in a map for easy lookup
         List<JVar> params = generatableType.get().params();       
         Map<String, JVar> methodParamMap = new LinkedHashMap<>();
         for (JVar param : params) {
         	methodParamMap.put(param.name(), param);
-        }	
+        }
+
+        // Add headers
+        for (ApiParameterMetadata parameter : endpointMetadata.getRequestHeaders()) {
+            JVar param = methodParamMap.get(NamingHelper.getParameterName(parameter.getName()));
+            String javaParamName = NamingHelper.getParameterName(parameter.getName());
+            body._if(methodParamMap.get(javaParamName).ne(JExpr._null()))._then().block()
+                    .invoke(httpHeaders, "add").arg(parameter.getName()).arg(JExpr.invoke(param, "toString"));
+        }
         
         //Build the Http Entity object
         JClass httpEntityClass = owner.ref(HttpEntity.class);
@@ -160,7 +170,7 @@ public class SpringRestClientMethodBodyRule implements Rule<CodeModelHelper.JExt
         if (!CollectionUtils.isEmpty(endpointMetadata.getRequestParameters())) {
             //iterate over the parameters and add calls to .queryParam
             for (ApiParameterMetadata parameter : endpointMetadata.getRequestParameters()) {
-            	builderInit = builderInit.invoke("queryParam").arg(parameter.getName()).arg(methodParamMap.get(parameter.getName()));
+            	builderInit = builderInit.invoke("queryParam").arg(parameter.getName()).arg(methodParamMap.get(NamingHelper.getParameterName(parameter.getName())));
             }         
         }
         //Add these to the code model
