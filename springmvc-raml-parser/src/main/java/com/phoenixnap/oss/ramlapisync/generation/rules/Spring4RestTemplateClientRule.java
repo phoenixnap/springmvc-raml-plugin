@@ -77,7 +77,8 @@ public class Spring4RestTemplateClientRule implements ConfigurableRule<JCodeMode
                 .setMethodCommentRule(new MethodCommentRule())
                 .setMethodSignatureRule(new ControllerMethodSignatureRule(
                         new SpringResponseEntityRule(),
-                        new MethodParamsRule(true)))
+                        new MethodParamsRule(true),
+							   true))
                 .apply(metadata, generatableType);
 
         

@@ -60,7 +60,7 @@ public abstract class SpringControllerInterfaceRule implements Rule<JCodeModel, 
                 .setMethodCommentRule(new MethodCommentRule())
                 .addMethodAnnotationRule(new SpringRequestMappingMethodAnnotationRule())
                 .addMethodAnnotationRule(getResponseBodyAnnotationRule())
-                .setMethodSignatureRule(new ControllerMethodSignatureRule(
+                .setMethodSignatureRule(new SpringControllerMethodSignatureRule(
                         new SpringResponseEntityRule(),
                         new SpringMethodParamsRule())
                 );

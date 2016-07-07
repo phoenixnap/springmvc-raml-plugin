@@ -91,7 +91,17 @@ public class SpringRestClientMethodBodyRule implements Rule<CodeModelHelper.JExt
         //build HttpHeaders   
         JClass httpHeadersClass = owner.ref(HttpHeaders.class);        
         JExpression headersInit = JExpr._new(httpHeadersClass);
-        JVar httpHeaders = body.decl(httpHeadersClass, "httpHeaders", headersInit);
+        JVar httpHeaders = null;
+        if (endpointMetadata.getInjectHttpHeadersParameter()) {
+            for (JVar var : generatableType.get().params()) {
+                if (var.name().equals("httpHeaders")) {
+                    httpHeaders = var;
+                    break;
+                }
+            }
+        } else {
+            httpHeaders = body.decl(httpHeadersClass, "httpHeaders", headersInit);
+        }
         
         
         //Declare Arraylist to contain the acceptable Media Types

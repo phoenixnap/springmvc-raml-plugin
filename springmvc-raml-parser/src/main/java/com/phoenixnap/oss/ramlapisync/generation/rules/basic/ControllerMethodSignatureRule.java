@@ -12,6 +12,10 @@
  */
 package com.phoenixnap.oss.ramlapisync.generation.rules.basic;
 
+import static com.phoenixnap.oss.ramlapisync.generation.CodeModelHelper.ext;
+
+import org.springframework.http.HttpHeaders;
+
 import com.phoenixnap.oss.ramlapisync.data.ApiActionMetadata;
 import com.phoenixnap.oss.ramlapisync.generation.CodeModelHelper;
 import com.phoenixnap.oss.ramlapisync.generation.rules.Rule;
@@ -20,10 +24,8 @@ import com.sun.codemodel.JMethod;
 import com.sun.codemodel.JMod;
 import com.sun.codemodel.JType;
 
-import static com.phoenixnap.oss.ramlapisync.generation.CodeModelHelper.ext;
-
 /**
- * Generates a method signatur for an endpoint defined by an ApiMappingMetadata instance.
+ * Generates a method signature for an endpoint defined by an ApiMappingMetadata instance.
  *
  * INPUT:
  * #%RAML 0.8
@@ -52,13 +54,23 @@ public class ControllerMethodSignatureRule implements Rule<JDefinedClass, JMetho
 
     private Rule<JDefinedClass, JType, ApiActionMetadata> responseTypeRule;
     private Rule<CodeModelHelper.JExtMethod, JMethod, ApiActionMetadata> paramsRule;
+    private boolean addJavadocComment;
+
+    public ControllerMethodSignatureRule(
+            Rule<JDefinedClass, JType, ApiActionMetadata> responseTypeRule,
+            Rule<CodeModelHelper.JExtMethod, JMethod, ApiActionMetadata> paramsRule,
+            boolean addJavadocComment)
+    {
+        this.responseTypeRule = responseTypeRule;
+        this.paramsRule = paramsRule;
+        this.addJavadocComment = addJavadocComment;
+    }
 
     public ControllerMethodSignatureRule(
             Rule<JDefinedClass, JType, ApiActionMetadata> responseTypeRule,
             Rule<CodeModelHelper.JExtMethod, JMethod, ApiActionMetadata> paramsRule)
     {
-        this.responseTypeRule = responseTypeRule;
-        this.paramsRule = paramsRule;
+        this(responseTypeRule, paramsRule, false);
     }
 
     @Override
@@ -66,6 +78,13 @@ public class ControllerMethodSignatureRule implements Rule<JDefinedClass, JMetho
         JType responseType = responseTypeRule.apply(endpointMetadata, generatableType);
         JMethod jMethod = generatableType.method(JMod.PUBLIC, responseType, endpointMetadata.getName());
         jMethod = paramsRule.apply(endpointMetadata, ext(jMethod, generatableType.owner()));
+        if (endpointMetadata.getInjectHttpHeadersParameter()) {
+            jMethod.param(HttpHeaders.class, "httpHeaders");
+            if (addJavadocComment) {
+                jMethod.javadoc().addParam("httpHeaders The HTTP headers for the request");
+            }
+        }
+
         return jMethod;
     }
 
