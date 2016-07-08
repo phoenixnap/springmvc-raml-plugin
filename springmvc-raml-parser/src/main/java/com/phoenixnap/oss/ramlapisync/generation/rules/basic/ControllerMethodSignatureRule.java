@@ -14,8 +14,6 @@ package com.phoenixnap.oss.ramlapisync.generation.rules.basic;
 
 import static com.phoenixnap.oss.ramlapisync.generation.CodeModelHelper.ext;
 
-import org.springframework.http.HttpHeaders;
-
 import com.phoenixnap.oss.ramlapisync.data.ApiActionMetadata;
 import com.phoenixnap.oss.ramlapisync.generation.CodeModelHelper;
 import com.phoenixnap.oss.ramlapisync.generation.rules.Rule;
@@ -54,23 +52,13 @@ public class ControllerMethodSignatureRule implements Rule<JDefinedClass, JMetho
 
     private Rule<JDefinedClass, JType, ApiActionMetadata> responseTypeRule;
     private Rule<CodeModelHelper.JExtMethod, JMethod, ApiActionMetadata> paramsRule;
-    private boolean addJavadocComment;
-
-    public ControllerMethodSignatureRule(
-            Rule<JDefinedClass, JType, ApiActionMetadata> responseTypeRule,
-            Rule<CodeModelHelper.JExtMethod, JMethod, ApiActionMetadata> paramsRule,
-            boolean addJavadocComment)
-    {
-        this.responseTypeRule = responseTypeRule;
-        this.paramsRule = paramsRule;
-        this.addJavadocComment = addJavadocComment;
-    }
 
     public ControllerMethodSignatureRule(
             Rule<JDefinedClass, JType, ApiActionMetadata> responseTypeRule,
             Rule<CodeModelHelper.JExtMethod, JMethod, ApiActionMetadata> paramsRule)
     {
-        this(responseTypeRule, paramsRule, false);
+        this.responseTypeRule = responseTypeRule;
+        this.paramsRule = paramsRule;
     }
 
     @Override
@@ -78,13 +66,6 @@ public class ControllerMethodSignatureRule implements Rule<JDefinedClass, JMetho
         JType responseType = responseTypeRule.apply(endpointMetadata, generatableType);
         JMethod jMethod = generatableType.method(JMod.PUBLIC, responseType, endpointMetadata.getName());
         jMethod = paramsRule.apply(endpointMetadata, ext(jMethod, generatableType.owner()));
-        if (endpointMetadata.getInjectHttpHeadersParameter()) {
-            jMethod.param(HttpHeaders.class, "httpHeaders");
-            if (addJavadocComment) {
-                jMethod.javadoc().addParam("httpHeaders The HTTP headers for the request");
-            }
-        }
-
         return jMethod;
     }
 

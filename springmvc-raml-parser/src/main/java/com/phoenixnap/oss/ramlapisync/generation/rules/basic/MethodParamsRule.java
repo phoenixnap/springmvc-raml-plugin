@@ -19,6 +19,7 @@ import static com.phoenixnap.oss.ramlapisync.generation.CodeModelHelper.findFirs
 import java.util.ArrayList;
 import java.util.List;
 
+import org.springframework.http.HttpHeaders;
 import org.springframework.util.StringUtils;
 
 import com.phoenixnap.oss.ramlapisync.data.ApiActionMetadata;
@@ -97,6 +98,10 @@ public class MethodParamsRule implements Rule<CodeModelHelper.JExtMethod, JMetho
             param(endpointMetadata, generatableType);
         }
 
+       if (endpointMetadata.getInjectHttpHeadersParameter()) {
+            paramHttpHeaders(generatableType);
+       }
+
         return generatableType.get();
     }
 
@@ -129,5 +134,13 @@ public class MethodParamsRule implements Rule<CodeModelHelper.JExtMethod, JMetho
         }
         return generatableType.get().param(requestBodyType, uncapitalize(requestBodyName));
     }
+
+   protected JVar paramHttpHeaders(CodeModelHelper.JExtMethod generatableType) {
+      JVar paramHttpHeaders = generatableType.get().param(HttpHeaders.class, "httpHeaders");
+      if (addParameterJavadoc) {
+          generatableType.get().javadoc().addParam("httpHeaders The HTTP headers for the request");
+      }
+      return paramHttpHeaders;
+   }
 
 }

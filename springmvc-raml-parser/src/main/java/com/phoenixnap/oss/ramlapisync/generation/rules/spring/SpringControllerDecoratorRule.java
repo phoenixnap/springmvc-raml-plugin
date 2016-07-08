@@ -91,7 +91,7 @@ public abstract class SpringControllerDecoratorRule implements Rule<JCodeModel, 
                 .setMethodCommentRule(new MethodCommentRule())
                 .addMethodAnnotationRule(new SpringRequestMappingMethodAnnotationRule())
                 .addMethodAnnotationRule(getResponseBodyAnnotationRule())
-                .setMethodSignatureRule(new SpringControllerMethodSignatureRule(
+                .setMethodSignatureRule(new ControllerMethodSignatureRule(
                         new SpringResponseEntityRule(),
                         new SpringMethodParamsRule()))
                 .setMethodBodyRule(new DelegatingMethodBodyRule(delegateFieldName));
