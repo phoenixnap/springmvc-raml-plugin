@@ -43,8 +43,13 @@ public abstract class AbstractRuleTestBase {
     protected Logger logger = Logger.getLogger(this.getClass());
     protected JCodeModel jCodeModel;
 
-    private RamlParser defaultRamlParser = new RamlParser("com.gen.test", "/api");
+    protected RamlParser defaultRamlParser;
+
     private ApiResourceMetadata controllerMetadata;
+
+    public AbstractRuleTestBase() {
+        defaultRamlParser = new RamlParser("com.gen.test", "/api", false, false);
+    }
 
     @BeforeClass
     public static void initRaml() {

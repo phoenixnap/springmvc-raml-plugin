@@ -57,23 +57,25 @@ public class ApiActionMetadata {
 	Set<ApiParameterMetadata> pathVariables = null;
 	Set<ApiParameterMetadata> requestParameters = null;
 	Set<ApiParameterMetadata> requestHeaders = null;
+	boolean injectHttpHeadersParameter = false;
 
 	private String responseContentTypeFilter;
 
-	public ApiActionMetadata(ApiResourceMetadata parent, Resource resource, ActionType actionType, Action action, String responseContentTypeFilter) {
+	public ApiActionMetadata(ApiResourceMetadata parent, Resource resource, ActionType actionType, Action action, String responseContentTypeFilter, boolean injectHttpHeadersParameter) {
 		super();
 		this.parent = parent;
 		this.resource = resource;
 		this.actionType = actionType;
 		this.action = action;
 		this.responseContentTypeFilter = responseContentTypeFilter;
+		this.injectHttpHeadersParameter = injectHttpHeadersParameter;
 		parseRequest();
 		parseResponse(responseContentTypeFilter);
 
 	}
 
 	public ApiActionMetadata(ApiResourceMetadata parent, Resource resource, ActionType actionType, Action action) {
-		this(parent, resource, actionType, action, null);
+		this(parent, resource, actionType, action, null, false);
 	}
 
 	public String toString() {
@@ -306,4 +308,7 @@ public class ApiActionMetadata {
 		this.requestBodyMime = requestBodyMime;
 	}
 
+	public boolean getInjectHttpHeadersParameter() {
+		return injectHttpHeadersParameter;
+	}
 }

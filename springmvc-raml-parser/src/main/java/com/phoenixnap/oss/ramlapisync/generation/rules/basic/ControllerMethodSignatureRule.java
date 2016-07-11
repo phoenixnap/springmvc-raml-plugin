@@ -12,6 +12,8 @@
  */
 package com.phoenixnap.oss.ramlapisync.generation.rules.basic;
 
+import static com.phoenixnap.oss.ramlapisync.generation.CodeModelHelper.ext;
+
 import com.phoenixnap.oss.ramlapisync.data.ApiActionMetadata;
 import com.phoenixnap.oss.ramlapisync.generation.CodeModelHelper;
 import com.phoenixnap.oss.ramlapisync.generation.rules.Rule;
@@ -20,10 +22,8 @@ import com.sun.codemodel.JMethod;
 import com.sun.codemodel.JMod;
 import com.sun.codemodel.JType;
 
-import static com.phoenixnap.oss.ramlapisync.generation.CodeModelHelper.ext;
-
 /**
- * Generates a method signatur for an endpoint defined by an ApiMappingMetadata instance.
+ * Generates a method signature for an endpoint defined by an ApiMappingMetadata instance.
  *
  * INPUT:
  * #%RAML 0.8

@@ -56,8 +56,8 @@ public class ApiResourceMetadata {
 		apiCalls.add(new ApiActionMetadata(this, resource, actionType, action));
 	}
 	
-	public void addApiCall(Resource resource, ActionType actionType, Action action, String responseContentType) {
-		apiCalls.add(new ApiActionMetadata(this, resource, actionType, action, responseContentType));
+	public void addApiCall(Resource resource, ActionType actionType, Action action, String responseContentType, boolean injectHttpHeadersParameter) {
+		apiCalls.add(new ApiActionMetadata(this, resource, actionType, action, responseContentType, injectHttpHeadersParameter));
 	}
 	
     public Set<ApiActionMetadata> getApiCalls() {

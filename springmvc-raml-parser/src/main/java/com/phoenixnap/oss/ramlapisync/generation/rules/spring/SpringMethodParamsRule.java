@@ -93,4 +93,11 @@ public class SpringMethodParamsRule extends MethodParamsRule {
         return param;
     }
 
+    @Override
+    protected JVar paramHttpHeaders(CodeModelHelper.JExtMethod generatableType) {
+        JVar paramHttpHeaders = super.paramHttpHeaders(generatableType);
+        paramHttpHeaders.annotate(RequestHeader.class);
+        return paramHttpHeaders;
+    }
+
 }
