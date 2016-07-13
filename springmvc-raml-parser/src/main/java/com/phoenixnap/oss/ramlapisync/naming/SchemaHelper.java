@@ -12,37 +12,6 @@
  */
 package com.phoenixnap.oss.ramlapisync.naming;
 
-import java.io.IOException;
-import java.lang.reflect.Field;
-import java.lang.reflect.Parameter;
-import java.lang.reflect.Type;
-import java.math.BigDecimal;
-import java.net.URI;
-import java.util.Collections;
-import java.util.Date;
-import java.util.Map;
-import java.util.Map.Entry;
-import java.util.TreeMap;
-
-import org.jsonschema2pojo.Annotator;
-import org.jsonschema2pojo.DefaultGenerationConfig;
-import org.jsonschema2pojo.GenerationConfig;
-import org.jsonschema2pojo.Jackson2Annotator;
-import org.jsonschema2pojo.SchemaGenerator;
-import org.jsonschema2pojo.SchemaMapper;
-import org.jsonschema2pojo.SchemaStore;
-import org.jsonschema2pojo.rules.RuleFactory;
-import org.raml.model.MimeType;
-import org.raml.model.ParamType;
-import org.raml.model.Raml;
-import org.raml.model.parameter.QueryParameter;
-import org.raml.parser.utils.Inflector;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.util.CollectionUtils;
-import org.springframework.util.StringUtils;
-import org.springframework.web.multipart.MultipartFile;
-
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.module.jsonSchema.JsonSchema;
@@ -54,7 +23,37 @@ import com.phoenixnap.oss.ramlapisync.data.ApiBodyMetadata;
 import com.phoenixnap.oss.ramlapisync.data.ApiParameterMetadata;
 import com.phoenixnap.oss.ramlapisync.javadoc.JavaDocEntry;
 import com.phoenixnap.oss.ramlapisync.javadoc.JavaDocStore;
+import com.phoenixnap.oss.ramlapisync.raml.RamlRoot;
 import com.sun.codemodel.JCodeModel;
+import org.jsonschema2pojo.Annotator;
+import org.jsonschema2pojo.DefaultGenerationConfig;
+import org.jsonschema2pojo.GenerationConfig;
+import org.jsonschema2pojo.Jackson2Annotator;
+import org.jsonschema2pojo.SchemaGenerator;
+import org.jsonschema2pojo.SchemaMapper;
+import org.jsonschema2pojo.SchemaStore;
+import org.jsonschema2pojo.rules.RuleFactory;
+import org.raml.model.MimeType;
+import org.raml.model.ParamType;
+import org.raml.model.parameter.QueryParameter;
+import org.raml.parser.utils.Inflector;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.util.CollectionUtils;
+import org.springframework.util.StringUtils;
+import org.springframework.web.multipart.MultipartFile;
+
+import java.io.IOException;
+import java.lang.reflect.Field;
+import java.lang.reflect.Parameter;
+import java.lang.reflect.Type;
+import java.math.BigDecimal;
+import java.net.URI;
+import java.util.Collections;
+import java.util.Date;
+import java.util.Map;
+import java.util.Map.Entry;
+import java.util.TreeMap;
 
 /**
  * Class containing convenience methods relating to the extracting of information from Java types for use as Parameters.
@@ -112,7 +111,7 @@ public class SchemaHelper {
 	 * @param document The Parent Raml Document
 	 * @return The full schema if contained in the raml document or null if not found
 	 */
-	public static String resolveSchema(String schema, Raml document) {
+	public static String resolveSchema(String schema, RamlRoot document) {
 		if (document == null || schema == null ||schema.indexOf("{") != -1) {
 			return null;
 		}
@@ -374,7 +373,7 @@ public class SchemaHelper {
 	 * @param schemaLocation Base location of this schema, will be used to create absolute URIs for $ref tags eg "classpath:/" 
 	 * @return Object representing this Body
 	 */
-	public static ApiBodyMetadata mapSchemaToPojo(Raml document, String schema, String basePackage, String name, String schemaLocation) {
+	public static ApiBodyMetadata mapSchemaToPojo(RamlRoot document, String schema, String basePackage, String name, String schemaLocation) {
 		String resolvedName = null;
 		String schemaName = schema;
 		
@@ -523,7 +522,7 @@ public class SchemaHelper {
 	 * @param checkForValidSchema if false, we will omit checks to see if the schema is valid
 	 * @return true if at least 1 valid schema exists
 	 */
-	public static boolean containsBodySchema(Map<String, MimeType> body, Raml document, boolean checkForValidSchema) {
+	public static boolean containsBodySchema(Map<String, MimeType> body, RamlRoot document, boolean checkForValidSchema) {
 		if (CollectionUtils.isEmpty(body)) {
 			return false;
 		}

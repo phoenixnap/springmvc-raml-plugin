@@ -12,6 +12,19 @@
  */
 package com.phoenixnap.oss.ramlapisync.style;
 
+import com.phoenixnap.oss.ramlapisync.naming.Pair;
+import com.phoenixnap.oss.ramlapisync.raml.RamlRoot;
+import com.phoenixnap.oss.ramlapisync.verification.Issue;
+import com.phoenixnap.oss.ramlapisync.verification.IssueLocation;
+import com.phoenixnap.oss.ramlapisync.verification.IssueSeverity;
+import com.phoenixnap.oss.ramlapisync.verification.IssueType;
+import com.phoenixnap.oss.ramlapisync.verification.RamlChecker;
+import org.raml.model.Action;
+import org.raml.model.ActionType;
+import org.raml.model.Resource;
+import org.raml.model.parameter.QueryParameter;
+import org.raml.model.parameter.UriParameter;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.LinkedHashSet;
@@ -19,20 +32,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
-
-import org.raml.model.Action;
-import org.raml.model.ActionType;
-import org.raml.model.Raml;
-import org.raml.model.Resource;
-import org.raml.model.parameter.QueryParameter;
-import org.raml.model.parameter.UriParameter;
-
-import com.phoenixnap.oss.ramlapisync.naming.Pair;
-import com.phoenixnap.oss.ramlapisync.verification.Issue;
-import com.phoenixnap.oss.ramlapisync.verification.IssueLocation;
-import com.phoenixnap.oss.ramlapisync.verification.IssueSeverity;
-import com.phoenixnap.oss.ramlapisync.verification.IssueType;
-import com.phoenixnap.oss.ramlapisync.verification.RamlChecker;
 
 /**
  * Provides a Vistor pattern approach to Style Checks. Iterates through the model and invokes callbacks on specific checkers.
@@ -64,7 +63,7 @@ public class RamlStyleCheckVisitorCoordinator implements RamlChecker {
 	 * @param implemented The Raml as generated from the implementation
 	 * @return A pair containing a list of Warnings and an empty list of Errors (as first and second respectively)
 	 */
-	public Pair<Set<Issue>, Set<Issue>> check (Raml published, Raml implemented) {
+	public Pair<Set<Issue>, Set<Issue>> check (RamlRoot published, RamlRoot implemented) {
 		
 		checkChildren(published.getResources(), published, IssueLocation.CONTRACT);
 		if (!ignoreCodeStyle && implemented != null) {
@@ -76,7 +75,7 @@ public class RamlStyleCheckVisitorCoordinator implements RamlChecker {
 
 
 
-	private void checkChildren(Map<String, Resource> resources, Raml raml, IssueLocation location) {
+	private void checkChildren(Map<String, Resource> resources, RamlRoot raml, IssueLocation location) {
 		if (resources != null) {
 			for (Entry<String, Resource> entry : resources.entrySet()) {
 				Resource resource = entry.getValue();

@@ -1,9 +1,18 @@
 package com.phoenixnap.oss.ramlapisync.generation.rules;
 
-import static org.hamcrest.CoreMatchers.is;
-import static org.hamcrest.CoreMatchers.nullValue;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertThat;
+import com.phoenixnap.oss.ramlapisync.data.ApiActionMetadata;
+import com.phoenixnap.oss.ramlapisync.data.ApiResourceMetadata;
+import com.phoenixnap.oss.ramlapisync.generation.RamlParser;
+import com.phoenixnap.oss.ramlapisync.generation.RamlVerifier;
+import com.phoenixnap.oss.ramlapisync.raml.RamlRoot;
+import com.sun.codemodel.JCodeModel;
+import com.sun.codemodel.writer.SingleStreamCodeWriter;
+import org.apache.log4j.Logger;
+import org.hamcrest.MatcherAssert;
+import org.hamcrest.text.IsEqualIgnoringWhiteSpace;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.BeforeClass;
 
 import java.io.BufferedReader;
 import java.io.ByteArrayOutputStream;
@@ -16,20 +25,10 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 
-import org.apache.log4j.Logger;
-import org.hamcrest.MatcherAssert;
-import org.hamcrest.text.IsEqualIgnoringWhiteSpace;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.BeforeClass;
-import org.raml.model.Raml;
-
-import com.phoenixnap.oss.ramlapisync.data.ApiResourceMetadata;
-import com.phoenixnap.oss.ramlapisync.data.ApiActionMetadata;
-import com.phoenixnap.oss.ramlapisync.generation.RamlParser;
-import com.phoenixnap.oss.ramlapisync.generation.RamlVerifier;
-import com.sun.codemodel.JCodeModel;
-import com.sun.codemodel.writer.SingleStreamCodeWriter;
+import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.CoreMatchers.nullValue;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertThat;
 
 /**
  * @author armin.weisser
@@ -38,7 +37,7 @@ import com.sun.codemodel.writer.SingleStreamCodeWriter;
 public abstract class AbstractRuleTestBase {
 
     public static final String RESOURCE_BASE = "rules/";
-    public static Raml RAML;
+    public static RamlRoot RAML;
 
     protected Logger logger = Logger.getLogger(this.getClass());
     protected JCodeModel jCodeModel;

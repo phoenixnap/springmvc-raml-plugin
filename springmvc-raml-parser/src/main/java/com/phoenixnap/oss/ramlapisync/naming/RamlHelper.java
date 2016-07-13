@@ -9,16 +9,16 @@
  */
 package com.phoenixnap.oss.ramlapisync.naming;
 
-import java.util.Map;
-import java.util.Map.Entry;
-
+import com.phoenixnap.oss.ramlapisync.raml.RamlRoot;
 import org.raml.model.Action;
 import org.raml.model.MimeType;
-import org.raml.model.Raml;
 import org.raml.model.Resource;
 import org.raml.model.Response;
 import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
+
+import java.util.Map;
+import java.util.Map.Entry;
 
 /**
  * Class containing utility methods for modifying Raml models
@@ -58,7 +58,7 @@ public class RamlHelper {
 	 * @param resource The candidate resource
 	 * @param addActions whether we should add actions
 	 */
-	public static void mergeResources(Raml raml, Resource resource, boolean addActions) {
+	public static void mergeResources(RamlRoot raml, Resource resource, boolean addActions) {
 		Resource existingResource = raml.getResource(resource.getRelativeUri());
 		if (existingResource == null) {
 			raml.getResources().put(resource.getRelativeUri(), resource);
@@ -113,7 +113,7 @@ public class RamlHelper {
 	 * @param model The Raml model to modify
 	 * @param urlPrefixToIgnore The section of the URL to remove
 	 */
-	public static void removeResourceTree(Raml model, String urlPrefixToIgnore) {
+	public static void removeResourceTree(RamlRoot model, String urlPrefixToIgnore) {
 		if (StringUtils.hasText(urlPrefixToIgnore)) {
 			String[] urlParts = urlPrefixToIgnore.split("/");
 			String firstResourcePart = null;

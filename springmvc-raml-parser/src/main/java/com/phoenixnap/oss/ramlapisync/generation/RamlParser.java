@@ -12,21 +12,20 @@
  */
 package com.phoenixnap.oss.ramlapisync.generation;
 
-import java.util.LinkedHashSet;
-import java.util.Map.Entry;
-import java.util.Set;
-
+import com.phoenixnap.oss.ramlapisync.data.ApiResourceMetadata;
+import com.phoenixnap.oss.ramlapisync.naming.RamlHelper;
+import com.phoenixnap.oss.ramlapisync.raml.RamlModelFactoryOfFactories;
+import com.phoenixnap.oss.ramlapisync.raml.RamlRoot;
 import org.raml.model.Action;
 import org.raml.model.ActionType;
-import org.raml.model.Raml;
 import org.raml.model.Resource;
 import org.raml.model.Response;
-import org.raml.parser.visitor.RamlDocumentBuilder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.phoenixnap.oss.ramlapisync.data.ApiResourceMetadata;
-import com.phoenixnap.oss.ramlapisync.naming.RamlHelper;
+import java.util.LinkedHashSet;
+import java.util.Map.Entry;
+import java.util.Set;
 
 
 /**
@@ -87,7 +86,7 @@ public class RamlParser {
 	 * @param raml The raml document to be parsed
 	 * @return A set of Controllers representing the inferred resources in the system
 	 */
-	public Set<ApiResourceMetadata> extractControllers (Raml raml) {
+	public Set<ApiResourceMetadata> extractControllers (RamlRoot raml) {
 		
 		Set<ApiResourceMetadata> controllers = new LinkedHashSet<>();
 		if (raml == null) {
@@ -134,7 +133,7 @@ public class RamlParser {
 	 * @param document The raml Document being parse
 	 * @return A set of Controllers representing resources in this branch of the tree
 	 */
-	public Set<ApiResourceMetadata> checkResource(String baseUrl, Resource resource, ApiResourceMetadata controller, Raml document) {
+	public Set<ApiResourceMetadata> checkResource(String baseUrl, Resource resource, ApiResourceMetadata controller, RamlRoot document) {
 		Set<ApiResourceMetadata> controllers = new LinkedHashSet<>();
 		//append resource URL to url.
 		String url = baseUrl + resource.getRelativeUri();
@@ -176,9 +175,9 @@ public class RamlParser {
 	 * @param ramlFileUrl The path to the file, this can either be a resource on the class path (in which case the classpath: prefix should be omitted) or a file on disk (in which case the file: prefix should be included)
 	 * @return Built Raml model
 	 */
-	public static Raml loadRamlFromFile(String ramlFileUrl) {
+	public static RamlRoot loadRamlFromFile(String ramlFileUrl) {
 		try {
-			return new RamlDocumentBuilder().build(ramlFileUrl);
+			return RamlModelFactoryOfFactories.createRamlModelFactory().buildRamlRoot(ramlFileUrl);
 		} catch (NullPointerException npe) {
 			logger.error("File not found at " + ramlFileUrl);
 			return null;

@@ -12,16 +12,15 @@
  */
 package com.phoenixnap.oss.ramlapisync.style;
 
-import java.util.Collections;
-import java.util.Set;
-
+import com.phoenixnap.oss.ramlapisync.raml.RamlRoot;
+import com.phoenixnap.oss.ramlapisync.verification.IssueLocation;
 import org.raml.model.Action;
 import org.raml.model.ActionType;
-import org.raml.model.Raml;
 import org.raml.model.Resource;
 import org.raml.model.parameter.AbstractParam;
 
-import com.phoenixnap.oss.ramlapisync.verification.IssueLocation;
+import java.util.Collections;
+import java.util.Set;
 
 /**
  * Adapter pattern for Raml Style Checkers.
@@ -39,13 +38,13 @@ public class RamlStyleCheckerAdapter implements RamlStyleChecker {
 
 	@Override
 	public Set<StyleIssue> checkActionStyle(ActionType key, Action value,
-			IssueLocation location, Raml raml) {
+			IssueLocation location, RamlRoot raml) {
 		return Collections.emptySet();
 	}
 
 	@Override
 	public Set<StyleIssue> checkResourceStyle(String name, Resource resource,
-			IssueLocation location, Raml raml) {
+			IssueLocation location, RamlRoot raml) {
 		return Collections.emptySet();
 	}
 	

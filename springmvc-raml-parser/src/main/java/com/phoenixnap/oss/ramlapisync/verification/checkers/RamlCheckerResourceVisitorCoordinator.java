@@ -12,22 +12,8 @@
  */
 package com.phoenixnap.oss.ramlapisync.verification.checkers;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.LinkedHashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
-import java.util.Set;
-
-import org.raml.model.Action;
-import org.raml.model.ActionType;
-import org.raml.model.Raml;
-import org.raml.model.Resource;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import com.phoenixnap.oss.ramlapisync.naming.Pair;
+import com.phoenixnap.oss.ramlapisync.raml.RamlRoot;
 import com.phoenixnap.oss.ramlapisync.verification.Issue;
 import com.phoenixnap.oss.ramlapisync.verification.IssueLocation;
 import com.phoenixnap.oss.ramlapisync.verification.IssueSeverity;
@@ -35,6 +21,19 @@ import com.phoenixnap.oss.ramlapisync.verification.IssueType;
 import com.phoenixnap.oss.ramlapisync.verification.RamlActionVisitorCheck;
 import com.phoenixnap.oss.ramlapisync.verification.RamlChecker;
 import com.phoenixnap.oss.ramlapisync.verification.RamlResourceVisitorCheck;
+import org.raml.model.Action;
+import org.raml.model.ActionType;
+import org.raml.model.Resource;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.LinkedHashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
+import java.util.Set;
 
 /**
  * Raml checker that cross checks Resources between 2 RAML models. Only directly corresponding resources will be parsed 
@@ -84,7 +83,7 @@ public class RamlCheckerResourceVisitorCoordinator implements RamlChecker {
 	}
 
 	@Override
-	public Pair<Set<Issue>, Set<Issue>> check(Raml published, Raml implemented) {
+	public Pair<Set<Issue>, Set<Issue>> check(RamlRoot published, RamlRoot implemented) {
 		
 		if (actionCheckers.size() == 0 && resourceCheckers.size() == 0) {
 			return new Pair<Set<Issue>, Set<Issue>>(Collections.emptySet(), Collections.emptySet());

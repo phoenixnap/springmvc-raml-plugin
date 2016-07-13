@@ -12,21 +12,20 @@
  */
 package com.phoenixnap.oss.ramlapisync.style.checkers;
 
-import java.util.LinkedHashSet;
-import java.util.Map.Entry;
-import java.util.Set;
-import java.util.regex.Pattern;
-
+import com.phoenixnap.oss.ramlapisync.raml.RamlRoot;
+import com.phoenixnap.oss.ramlapisync.style.RamlStyleCheckerAdapter;
+import com.phoenixnap.oss.ramlapisync.style.StyleIssue;
+import com.phoenixnap.oss.ramlapisync.verification.IssueLocation;
 import org.raml.model.ActionType;
-import org.raml.model.Raml;
 import org.raml.model.Resource;
 import org.raml.parser.utils.Inflector;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.phoenixnap.oss.ramlapisync.style.RamlStyleCheckerAdapter;
-import com.phoenixnap.oss.ramlapisync.style.StyleIssue;
-import com.phoenixnap.oss.ramlapisync.verification.IssueLocation;
+import java.util.LinkedHashSet;
+import java.util.Map.Entry;
+import java.util.Set;
+import java.util.regex.Pattern;
 
 /**
  * Style checker that ensures that collection resources are defined in the plural form
@@ -49,7 +48,7 @@ public class ResourceCollectionPluralisationChecker extends RamlStyleCheckerAdap
 	
 	@Override
 	public Set<StyleIssue> checkResourceStyle(String name, Resource resource,
-			IssueLocation location, Raml raml) {
+			IssueLocation location, RamlRoot raml) {
 		logger.debug("Checking resource " + name);
 		Set<StyleIssue> issues = new LinkedHashSet<>();
 		

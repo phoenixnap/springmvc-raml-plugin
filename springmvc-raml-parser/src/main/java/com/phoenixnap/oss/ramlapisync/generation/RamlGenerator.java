@@ -15,11 +15,11 @@ package com.phoenixnap.oss.ramlapisync.generation;
 import com.phoenixnap.oss.ramlapisync.data.ApiDocumentMetadata;
 import com.phoenixnap.oss.ramlapisync.naming.RamlHelper;
 import com.phoenixnap.oss.ramlapisync.parser.ResourceParser;
-
+import com.phoenixnap.oss.ramlapisync.raml.RamlModelEmitter;
+import com.phoenixnap.oss.ramlapisync.raml.RamlModelFactoryOfFactories;
+import com.phoenixnap.oss.ramlapisync.raml.RamlRoot;
 import org.apache.commons.io.FileUtils;
-import org.raml.emitter.RamlEmitter;
 import org.raml.model.DocumentationItem;
-import org.raml.model.Raml;
 import org.raml.model.Resource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -28,7 +28,10 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -59,7 +62,7 @@ public class RamlGenerator {
 	/**
 	 * Raml Model
 	 */
-	private Raml raml;
+	private RamlRoot raml;
 
 	/**
 	 * Code Scanner
@@ -106,7 +109,7 @@ public class RamlGenerator {
 
 		assertResourceParser();
 
-		Raml raml = new Raml();
+		RamlRoot raml = RamlModelFactoryOfFactories.createRamlModelFactory().createRamlRoot();
 		raml.setBaseUri(baseUri);
 		raml.setVersion(version);
 		raml.setTitle(title);
@@ -192,7 +195,7 @@ public class RamlGenerator {
 		if (this.raml == null) {
 			return "";
 		}
-		RamlEmitter ramlEmitter = new RamlEmitter();
+		RamlModelEmitter ramlEmitter = RamlModelFactoryOfFactories.createRamlModelFactory().createRamlModelEmitter();
 		return postProcessRaml(ramlEmitter.dump(this.raml));
 	}
 
@@ -326,7 +329,7 @@ public class RamlGenerator {
 	 * 
 	 * @return the RAML model
 	 */
-	public Raml getRaml() {
+	public RamlRoot getRaml() {
 		return raml;
 	}
 

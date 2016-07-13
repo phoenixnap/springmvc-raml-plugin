@@ -12,16 +12,15 @@
  */
 package com.phoenixnap.oss.ramlapisync.data;
 
+import com.phoenixnap.oss.ramlapisync.naming.NamingHelper;
+import com.phoenixnap.oss.ramlapisync.raml.RamlRoot;
+import org.raml.model.Action;
+import org.raml.model.ActionType;
+import org.raml.model.Resource;
+
 import java.util.Collections;
 import java.util.LinkedHashSet;
 import java.util.Set;
-
-import org.raml.model.Action;
-import org.raml.model.ActionType;
-import org.raml.model.Raml;
-import org.raml.model.Resource;
-
-import com.phoenixnap.oss.ramlapisync.naming.NamingHelper;
 
 
 /**
@@ -39,11 +38,11 @@ public class ApiResourceMetadata {
 	private String controllerUrl;
 	private transient Resource resource;
 	private String basePackage;
-	private Raml document;
+	private RamlRoot document;
 	
 	Set<ApiActionMetadata> apiCalls = new LinkedHashSet<>();
 	
-	public ApiResourceMetadata(String controllerUrl, Resource resource, String basePackage, Raml document) {
+	public ApiResourceMetadata(String controllerUrl, Resource resource, String basePackage, RamlRoot document) {
 		super();
 		this.controllerUrl = controllerUrl;
 		this.resource = resource;
@@ -116,7 +115,7 @@ public class ApiResourceMetadata {
 	}
 
 
-	public Raml getDocument() {
+	public RamlRoot getDocument() {
 		return document;
 	}
 }
