@@ -43,14 +43,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.MediaType;
 
-import test.phoenixnap.oss.plugin.naming.testclasses.BugController;
-import test.phoenixnap.oss.plugin.naming.testclasses.MultipleContentTypeTestController;
-import test.phoenixnap.oss.plugin.naming.testclasses.NoValueController;
-import test.phoenixnap.oss.plugin.naming.testclasses.TestController;
-import test.phoenixnap.oss.plugin.naming.testclasses.UriPrefixIgnoredController;
-
-import com.phoenixnap.oss.ramlapisync.data.ApiResourceMetadata;
 import com.phoenixnap.oss.ramlapisync.data.ApiActionMetadata;
+import com.phoenixnap.oss.ramlapisync.data.ApiResourceMetadata;
 import com.phoenixnap.oss.ramlapisync.generation.RamlParser;
 import com.phoenixnap.oss.ramlapisync.generation.RamlVerifier;
 import com.phoenixnap.oss.ramlapisync.javadoc.JavaDocEntry;
@@ -59,6 +53,12 @@ import com.phoenixnap.oss.ramlapisync.javadoc.JavaDocStore;
 import com.phoenixnap.oss.ramlapisync.naming.RamlHelper;
 import com.phoenixnap.oss.ramlapisync.parser.FileSearcher;
 import com.phoenixnap.oss.ramlapisync.parser.SpringMvcResourceParser;
+
+import test.phoenixnap.oss.plugin.naming.testclasses.BugController;
+import test.phoenixnap.oss.plugin.naming.testclasses.MultipleContentTypeTestController;
+import test.phoenixnap.oss.plugin.naming.testclasses.NoValueController;
+import test.phoenixnap.oss.plugin.naming.testclasses.TestController;
+import test.phoenixnap.oss.plugin.naming.testclasses.UriPrefixIgnoredController;
 
 /**
  * Unit tests for the Spring MVC Parser
@@ -141,7 +141,7 @@ public class SpringMvcResourceParserTest {
     @Test
     public void test_seperateContentType__Success() throws Exception {
         Raml published = RamlVerifier.loadRamlFromFile("test-responsebody-multipletype.raml");
-        RamlParser par = new RamlParser("com.gen.test", "/api", true);
+        RamlParser par = new RamlParser("com.gen.test", "/api", true, false);
         Set<ApiResourceMetadata> controllersMetadataSet = par.extractControllers(published);
 
         assertEquals(1, controllersMetadataSet.size());
@@ -153,7 +153,7 @@ public class SpringMvcResourceParserTest {
 		assertTrue(apiCallIterator.next().getName().contains("As"));
         
         //lets check that it switches off correctly
-        par = new RamlParser("com.gen.test", "/api", false);
+        par = new RamlParser("com.gen.test", "/api", false, false);
         controllersMetadataSet = par.extractControllers(published);
         assertEquals(1, controllersMetadataSet.size());
         assertEquals(1, controllersMetadataSet.iterator().next().getApiCalls().size());

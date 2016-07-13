@@ -280,8 +280,11 @@ Then simply include the following code in the POM of the project you wish to gen
 ### generationConfig
 (optional) This object contains a map of configuration for the JsonSchema2Pojo generator. The full list of configurable attributes, their description and default values can be found here [GenerationConfig][]
 
+### injectHttpHeadersParameter
+(optional, default: false) If set to true, we will generate a `HttpHeaders` parameter for each method to allow using request HTTP headers directly.
+
 ### seperateMethodsByContentType
-(optional, default: false) Should we generate seperate API methods for endpoints which define multiple content types in their 200 response. 
+(optional, default: false) Should we generate separate API methods for endpoints which define multiple content types in their 200 response. 
 
 ### useJackson1xCompatibility
 (optional, default: false) If set to true, we will generate Jackson 1 annotations inside the model objects.

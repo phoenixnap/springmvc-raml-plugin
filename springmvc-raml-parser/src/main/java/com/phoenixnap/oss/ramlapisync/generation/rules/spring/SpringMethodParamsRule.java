@@ -12,16 +12,19 @@
  */
 package com.phoenixnap.oss.ramlapisync.generation.rules.spring;
 
+import org.raml.model.parameter.Header;
+import org.raml.model.parameter.UriParameter;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestHeader;
+import org.springframework.web.bind.annotation.RequestParam;
+
 import com.phoenixnap.oss.ramlapisync.data.ApiActionMetadata;
 import com.phoenixnap.oss.ramlapisync.data.ApiParameterMetadata;
 import com.phoenixnap.oss.ramlapisync.generation.CodeModelHelper;
 import com.phoenixnap.oss.ramlapisync.generation.rules.basic.MethodParamsRule;
 import com.sun.codemodel.JAnnotationUse;
 import com.sun.codemodel.JVar;
-import org.raml.model.parameter.UriParameter;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestParam;
 
 /**
  * Generates all method parameters with Spring annotations needed for an endpoint defined by ApiMappingMetadata.
@@ -63,6 +66,13 @@ public class SpringMethodParamsRule extends MethodParamsRule {
         if (paramMetaData.getRamlParam() != null && paramMetaData.getRamlParam() instanceof UriParameter) {
             jVar.annotate(PathVariable.class);
             return jVar;
+        } else if (paramMetaData.getRamlParam() != null && paramMetaData.getRamlParam() instanceof Header) {
+            jAnnotationUse = jVar.annotate(RequestHeader.class);
+            jAnnotationUse.param("name", paramMetaData.getName());
+            if (!paramMetaData.getRamlParam().isRequired()) {
+                jAnnotationUse.param("required", false);
+            }
+            return jVar;
         } else {
             jAnnotationUse = jVar.annotate(RequestParam.class);
             // In RAML parameters are optional unless the required attribute is included and its value set to 'true'.
@@ -81,6 +91,13 @@ public class SpringMethodParamsRule extends MethodParamsRule {
         JVar param = super.param(endpointMetadata, generatableType);
         param.annotate(RequestBody.class);
         return param;
+    }
+
+    @Override
+    protected JVar paramHttpHeaders(CodeModelHelper.JExtMethod generatableType) {
+        JVar paramHttpHeaders = super.paramHttpHeaders(generatableType);
+        paramHttpHeaders.annotate(RequestHeader.class);
+        return paramHttpHeaders;
     }
 
 }

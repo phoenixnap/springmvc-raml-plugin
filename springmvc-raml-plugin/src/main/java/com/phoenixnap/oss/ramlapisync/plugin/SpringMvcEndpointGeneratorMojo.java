@@ -136,6 +136,12 @@ public class SpringMvcEndpointGeneratorMojo extends AbstractMojo {
 	@Parameter(required = false, readonly = true)
 	protected PojoGenerationConfig generationConfig = new PojoGenerationConfig();
 
+	/**
+	 * If set to true, we will generate methods with HttpHeaders as a parameter
+	 */
+	@Parameter(required = false, readonly = true, defaultValue = "false")
+	protected Boolean injectHttpHeadersParameter;
+
 	private ClassRealm classRealm;
 	
 	private String resolvedSchemaLocation;
@@ -157,7 +163,7 @@ public class SpringMvcEndpointGeneratorMojo extends AbstractMojo {
 		resolvedSchemaLocation = getSchemaLocation();
 		
 		Raml loadRamlFromFile = RamlParser.loadRamlFromFile(new File(resolvedRamlPath).toURI().toString());
-		RamlParser par = new RamlParser(basePackage, getBasePath(loadRamlFromFile), seperateMethodsByContentType);
+		RamlParser par = new RamlParser(basePackage, getBasePath(loadRamlFromFile), seperateMethodsByContentType, injectHttpHeadersParameter);
 		Set<ApiResourceMetadata> controllers = par.extractControllers(loadRamlFromFile);
 
 		if (StringUtils.hasText(outputRelativePath)) {

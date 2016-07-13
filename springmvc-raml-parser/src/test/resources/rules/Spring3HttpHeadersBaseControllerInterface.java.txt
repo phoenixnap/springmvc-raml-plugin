@@ -4,6 +4,7 @@ package com.gen.test;
 
 import java.math.BigDecimal;
 import com.gen.test.model.NamedResponseType;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -29,7 +30,9 @@ public interface BaseController {
 	 *
 	 */
 	@RequestMapping(value = "", method = RequestMethod.GET)
-	public ResponseEntity getBase();
+	public ResponseEntity getBase(
+	    @RequestHeader
+	    HttpHeaders httpHeaders);
 
     /**
      * Get base entity by ID
@@ -39,7 +42,9 @@ public interface BaseController {
 	@ResponseBody
     public ResponseEntity<NamedResponseType> getBaseById(
         @PathVariable
-        String id);
+        String id,
+        @RequestHeader
+        HttpHeaders httpHeaders);
 
     /**
      * No description
@@ -58,7 +63,9 @@ public interface BaseController {
         @RequestHeader(name = "X-My-Header", required = false)
         Long xMyHeader,
         @RequestHeader(name = "X-Another-Header")
-        String xAnotherHeader);
+        String xAnotherHeader,
+        @RequestHeader
+        HttpHeaders httpHeaders);
 
 }
 

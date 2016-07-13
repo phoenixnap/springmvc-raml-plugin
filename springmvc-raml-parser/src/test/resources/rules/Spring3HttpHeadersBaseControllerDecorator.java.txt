@@ -4,13 +4,14 @@ package com.gen.test;
 
 import java.math.BigDecimal;
 import com.gen.test.model.NamedResponseType;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
 
 
 /**
  * The BaseController class
  * (Generated with springmvc-raml-parser v.${project.version})
- *
+ * 
  */
 public interface BaseController {
 
@@ -19,19 +20,19 @@ public interface BaseController {
 	 * No description
 	 *
 	 */
-	public ResponseEntity getBase();
+	public ResponseEntity getBase(HttpHeaders httpHeaders);
 
     /**
      * Get base entity by ID
      *
      */
-    public ResponseEntity<NamedResponseType> getBaseById(String id);
+    public ResponseEntity<NamedResponseType> getBaseById(String id, HttpHeaders httpHeaders);
 
     /**
      * No description
      *
      */
-    public ResponseEntity getElements(String id, Long requiredQueryParam, String optionalQueryParam, BigDecimal optionalQueryParam2, Long xMyHeader, String xAnotherHeader);
+    public ResponseEntity getElements(String id, Long requiredQueryParam, String optionalQueryParam, BigDecimal optionalQueryParam2, Long xMyHeader, String xAnotherHeader, HttpHeaders httpHeaders);
 
 }
 -----------------------------------com.gen.test.BaseControllerDecorator.java-----------------------------------
@@ -41,13 +42,15 @@ package com.gen.test;
 import java.math.BigDecimal;
 import com.gen.test.model.NamedResponseType;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 
 /**
@@ -55,7 +58,7 @@ import org.springframework.web.bind.annotation.RestController;
  * (Generated with springmvc-raml-parser v.${project.version})
  *
  */
-@RestController
+@Controller
 @RequestMapping(value = "/api/base", produces = "application/json")
 public class BaseControllerDecorator
     implements BaseController
@@ -69,8 +72,10 @@ public class BaseControllerDecorator
 	 *
 	 */
 	@RequestMapping(value = "", method = RequestMethod.GET)
-	public ResponseEntity getBase() {
-        return this.baseControllerDelegate.getBase();
+	public ResponseEntity getBase(
+	     @RequestHeader
+	     HttpHeaders httpHeaders) {
+        return this.baseControllerDelegate.getBase(httpHeaders);
 	}
 
     /**
@@ -78,10 +83,13 @@ public class BaseControllerDecorator
      *
      */
 	@RequestMapping(value = "/{id}", method = RequestMethod.GET)
+	@ResponseBody
     public ResponseEntity<NamedResponseType> getBaseById(
         @PathVariable
-        String id) {
-        return this.baseControllerDelegate.getBaseById(id);
+        String id,
+        @RequestHeader
+        HttpHeaders httpHeaders) {
+        return this.baseControllerDelegate.getBaseById(id, httpHeaders);
     }
 
     /**
@@ -101,8 +109,10 @@ public class BaseControllerDecorator
         @RequestHeader(name = "X-My-Header", required = false)
         Long xMyHeader,
         @RequestHeader(name = "X-Another-Header")
-        String xAnotherHeader) {
-        return this.baseControllerDelegate.getElements(id, requiredQueryParam, optionalQueryParam, optionalQueryParam2, xMyHeader, xAnotherHeader);
+        String xAnotherHeader,
+        @RequestHeader
+        HttpHeaders httpHeaders) {
+        return this.baseControllerDelegate.getElements(id, requiredQueryParam, optionalQueryParam, optionalQueryParam2, xMyHeader, xAnotherHeader, httpHeaders);
     }
 
 }

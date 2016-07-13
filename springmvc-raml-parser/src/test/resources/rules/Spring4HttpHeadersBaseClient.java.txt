@@ -4,6 +4,7 @@ package com.gen.test;
 
 import java.math.BigDecimal;
 import com.gen.test.model.NamedResponseType;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
 
 
@@ -17,28 +18,31 @@ public interface BaseClient {
 
     /**
      * No description
-     * 
+     *
+     * @param httpHeaders The HTTP headers for the request
      */
-    public ResponseEntity getBase();
+    public ResponseEntity getBase(HttpHeaders httpHeaders);
 
     /**
      * Get base entity by ID
-     * 
+     *
+     * @param httpHeaders The HTTP headers for the request
      * @param id 
      */
-    public ResponseEntity<NamedResponseType> getBaseById(String id);
+    public ResponseEntity<NamedResponseType> getBaseById(String id, HttpHeaders httpHeaders);
 
     /**
      * No description
      * 
      * @param optionalQueryParam
      * @param xAnotherHeader
+     * @param httpHeaders The HTTP headers for the request
      * @param id 
      * @param requiredQueryParam 
      * @param optionalQueryParam2
      * @param xMyHeader
      */
-    public ResponseEntity getElements(String id, Long requiredQueryParam, String optionalQueryParam, BigDecimal optionalQueryParam2, Long xMyHeader, String xAnotherHeader);
+    public ResponseEntity getElements(String id, Long requiredQueryParam, String optionalQueryParam, BigDecimal optionalQueryParam2, Long xMyHeader, String xAnotherHeader, HttpHeaders httpHeaders);
 
 }
 -----------------------------------com.gen.test.BaseClientImpl.java-----------------------------------
@@ -82,8 +86,7 @@ public class BaseClientImpl
      * No description
      * 
      */
-    public ResponseEntity getBase() {
-        HttpHeaders httpHeaders = new HttpHeaders();
+    public ResponseEntity getBase(HttpHeaders httpHeaders) {
         //  Add Accepts Headers and Body Content-Type
         ArrayList<MediaType> acceptsList = new ArrayList<MediaType>();
         acceptsList.add(MediaType.valueOf("application/json"));
@@ -99,8 +102,7 @@ public class BaseClientImpl
      * Get base entity by ID
      * 
      */
-    public ResponseEntity<NamedResponseType> getBaseById(String id) {
-        HttpHeaders httpHeaders = new HttpHeaders();
+    public ResponseEntity<NamedResponseType> getBaseById(String id, HttpHeaders httpHeaders) {
         //  Add Accepts Headers and Body Content-Type
         ArrayList<MediaType> acceptsList = new ArrayList<MediaType>();
         acceptsList.add(MediaType.valueOf("application/json"));
@@ -119,8 +121,7 @@ public class BaseClientImpl
      * No description
      * 
      */
-    public ResponseEntity getElements(String id, Long requiredQueryParam, String optionalQueryParam, BigDecimal optionalQueryParam2, Long xMyHeader, String xAnotherHeader) {
-        HttpHeaders httpHeaders = new HttpHeaders();
+    public ResponseEntity getElements(String id, Long requiredQueryParam, String optionalQueryParam, BigDecimal optionalQueryParam2, Long xMyHeader, String xAnotherHeader, HttpHeaders httpHeaders) {
         //  Add Accepts Headers and Body Content-Type
         ArrayList<MediaType> acceptsList = new ArrayList<MediaType>();
         acceptsList.add(MediaType.valueOf("application/json"));

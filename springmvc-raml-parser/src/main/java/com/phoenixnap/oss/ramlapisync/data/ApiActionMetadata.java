@@ -56,30 +56,34 @@ public class ApiActionMetadata {
 	Map<String, ApiBodyMetadata> responseBody = new LinkedHashMap<>();
 	Set<ApiParameterMetadata> pathVariables = null;
 	Set<ApiParameterMetadata> requestParameters = null;
+	Set<ApiParameterMetadata> requestHeaders = null;
+	boolean injectHttpHeadersParameter = false;
 
 	private String responseContentTypeFilter;
 
-	public ApiActionMetadata(ApiResourceMetadata parent, Resource resource, ActionType actionType, Action action, String responseContentTypeFilter) {
+	public ApiActionMetadata(ApiResourceMetadata parent, Resource resource, ActionType actionType, Action action, String responseContentTypeFilter, boolean injectHttpHeadersParameter) {
 		super();
 		this.parent = parent;
 		this.resource = resource;
 		this.actionType = actionType;
 		this.action = action;
 		this.responseContentTypeFilter = responseContentTypeFilter;
+		this.injectHttpHeadersParameter = injectHttpHeadersParameter;
 		parseRequest();
 		parseResponse(responseContentTypeFilter);
 
 	}
 
 	public ApiActionMetadata(ApiResourceMetadata parent, Resource resource, ActionType actionType, Action action) {
-		this(parent, resource, actionType, action, null);
+		this(parent, resource, actionType, action, null, false);
 	}
 
 	public String toString() {
 		return "Method " + getName() + "  Verb [" + actionType + "] Url [" + getUrl() + "] \nConsumes ["
 				+ getConsumes() + "] Produces [" + getProduces() + "] with Schema [" + null + "] \nPath Vars ["
 				+ StringUtils.collectionToCommaDelimitedString(getPathVariables()) + "] \nRequest Params ["
-				+ StringUtils.collectionToCommaDelimitedString(getRequestParameters()) + "] \n";
+				+ StringUtils.collectionToCommaDelimitedString(getRequestParameters()) + "] \nRequest Headers ["
+				+ StringUtils.collectionToCommaDelimitedString(getRequestHeaders()) + "] \n";
 
 	}
 
@@ -109,8 +113,20 @@ public class ApiActionMetadata {
 		return requestParameters;
 	}
 
+	public Set<ApiParameterMetadata> getRequestHeaders() {
+		if (requestHeaders == null) {
+			return Collections.emptySet();
+		}
+
+		return requestHeaders;
+	}
+
+
 	private void parseRequest() {
 		requestParameters = action.getQueryParameters().entrySet().stream()
+				.map(param -> new ApiParameterMetadata(param.getKey(), param.getValue()))
+				.collect(Collectors.toCollection(LinkedHashSet::new));
+		requestHeaders = action.getHeaders().entrySet().stream()
 				.map(param -> new ApiParameterMetadata(param.getKey(), param.getValue()))
 				.collect(Collectors.toCollection(LinkedHashSet::new));
 		if (action.getBody() != null && !action.getBody().isEmpty()) {
@@ -292,4 +308,7 @@ public class ApiActionMetadata {
 		this.requestBodyMime = requestBodyMime;
 	}
 
+	public boolean getInjectHttpHeadersParameter() {
+		return injectHttpHeadersParameter;
+	}
 }

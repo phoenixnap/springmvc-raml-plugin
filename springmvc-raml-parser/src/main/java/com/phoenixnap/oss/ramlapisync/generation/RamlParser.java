@@ -59,6 +59,11 @@ public class RamlParser {
 	 */
 	protected boolean seperateMethodsByContentType = false;
 
+	/**
+	 * If set to true, we will add a HttpHeaders parameter in the action methods
+	 */
+	protected boolean injectHttpHeadersParameter = false;
+
 	public RamlParser (String basePackage) {
 		this.basePackage = basePackage;
 	}
@@ -68,9 +73,10 @@ public class RamlParser {
 		this.startUrl = startUrl;
 	}
 	
-	public RamlParser(String basePackage, String startUrl, boolean seperateMethodsByContentType) {
+	public RamlParser(String basePackage, String startUrl, boolean seperateMethodsByContentType, boolean injectHttpHeadersParameter) {
 		this(basePackage, startUrl);
 		this.seperateMethodsByContentType = seperateMethodsByContentType;
+		this.injectHttpHeadersParameter = injectHttpHeadersParameter;
 	}
 
 	/**
@@ -148,11 +154,11 @@ public class RamlParser {
 				
 				if (seperateMethodsByContentType && response != null && response.hasBody() && response.getBody().size() > 1) {
 						for (String responseType : response.getBody().keySet()) {
-							controller.addApiCall(resource, childResource.getKey(), childResource.getValue(), responseType);
+							controller.addApiCall(resource, childResource.getKey(), childResource.getValue(), responseType, injectHttpHeadersParameter);
 						}
 					
 				} else {
-					controller.addApiCall(resource, childResource.getKey(), childResource.getValue());
+					controller.addApiCall(resource, childResource.getKey(), childResource.getValue(), null, injectHttpHeadersParameter);
 				}
 			}
 		}
