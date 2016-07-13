@@ -12,17 +12,16 @@
  */
 package com.phoenixnap.oss.ramlapisync.plugin;
 
-import java.io.File;
-import java.io.IOException;
-import java.lang.reflect.Method;
-import java.net.MalformedURLException;
-import java.net.URL;
-import java.net.URLClassLoader;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-
+import com.phoenixnap.oss.ramlapisync.data.ApiBodyMetadata;
+import com.phoenixnap.oss.ramlapisync.data.ApiResourceMetadata;
+import com.phoenixnap.oss.ramlapisync.generation.RamlParser;
+import com.phoenixnap.oss.ramlapisync.generation.rules.ConfigurableRule;
+import com.phoenixnap.oss.ramlapisync.generation.rules.Rule;
+import com.phoenixnap.oss.ramlapisync.generation.rules.Spring4ControllerStubRule;
+import com.phoenixnap.oss.ramlapisync.naming.NamingHelper;
+import com.phoenixnap.oss.ramlapisync.raml.RamlRoot;
+import com.sun.codemodel.JCodeModel;
+import com.sun.codemodel.JDefinedClass;
 import org.apache.maven.artifact.DependencyResolutionRequiredException;
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
@@ -36,19 +35,19 @@ import org.codehaus.plexus.classworlds.realm.ClassRealm;
 import org.jsonschema2pojo.Annotator;
 import org.jsonschema2pojo.GenerationConfig;
 import org.jsonschema2pojo.Jackson1Annotator;
-import org.raml.model.Raml;
 import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
 
-import com.phoenixnap.oss.ramlapisync.data.ApiBodyMetadata;
-import com.phoenixnap.oss.ramlapisync.data.ApiResourceMetadata;
-import com.phoenixnap.oss.ramlapisync.generation.RamlParser;
-import com.phoenixnap.oss.ramlapisync.generation.rules.ConfigurableRule;
-import com.phoenixnap.oss.ramlapisync.generation.rules.Rule;
-import com.phoenixnap.oss.ramlapisync.generation.rules.Spring4ControllerStubRule;
-import com.phoenixnap.oss.ramlapisync.naming.NamingHelper;
-import com.sun.codemodel.JCodeModel;
-import com.sun.codemodel.JDefinedClass;
+import java.io.File;
+import java.io.IOException;
+import java.lang.reflect.Method;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.net.URLClassLoader;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 /**
  * Maven Plugin MOJO specific to Generation of Spring MVC Endpoints from RAML documents.
@@ -162,7 +161,7 @@ public class SpringMvcEndpointGeneratorMojo extends AbstractMojo {
 		//Resolve schema location and add to classpath
 		resolvedSchemaLocation = getSchemaLocation();
 		
-		Raml loadRamlFromFile = RamlParser.loadRamlFromFile(new File(resolvedRamlPath).toURI().toString());
+		RamlRoot loadRamlFromFile = RamlParser.loadRamlFromFile(new File(resolvedRamlPath).toURI().toString());
 		RamlParser par = new RamlParser(basePackage, getBasePath(loadRamlFromFile), seperateMethodsByContentType, injectHttpHeadersParameter);
 		Set<ApiResourceMetadata> controllers = par.extractControllers(loadRamlFromFile);
 
@@ -203,7 +202,7 @@ public class SpringMvcEndpointGeneratorMojo extends AbstractMojo {
 	/*
 	 * @return The configuration property <baseUri> (if set) or the baseUri from the RAML spec.
      */
-	private String getBasePath(Raml loadRamlFromFile) {
+	private String getBasePath(RamlRoot loadRamlFromFile) {
 		// we take the given baseUri from raml spec by default.
 		String basePath = loadRamlFromFile.getBaseUri();
 

@@ -22,6 +22,14 @@ public class Jrp08V1RamlRoot implements RamlRoot {
         this.raml = raml;
     }
 
+    /**
+     * Expose internal representation only package private
+     * @return the internal model
+     */
+    Raml getRaml() {
+        return raml;
+    }
+
     @Override
     public Map<String, Resource> getResources() {
         return raml.getResources();
@@ -67,11 +75,8 @@ public class Jrp08V1RamlRoot implements RamlRoot {
         raml.setMediaType(mediaType);
     }
 
-    /**
-     * Expose internal representation only package private
-     * @return the internal model
-     */
-    Raml getRaml() {
-        return raml;
+    @Override
+    public String getBaseUri() {
+        return raml.getBaseUri();
     }
 }

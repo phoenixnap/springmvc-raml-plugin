@@ -28,4 +28,6 @@ public interface RamlRoot {
     void setDocumentation(List<DocumentationItem> documentationItems);
 
     void setMediaType(String mediaType);
+
+    String getBaseUri();
 }
