@@ -13,6 +13,7 @@
 package com.phoenixnap.oss.ramlapisync.style;
 
 import com.phoenixnap.oss.ramlapisync.naming.Pair;
+import com.phoenixnap.oss.ramlapisync.raml.RamlResource;
 import com.phoenixnap.oss.ramlapisync.raml.RamlRoot;
 import com.phoenixnap.oss.ramlapisync.verification.Issue;
 import com.phoenixnap.oss.ramlapisync.verification.IssueLocation;
@@ -21,7 +22,6 @@ import com.phoenixnap.oss.ramlapisync.verification.IssueType;
 import com.phoenixnap.oss.ramlapisync.verification.RamlChecker;
 import org.raml.model.Action;
 import org.raml.model.ActionType;
-import org.raml.model.Resource;
 import org.raml.model.parameter.QueryParameter;
 import org.raml.model.parameter.UriParameter;
 
@@ -75,10 +75,10 @@ public class RamlStyleCheckVisitorCoordinator implements RamlChecker {
 
 
 
-	private void checkChildren(Map<String, Resource> resources, RamlRoot raml, IssueLocation location) {
+	private void checkChildren(Map<String, RamlResource> resources, RamlRoot raml, IssueLocation location) {
 		if (resources != null) {
-			for (Entry<String, Resource> entry : resources.entrySet()) {
-				Resource resource = entry.getValue();
+			for (Entry<String, RamlResource> entry : resources.entrySet()) {
+				RamlResource resource = entry.getValue();
 				for (RamlStyleChecker checker : checkers) {
 					warnings.addAll(checker.checkResourceStyle(entry.getKey(), resource, location, raml));
 				}

@@ -12,11 +12,11 @@
  */
 package com.phoenixnap.oss.ramlapisync.style;
 
+import com.phoenixnap.oss.ramlapisync.raml.RamlResource;
 import com.phoenixnap.oss.ramlapisync.raml.RamlRoot;
 import com.phoenixnap.oss.ramlapisync.verification.IssueLocation;
 import org.raml.model.Action;
 import org.raml.model.ActionType;
-import org.raml.model.Resource;
 import org.raml.model.parameter.AbstractParam;
 
 import java.util.Set;
@@ -59,6 +59,6 @@ public interface RamlStyleChecker {
 	 * @param raml The Raml Document being checked
 	 * @return A list of style issues or an Empty List if none are found. This method must not return null.
 	 */
-	public Set<StyleIssue> checkResourceStyle(String name, Resource resource, IssueLocation location, RamlRoot raml);
+	public Set<StyleIssue> checkResourceStyle(String name, RamlResource resource, IssueLocation location, RamlRoot raml);
 
 }

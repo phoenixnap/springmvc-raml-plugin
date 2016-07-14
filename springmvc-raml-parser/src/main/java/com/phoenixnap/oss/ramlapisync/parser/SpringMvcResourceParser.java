@@ -12,23 +12,24 @@
  */
 package com.phoenixnap.oss.ramlapisync.parser;
 
-import java.io.File;
-import java.lang.annotation.Annotation;
-import java.lang.reflect.Method;
-import java.lang.reflect.Parameter;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
-import java.util.TreeMap;
-
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.module.jsonSchema.JsonSchema;
+import com.fasterxml.jackson.module.jsonSchema.factories.SchemaFactoryWrapper;
+import com.phoenixnap.oss.ramlapisync.annotations.Description;
+import com.phoenixnap.oss.ramlapisync.annotations.data.PathDescription;
+import com.phoenixnap.oss.ramlapisync.data.ApiParameterMetadata;
+import com.phoenixnap.oss.ramlapisync.javadoc.JavaDocEntry;
+import com.phoenixnap.oss.ramlapisync.naming.NamingHelper;
+import com.phoenixnap.oss.ramlapisync.naming.Pair;
+import com.phoenixnap.oss.ramlapisync.naming.RamlHelper;
+import com.phoenixnap.oss.ramlapisync.naming.SchemaHelper;
+import com.phoenixnap.oss.ramlapisync.raml.RamlModelFactoryOfFactories;
+import com.phoenixnap.oss.ramlapisync.raml.RamlResource;
 import org.raml.model.Action;
 import org.raml.model.ActionType;
 import org.raml.model.MimeType;
 import org.raml.model.ParamType;
-import org.raml.model.Resource;
 import org.raml.model.Response;
 import org.raml.model.parameter.FormParameter;
 import org.raml.model.parameter.UriParameter;
@@ -43,18 +44,17 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.phoenixnap.oss.ramlapisync.annotations.Description;
-import com.phoenixnap.oss.ramlapisync.annotations.data.PathDescription;
-import com.phoenixnap.oss.ramlapisync.data.ApiParameterMetadata;
-import com.phoenixnap.oss.ramlapisync.javadoc.JavaDocEntry;
-import com.phoenixnap.oss.ramlapisync.naming.NamingHelper;
-import com.phoenixnap.oss.ramlapisync.naming.Pair;
-import com.phoenixnap.oss.ramlapisync.naming.RamlHelper;
-import com.phoenixnap.oss.ramlapisync.naming.SchemaHelper;
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.module.jsonSchema.JsonSchema;
-import com.fasterxml.jackson.module.jsonSchema.factories.SchemaFactoryWrapper;
+import java.io.File;
+import java.lang.annotation.Annotation;
+import java.lang.reflect.Method;
+import java.lang.reflect.Parameter;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
+import java.util.TreeMap;
 
 /**
  * Service scanner that handles generation from a Spring MVC codebase
@@ -426,7 +426,7 @@ public class SpringMvcResourceParser extends ResourceParser {
 	}
 
 	@Override
-	protected void extractAndAppendResourceInfo(Method method, JavaDocEntry docEntry, Resource parentResource) {
+	protected void extractAndAppendResourceInfo(Method method, JavaDocEntry docEntry, RamlResource parentResource) {
 
 		Map<ActionType, String> methodActions = getHttpMethodAndName(method);
 		for (Entry<ActionType, String> methodAction : methodActions.entrySet()) {
@@ -462,8 +462,8 @@ public class SpringMvcResourceParser extends ResourceParser {
 			}
 			action.getResponses().put("200", response);
 
-			Resource idResource = null;
-			Resource leafResource = null;
+			RamlResource idResource = null;
+			RamlResource leafResource = null;
 			ApiParameterMetadata[] resourceIdParameters = extractResourceIdParameter(method);
 			Map<String, ApiParameterMetadata> resourceIdParameterMap = new HashMap<>();
 			for (ApiParameterMetadata apiParameterMetadata : resourceIdParameters) {
@@ -486,7 +486,7 @@ public class SpringMvcResourceParser extends ResourceParser {
 																	// contains a resource
 
 				if (idResource == null) {
-					idResource = new Resource();
+					idResource = RamlModelFactoryOfFactories.createRamlModelFactory().createRamlResource();
 					idResource.setRelativeUri(resourceName);
 					String displayName = StringUtils.capitalize(partialUrl) + " Resource";
 					String resourceDescription = displayName;
@@ -532,7 +532,7 @@ public class SpringMvcResourceParser extends ResourceParser {
 			}
 
 			// Resources have been created. lets bind the action to the appropriate one
-			Resource actionTargetResource;
+			RamlResource actionTargetResource;
 			if (idResource != null) {
 				actionTargetResource = idResource;
 			} else if (leafResource != null) {
@@ -540,7 +540,7 @@ public class SpringMvcResourceParser extends ResourceParser {
 			} else {
 				actionTargetResource = parentResource;
 			}
-			action.setResource(actionTargetResource);
+			action.setResource(RamlModelFactoryOfFactories.createRamlModelFactory().createResource(actionTargetResource));
 			action.setType(apiAction);
 			if (actionTargetResource.getActions().containsKey(apiAction)) {
 				//merge action

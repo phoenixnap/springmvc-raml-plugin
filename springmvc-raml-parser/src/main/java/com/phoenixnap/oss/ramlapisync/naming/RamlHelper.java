@@ -9,10 +9,10 @@
  */
 package com.phoenixnap.oss.ramlapisync.naming;
 
+import com.phoenixnap.oss.ramlapisync.raml.RamlResource;
 import com.phoenixnap.oss.ramlapisync.raml.RamlRoot;
 import org.raml.model.Action;
 import org.raml.model.MimeType;
-import org.raml.model.Resource;
 import org.raml.model.Response;
 import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
@@ -35,9 +35,9 @@ public class RamlHelper {
 	 * @param resource The resource to merge in
 	 * @param addActions If true it will copy all actions even if the resource itself isnt copied
 	 */
-	public static void mergeResources(Resource existing, Resource resource, boolean addActions) {	
-		Map<String, Resource> existingChildResources = existing.getResources();
-		Map<String, Resource> newChildResources = resource.getResources();
+	public static void mergeResources(RamlResource existing, RamlResource resource, boolean addActions) {
+		Map<String, RamlResource> existingChildResources = existing.getResources();
+		Map<String, RamlResource> newChildResources = resource.getResources();
 		for (String newChildKey : newChildResources.keySet()) {
 			if (!existingChildResources.containsKey(newChildKey)) {
 				existingChildResources.put(newChildKey, newChildResources.get(newChildKey));
@@ -58,8 +58,8 @@ public class RamlHelper {
 	 * @param resource The candidate resource
 	 * @param addActions whether we should add actions
 	 */
-	public static void mergeResources(RamlRoot raml, Resource resource, boolean addActions) {
-		Resource existingResource = raml.getResource(resource.getRelativeUri());
+	public static void mergeResources(RamlRoot raml, RamlResource resource, boolean addActions) {
+		RamlResource existingResource = raml.getResource(resource.getRelativeUri());
 		if (existingResource == null) {
 			raml.getResources().put(resource.getRelativeUri(), resource);
 		} else {
@@ -117,7 +117,7 @@ public class RamlHelper {
 		if (StringUtils.hasText(urlPrefixToIgnore)) {
 			String[] urlParts = urlPrefixToIgnore.split("/");
 			String firstResourcePart = null;
-			Resource pointerResource = null;
+			RamlResource pointerResource = null;
 			for(String part : urlParts) {
 				if (StringUtils.hasText(part)) {
 					
@@ -140,7 +140,7 @@ public class RamlHelper {
 				}
 			}
 			
-			Map<String,Resource> resources;
+			Map<String, RamlResource> resources;
 			if (model.getResource("/") != null) {
 				resources = model.getResource("/").getResources();
 			} else {
@@ -164,8 +164,8 @@ public class RamlHelper {
 	 * @param resources resources to check
 	 * @param urlPrefixToIgnore uri to remove
 	 */
-	private static void removeUri(Map<String, Resource> resources, String urlPrefixToIgnore) {
-		for (Resource resource : resources.values()) {
+	private static void removeUri(Map<String, RamlResource> resources, String urlPrefixToIgnore) {
+		for (RamlResource resource : resources.values()) {
 			resource.setParentUri(resource.getParentUri().replace(urlPrefixToIgnore, ""));
 			resource.setRelativeUri(resource.getRelativeUri().replace(urlPrefixToIgnore, ""));
 			removeUri(resource.getResources(), urlPrefixToIgnore);

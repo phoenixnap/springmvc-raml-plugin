@@ -12,12 +12,12 @@
  */
 package com.phoenixnap.oss.ramlapisync.style.checkers;
 
+import com.phoenixnap.oss.ramlapisync.raml.RamlResource;
 import com.phoenixnap.oss.ramlapisync.raml.RamlRoot;
 import com.phoenixnap.oss.ramlapisync.style.RamlStyleCheckerAdapter;
 import com.phoenixnap.oss.ramlapisync.style.StyleIssue;
 import com.phoenixnap.oss.ramlapisync.verification.IssueLocation;
 import org.raml.model.ActionType;
-import org.raml.model.Resource;
 import org.raml.parser.utils.Inflector;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -47,7 +47,7 @@ public class ResourceCollectionPluralisationChecker extends RamlStyleCheckerAdap
 	private static Pattern ID_RESOURCE_PATTERN = Pattern.compile(ID_RESOURCE_REGEX); 
 	
 	@Override
-	public Set<StyleIssue> checkResourceStyle(String name, Resource resource,
+	public Set<StyleIssue> checkResourceStyle(String name, RamlResource resource,
 			IssueLocation location, RamlRoot raml) {
 		logger.debug("Checking resource " + name);
 		Set<StyleIssue> issues = new LinkedHashSet<>();
@@ -60,12 +60,12 @@ public class ResourceCollectionPluralisationChecker extends RamlStyleCheckerAdap
 		//if should have at least one subresource with an ID as a URI param.
 		boolean hasIdSubresource = false;
 		boolean hasVerb = false;
-		for (Entry<String, Resource> subResourceEntry : resource.getResources().entrySet()) {
+		for (Entry<String, RamlResource> subResourceEntry : resource.getResources().entrySet()) {
 			if (ID_RESOURCE_PATTERN.matcher(subResourceEntry.getKey()).find()) {
 				hasIdSubresource = true;
 				
 			}
-			Resource subResource = subResourceEntry.getValue();
+			RamlResource subResource = subResourceEntry.getValue();
 			//it should have a get or a post request on it.			
 			if (subResource != null
 					&& (subResource.getAction(ActionType.POST) != null

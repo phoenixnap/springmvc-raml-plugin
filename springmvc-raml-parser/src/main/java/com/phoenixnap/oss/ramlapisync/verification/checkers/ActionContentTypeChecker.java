@@ -10,23 +10,24 @@
 package com.phoenixnap.oss.ramlapisync.verification.checkers;
 
 
-import java.util.LinkedHashSet;
-import java.util.Set;
-
+import com.phoenixnap.oss.ramlapisync.naming.Pair;
+import com.phoenixnap.oss.ramlapisync.naming.RamlHelper;
+import com.phoenixnap.oss.ramlapisync.parser.ResourceParser;
+import com.phoenixnap.oss.ramlapisync.raml.RamlModelFactoryOfFactories;
+import com.phoenixnap.oss.ramlapisync.raml.RamlResource;
+import com.phoenixnap.oss.ramlapisync.verification.Issue;
+import com.phoenixnap.oss.ramlapisync.verification.IssueLocation;
+import com.phoenixnap.oss.ramlapisync.verification.IssueSeverity;
+import com.phoenixnap.oss.ramlapisync.verification.IssueType;
+import com.phoenixnap.oss.ramlapisync.verification.RamlActionVisitorCheck;
 import org.raml.model.Action;
 import org.raml.model.ActionType;
 import org.raml.model.Response;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.phoenixnap.oss.ramlapisync.naming.Pair;
-import com.phoenixnap.oss.ramlapisync.naming.RamlHelper;
-import com.phoenixnap.oss.ramlapisync.parser.ResourceParser;
-import com.phoenixnap.oss.ramlapisync.verification.Issue;
-import com.phoenixnap.oss.ramlapisync.verification.IssueLocation;
-import com.phoenixnap.oss.ramlapisync.verification.IssueSeverity;
-import com.phoenixnap.oss.ramlapisync.verification.IssueType;
-import com.phoenixnap.oss.ramlapisync.verification.RamlActionVisitorCheck;
+import java.util.LinkedHashSet;
+import java.util.Set;
 
 
 
@@ -61,12 +62,16 @@ public class ActionContentTypeChecker
 			return new Pair<>(warnings, errors);
 		}
 
+		// TODO #1 remove when Action becomes a RamlAction
+		RamlResource referenceRamlResource = RamlModelFactoryOfFactories.createRamlModelFactory().createRamlResource(reference.getResource());
+
 		// Request First
 		// First lets check if we have defined a request media type.
 		if (reference.getBody() != null && !reference.getBody().isEmpty()) {
+
 			// lets check if we have a catch all on the implementation
 			if (target.getBody() == null || target.getBody().isEmpty()) {
-				issue = new Issue(maxSeverity, location, IssueType.MISSING, REQUEST_BODY_MISSING, reference.getResource(), reference);
+				issue = new Issue(maxSeverity, location, IssueType.MISSING, REQUEST_BODY_MISSING, referenceRamlResource, reference);
 				RamlCheckerResourceVisitorCoordinator.addIssue(errors, warnings, issue, REQUEST_BODY_MISSING);
 			}
 			if (target.getBody() != null && target.getBody().containsKey(ResourceParser.CATCH_ALL_MEDIA_TYPE)) {
@@ -75,7 +80,7 @@ public class ActionContentTypeChecker
 			else {
 				for (String key : reference.getBody().keySet()) {
 					if (!target.getBody().containsKey(key)) {
-						issue = new Issue(maxSeverity, location, IssueType.MISSING, REQUEST_BODY_MISSING, reference.getResource(), reference);
+						issue = new Issue(maxSeverity, location, IssueType.MISSING, REQUEST_BODY_MISSING, referenceRamlResource, reference);
 						RamlCheckerResourceVisitorCoordinator.addIssue(errors, warnings, issue, REQUEST_BODY_MISSING + " " + key);
 					}
 				}
@@ -89,7 +94,7 @@ public class ActionContentTypeChecker
 			Response targetResponse = RamlHelper.getSuccessfulResponse(target);
 			
 			if (targetResponse == null) {
-				issue = new Issue(maxSeverity, location, IssueType.MISSING, RESPONSE_BODY_MISSING, reference.getResource(), reference);
+				issue = new Issue(maxSeverity, location, IssueType.MISSING, RESPONSE_BODY_MISSING, referenceRamlResource, reference);
 				RamlCheckerResourceVisitorCoordinator.addIssue(errors, warnings, issue, RESPONSE_BODY_MISSING);
 			} else {
 				// successful response
@@ -101,7 +106,7 @@ public class ActionContentTypeChecker
 						break;
 					}
 					if (!found && !targetResponse.getBody().containsKey(ResourceParser.CATCH_ALL_MEDIA_TYPE)) {
-						issue = new Issue(maxSeverity, location, IssueType.MISSING, RESPONSE_BODY_MISSING, reference.getResource(), reference);
+						issue = new Issue(maxSeverity, location, IssueType.MISSING, RESPONSE_BODY_MISSING, referenceRamlResource, reference);
 						RamlCheckerResourceVisitorCoordinator.addIssue(errors, warnings, issue, RESPONSE_BODY_MISSING + " " + response.getBody().values());
 					}
 				}

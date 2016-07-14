@@ -12,20 +12,18 @@
  */
 package test.phoenixnap.oss.plugin.naming;
 
-import static org.junit.Assert.assertEquals;
+import com.phoenixnap.oss.ramlapisync.naming.SchemaHelper;
+import org.junit.Test;
+import org.raml.model.ParamType;
+import org.raml.model.parameter.QueryParameter;
+import test.phoenixnap.oss.plugin.naming.testclasses.ThreeElementClass;
 
 import java.lang.reflect.Method;
 import java.lang.reflect.Parameter;
 import java.util.Iterator;
 import java.util.Map;
 
-import org.junit.Test;
-import org.raml.model.ParamType;
-import org.raml.model.parameter.QueryParameter;
-
-import test.phoenixnap.oss.plugin.naming.testclasses.ThreeElementClass;
-
-import com.phoenixnap.oss.ramlapisync.naming.SchemaHelper;
+import static org.junit.Assert.assertEquals;
 
 /**
  * Unit tests for the methods within SchemaHelper
@@ -132,10 +130,10 @@ public class SchemaHelperTest {
 
 	/**
 	 * Asserts values within a query parameter
-	 * @param name
-	 * @param queryParameters
 	 * @param queryParameter
-	 */
+	 * @param name
+	 * @param expectedType
+     */
 	private void validateQueryParameter(QueryParameter queryParameter, String name, ParamType expectedType) {
 		assertEquals("Expect Correct Type for element: " + name, expectedType, queryParameter.getType());
 		assertEquals("Expect Name", name, queryParameter.getDisplayName());

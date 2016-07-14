@@ -12,6 +12,24 @@
  */
 package com.phoenixnap.oss.ramlapisync.parser;
 
+import com.phoenixnap.oss.ramlapisync.data.ApiParameterMetadata;
+import com.phoenixnap.oss.ramlapisync.javadoc.JavaDocEntry;
+import com.phoenixnap.oss.ramlapisync.javadoc.JavaDocExtractor;
+import com.phoenixnap.oss.ramlapisync.javadoc.JavaDocStore;
+import com.phoenixnap.oss.ramlapisync.naming.Pair;
+import com.phoenixnap.oss.ramlapisync.naming.SchemaHelper;
+import com.phoenixnap.oss.ramlapisync.raml.RamlModelFactoryOfFactories;
+import com.phoenixnap.oss.ramlapisync.raml.RamlResource;
+import org.raml.model.Action;
+import org.raml.model.ActionType;
+import org.raml.model.MimeType;
+import org.raml.model.ParamType;
+import org.raml.model.Response;
+import org.raml.model.parameter.QueryParameter;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.util.StringUtils;
+
 import java.io.File;
 import java.lang.reflect.Method;
 import java.lang.reflect.Parameter;
@@ -20,24 +38,6 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.regex.Pattern;
-
-import org.raml.model.Action;
-import org.raml.model.ActionType;
-import org.raml.model.MimeType;
-import org.raml.model.ParamType;
-import org.raml.model.Resource;
-import org.raml.model.Response;
-import org.raml.model.parameter.QueryParameter;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.util.StringUtils;
-
-import com.phoenixnap.oss.ramlapisync.data.ApiParameterMetadata;
-import com.phoenixnap.oss.ramlapisync.javadoc.JavaDocEntry;
-import com.phoenixnap.oss.ramlapisync.javadoc.JavaDocExtractor;
-import com.phoenixnap.oss.ramlapisync.javadoc.JavaDocStore;
-import com.phoenixnap.oss.ramlapisync.naming.Pair;
-import com.phoenixnap.oss.ramlapisync.naming.SchemaHelper;
 
 /**
  * Common service scanning functionality
@@ -77,7 +77,7 @@ public abstract class ResourceParser {
 	 * @param clazz
 	 * @return
 	 */
-	private void getMethodsFromService(Class<?> clazz, JavaDocStore javaDoc, Resource parentResource) {
+	private void getMethodsFromService(Class<?> clazz, JavaDocStore javaDoc, RamlResource parentResource) {
 		try {
 			for (Method method : clazz.getMethods()) {
 				if (!IGNORE_METHOD_REGEX.matcher(method.getName()).matches() && shouldAddMethodToApi(method)) {
@@ -281,7 +281,7 @@ public abstract class ResourceParser {
 	 * @param docEntry The associated JavaDoc (may be null)
 	 * @param parentResource The Resource which contains this method
 	 */
-	protected abstract void extractAndAppendResourceInfo(Method method, JavaDocEntry docEntry, Resource parentResource);
+	protected abstract void extractAndAppendResourceInfo(Method method, JavaDocEntry docEntry, RamlResource parentResource);
 
 	/**
 	 * Checks is this api call is made directly on a resource without a trailing command in the URL. eg: POST on
@@ -346,9 +346,9 @@ public abstract class ResourceParser {
 	 * @param clazz The Class to be inspected
 	 * @return The RAML Resource model for this class
 	 */
-	public Resource extractResourceInfo(Class<?> clazz) {
+	public RamlResource extractResourceInfo(Class<?> clazz) {
 		logger.info("Parsing resource: " + clazz.getSimpleName() + " ");
-		Resource resource = new Resource();
+		RamlResource resource = RamlModelFactoryOfFactories.createRamlModelFactory().createRamlResource();
 		resource.setRelativeUri("/" + getResourceName(clazz));
 		resource.setDisplayName(clazz.getSimpleName()); // TODO allow the Api annotation to specify
 														// this stuff :)

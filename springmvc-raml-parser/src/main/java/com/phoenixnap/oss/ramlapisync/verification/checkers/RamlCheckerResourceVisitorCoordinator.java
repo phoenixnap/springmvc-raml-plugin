@@ -13,6 +13,7 @@
 package com.phoenixnap.oss.ramlapisync.verification.checkers;
 
 import com.phoenixnap.oss.ramlapisync.naming.Pair;
+import com.phoenixnap.oss.ramlapisync.raml.RamlResource;
 import com.phoenixnap.oss.ramlapisync.raml.RamlRoot;
 import com.phoenixnap.oss.ramlapisync.verification.Issue;
 import com.phoenixnap.oss.ramlapisync.verification.IssueLocation;
@@ -23,7 +24,6 @@ import com.phoenixnap.oss.ramlapisync.verification.RamlChecker;
 import com.phoenixnap.oss.ramlapisync.verification.RamlResourceVisitorCheck;
 import org.raml.model.Action;
 import org.raml.model.ActionType;
-import org.raml.model.Resource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -86,7 +86,7 @@ public class RamlCheckerResourceVisitorCoordinator implements RamlChecker {
 	public Pair<Set<Issue>, Set<Issue>> check(RamlRoot published, RamlRoot implemented) {
 		
 		if (actionCheckers.size() == 0 && resourceCheckers.size() == 0) {
-			return new Pair<Set<Issue>, Set<Issue>>(Collections.emptySet(), Collections.emptySet());
+			return new Pair<>(Collections.emptySet(), Collections.emptySet());
 		}
 		
 		logger.info("Performing Resource and Action Visitor Checks");
@@ -104,19 +104,19 @@ public class RamlCheckerResourceVisitorCoordinator implements RamlChecker {
 			check(implemented.getResources(), published.getResources(), IssueLocation.CONTRACT, IssueSeverity.WARNING);
 		}
 		
-		return new Pair<Set<Issue>, Set<Issue>>(warnings, errors);
+		return new Pair<>(warnings, errors);
 		
 	}
 
-	private void check(Map<String, Resource> referenceResourcesMap, Map<String, Resource> targetResourcesMap, IssueLocation location, IssueSeverity severity) {
+	private void check(Map<String, RamlResource> referenceResourcesMap, Map<String, RamlResource> targetResourcesMap, IssueLocation location, IssueSeverity severity) {
 		Set<String> referenceResources = referenceResourcesMap != null ? referenceResourcesMap.keySet() : Collections.<String>emptySet() ;
 		Set<String> targetResources = targetResourcesMap != null ? targetResourcesMap.keySet() : Collections.<String>emptySet();
 		
 		
 		for (String resource : referenceResources) {			
-			Resource reference = referenceResourcesMap.get(resource);
+			RamlResource reference = referenceResourcesMap.get(resource);
 			String resourceLocation = Issue.buildRamlLocation(reference, null, null);
-			Resource target = null;
+			RamlResource target = null;
 			if (targetResources.contains(resource)) {
 				logger.debug("Visiting resource: "+ resourceLocation + " in " + (location.equals(IssueLocation.SOURCE) ? IssueLocation.CONTRACT : IssueLocation.SOURCE)); 
 				target = targetResourcesMap.get(resource);

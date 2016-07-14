@@ -14,13 +14,13 @@ package com.phoenixnap.oss.ramlapisync.verification.checkers;
 
 import com.phoenixnap.oss.ramlapisync.naming.NamingHelper;
 import com.phoenixnap.oss.ramlapisync.naming.Pair;
+import com.phoenixnap.oss.ramlapisync.raml.RamlResource;
 import com.phoenixnap.oss.ramlapisync.raml.RamlRoot;
 import com.phoenixnap.oss.ramlapisync.verification.Issue;
 import com.phoenixnap.oss.ramlapisync.verification.IssueLocation;
 import com.phoenixnap.oss.ramlapisync.verification.IssueSeverity;
 import com.phoenixnap.oss.ramlapisync.verification.IssueType;
 import com.phoenixnap.oss.ramlapisync.verification.RamlChecker;
-import org.raml.model.Resource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -75,11 +75,11 @@ public class ResourceExistenceChecker implements RamlChecker {
 		
 	}
 
-	private void check(Map<String, Resource> referenceResourcesMap, Map<String, Resource> targetResourcesMap, IssueLocation location, IssueSeverity severity, boolean exact) {
+	private void check(Map<String, RamlResource> referenceResourcesMap, Map<String, RamlResource> targetResourcesMap, IssueLocation location, IssueSeverity severity, boolean exact) {
 		Set<String> referenceResources = referenceResourcesMap != null ? referenceResourcesMap.keySet() : Collections.<String>emptySet() ;
 		Set<String> targetResources = targetResourcesMap != null ? targetResourcesMap.keySet() : Collections.<String>emptySet();
 		
-		Map<String, Resource> implementedCleanedResources = clean(targetResourcesMap);
+		Map<String, RamlResource> implementedCleanedResources = clean(targetResourcesMap);
 		
 		for (String resource : referenceResources) {			
 			if (targetResources.contains(resource)) {
@@ -120,12 +120,12 @@ public class ResourceExistenceChecker implements RamlChecker {
 	 * @param publishedResources
 	 * @return
 	 */
-	private Map<String, Resource> clean(Map<String, Resource> publishedResources) {		
-		Map<String, Resource> cleanedSet = new HashMap<String, Resource>();		
+	private Map<String, RamlResource> clean(Map<String, RamlResource> publishedResources) {
+		Map<String, RamlResource> cleanedSet = new HashMap<>();
 		if (publishedResources == null) {
 			return cleanedSet;
 		}
-		for (Entry<String, Resource> resource : publishedResources.entrySet()) {
+		for (Entry<String, RamlResource> resource : publishedResources.entrySet()) {
 			cleanedSet.put(clean(resource.getKey()), resource.getValue());
 		}
 		return cleanedSet;

@@ -17,10 +17,10 @@ import com.phoenixnap.oss.ramlapisync.naming.RamlHelper;
 import com.phoenixnap.oss.ramlapisync.parser.ResourceParser;
 import com.phoenixnap.oss.ramlapisync.raml.RamlModelEmitter;
 import com.phoenixnap.oss.ramlapisync.raml.RamlModelFactoryOfFactories;
+import com.phoenixnap.oss.ramlapisync.raml.RamlResource;
 import com.phoenixnap.oss.ramlapisync.raml.RamlRoot;
 import org.apache.commons.io.FileUtils;
 import org.raml.model.DocumentationItem;
-import org.raml.model.Resource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -121,9 +121,9 @@ public class RamlGenerator {
 		logger.info("Generating Raml for " + title + " v" + version + " from " + classesToGenerate.length
 				+ " annotated classes");
 		Arrays.asList(classesToGenerate).forEach(item -> {
-			Resource resource = scanner.extractResourceInfo(item);
+			RamlResource resource = scanner.extractResourceInfo(item);
 			if (resource.getRelativeUri().equals("/")) { // root should never be added directly
-					for (Resource cResource : resource.getResources().values()) {
+					for (RamlResource cResource : resource.getResources().values()) {
 						RamlHelper.mergeResources(raml, cResource, true);
 					}
 				} else {

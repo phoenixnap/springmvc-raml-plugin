@@ -12,6 +12,8 @@
  */
 package com.phoenixnap.oss.ramlapisync.style.checkers;
 
+import com.phoenixnap.oss.ramlapisync.raml.RamlModelFactoryOfFactories;
+import com.phoenixnap.oss.ramlapisync.raml.RamlResource;
 import com.phoenixnap.oss.ramlapisync.raml.RamlRoot;
 import com.phoenixnap.oss.ramlapisync.style.RamlStyleCheckerAdapter;
 import com.phoenixnap.oss.ramlapisync.style.StyleIssue;
@@ -65,7 +67,9 @@ public class ResponseCodeDefinitionStyleChecker extends RamlStyleCheckerAdapter 
 				for (HttpStatus check : statuses) {
 					if (value.getResponses() == null
 							|| !value.getResponses().containsKey(String.valueOf(check.value()))) {
-						issues.add(new StyleIssue(location, String.format(DESCRIPTION, key, check.name(), check.value()), value.getResource(), value));
+						// TODO #1 remove when Action becomes a RamlAction
+						RamlResource ramlResource = RamlModelFactoryOfFactories.createRamlModelFactory().createRamlResource(value.getResource());
+						issues.add(new StyleIssue(location, String.format(DESCRIPTION, key, check.name(), check.value()), ramlResource, value));
 					} 
 				}
 				

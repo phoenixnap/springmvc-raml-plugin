@@ -12,12 +12,16 @@
  */
 package com.phoenixnap.oss.ramlapisync.verification.checkers;
 
-import java.io.IOException;
-import java.util.LinkedHashSet;
-import java.util.Map;
-import java.util.Map.Entry;
-import java.util.Set;
-
+import com.phoenixnap.oss.ramlapisync.naming.Pair;
+import com.phoenixnap.oss.ramlapisync.raml.RamlModelFactoryOfFactories;
+import com.phoenixnap.oss.ramlapisync.raml.RamlResource;
+import com.phoenixnap.oss.ramlapisync.verification.Issue;
+import com.phoenixnap.oss.ramlapisync.verification.IssueLocation;
+import com.phoenixnap.oss.ramlapisync.verification.IssueSeverity;
+import com.phoenixnap.oss.ramlapisync.verification.IssueType;
+import com.phoenixnap.oss.ramlapisync.verification.RamlActionVisitorCheck;
+import com.sun.codemodel.JCodeModel;
+import com.sun.codemodel.JFieldVar;
 import org.jsonschema2pojo.DefaultGenerationConfig;
 import org.jsonschema2pojo.GenerationConfig;
 import org.jsonschema2pojo.Jackson2Annotator;
@@ -32,14 +36,11 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.util.StringUtils;
 
-import com.phoenixnap.oss.ramlapisync.naming.Pair;
-import com.phoenixnap.oss.ramlapisync.verification.Issue;
-import com.phoenixnap.oss.ramlapisync.verification.IssueLocation;
-import com.phoenixnap.oss.ramlapisync.verification.IssueSeverity;
-import com.phoenixnap.oss.ramlapisync.verification.IssueType;
-import com.phoenixnap.oss.ramlapisync.verification.RamlActionVisitorCheck;
-import com.sun.codemodel.JCodeModel;
-import com.sun.codemodel.JFieldVar;
+import java.io.IOException;
+import java.util.LinkedHashSet;
+import java.util.Map;
+import java.util.Map.Entry;
+import java.util.Set;
 
 /**
  * A checker that will check the response body declared in an API and the supplied implementation
@@ -79,6 +80,10 @@ public class ActionResponseBodySchemaChecker implements RamlActionVisitorCheck {
 				&& !reference.getResponses().isEmpty() 
 				&& reference.getResponses().containsKey("200")
 				&& reference.getResponses().get("200").getBody() != null) {
+
+			// TODO #1 remove when Action becomes RamlAction
+			RamlResource referenceRamlResource = RamlModelFactoryOfFactories.createRamlModelFactory().createRamlResource(reference.getResource());
+
 			//successful response
 			Map<String, MimeType> response = reference.getResponses().get("200").getBody();
 			for (Entry<String, MimeType> responseBodyMime : response.entrySet()) {
@@ -94,7 +99,8 @@ public class ActionResponseBodySchemaChecker implements RamlActionVisitorCheck {
 							// lets try the first response we get
 							targetSchema = target.getResponses().get("200").getBody().values().iterator().next().getSchema();
 						} catch (Exception ex) {
-							issue = new Issue(maxSeverity, location, IssueType.MISSING, RESPONSE_BODY_MISSING, reference.getResource(), reference);
+
+							issue = new Issue(maxSeverity, location, IssueType.MISSING, RESPONSE_BODY_MISSING, referenceRamlResource, reference);
 							RamlCheckerResourceVisitorCoordinator.addIssue(errors, warnings, issue, RESPONSE_BODY_MISSING + " " + responseBodyMime.getKey());
 							break;
 						}
@@ -129,10 +135,10 @@ public class ActionResponseBodySchemaChecker implements RamlActionVisitorCheck {
 								String fieldKey = referenceField.getKey();
 								JFieldVar targetField = targetResponseClassFields.get(fieldKey);
 								if (targetField == null) {
-									issue = new Issue(maxSeverity, location, IssueType.MISSING, RESPONSE_BODY_FIELDMISSING, reference.getResource(), reference, fieldKey);
+									issue = new Issue(maxSeverity, location, IssueType.MISSING, RESPONSE_BODY_FIELDMISSING, referenceRamlResource, reference, fieldKey);
 									RamlCheckerResourceVisitorCoordinator.addIssue(errors, warnings, issue, RESPONSE_BODY_FIELDMISSING + " " + fieldKey);
 								} else if (!referenceField.getValue().type().fullName().equals(targetField.type().fullName())) {
-									issue = new Issue(IssueSeverity.WARNING, location, IssueType.DIFFERENT, RESPONSE_BODY_FIELDDIFFERENT, reference.getResource(), reference, fieldKey);
+									issue = new Issue(IssueSeverity.WARNING, location, IssueType.DIFFERENT, RESPONSE_BODY_FIELDDIFFERENT, referenceRamlResource, reference, fieldKey);
 									RamlCheckerResourceVisitorCoordinator.addIssue(errors, warnings, issue, RESPONSE_BODY_FIELDDIFFERENT + " " + fieldKey);
 								}
 							}
@@ -142,10 +148,10 @@ public class ActionResponseBodySchemaChecker implements RamlActionVisitorCheck {
 									String fieldKey = targetField.getKey();
 									JFieldVar referenceField = referenceResponseFields.get(fieldKey);
 									if (referenceField == null) {
-										issue = new Issue(maxSeverity, IssueLocation.CONTRACT, IssueType.MISSING, RESPONSE_BODY_FIELDMISSING, reference.getResource(), reference, fieldKey);
+										issue = new Issue(maxSeverity, IssueLocation.CONTRACT, IssueType.MISSING, RESPONSE_BODY_FIELDMISSING, referenceRamlResource, reference, fieldKey);
 										RamlCheckerResourceVisitorCoordinator.addIssue(errors, warnings, issue, RESPONSE_BODY_FIELDMISSING + " " + fieldKey);
 									} else if (!targetField.getValue().type().fullName().equals(referenceField.type().fullName())) {
-										issue = new Issue(IssueSeverity.WARNING, IssueLocation.CONTRACT, IssueType.DIFFERENT, RESPONSE_BODY_FIELDDIFFERENT, reference.getResource(), reference, fieldKey);
+										issue = new Issue(IssueSeverity.WARNING, IssueLocation.CONTRACT, IssueType.DIFFERENT, RESPONSE_BODY_FIELDDIFFERENT, referenceRamlResource, reference, fieldKey);
 										RamlCheckerResourceVisitorCoordinator.addIssue(errors, warnings, issue, RESPONSE_BODY_FIELDDIFFERENT + " " + fieldKey);
 									}
 								}

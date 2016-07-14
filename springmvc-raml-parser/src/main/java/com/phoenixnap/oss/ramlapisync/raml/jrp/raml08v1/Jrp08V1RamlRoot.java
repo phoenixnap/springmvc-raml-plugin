@@ -1,10 +1,14 @@
 package com.phoenixnap.oss.ramlapisync.raml.jrp.raml08v1;
 
+import com.phoenixnap.oss.ramlapisync.raml.RamlModelFactory;
+import com.phoenixnap.oss.ramlapisync.raml.RamlModelFactoryOfFactories;
+import com.phoenixnap.oss.ramlapisync.raml.RamlResource;
 import com.phoenixnap.oss.ramlapisync.raml.RamlRoot;
 import org.raml.model.DocumentationItem;
 import org.raml.model.Raml;
 import org.raml.model.Resource;
 
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -13,7 +17,11 @@ import java.util.Map;
  */
 public class Jrp08V1RamlRoot implements RamlRoot {
 
-    private Raml raml;
+    private static RamlModelFactory ramlModelFactory = RamlModelFactoryOfFactories.createRamlModelFactory();
+
+    private final Raml raml;
+
+    private Map<String, RamlResource> resources;
 
     public Jrp08V1RamlRoot(Raml raml) {
         if(raml == null) {
@@ -31,13 +39,23 @@ public class Jrp08V1RamlRoot implements RamlRoot {
     }
 
     @Override
-    public Map<String, Resource> getResources() {
-        return raml.getResources();
+    public Map<String, RamlResource> getResources() {
+        if(resources == null) {
+            Map<String, Resource> baseResources = raml.getResources();
+            resources = new LinkedHashMap<>(baseResources.size());
+            baseResources.keySet().stream().forEach(path -> {
+                Resource baseResource = baseResources.get(path);
+                RamlResource resource = ramlModelFactory.createRamlResource(baseResource);
+                resources.put(path, resource);
+            });
+
+        }
+        return resources;
     }
 
     @Override
-    public Resource getResource(String path) {
-        return raml.getResource(path);
+    public RamlResource getResource(String path) {
+        return ramlModelFactory.createRamlResource(raml.getResource(path));
     }
 
     @Override

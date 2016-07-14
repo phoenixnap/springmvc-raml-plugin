@@ -23,6 +23,7 @@ import com.phoenixnap.oss.ramlapisync.naming.RamlHelper;
 import com.phoenixnap.oss.ramlapisync.parser.FileSearcher;
 import com.phoenixnap.oss.ramlapisync.parser.SpringMvcResourceParser;
 import com.phoenixnap.oss.ramlapisync.raml.RamlModelFactoryOfFactories;
+import com.phoenixnap.oss.ramlapisync.raml.RamlResource;
 import com.phoenixnap.oss.ramlapisync.raml.RamlRoot;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -33,7 +34,6 @@ import org.raml.model.Action;
 import org.raml.model.ActionType;
 import org.raml.model.MimeType;
 import org.raml.model.ParamType;
-import org.raml.model.Resource;
 import org.raml.model.Response;
 import org.raml.model.parameter.FormParameter;
 import org.raml.model.parameter.QueryParameter;
@@ -71,7 +71,7 @@ public class SpringMvcResourceParserTest {
 	protected static final Logger logger = LoggerFactory.getLogger(FileSearcher.class);
 
 	private static SpringMvcResourceParser parser;
-	private static Resource baseResourceTestController;
+	private static RamlResource baseResourceTestController;
 
 	public static final String VERSION = "0.0.1";
 	public static final String DEFAULT_MEDIA_TYPE = MediaType.APPLICATION_JSON_VALUE;
@@ -175,15 +175,15 @@ public class SpringMvcResourceParserTest {
 
 	@Test
 	public void test_multipleHttpMethods() {
-		Resource testResource = baseResourceTestController.getResource("/base").getResource("/simpleMethodAll");
+		RamlResource testResource = baseResourceTestController.getResource("/base").getResource("/simpleMethodAll");
 		assertEquals("Assert resources size", ActionType.values().length, testResource.getActions().size());
 	}
 	
 	@Test
 	public void test_multipleContentType() {
-		Resource resourceInfo = parser.extractResourceInfo(MultipleContentTypeTestController.class);
+		RamlResource resourceInfo = parser.extractResourceInfo(MultipleContentTypeTestController.class);
 
-		Resource testResource = resourceInfo.getResource("/base").getResource("/endpoint");
+		RamlResource testResource = resourceInfo.getResource("/base").getResource("/endpoint");
 		assertEquals("Assert resources size", 2, testResource.getActions().size());
 		Action getAction = testResource.getActions().get(ActionType.GET);
 		Action postAction = testResource.getActions().get(ActionType.POST);
@@ -197,12 +197,12 @@ public class SpringMvcResourceParserTest {
 	
 	@Test
 	public void test_uriPrefixIgnored() {
-		Resource resourceInfo = parser.extractResourceInfo(UriPrefixIgnoredController.class);
+		RamlResource resourceInfo = parser.extractResourceInfo(UriPrefixIgnoredController.class);
 		RamlRoot raml = RamlModelFactoryOfFactories.createRamlModelFactory().createRamlRoot();
 		RamlHelper.mergeResources(raml, resourceInfo, true);
 		RamlHelper.removeResourceTree(raml, UriPrefixIgnoredController.IGNORED);
 
-		Resource testResource = raml.getResource("/").getResource("/base").getResource("/endpoint");
+		RamlResource testResource = raml.getResource("/").getResource("/base").getResource("/endpoint");
 		assertEquals("Assert removal", null, raml.getResource("/").getResource("/the"));
 		assertFalse("Check URI", testResource.getUri().contains("the"));
 		assertEquals("Assert resources size", 1, raml.getResources().size());
@@ -219,7 +219,7 @@ public class SpringMvcResourceParserTest {
 
 	@Test
 	public void test_simpleGetAndPost() {
-		Resource testResource = baseResourceTestController.getResource("/base").getResource("/simpleMethod");
+		RamlResource testResource = baseResourceTestController.getResource("/base").getResource("/simpleMethod");
 		assertEquals("Assert resources size", 2, testResource.getActions().size());
 		Action getAction = testResource.getActions().get(ActionType.GET);
 		Action postAction = testResource.getActions().get(ActionType.POST);
@@ -233,7 +233,7 @@ public class SpringMvcResourceParserTest {
 
 	@Test
 	public void test_simpleGetAndPostWithBodyStringParam() {
-		Resource testResource = baseResourceTestController.getResource("/base").getResource("/oneParameterBody");
+		RamlResource testResource = baseResourceTestController.getResource("/base").getResource("/oneParameterBody");
 		assertEquals("Assert resources size", 2, testResource.getActions().size());
 		Action getAction = testResource.getActions().get(ActionType.GET);
 		Action postAction = testResource.getActions().get(ActionType.POST);
@@ -255,7 +255,7 @@ public class SpringMvcResourceParserTest {
 
 	@Test
 	public void test_simpleGetAndPostWithOneParameter() {
-		Resource testResource = baseResourceTestController.getResource("/base").getResource("/oneParameter");
+		RamlResource testResource = baseResourceTestController.getResource("/base").getResource("/oneParameter");
 		assertEquals("Assert resources size", 2, testResource.getActions().size());
 		Action getAction = testResource.getActions().get(ActionType.GET);
 		Action postAction = testResource.getActions().get(ActionType.POST);
@@ -288,7 +288,7 @@ public class SpringMvcResourceParserTest {
 	@Test
 	public void test_simpleGetAndPostWithTwoParameters() {
 		String paramName;
-		Resource testResource = baseResourceTestController.getResource("/base").getResource("/twoParameter");
+		RamlResource testResource = baseResourceTestController.getResource("/base").getResource("/twoParameter");
 		assertEquals("Assert resources size", 2, testResource.getActions().size());
 		Action getAction = testResource.getActions().get(ActionType.GET);
 		Action postAction = testResource.getActions().get(ActionType.POST);
@@ -330,7 +330,7 @@ public class SpringMvcResourceParserTest {
 
 	@Test
 	public void test_simpleGetAndPostWithOneParameterAndPathVariable() {
-		Resource testResource = baseResourceTestController.getResource("/base").getResource("/oneParameter")
+		RamlResource testResource = baseResourceTestController.getResource("/base").getResource("/oneParameter")
 				.getResource("/{pathVariable}");
 		assertEquals("Assert resources size", 1, testResource.getUriParameters().size());
 		UriParameter uriParameter = testResource.getUriParameters().get("pathVariable");
@@ -370,7 +370,7 @@ public class SpringMvcResourceParserTest {
 
 	@Test
 	public void test_simpleGetWithMiscCasesAndPathVariable() {
-		Resource testResource = baseResourceTestController.getResource("/base").getResource("/miscCases")
+		RamlResource testResource = baseResourceTestController.getResource("/base").getResource("/miscCases")
 				.getResource("/{pathVariable}");
 		UriParameter uriParameter = testResource.getUriParameters().get("pathVariable");
 		assertEquals("Check that parameter was placed in query", ParamType.INTEGER, uriParameter.getType());
@@ -397,7 +397,7 @@ public class SpringMvcResourceParserTest {
 
 	@Test
 	public void test_simpleGetAndPostWithRequestBodyParameter() {
-		Resource testResource = baseResourceTestController.getResource("/base").getResource("/oneParameterBodyObject");
+		RamlResource testResource = baseResourceTestController.getResource("/base").getResource("/oneParameterBodyObject");
 		assertEquals("Assert resources size", 2, testResource.getActions().size());
 		Action getAction = testResource.getActions().get(ActionType.GET);
 		Action postAction = testResource.getActions().get(ActionType.POST);
@@ -423,7 +423,7 @@ public class SpringMvcResourceParserTest {
 	
 	@Test
 	public void test_simplePutWithRequestBodyParameterAndIgnoredParams() {
-		Resource testResource = baseResourceTestController.getResource("/base").getResource("/methodBodyIgnore");
+		RamlResource testResource = baseResourceTestController.getResource("/base").getResource("/methodBodyIgnore");
 		assertEquals("Assert resources size", 1, testResource.getActions().size());
 		Action putAction = testResource.getActions().get(ActionType.PUT);
 		assertNotNull(putAction);
@@ -445,11 +445,11 @@ public class SpringMvcResourceParserTest {
 	
 	@Test
 	public void test_descriptionPath() {
-		Resource testResource = baseResourceTestController.getResource("/base").getResource("/descriptionTest");
+		RamlResource testResource = baseResourceTestController.getResource("/base").getResource("/descriptionTest");
 		assertEquals("Assert resources size", 1, testResource.getResources().size());
 		assertEquals("Assert description", "aaaaaaaaaaaaaaaa", testResource.getDescription());
 		
-		Resource nestedResource = testResource.getResource("/secondBlock");
+		RamlResource nestedResource = testResource.getResource("/secondBlock");
 		assertEquals("Assert resources size", 1, nestedResource.getResources().size());
 		assertEquals("Assert description", "bbbbbbbbbbbbbbbbbb", nestedResource.getDescription());
 		
@@ -465,14 +465,14 @@ public class SpringMvcResourceParserTest {
 	
 	@Test
 	public void test_bug1_IndexOutOfBounds_PostWithNoBody() { 
-		Resource resourceInfo = parser.extractResourceInfo(BugController.class);
-		Resource testResource = resourceInfo.getResource("/forgotStuff").getResource("/{somethingID}").getResource("/resendStuff");
+		RamlResource resourceInfo = parser.extractResourceInfo(BugController.class);
+		RamlResource testResource = resourceInfo.getResource("/forgotStuff").getResource("/{somethingID}").getResource("/resendStuff");
 		assertNotNull(testResource);
 	}
 
 	@Test
 	public void test_bug_noValueOnMethod() {
-		Resource resourceInfo = parser.extractResourceInfo(NoValueController.class);
+		RamlResource resourceInfo = parser.extractResourceInfo(NoValueController.class);
 		assertEquals(0, resourceInfo.getResource("/base").getResources().size());
 		assertNotNull(resourceInfo);
 	}

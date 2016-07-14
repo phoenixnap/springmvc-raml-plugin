@@ -12,6 +12,8 @@
  */
 package com.phoenixnap.oss.ramlapisync.style.checkers;
 
+import com.phoenixnap.oss.ramlapisync.raml.RamlModelFactoryOfFactories;
+import com.phoenixnap.oss.ramlapisync.raml.RamlResource;
 import com.phoenixnap.oss.ramlapisync.raml.RamlRoot;
 import com.phoenixnap.oss.ramlapisync.style.RamlStyleCheckerAdapter;
 import com.phoenixnap.oss.ramlapisync.style.StyleIssue;
@@ -56,7 +58,9 @@ public class ActionSecurityResponseChecker extends RamlStyleCheckerAdapter {
 			if (value.getResponses() == null
 					|| !value.getResponses().containsKey("401")
 					|| !value.getResponses().containsKey("403")) {
-				issues.add(new StyleIssue(location, DESCRIPTION, value.getResource(), value));
+				// TODO #1 remove when Action becomes RamlAction
+				RamlResource ramlResource = RamlModelFactoryOfFactories.createRamlModelFactory().createRamlResource(value.getResource());
+				issues.add(new StyleIssue(location, DESCRIPTION, ramlResource, value));
 			} 
 		}
 		

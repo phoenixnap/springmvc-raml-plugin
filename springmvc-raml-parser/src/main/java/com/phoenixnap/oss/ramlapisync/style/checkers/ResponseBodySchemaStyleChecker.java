@@ -13,6 +13,8 @@
 package com.phoenixnap.oss.ramlapisync.style.checkers;
 
 import com.phoenixnap.oss.ramlapisync.naming.SchemaHelper;
+import com.phoenixnap.oss.ramlapisync.raml.RamlModelFactoryOfFactories;
+import com.phoenixnap.oss.ramlapisync.raml.RamlResource;
 import com.phoenixnap.oss.ramlapisync.raml.RamlRoot;
 import com.phoenixnap.oss.ramlapisync.style.RamlStyleCheckerAdapter;
 import com.phoenixnap.oss.ramlapisync.style.StyleIssue;
@@ -80,7 +82,9 @@ public class ResponseBodySchemaStyleChecker extends RamlStyleCheckerAdapter {
 			}
 			
 			if (!schemaFound) {
-				issues.add(new StyleIssue(location, String.format(DESCRIPTION, key), value.getResource(), value));
+				// TODO #1 remove when Action becomes a RamlAction
+				RamlResource ramlResource = RamlModelFactoryOfFactories.createRamlModelFactory().createRamlResource(value.getResource());
+				issues.add(new StyleIssue(location, String.format(DESCRIPTION, key), ramlResource, value));
 			}
 		}
 			
