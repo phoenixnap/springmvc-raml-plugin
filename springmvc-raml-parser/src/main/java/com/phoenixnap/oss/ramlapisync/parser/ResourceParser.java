@@ -19,9 +19,9 @@ import com.phoenixnap.oss.ramlapisync.javadoc.JavaDocStore;
 import com.phoenixnap.oss.ramlapisync.naming.Pair;
 import com.phoenixnap.oss.ramlapisync.naming.SchemaHelper;
 import com.phoenixnap.oss.ramlapisync.raml.RamlAction;
+import com.phoenixnap.oss.ramlapisync.raml.RamlActionType;
 import com.phoenixnap.oss.ramlapisync.raml.RamlModelFactoryOfFactories;
 import com.phoenixnap.oss.ramlapisync.raml.RamlResource;
-import org.raml.model.ActionType;
 import org.raml.model.MimeType;
 import org.raml.model.ParamType;
 import org.raml.model.Response;
@@ -104,8 +104,8 @@ public abstract class ResourceParser {
 	 * @param target The target Verb to check
 	 * @return If true, the verb supports a payload in the request body
 	 */
-	public static boolean doesActionTypeSupportRequestBody(ActionType target) {
-		return target.equals(ActionType.POST) || target.equals(ActionType.PUT);
+	public static boolean doesActionTypeSupportRequestBody(RamlActionType target) {
+		return target.equals(RamlActionType.POST) || target.equals(RamlActionType.PUT);
 	}
 	/**
 	 * Method to check if a specific action type supports multipart mime request
@@ -113,8 +113,8 @@ public abstract class ResourceParser {
 	 * @param target The target Verb to check
 	 * @return If true, the verb supports multipart mime request
 	 */
-	public static boolean doesActionTypeSupportMultipartMime(ActionType target) {
-		return target.equals(ActionType.POST);
+	public static boolean doesActionTypeSupportMultipartMime(RamlActionType target) {
+		return target.equals(RamlActionType.POST);
 	}
 
 	/**
@@ -132,10 +132,10 @@ public abstract class ResourceParser {
 	 * @param parameterComments The parameter comments associated with these parameters
 	 * @return A collection of parameters keyed by name
 	 */
-	protected Map<String, QueryParameter> extractQueryParameters(ActionType apiAction, Method method,
+	protected Map<String, QueryParameter> extractQueryParameters(RamlActionType apiAction, Method method,
 			Map<String, String> parameterComments) {
 		// Since POST requests have a body we choose to keep all request data in one place as much as possible
-		if (apiAction.equals(ActionType.POST) || method.getParameterCount() == 0) {
+		if (apiAction.equals(RamlActionType.POST) || method.getParameterCount() == 0) {
 			return Collections.emptyMap();
 		}
 		Map<String, QueryParameter> queryParams = new LinkedHashMap<>();
@@ -184,7 +184,7 @@ public abstract class ResourceParser {
 	 * @param parameterComments The parameter comments associated with these parameters
 	 * @return A map of supported mime types for the request
 	 */
-	protected Map<String, MimeType> extractRequestBodyFromMethod(ActionType apiAction, Method method,
+	protected Map<String, MimeType> extractRequestBodyFromMethod(RamlActionType apiAction, Method method,
 			Map<String, String> parameterComments) {
 
 		if (!(doesActionTypeSupportRequestBody(apiAction)) || method.getParameterCount() == 0) {
@@ -258,7 +258,7 @@ public abstract class ResourceParser {
 	 * @param actionType The verb of the Action
 	 * @param method The method to inspect for headers
 	 */
-	protected abstract void addHeadersForMethod(RamlAction action, ActionType actionType, Method method);
+	protected abstract void addHeadersForMethod(RamlAction action, RamlActionType actionType, Method method);
 
 	/**
 	 * Queries the parameters in the Method and checks for an AjaxParameter Annotation with the resource Id flag enabled
@@ -272,7 +272,7 @@ public abstract class ResourceParser {
 	 * @param method The Method to inspect
 	 * @return The Verb and Name (partial url if a resource needs to be created) of this method
 	 */
-	protected abstract Map<ActionType, String> getHttpMethodAndName(Method method);
+	protected abstract Map<RamlActionType, String> getHttpMethodAndName(Method method);
 
 	/**
 	 * Extracts relevant info from a Java method and converts it into a RAML resource

@@ -14,9 +14,9 @@ package com.phoenixnap.oss.ramlapisync.data;
 
 import com.phoenixnap.oss.ramlapisync.naming.NamingHelper;
 import com.phoenixnap.oss.ramlapisync.raml.RamlAction;
+import com.phoenixnap.oss.ramlapisync.raml.RamlActionType;
 import com.phoenixnap.oss.ramlapisync.raml.RamlResource;
 import com.phoenixnap.oss.ramlapisync.raml.RamlRoot;
-import org.raml.model.ActionType;
 
 import java.util.Collections;
 import java.util.LinkedHashSet;
@@ -51,11 +51,11 @@ public class ApiResourceMetadata {
 	} 
 	
 	
-	public void addApiCall(RamlResource resource, ActionType actionType, RamlAction action) {
+	public void addApiCall(RamlResource resource, RamlActionType actionType, RamlAction action) {
 		apiCalls.add(new ApiActionMetadata(this, resource, actionType, action));
 	}
 	
-	public void addApiCall(RamlResource resource, ActionType actionType, RamlAction action, String responseContentType, boolean injectHttpHeadersParameter) {
+	public void addApiCall(RamlResource resource, RamlActionType actionType, RamlAction action, String responseContentType, boolean injectHttpHeadersParameter) {
 		apiCalls.add(new ApiActionMetadata(this, resource, actionType, action, responseContentType, injectHttpHeadersParameter));
 	}
 	

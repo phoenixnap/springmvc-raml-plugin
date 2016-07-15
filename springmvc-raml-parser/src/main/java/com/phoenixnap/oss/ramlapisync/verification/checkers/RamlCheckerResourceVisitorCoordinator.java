@@ -14,6 +14,7 @@ package com.phoenixnap.oss.ramlapisync.verification.checkers;
 
 import com.phoenixnap.oss.ramlapisync.naming.Pair;
 import com.phoenixnap.oss.ramlapisync.raml.RamlAction;
+import com.phoenixnap.oss.ramlapisync.raml.RamlActionType;
 import com.phoenixnap.oss.ramlapisync.raml.RamlResource;
 import com.phoenixnap.oss.ramlapisync.raml.RamlRoot;
 import com.phoenixnap.oss.ramlapisync.verification.Issue;
@@ -23,7 +24,6 @@ import com.phoenixnap.oss.ramlapisync.verification.IssueType;
 import com.phoenixnap.oss.ramlapisync.verification.RamlActionVisitorCheck;
 import com.phoenixnap.oss.ramlapisync.verification.RamlChecker;
 import com.phoenixnap.oss.ramlapisync.verification.RamlResourceVisitorCheck;
-import org.raml.model.ActionType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -145,10 +145,10 @@ public class RamlCheckerResourceVisitorCoordinator implements RamlChecker {
 					}
 				}
 				
-				Map<ActionType, RamlAction> referenceActions = reference.getActions();
-				Map<ActionType, RamlAction> targetActions = target.getActions();
+				Map<RamlActionType, RamlAction> referenceActions = reference.getActions();
+				Map<RamlActionType, RamlAction> targetActions = target.getActions();
 				if (referenceActions != null && referenceActions.size() > 0 && targetActions != null && targetActions.size() > 0) {
-					for (Entry<ActionType, RamlAction> action : referenceActions.entrySet()) {
+					for (Entry<RamlActionType, RamlAction> action : referenceActions.entrySet()) {
 						RamlAction targetAction = targetActions.get(action.getKey());
 						String actionLocation = Issue.buildRamlLocation(reference, referenceActions.get(action.getKey()), null);
 						if (targetAction != null) {

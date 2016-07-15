@@ -15,10 +15,10 @@ package com.phoenixnap.oss.ramlapisync.generation;
 import com.phoenixnap.oss.ramlapisync.data.ApiResourceMetadata;
 import com.phoenixnap.oss.ramlapisync.naming.RamlHelper;
 import com.phoenixnap.oss.ramlapisync.raml.RamlAction;
+import com.phoenixnap.oss.ramlapisync.raml.RamlActionType;
 import com.phoenixnap.oss.ramlapisync.raml.RamlModelFactoryOfFactories;
 import com.phoenixnap.oss.ramlapisync.raml.RamlResource;
 import com.phoenixnap.oss.ramlapisync.raml.RamlRoot;
-import org.raml.model.ActionType;
 import org.raml.model.Response;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -143,7 +143,7 @@ public class RamlParser {
 		}
 		//extract actions for this resource
 		if (resource.getActions() != null && !resource.getActions().isEmpty()) {			
-			for (Entry<ActionType, RamlAction> childResource : resource.getActions().entrySet()) {
+			for (Entry<RamlActionType, RamlAction> childResource : resource.getActions().entrySet()) {
 				//if we have multiple response types in the raml, this should produce different calls
 				Response response = null;
 				

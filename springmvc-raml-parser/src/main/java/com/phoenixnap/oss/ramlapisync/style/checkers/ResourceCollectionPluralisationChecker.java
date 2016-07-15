@@ -12,12 +12,12 @@
  */
 package com.phoenixnap.oss.ramlapisync.style.checkers;
 
+import com.phoenixnap.oss.ramlapisync.raml.RamlActionType;
 import com.phoenixnap.oss.ramlapisync.raml.RamlResource;
 import com.phoenixnap.oss.ramlapisync.raml.RamlRoot;
 import com.phoenixnap.oss.ramlapisync.style.RamlStyleCheckerAdapter;
 import com.phoenixnap.oss.ramlapisync.style.StyleIssue;
 import com.phoenixnap.oss.ramlapisync.verification.IssueLocation;
-import org.raml.model.ActionType;
 import org.raml.parser.utils.Inflector;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -68,8 +68,8 @@ public class ResourceCollectionPluralisationChecker extends RamlStyleCheckerAdap
 			RamlResource subResource = subResourceEntry.getValue();
 			//it should have a get or a post request on it.			
 			if (subResource != null
-					&& (subResource.getAction(ActionType.POST) != null
-						|| subResource.getAction(ActionType.GET) != null)) {
+					&& (subResource.getAction(RamlActionType.POST) != null
+						|| subResource.getAction(RamlActionType.GET) != null)) {
 				hasVerb = true;
 			}
 			if (hasIdSubresource && hasVerb) {

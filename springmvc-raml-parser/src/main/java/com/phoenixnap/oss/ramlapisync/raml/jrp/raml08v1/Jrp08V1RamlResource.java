@@ -1,6 +1,7 @@
 package com.phoenixnap.oss.ramlapisync.raml.jrp.raml08v1;
 
 import com.phoenixnap.oss.ramlapisync.raml.RamlAction;
+import com.phoenixnap.oss.ramlapisync.raml.RamlActionType;
 import com.phoenixnap.oss.ramlapisync.raml.RamlResource;
 import org.raml.model.Action;
 import org.raml.model.ActionType;
@@ -20,7 +21,7 @@ public class Jrp08V1RamlResource implements RamlResource {
 
     private final Resource resource;
     private Map<String, RamlResource> resources = new LinkedHashMap<>();
-    private Map<ActionType, RamlAction> actions = new LinkedHashMap<>();
+    private Map<RamlActionType, RamlAction> actions = new LinkedHashMap<>();
 
     public Jrp08V1RamlResource(Resource resource) {
         this.resource = resource;
@@ -45,22 +46,22 @@ public class Jrp08V1RamlResource implements RamlResource {
     }
 
     @Override
-    public Map<ActionType, RamlAction> getActions() {
+    public Map<RamlActionType, RamlAction> getActions() {
         syncActions();
         return Collections.unmodifiableMap(actions);
     }
 
 
     @Override
-    public void addActions(Map<ActionType, RamlAction> newActions) {
-        for(ActionType key: newActions.keySet()) {
+    public void addActions(Map<RamlActionType, RamlAction> newActions) {
+        for(RamlActionType key: newActions.keySet()) {
             addAction(key, newActions.get(key));
         }
     }
 
     @Override
-    public void addAction(ActionType actionType, RamlAction action) {
-        resource.getActions().put(actionType, ramlModelFactory.extractAction(action));
+    public void addAction(RamlActionType actionType, RamlAction action) {
+        resource.getActions().put(ramlModelFactory.extractActionType(actionType), ramlModelFactory.extractAction(action));
         actions.put(actionType, action);
     }
 
@@ -70,7 +71,7 @@ public class Jrp08V1RamlResource implements RamlResource {
             Map<ActionType, Action> baseActions = resource.getActions();
             for (ActionType key : baseActions.keySet()) {
                 RamlAction ramlAction = ramlModelFactory.createRamlAction(baseActions.get(key));
-                actions.put(key, ramlAction);
+                actions.put(ramlModelFactory.createActionType(key), ramlAction);
             }
         }
     }
@@ -167,8 +168,10 @@ public class Jrp08V1RamlResource implements RamlResource {
     }
 
     @Override
-    public RamlAction getAction(ActionType actionType) {
-        return ramlModelFactory.createRamlAction(resource.getAction(actionType));
+    public RamlAction getAction(RamlActionType actionType) {
+        ActionType name = ramlModelFactory.extractActionType(actionType);
+        Action action = resource.getAction(name);
+        return ramlModelFactory.createRamlAction(action);
     }
 
     @Override

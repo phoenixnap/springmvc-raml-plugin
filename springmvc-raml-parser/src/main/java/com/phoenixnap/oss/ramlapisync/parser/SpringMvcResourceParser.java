@@ -25,9 +25,9 @@ import com.phoenixnap.oss.ramlapisync.naming.Pair;
 import com.phoenixnap.oss.ramlapisync.naming.RamlHelper;
 import com.phoenixnap.oss.ramlapisync.naming.SchemaHelper;
 import com.phoenixnap.oss.ramlapisync.raml.RamlAction;
+import com.phoenixnap.oss.ramlapisync.raml.RamlActionType;
 import com.phoenixnap.oss.ramlapisync.raml.RamlModelFactoryOfFactories;
 import com.phoenixnap.oss.ramlapisync.raml.RamlResource;
-import org.raml.model.ActionType;
 import org.raml.model.MimeType;
 import org.raml.model.ParamType;
 import org.raml.model.Response;
@@ -343,7 +343,7 @@ public class SpringMvcResourceParser extends ResourceParser {
 	}
 
 	@Override
-	protected Map<ActionType, String> getHttpMethodAndName(Method method) {
+	protected Map<RamlActionType, String> getHttpMethodAndName(Method method) {
 		RequestMapping methodMapping = getRequestMapping(method);
 		RequestMapping classMapping = getAnnotation(method.getDeclaringClass(), RequestMapping.class, false);
 		RestController classRestController = getAnnotation(method.getDeclaringClass(), RestController.class,
@@ -375,10 +375,10 @@ public class SpringMvcResourceParser extends ResourceParser {
 			name += NamingHelper.resolveProperties(methodMapping.value()[0]);
 		}
 
-		Map<ActionType, String> outMap = new HashMap<>();
+		Map<RamlActionType, String> outMap = new HashMap<>();
 		for (RequestMethod rm : verbs) {
 			try {
-				ActionType apiAction = ActionType.valueOf(rm.name());
+				RamlActionType apiAction = RamlActionType.valueOf(rm.name());
 				outMap.put(apiAction, name);
 			} catch (Exception ex) {
 				// skip verb not supported by RAML
@@ -428,10 +428,10 @@ public class SpringMvcResourceParser extends ResourceParser {
 	@Override
 	protected void extractAndAppendResourceInfo(Method method, JavaDocEntry docEntry, RamlResource parentResource) {
 
-		Map<ActionType, String> methodActions = getHttpMethodAndName(method);
-		for (Entry<ActionType, String> methodAction : methodActions.entrySet()) {
+		Map<RamlActionType, String> methodActions = getHttpMethodAndName(method);
+		for (Entry<RamlActionType, String> methodAction : methodActions.entrySet()) {
 			RamlAction action = RamlModelFactoryOfFactories.createRamlModelFactory().createRamlAction();
-			ActionType apiAction = methodAction.getKey();
+			RamlActionType apiAction = methodAction.getKey();
 			String apiName = methodAction.getValue();
 			//Method assumes that the name starts with /
 			if (apiName != null && !apiName.startsWith("/")) {
@@ -566,7 +566,7 @@ public class SpringMvcResourceParser extends ResourceParser {
 	}
 
 	@Override
-	protected void addHeadersForMethod(RamlAction action, ActionType actionType, Method method) {
+	protected void addHeadersForMethod(RamlAction action, RamlActionType actionType, Method method) {
 
 	}
 

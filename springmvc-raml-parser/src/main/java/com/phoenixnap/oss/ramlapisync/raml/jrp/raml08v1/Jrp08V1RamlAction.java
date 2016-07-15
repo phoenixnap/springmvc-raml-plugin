@@ -1,9 +1,9 @@
 package com.phoenixnap.oss.ramlapisync.raml.jrp.raml08v1;
 
 import com.phoenixnap.oss.ramlapisync.raml.RamlAction;
+import com.phoenixnap.oss.ramlapisync.raml.RamlActionType;
 import com.phoenixnap.oss.ramlapisync.raml.RamlResource;
 import org.raml.model.Action;
-import org.raml.model.ActionType;
 import org.raml.model.MimeType;
 import org.raml.model.Response;
 import org.raml.model.SecurityReference;
@@ -35,8 +35,8 @@ public class Jrp08V1RamlAction implements RamlAction {
     }
 
     @Override
-    public ActionType getType() {
-        return action.getType();
+    public RamlActionType getType() {
+        return ramlModelFactory.createActionType(action.getType());
     }
 
     @Override
@@ -90,8 +90,8 @@ public class Jrp08V1RamlAction implements RamlAction {
     }
 
     @Override
-    public void setType(ActionType actionType) {
-        action.setType(actionType);
+    public void setType(RamlActionType actionType) {
+        action.setType(ramlModelFactory.extractActionType(actionType));
     }
 
     @Override

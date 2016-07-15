@@ -1,6 +1,5 @@
 package com.phoenixnap.oss.ramlapisync.raml;
 
-import org.raml.model.ActionType;
 import org.raml.model.MimeType;
 import org.raml.model.Response;
 import org.raml.model.SecurityReference;
@@ -15,7 +14,7 @@ import java.util.Map;
  */
 public interface RamlAction {
 
-    ActionType getType();
+    RamlActionType getType();
 
     Map<String,QueryParameter> getQueryParameters();
 
@@ -37,7 +36,7 @@ public interface RamlAction {
 
     void setResource(RamlResource resource);
 
-    void setType(ActionType actionType);
+    void setType(RamlActionType actionType);
 
     List<SecurityReference> getSecuredBy();
 }
