@@ -1,7 +1,5 @@
 package com.phoenixnap.oss.ramlapisync.raml;
 
-import org.raml.model.DocumentationItem;
-
 import java.util.List;
 import java.util.Map;
 
@@ -20,7 +18,7 @@ public interface RamlRoot extends RamlResourceRoot {
 
     void setTitle(String title);
 
-    void setDocumentation(List<DocumentationItem> documentationItems);
+    void setDocumentation(List<RamlDocumentationItem> documentationItems);
 
     void setMediaType(String mediaType);
 

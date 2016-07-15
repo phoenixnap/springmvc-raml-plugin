@@ -60,7 +60,7 @@ public class Jrp08V1RamlResource implements RamlResource {
 
     @Override
     public void addAction(ActionType actionType, RamlAction action) {
-        resource.getActions().put(actionType, Jrp08V1RamlModelFactory.extractAction(action));
+        resource.getActions().put(actionType, ramlModelFactory.extractAction(action));
         actions.put(actionType, action);
     }
 

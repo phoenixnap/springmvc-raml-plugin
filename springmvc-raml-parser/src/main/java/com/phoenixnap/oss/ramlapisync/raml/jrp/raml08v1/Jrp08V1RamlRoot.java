@@ -1,8 +1,8 @@
 package com.phoenixnap.oss.ramlapisync.raml.jrp.raml08v1;
 
+import com.phoenixnap.oss.ramlapisync.raml.RamlDocumentationItem;
 import com.phoenixnap.oss.ramlapisync.raml.RamlResource;
 import com.phoenixnap.oss.ramlapisync.raml.RamlRoot;
-import org.raml.model.DocumentationItem;
 import org.raml.model.Raml;
 import org.raml.model.Resource;
 
@@ -104,8 +104,8 @@ public class Jrp08V1RamlRoot implements RamlRoot {
     }
 
     @Override
-    public void setDocumentation(List<DocumentationItem> documentationItems) {
-        raml.setDocumentation(documentationItems);
+    public void setDocumentation(List<RamlDocumentationItem> documentationItems) {
+        raml.setDocumentation(ramlModelFactory.extractDocumentationItems(documentationItems));
     }
 
     @Override

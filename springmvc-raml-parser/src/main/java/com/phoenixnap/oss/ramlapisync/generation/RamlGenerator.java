@@ -15,12 +15,12 @@ package com.phoenixnap.oss.ramlapisync.generation;
 import com.phoenixnap.oss.ramlapisync.data.ApiDocumentMetadata;
 import com.phoenixnap.oss.ramlapisync.naming.RamlHelper;
 import com.phoenixnap.oss.ramlapisync.parser.ResourceParser;
+import com.phoenixnap.oss.ramlapisync.raml.RamlDocumentationItem;
 import com.phoenixnap.oss.ramlapisync.raml.RamlModelEmitter;
 import com.phoenixnap.oss.ramlapisync.raml.RamlModelFactoryOfFactories;
 import com.phoenixnap.oss.ramlapisync.raml.RamlResource;
 import com.phoenixnap.oss.ramlapisync.raml.RamlRoot;
 import org.apache.commons.io.FileUtils;
-import org.raml.model.DocumentationItem;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -152,11 +152,11 @@ public class RamlGenerator {
 	 * @param documents A set of metadata identifying the documents to be included
 	 * @return A List of RAML document items containing the supplied documents
 	 */
-	protected List<DocumentationItem> generateDocuments(Set<ApiDocumentMetadata> documents) {
-		List<DocumentationItem> documentInfos = new ArrayList<>();
+	protected List<RamlDocumentationItem> generateDocuments(Set<ApiDocumentMetadata> documents) {
+		List<RamlDocumentationItem> documentInfos = new ArrayList<>();
 		for (ApiDocumentMetadata documentInfo : documents) {
 			logger.info("Adding document: " + documentInfo.getDocumentTitle());
-			DocumentationItem documentItem = new DocumentationItem();
+			RamlDocumentationItem documentItem = RamlModelFactoryOfFactories.createRamlModelFactory().createDocumentationItem();
 
 			documentItem.setContent("!include " + documentInfo.getDocumentPath());
 			documentItem.setTitle(documentInfo.getDocumentTitle());

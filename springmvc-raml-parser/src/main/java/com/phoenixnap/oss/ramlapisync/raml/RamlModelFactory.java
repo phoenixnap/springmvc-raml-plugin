@@ -21,4 +21,7 @@ public interface RamlModelFactory {
 
     RamlAction createRamlAction();
 
+    RamlDocumentationItem createDocumentationItem();
+
+    RamlDocumentationItem createDocumentationItem(Object documentationItem);
 }

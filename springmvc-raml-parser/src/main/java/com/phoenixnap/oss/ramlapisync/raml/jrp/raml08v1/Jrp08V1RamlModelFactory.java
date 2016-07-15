@@ -1,14 +1,19 @@
 package com.phoenixnap.oss.ramlapisync.raml.jrp.raml08v1;
 
 import com.phoenixnap.oss.ramlapisync.raml.RamlAction;
+import com.phoenixnap.oss.ramlapisync.raml.RamlDocumentationItem;
 import com.phoenixnap.oss.ramlapisync.raml.RamlModelEmitter;
 import com.phoenixnap.oss.ramlapisync.raml.RamlModelFactory;
 import com.phoenixnap.oss.ramlapisync.raml.RamlResource;
 import com.phoenixnap.oss.ramlapisync.raml.RamlRoot;
 import org.raml.model.Action;
+import org.raml.model.DocumentationItem;
 import org.raml.model.Raml;
 import org.raml.model.Resource;
 import org.raml.parser.visitor.RamlDocumentBuilder;
+
+import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * @author armin.weisser
@@ -37,7 +42,7 @@ public class Jrp08V1RamlModelFactory implements RamlModelFactory {
     }
 
     RamlRoot createRamlRoot(Raml raml) {
-        if(raml == null) {
+        if (raml == null) {
             return null;
         }
         return new Jrp08V1RamlRoot(raml);
@@ -50,23 +55,23 @@ public class Jrp08V1RamlModelFactory implements RamlModelFactory {
 
     @Override
     public RamlResource createRamlResource(Object resource) {
-        if(resource == null) {
+        if (resource == null) {
             return null;
         }
-        return new Jrp08V1RamlResource((Resource)resource);
+        return new Jrp08V1RamlResource((Resource) resource);
     }
 
     Resource extractResource(RamlResource ramlResource) {
-        if(ramlResource == null) return null;
-        return ((Jrp08V1RamlResource)ramlResource).getResource();
+        if (ramlResource == null) return null;
+        return ((Jrp08V1RamlResource) ramlResource).getResource();
     }
 
     @Override
     public RamlAction createRamlAction(Object action) {
-        if(action == null) {
+        if (action == null) {
             return null;
         }
-        return new Jrp08V1RamlAction((Action)action);
+        return new Jrp08V1RamlAction((Action) action);
     }
 
     @Override
@@ -74,7 +79,31 @@ public class Jrp08V1RamlModelFactory implements RamlModelFactory {
         return createRamlAction(new Action());
     }
 
-    static Action extractAction(RamlAction ramlAction) {
-        return ((Jrp08V1RamlAction)ramlAction).getAction();
+    Action extractAction(RamlAction ramlAction) {
+        return ((Jrp08V1RamlAction) ramlAction).getAction();
     }
+
+    @Override
+    public RamlDocumentationItem createDocumentationItem() {
+        return createDocumentationItem(new DocumentationItem());
+    }
+
+    @Override
+    public RamlDocumentationItem createDocumentationItem(Object documentationItem) {
+        return new Jrp08V1RamlDocumentationItem((DocumentationItem)documentationItem);
+    }
+
+    List<DocumentationItem> extractDocumentationItems(List<RamlDocumentationItem> ramlRocumentationItems) {
+        if (ramlRocumentationItems == null) {
+            return null;
+        }
+        return ramlRocumentationItems.stream()
+                .map(ramlDocumentationItem -> extractDocumentationItem(ramlDocumentationItem))
+                .collect(Collectors.toList());
+    }
+
+    private DocumentationItem extractDocumentationItem(RamlDocumentationItem ramlDocumentationItem) {
+        return ((Jrp08V1RamlDocumentationItem) ramlDocumentationItem).getDocumentationItem();
+    }
+
 }
