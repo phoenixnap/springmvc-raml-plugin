@@ -25,7 +25,6 @@ import com.phoenixnap.oss.ramlapisync.verification.RamlChecker;
 import com.phoenixnap.oss.ramlapisync.verification.RamlResourceVisitorCheck;
 import com.phoenixnap.oss.ramlapisync.verification.checkers.RamlCheckerResourceVisitorCoordinator;
 import com.phoenixnap.oss.ramlapisync.verification.checkers.ResourceExistenceChecker;
-import org.raml.parser.visitor.RamlDocumentBuilder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.util.StringUtils;
@@ -171,7 +170,7 @@ public class RamlVerifier {
 	 */
 	public static RamlRoot loadRamlFromFile(String ramlFileUrl) {
 		try {
-			return ramlModelFactory.createRamlRoot(new RamlDocumentBuilder().build(ramlFileUrl));
+			return ramlModelFactory.createRamlRoot(ramlFileUrl);
 		} catch (NullPointerException npe) {
 			logger.error("File not found at " + ramlFileUrl);
 			return null;

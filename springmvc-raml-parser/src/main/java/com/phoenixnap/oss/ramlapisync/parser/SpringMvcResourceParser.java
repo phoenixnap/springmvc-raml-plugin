@@ -527,7 +527,7 @@ public class SpringMvcResourceParser extends ResourceParser {
 						}
 						idResource.setParentUri(targetUri);
 					}
-					leafResource.getResources().put(resourceName, idResource);
+					leafResource.addResource(resourceName, idResource);
 				}
 			}
 
@@ -540,7 +540,7 @@ public class SpringMvcResourceParser extends ResourceParser {
 			} else {
 				actionTargetResource = parentResource;
 			}
-			action.setResource(RamlModelFactoryOfFactories.createRamlModelFactory().createResource(actionTargetResource));
+			action.setResource(RamlModelFactoryOfFactories.createRamlModelFactory().extractResource(actionTargetResource));
 			action.setType(apiAction);
 			if (actionTargetResource.getActions().containsKey(apiAction)) {
 				//merge action

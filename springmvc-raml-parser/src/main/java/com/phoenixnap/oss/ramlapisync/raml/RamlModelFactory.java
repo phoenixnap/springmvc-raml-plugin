@@ -13,12 +13,12 @@ public interface RamlModelFactory {
 
     RamlRoot createRamlRoot();
 
-    RamlRoot createRamlRoot(Object root);
+    RamlRoot createRamlRoot(String ramlFileUrl);
 
     RamlResource createRamlResource();
 
     RamlResource createRamlResource(Object resource);
 
     // TODO #1 remove when obsolete
-    Resource createResource(RamlResource ramlResource);
+    Resource extractResource(RamlResource ramlResource);
 }

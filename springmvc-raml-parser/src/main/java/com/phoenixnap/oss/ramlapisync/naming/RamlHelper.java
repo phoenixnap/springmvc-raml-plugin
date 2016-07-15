@@ -10,6 +10,7 @@
 package com.phoenixnap.oss.ramlapisync.naming;
 
 import com.phoenixnap.oss.ramlapisync.raml.RamlResource;
+import com.phoenixnap.oss.ramlapisync.raml.RamlResourceRoot;
 import com.phoenixnap.oss.ramlapisync.raml.RamlRoot;
 import org.raml.model.Action;
 import org.raml.model.MimeType;
@@ -40,7 +41,7 @@ public class RamlHelper {
 		Map<String, RamlResource> newChildResources = resource.getResources();
 		for (String newChildKey : newChildResources.keySet()) {
 			if (!existingChildResources.containsKey(newChildKey)) {
-				existingChildResources.put(newChildKey, newChildResources.get(newChildKey));
+				existing.addResource(newChildKey, newChildResources.get(newChildKey));
 			} else {
 				mergeResources(existingChildResources.get(newChildKey), newChildResources.get(newChildKey), addActions);
 			}			
@@ -61,7 +62,7 @@ public class RamlHelper {
 	public static void mergeResources(RamlRoot raml, RamlResource resource, boolean addActions) {
 		RamlResource existingResource = raml.getResource(resource.getRelativeUri());
 		if (existingResource == null) {
-			raml.getResources().put(resource.getRelativeUri(), resource);
+			raml.addResource(resource.getRelativeUri(), resource);
 		} else {
 			mergeResources(existingResource, resource, addActions);
 		}
@@ -139,18 +140,16 @@ public class RamlHelper {
 					}
 				}
 			}
-			
-			Map<String, RamlResource> resources;
+
+			RamlResourceRoot parentResource = model;
 			if (model.getResource("/") != null) {
-				resources = model.getResource("/").getResources();
-			} else {
-				resources = model.getResources();
+				parentResource = model.getResource("/");
 			}
-			resources.remove(firstResourcePart);
+			parentResource.removeResource(firstResourcePart);
 			
 			removeUri(pointerResource.getResources(), urlPrefixToIgnore);
-			
-			resources.putAll(pointerResource.getResources());
+
+			parentResource.addResources(pointerResource.getResources());
 			
 			
 			

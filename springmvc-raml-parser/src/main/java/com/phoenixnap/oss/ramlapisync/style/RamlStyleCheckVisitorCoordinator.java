@@ -70,7 +70,7 @@ public class RamlStyleCheckVisitorCoordinator implements RamlChecker {
 			checkChildren(implemented.getResources(), implemented, IssueLocation.SOURCE);
 		}
 		
-		return new Pair<Set<Issue>, Set<Issue>>(warnings, Collections.emptySet());		
+		return new Pair<>(warnings, Collections.emptySet());
 	}
 
 

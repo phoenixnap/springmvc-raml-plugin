@@ -288,7 +288,8 @@ public class SpringMvcResourceParserTest {
 	@Test
 	public void test_simpleGetAndPostWithTwoParameters() {
 		String paramName;
-		RamlResource testResource = baseResourceTestController.getResource("/base").getResource("/twoParameter");
+		RamlResource base = baseResourceTestController.getResource("/base");
+		RamlResource testResource = base.getResource("/twoParameter");
 		assertEquals("Assert resources size", 2, testResource.getActions().size());
 		Action getAction = testResource.getActions().get(ActionType.GET);
 		Action postAction = testResource.getActions().get(ActionType.POST);

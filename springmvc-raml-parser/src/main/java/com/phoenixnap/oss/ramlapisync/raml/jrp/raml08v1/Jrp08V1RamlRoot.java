@@ -8,6 +8,7 @@ import org.raml.model.DocumentationItem;
 import org.raml.model.Raml;
 import org.raml.model.Resource;
 
+import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -21,13 +22,24 @@ public class Jrp08V1RamlRoot implements RamlRoot {
 
     private final Raml raml;
 
-    private Map<String, RamlResource> resources;
+    private Map<String, RamlResource> resources = new LinkedHashMap<>();
 
     public Jrp08V1RamlRoot(Raml raml) {
         if(raml == null) {
             throw new IllegalArgumentException("The Raml instance must not be null");
         }
         this.raml = raml;
+    }
+
+    private void syncResources() {
+        if(resources.size() != raml.getResources().size()) {
+            resources.clear();
+            Map<String, Resource> baseResources = raml.getResources();
+            for (String key : baseResources.keySet()) {
+                RamlResource ramlResource = ramlModelFactory.createRamlResource(baseResources.get(key));
+                this.resources.put(key, ramlResource);
+            }
+        }
     }
 
     /**
@@ -39,18 +51,28 @@ public class Jrp08V1RamlRoot implements RamlRoot {
     }
 
     @Override
-    public Map<String, RamlResource> getResources() {
-        if(resources == null) {
-            Map<String, Resource> baseResources = raml.getResources();
-            resources = new LinkedHashMap<>(baseResources.size());
-            baseResources.keySet().stream().forEach(path -> {
-                Resource baseResource = baseResources.get(path);
-                RamlResource resource = ramlModelFactory.createRamlResource(baseResource);
-                resources.put(path, resource);
-            });
+    public void addResource(String path, RamlResource childResource) {
+        raml.getResources().put(path, ramlModelFactory.extractResource(childResource));
+        resources.put(path, childResource);
+    }
 
+    @Override
+    public Map<String, RamlResource> getResources() {
+        syncResources();
+        return Collections.unmodifiableMap(resources);
+    }
+
+    @Override
+    public void removeResource(String firstResourcePart) {
+        raml.getResources().remove(firstResourcePart);
+        resources.remove(firstResourcePart);
+    }
+
+    @Override
+    public void addResources(Map<String, RamlResource> resources) {
+        for(String key: resources.keySet()) {
+            addResource(key, resources.get(key));
         }
-        return resources;
     }
 
     @Override

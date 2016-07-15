@@ -8,6 +8,7 @@ import org.raml.model.ActionType;
 import org.raml.model.Resource;
 import org.raml.model.parameter.UriParameter;
 
+import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
@@ -19,10 +20,30 @@ public class Jrp08V1RamlResource implements RamlResource {
     private static RamlModelFactory ramlModelFactory = RamlModelFactoryOfFactories.createRamlModelFactory();
 
     private final Resource resource;
-    private Map<String, RamlResource> resources;
+    private Map<String, RamlResource> resources = new LinkedHashMap<>();
 
     public Jrp08V1RamlResource(Resource resource) {
         this.resource = resource;
+    }
+
+
+    private void syncResources() {
+        if(resources.size() != resource.getResources().size()) {
+            resources.clear();
+            Map<String, Resource> baseResources = resource.getResources();
+            for (String key : baseResources.keySet()) {
+                RamlResource ramlResource = ramlModelFactory.createRamlResource(baseResources.get(key));
+                resources.put(key, ramlResource);
+            }
+        }
+    }
+
+    /**
+     * Expose internal representation only package private
+     * @return the internal model
+     */
+    Resource getResource() {
+        return resource;
     }
 
     @Override
@@ -41,22 +62,34 @@ public class Jrp08V1RamlResource implements RamlResource {
     }
 
     @Override
-    public Map<String, RamlResource> getResources() {
-        if(resources == null) {
-            Map<String, Resource> baseResources = resource.getResources();
-            resources = new LinkedHashMap<>(baseResources.size());
-            baseResources.keySet().stream().forEach(path -> resources.put(path, ramlModelFactory.createRamlResource(baseResources.get(path))));
+    public void addResource(String path, RamlResource childResource) {
+        resource.getResources().put(path, ramlModelFactory.extractResource(childResource));
+        resources.put(path, childResource);
+    }
+
+    @Override
+    public void removeResource(String firstResourcePart) {
+        resource.getResources().remove(firstResourcePart);
+        resources.remove(firstResourcePart);
+    }
+
+
+    @Override
+    public void addResources(Map<String, RamlResource> resources) {
+        for(String key: resources.keySet()) {
+            addResource(key, resources.get(key));
         }
-        return resources;
+    }
+
+    @Override
+    public Map<String, RamlResource> getResources() {
+        syncResources();
+        return Collections.unmodifiableMap(resources);
     }
 
     @Override
     public RamlResource getResource(String path) {
-        Resource baseResource = this.resource.getResource(path);
-        if(baseResource == null) {
-            return null;
-        }
-        return ramlModelFactory.createRamlResource(baseResource);
+        return ramlModelFactory.createRamlResource(resource.getResource(path));
     }
 
     @Override
@@ -96,7 +129,7 @@ public class Jrp08V1RamlResource implements RamlResource {
 
     @Override
     public void setParentResource(RamlResource parentResource) {
-        resource.setParentResource(ramlModelFactory.createResource(parentResource));
+        resource.setParentResource(ramlModelFactory.extractResource(parentResource));
     }
 
     @Override
@@ -112,5 +145,28 @@ public class Jrp08V1RamlResource implements RamlResource {
     @Override
     public Action getAction(ActionType actionType) {
         return resource.getAction(actionType);
+    }
+
+    @Override
+    public boolean equals(Object o) {
+
+        if (this == o)
+        {
+            return true;
+        }
+        if (!(o instanceof RamlResource))
+        {
+            return false;
+        }
+
+        RamlResource resource = (RamlResource) o;
+
+        return getParentUri().equals(resource.getParentUri()) && getRelativeUri().equals(resource.getRelativeUri());
+
+    }
+
+    @Override
+    public int hashCode() {
+        return resource.hashCode();
     }
 }
