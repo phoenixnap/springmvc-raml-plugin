@@ -1,7 +1,5 @@
 package com.phoenixnap.oss.ramlapisync.raml.jrp.raml08v1;
 
-import com.phoenixnap.oss.ramlapisync.raml.RamlModelFactory;
-import com.phoenixnap.oss.ramlapisync.raml.RamlModelFactoryOfFactories;
 import com.phoenixnap.oss.ramlapisync.raml.RamlResource;
 import com.phoenixnap.oss.ramlapisync.raml.RamlRoot;
 import org.raml.model.DocumentationItem;
@@ -18,7 +16,7 @@ import java.util.Map;
  */
 public class Jrp08V1RamlRoot implements RamlRoot {
 
-    private static RamlModelFactory ramlModelFactory = RamlModelFactoryOfFactories.createRamlModelFactory();
+    private static Jrp08V1RamlModelFactory ramlModelFactory = new Jrp08V1RamlModelFactory();
 
     private final Raml raml;
 
