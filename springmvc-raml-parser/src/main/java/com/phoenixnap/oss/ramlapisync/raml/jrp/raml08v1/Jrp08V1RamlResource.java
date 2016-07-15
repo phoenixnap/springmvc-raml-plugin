@@ -26,7 +26,6 @@ public class Jrp08V1RamlResource implements RamlResource {
         this.resource = resource;
     }
 
-
     private void syncResources() {
         if(resources.size() != resource.getResources().size()) {
             resources.clear();
