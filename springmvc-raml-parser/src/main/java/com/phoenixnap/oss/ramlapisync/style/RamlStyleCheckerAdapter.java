@@ -12,10 +12,10 @@
  */
 package com.phoenixnap.oss.ramlapisync.style;
 
+import com.phoenixnap.oss.ramlapisync.raml.RamlAction;
 import com.phoenixnap.oss.ramlapisync.raml.RamlResource;
 import com.phoenixnap.oss.ramlapisync.raml.RamlRoot;
 import com.phoenixnap.oss.ramlapisync.verification.IssueLocation;
-import org.raml.model.Action;
 import org.raml.model.ActionType;
 import org.raml.model.parameter.AbstractParam;
 
@@ -37,7 +37,7 @@ public class RamlStyleCheckerAdapter implements RamlStyleChecker {
 	}
 
 	@Override
-	public Set<StyleIssue> checkActionStyle(ActionType key, Action value,
+	public Set<StyleIssue> checkActionStyle(ActionType key, RamlAction value,
 			IssueLocation location, RamlRoot raml) {
 		return Collections.emptySet();
 	}

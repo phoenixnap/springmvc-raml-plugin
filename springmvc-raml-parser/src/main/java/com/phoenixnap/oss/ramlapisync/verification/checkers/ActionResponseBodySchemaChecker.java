@@ -13,7 +13,7 @@
 package com.phoenixnap.oss.ramlapisync.verification.checkers;
 
 import com.phoenixnap.oss.ramlapisync.naming.Pair;
-import com.phoenixnap.oss.ramlapisync.raml.RamlModelFactoryOfFactories;
+import com.phoenixnap.oss.ramlapisync.raml.RamlAction;
 import com.phoenixnap.oss.ramlapisync.raml.RamlResource;
 import com.phoenixnap.oss.ramlapisync.verification.Issue;
 import com.phoenixnap.oss.ramlapisync.verification.IssueLocation;
@@ -29,7 +29,6 @@ import org.jsonschema2pojo.SchemaGenerator;
 import org.jsonschema2pojo.SchemaMapper;
 import org.jsonschema2pojo.SchemaStore;
 import org.jsonschema2pojo.rules.RuleFactory;
-import org.raml.model.Action;
 import org.raml.model.ActionType;
 import org.raml.model.MimeType;
 import org.slf4j.Logger;
@@ -63,7 +62,7 @@ public class ActionResponseBodySchemaChecker implements RamlActionVisitorCheck {
 	protected static final Logger logger = LoggerFactory.getLogger(ActionResponseBodySchemaChecker.class);
 
 	@Override
-	public Pair<Set<Issue>, Set<Issue>> check(ActionType name, Action reference, Action target, IssueLocation location, IssueSeverity maxSeverity) {
+	public Pair<Set<Issue>, Set<Issue>> check(ActionType name, RamlAction reference, RamlAction target, IssueLocation location, IssueSeverity maxSeverity) {
 		logger.debug("Checking action " + name);
 		Set<Issue> errors = new LinkedHashSet<>();
 		Set<Issue> warnings = new LinkedHashSet<>();
@@ -81,8 +80,7 @@ public class ActionResponseBodySchemaChecker implements RamlActionVisitorCheck {
 				&& reference.getResponses().containsKey("200")
 				&& reference.getResponses().get("200").getBody() != null) {
 
-			// TODO #1 remove when Action becomes RamlAction
-			RamlResource referenceRamlResource = RamlModelFactoryOfFactories.createRamlModelFactory().createRamlResource(reference.getResource());
+			RamlResource referenceRamlResource = reference.getResource();
 
 			//successful response
 			Map<String, MimeType> response = reference.getResponses().get("200").getBody();

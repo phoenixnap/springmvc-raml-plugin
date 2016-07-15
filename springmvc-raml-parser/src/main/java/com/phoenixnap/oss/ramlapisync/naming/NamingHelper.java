@@ -12,9 +12,9 @@
  */
 package com.phoenixnap.oss.ramlapisync.naming;
 
+import com.phoenixnap.oss.ramlapisync.raml.RamlAction;
 import com.phoenixnap.oss.ramlapisync.raml.RamlResource;
 import org.jsonschema2pojo.util.NameHelper;
-import org.raml.model.Action;
 import org.raml.model.ActionType;
 import org.raml.parser.utils.Inflector;
 import org.springframework.http.MediaType;
@@ -313,7 +313,7 @@ public class NamingHelper {
 	 * @param actionType The ActionType/HTTP Verb for this Action
 	 * @return The java name of the method that will represent this Action
 	 */
-	public static String getActionName(RamlResource controllerizedResource, RamlResource resource, Action action,
+	public static String getActionName(RamlResource controllerizedResource, RamlResource resource, RamlAction action,
 			ActionType actionType) {
 		
 		String url = resource.getUri();

@@ -22,6 +22,7 @@ import com.phoenixnap.oss.ramlapisync.javadoc.JavaDocStore;
 import com.phoenixnap.oss.ramlapisync.naming.RamlHelper;
 import com.phoenixnap.oss.ramlapisync.parser.FileSearcher;
 import com.phoenixnap.oss.ramlapisync.parser.SpringMvcResourceParser;
+import com.phoenixnap.oss.ramlapisync.raml.RamlAction;
 import com.phoenixnap.oss.ramlapisync.raml.RamlModelFactoryOfFactories;
 import com.phoenixnap.oss.ramlapisync.raml.RamlResource;
 import com.phoenixnap.oss.ramlapisync.raml.RamlRoot;
@@ -30,7 +31,6 @@ import org.junit.Test;
 import org.mockito.Mockito;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
-import org.raml.model.Action;
 import org.raml.model.ActionType;
 import org.raml.model.MimeType;
 import org.raml.model.ParamType;
@@ -82,7 +82,7 @@ public class SpringMvcResourceParserTest {
 	public static final String COMMENT_JAVADOC_ESCAPED = "Some field or method !\\\"*#$%£$%\\n Javadoc";
 	public static final String RETURN_JAVADOC = "Some return !\"*#$%£$%\n Javadoc";
 
-	private void validateSimpleAjaxResponse(Action action) {
+	private void validateSimpleAjaxResponse(RamlAction action) {
 		assertEquals(1, action.getResponses().size());
 		Response response = RamlHelper.getSuccessfulResponse(action);
 		assertEquals("Checking return javadoc", RETURN_JAVADOC, response.getDescription());
@@ -91,7 +91,7 @@ public class SpringMvcResourceParserTest {
 		assertNotNull("Check Response Schema is there", response.getBody().get(DEFAULT_MEDIA_TYPE).getSchema());
 	}
 	
-	private void validateMultipleResponse(Action action) {
+	private void validateMultipleResponse(RamlAction action) {
 		assertEquals(1, action.getResponses().size());
 		Response response = RamlHelper.getSuccessfulResponse(action);
 		assertEquals("Checking return javadoc", RETURN_JAVADOC, response.getDescription());
@@ -185,8 +185,8 @@ public class SpringMvcResourceParserTest {
 
 		RamlResource testResource = resourceInfo.getResource("/base").getResource("/endpoint");
 		assertEquals("Assert resources size", 2, testResource.getActions().size());
-		Action getAction = testResource.getActions().get(ActionType.GET);
-		Action postAction = testResource.getActions().get(ActionType.POST);
+		RamlAction getAction = testResource.getActions().get(ActionType.GET);
+		RamlAction postAction = testResource.getActions().get(ActionType.POST);
 		assertNotNull(getAction);
 		assertNotNull(postAction);
 		assertEquals("Assert Javadoc", COMMENT_JAVADOC, getAction.getDescription());
@@ -207,8 +207,8 @@ public class SpringMvcResourceParserTest {
 		assertFalse("Check URI", testResource.getUri().contains("the"));
 		assertEquals("Assert resources size", 1, raml.getResources().size());
 		assertEquals("Assert actions size", 2, testResource.getActions().size());
-		Action getAction = testResource.getActions().get(ActionType.GET);
-		Action postAction = testResource.getActions().get(ActionType.POST);
+		RamlAction getAction = testResource.getActions().get(ActionType.GET);
+		RamlAction postAction = testResource.getActions().get(ActionType.POST);
 		assertNotNull(getAction);
 		assertNotNull(postAction);
 		assertEquals("Assert Javadoc", COMMENT_JAVADOC, getAction.getDescription());
@@ -221,8 +221,8 @@ public class SpringMvcResourceParserTest {
 	public void test_simpleGetAndPost() {
 		RamlResource testResource = baseResourceTestController.getResource("/base").getResource("/simpleMethod");
 		assertEquals("Assert resources size", 2, testResource.getActions().size());
-		Action getAction = testResource.getActions().get(ActionType.GET);
-		Action postAction = testResource.getActions().get(ActionType.POST);
+		RamlAction getAction = testResource.getActions().get(ActionType.GET);
+		RamlAction postAction = testResource.getActions().get(ActionType.POST);
 		assertNotNull(getAction);
 		assertNotNull(postAction);
 		assertEquals("Assert Javadoc", COMMENT_JAVADOC, getAction.getDescription());
@@ -235,8 +235,8 @@ public class SpringMvcResourceParserTest {
 	public void test_simpleGetAndPostWithBodyStringParam() {
 		RamlResource testResource = baseResourceTestController.getResource("/base").getResource("/oneParameterBody");
 		assertEquals("Assert resources size", 2, testResource.getActions().size());
-		Action getAction = testResource.getActions().get(ActionType.GET);
-		Action postAction = testResource.getActions().get(ActionType.POST);
+		RamlAction getAction = testResource.getActions().get(ActionType.GET);
+		RamlAction postAction = testResource.getActions().get(ActionType.POST);
 		assertNotNull(getAction);
 		assertNotNull(postAction);
 		validateSimpleAjaxResponse(getAction);
@@ -257,8 +257,8 @@ public class SpringMvcResourceParserTest {
 	public void test_simpleGetAndPostWithOneParameter() {
 		RamlResource testResource = baseResourceTestController.getResource("/base").getResource("/oneParameter");
 		assertEquals("Assert resources size", 2, testResource.getActions().size());
-		Action getAction = testResource.getActions().get(ActionType.GET);
-		Action postAction = testResource.getActions().get(ActionType.POST);
+		RamlAction getAction = testResource.getActions().get(ActionType.GET);
+		RamlAction postAction = testResource.getActions().get(ActionType.POST);
 		assertNotNull(getAction);
 		assertNotNull(postAction);
 		validateSimpleAjaxResponse(getAction);
@@ -291,8 +291,8 @@ public class SpringMvcResourceParserTest {
 		RamlResource base = baseResourceTestController.getResource("/base");
 		RamlResource testResource = base.getResource("/twoParameter");
 		assertEquals("Assert resources size", 2, testResource.getActions().size());
-		Action getAction = testResource.getActions().get(ActionType.GET);
-		Action postAction = testResource.getActions().get(ActionType.POST);
+		RamlAction getAction = testResource.getActions().get(ActionType.GET);
+		RamlAction postAction = testResource.getActions().get(ActionType.POST);
 		assertNotNull(getAction);
 		assertNotNull(postAction);
 		validateSimpleAjaxResponse(getAction);
@@ -341,8 +341,8 @@ public class SpringMvcResourceParserTest {
 				uriParameter.getDescription());
 
 		assertEquals("Assert resources size", 2, testResource.getActions().size());
-		Action getAction = testResource.getActions().get(ActionType.GET);
-		Action postAction = testResource.getActions().get(ActionType.POST);
+		RamlAction getAction = testResource.getActions().get(ActionType.GET);
+		RamlAction postAction = testResource.getActions().get(ActionType.POST);
 		assertNotNull(getAction);
 		assertNotNull(postAction);
 		validateSimpleAjaxResponse(getAction);
@@ -380,7 +380,7 @@ public class SpringMvcResourceParserTest {
 				uriParameter.getDescription());
 
 		assertEquals("Assert resources size", 1, testResource.getActions().size());
-		Action getAction = testResource.getActions().get(ActionType.GET);
+		RamlAction getAction = testResource.getActions().get(ActionType.GET);
 		assertNotNull(getAction);
 		validateSimpleAjaxResponse(getAction);
 		assertEquals("Assert Javadoc", COMMENT_JAVADOC, getAction.getDescription());
@@ -400,8 +400,8 @@ public class SpringMvcResourceParserTest {
 	public void test_simpleGetAndPostWithRequestBodyParameter() {
 		RamlResource testResource = baseResourceTestController.getResource("/base").getResource("/oneParameterBodyObject");
 		assertEquals("Assert resources size", 2, testResource.getActions().size());
-		Action getAction = testResource.getActions().get(ActionType.GET);
-		Action postAction = testResource.getActions().get(ActionType.POST);
+		RamlAction getAction = testResource.getActions().get(ActionType.GET);
+		RamlAction postAction = testResource.getActions().get(ActionType.POST);
 		assertNotNull(getAction);
 		assertNotNull(postAction);
 		validateSimpleAjaxResponse(getAction);
@@ -426,7 +426,7 @@ public class SpringMvcResourceParserTest {
 	public void test_simplePutWithRequestBodyParameterAndIgnoredParams() {
 		RamlResource testResource = baseResourceTestController.getResource("/base").getResource("/methodBodyIgnore");
 		assertEquals("Assert resources size", 1, testResource.getActions().size());
-		Action putAction = testResource.getActions().get(ActionType.PUT);
+		RamlAction putAction = testResource.getActions().get(ActionType.PUT);
 		assertNotNull(putAction);
 		validateSimpleAjaxResponse(putAction);
 

@@ -14,14 +14,13 @@ package com.phoenixnap.oss.ramlapisync.verification.checkers;
 
 import com.phoenixnap.oss.ramlapisync.naming.Pair;
 import com.phoenixnap.oss.ramlapisync.parser.ResourceParser;
-import com.phoenixnap.oss.ramlapisync.raml.RamlModelFactoryOfFactories;
+import com.phoenixnap.oss.ramlapisync.raml.RamlAction;
 import com.phoenixnap.oss.ramlapisync.raml.RamlResource;
 import com.phoenixnap.oss.ramlapisync.verification.Issue;
 import com.phoenixnap.oss.ramlapisync.verification.IssueLocation;
 import com.phoenixnap.oss.ramlapisync.verification.IssueSeverity;
 import com.phoenixnap.oss.ramlapisync.verification.IssueType;
 import com.phoenixnap.oss.ramlapisync.verification.RamlActionVisitorCheck;
-import org.raml.model.Action;
 import org.raml.model.ActionType;
 import org.raml.model.MimeType;
 import org.raml.model.parameter.QueryParameter;
@@ -55,13 +54,12 @@ public class ActionQueryParameterChecker implements RamlActionVisitorCheck {
 	protected static final Logger logger = LoggerFactory.getLogger(ActionQueryParameterChecker.class);
 
 	@Override
-	public Pair<Set<Issue>, Set<Issue>> check(ActionType name, Action reference, Action target, IssueLocation location, IssueSeverity maxSeverity) {
+	public Pair<Set<Issue>, Set<Issue>> check(ActionType name, RamlAction reference, RamlAction target, IssueLocation location, IssueSeverity maxSeverity) {
 		logger.debug("Checking Action " + name);
 		Set<Issue> errors = new LinkedHashSet<>();
 		Set<Issue> warnings = new LinkedHashSet<>();
 
-		// TODO #1 remove when Action becomes RamlAction
-		RamlResource referenceRamlResource = RamlModelFactoryOfFactories.createRamlModelFactory().createRamlResource(reference.getResource());
+		RamlResource referenceRamlResource =reference.getResource();
 
 		//Resource (and all children) missing - Log it
 		Issue issue;

@@ -13,13 +13,11 @@
 package com.phoenixnap.oss.ramlapisync.style.checkers;
 
 import com.phoenixnap.oss.ramlapisync.naming.SchemaHelper;
-import com.phoenixnap.oss.ramlapisync.raml.RamlModelFactoryOfFactories;
-import com.phoenixnap.oss.ramlapisync.raml.RamlResource;
+import com.phoenixnap.oss.ramlapisync.raml.RamlAction;
 import com.phoenixnap.oss.ramlapisync.raml.RamlRoot;
 import com.phoenixnap.oss.ramlapisync.style.RamlStyleCheckerAdapter;
 import com.phoenixnap.oss.ramlapisync.style.StyleIssue;
 import com.phoenixnap.oss.ramlapisync.verification.IssueLocation;
-import org.raml.model.Action;
 import org.raml.model.ActionType;
 import org.raml.model.MimeType;
 import org.slf4j.Logger;
@@ -58,7 +56,7 @@ public class RequestBodySchemaStyleChecker extends RamlStyleCheckerAdapter {
 	}
 	
 	@Override
-	public Set<StyleIssue> checkActionStyle(ActionType key, Action value,
+	public Set<StyleIssue> checkActionStyle(ActionType key, RamlAction value,
 			IssueLocation location, RamlRoot raml) {
 		logger.debug("Checking Action: " + key);
 		Set<StyleIssue> issues = new LinkedHashSet<>();
@@ -76,9 +74,7 @@ public class RequestBodySchemaStyleChecker extends RamlStyleCheckerAdapter {
 				
 			
 			if (!schemaFound) {
-				// TODO #1 remove when Action becomes RamlAction
-				RamlResource valueRamlResource = RamlModelFactoryOfFactories.createRamlModelFactory().createRamlResource(value.getResource());
-				issues.add(new StyleIssue(location, String.format(DESCRIPTION, key), valueRamlResource, value));
+				issues.add(new StyleIssue(location, String.format(DESCRIPTION, key), value.getResource(), value));
 			}
 		}
 			

@@ -24,9 +24,9 @@ import com.phoenixnap.oss.ramlapisync.naming.NamingHelper;
 import com.phoenixnap.oss.ramlapisync.naming.Pair;
 import com.phoenixnap.oss.ramlapisync.naming.RamlHelper;
 import com.phoenixnap.oss.ramlapisync.naming.SchemaHelper;
+import com.phoenixnap.oss.ramlapisync.raml.RamlAction;
 import com.phoenixnap.oss.ramlapisync.raml.RamlModelFactoryOfFactories;
 import com.phoenixnap.oss.ramlapisync.raml.RamlResource;
-import org.raml.model.Action;
 import org.raml.model.ActionType;
 import org.raml.model.MimeType;
 import org.raml.model.ParamType;
@@ -430,7 +430,7 @@ public class SpringMvcResourceParser extends ResourceParser {
 
 		Map<ActionType, String> methodActions = getHttpMethodAndName(method);
 		for (Entry<ActionType, String> methodAction : methodActions.entrySet()) {
-			Action action = new Action();
+			RamlAction action = RamlModelFactoryOfFactories.createRamlModelFactory().createRamlAction();
 			ActionType apiAction = methodAction.getKey();
 			String apiName = methodAction.getValue();
 			//Method assumes that the name starts with /
@@ -540,15 +540,15 @@ public class SpringMvcResourceParser extends ResourceParser {
 			} else {
 				actionTargetResource = parentResource;
 			}
-			action.setResource(RamlModelFactoryOfFactories.createRamlModelFactory().extractResource(actionTargetResource));
+			action.setResource(actionTargetResource);
 			action.setType(apiAction);
 			if (actionTargetResource.getActions().containsKey(apiAction)) {
 				//merge action
-				Action existingAction = actionTargetResource.getActions().get(apiAction);
+				RamlAction existingAction = actionTargetResource.getActions().get(apiAction);
 				RamlHelper.mergeActions(existingAction, action);
 				
 			} else {
-				actionTargetResource.getActions().put(apiAction, action);
+				actionTargetResource.addAction(apiAction, action);
 			}
 		}
 
@@ -566,7 +566,7 @@ public class SpringMvcResourceParser extends ResourceParser {
 	}
 
 	@Override
-	protected void addHeadersForMethod(Action action, ActionType actionType, Method method) {
+	protected void addHeadersForMethod(RamlAction action, ActionType actionType, Method method) {
 
 	}
 

@@ -18,9 +18,9 @@ import com.phoenixnap.oss.ramlapisync.javadoc.JavaDocExtractor;
 import com.phoenixnap.oss.ramlapisync.javadoc.JavaDocStore;
 import com.phoenixnap.oss.ramlapisync.naming.Pair;
 import com.phoenixnap.oss.ramlapisync.naming.SchemaHelper;
+import com.phoenixnap.oss.ramlapisync.raml.RamlAction;
 import com.phoenixnap.oss.ramlapisync.raml.RamlModelFactoryOfFactories;
 import com.phoenixnap.oss.ramlapisync.raml.RamlResource;
-import org.raml.model.Action;
 import org.raml.model.ActionType;
 import org.raml.model.MimeType;
 import org.raml.model.ParamType;
@@ -258,7 +258,7 @@ public abstract class ResourceParser {
 	 * @param actionType The verb of the Action
 	 * @param method The method to inspect for headers
 	 */
-	protected abstract void addHeadersForMethod(Action action, ActionType actionType, Method method);
+	protected abstract void addHeadersForMethod(RamlAction action, ActionType actionType, Method method);
 
 	/**
 	 * Queries the parameters in the Method and checks for an AjaxParameter Annotation with the resource Id flag enabled

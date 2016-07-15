@@ -9,10 +9,10 @@
  */
 package com.phoenixnap.oss.ramlapisync.naming;
 
+import com.phoenixnap.oss.ramlapisync.raml.RamlAction;
 import com.phoenixnap.oss.ramlapisync.raml.RamlResource;
 import com.phoenixnap.oss.ramlapisync.raml.RamlResourceRoot;
 import com.phoenixnap.oss.ramlapisync.raml.RamlRoot;
-import org.raml.model.Action;
 import org.raml.model.MimeType;
 import org.raml.model.Response;
 import org.springframework.util.CollectionUtils;
@@ -48,7 +48,7 @@ public class RamlHelper {
 		}
 		
 		if (addActions) {
-			existing.getActions().putAll(resource.getActions());
+			existing.addActions(resource.getActions());
 		}
 	}
 	
@@ -81,7 +81,7 @@ public class RamlHelper {
 	 * @param existingAction The action we already have in our model
 	 * @param newAction The action we we want to include in the model
 	 */
-	public static void mergeActions (Action existingAction, Action newAction) {
+	public static void mergeActions (RamlAction existingAction, RamlAction newAction) {
 		Response existingSuccessfulResponse = getSuccessfulResponse(existingAction);
 		Response successfulResponse = getSuccessfulResponse(newAction);
 
@@ -98,7 +98,7 @@ public class RamlHelper {
 	 * @param action The action to parse
 	 * @return The Successful response or null if not found
 	 */
-	public static Response getSuccessfulResponse(Action action) {
+	public static Response getSuccessfulResponse(RamlAction action) {
 		String[] successfulResponses = new String[] {"200", "201"};
 		for (String code : successfulResponses) {
 			if (action != null && !CollectionUtils.isEmpty(action.getResponses()) && action.getResponses().containsKey(code)) {

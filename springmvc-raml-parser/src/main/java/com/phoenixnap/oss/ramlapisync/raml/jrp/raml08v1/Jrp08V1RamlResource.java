@@ -1,5 +1,6 @@
 package com.phoenixnap.oss.ramlapisync.raml.jrp.raml08v1;
 
+import com.phoenixnap.oss.ramlapisync.raml.RamlAction;
 import com.phoenixnap.oss.ramlapisync.raml.RamlModelFactory;
 import com.phoenixnap.oss.ramlapisync.raml.RamlModelFactoryOfFactories;
 import com.phoenixnap.oss.ramlapisync.raml.RamlResource;
@@ -21,20 +22,10 @@ public class Jrp08V1RamlResource implements RamlResource {
 
     private final Resource resource;
     private Map<String, RamlResource> resources = new LinkedHashMap<>();
+    private Map<ActionType, RamlAction> actions = new LinkedHashMap<>();
 
     public Jrp08V1RamlResource(Resource resource) {
         this.resource = resource;
-    }
-
-    private void syncResources() {
-        if(resources.size() != resource.getResources().size()) {
-            resources.clear();
-            Map<String, Resource> baseResources = resource.getResources();
-            for (String key : baseResources.keySet()) {
-                RamlResource ramlResource = ramlModelFactory.createRamlResource(baseResources.get(key));
-                resources.put(key, ramlResource);
-            }
-        }
     }
 
     /**
@@ -56,8 +47,34 @@ public class Jrp08V1RamlResource implements RamlResource {
     }
 
     @Override
-    public Map<ActionType, Action> getActions() {
-        return resource.getActions();
+    public Map<ActionType, RamlAction> getActions() {
+        syncActions();
+        return Collections.unmodifiableMap(actions);
+    }
+
+
+    @Override
+    public void addActions(Map<ActionType, RamlAction> newActions) {
+        for(ActionType key: newActions.keySet()) {
+            addAction(key, newActions.get(key));
+        }
+    }
+
+    @Override
+    public void addAction(ActionType actionType, RamlAction action) {
+        resource.getActions().put(actionType, ramlModelFactory.extractAction(action));
+        actions.put(actionType, action);
+    }
+
+    private void syncActions() {
+        if(actions.size() != resource.getActions().size()) {
+            actions.clear();
+            Map<ActionType, Action> baseActions = resource.getActions();
+            for (ActionType key : baseActions.keySet()) {
+                RamlAction ramlAction = ramlModelFactory.createRamlAction(baseActions.get(key));
+                actions.put(key, ramlAction);
+            }
+        }
     }
 
     @Override
@@ -72,7 +89,6 @@ public class Jrp08V1RamlResource implements RamlResource {
         resources.remove(firstResourcePart);
     }
 
-
     @Override
     public void addResources(Map<String, RamlResource> resources) {
         for(String key: resources.keySet()) {
@@ -84,6 +100,17 @@ public class Jrp08V1RamlResource implements RamlResource {
     public Map<String, RamlResource> getResources() {
         syncResources();
         return Collections.unmodifiableMap(resources);
+    }
+
+    private void syncResources() {
+        if(resources.size() != resource.getResources().size()) {
+            resources.clear();
+            Map<String, Resource> baseResources = resource.getResources();
+            for (String key : baseResources.keySet()) {
+                RamlResource ramlResource = ramlModelFactory.createRamlResource(baseResources.get(key));
+                resources.put(key, ramlResource);
+            }
+        }
     }
 
     @Override
@@ -142,8 +169,8 @@ public class Jrp08V1RamlResource implements RamlResource {
     }
 
     @Override
-    public Action getAction(ActionType actionType) {
-        return resource.getAction(actionType);
+    public RamlAction getAction(ActionType actionType) {
+        return ramlModelFactory.createRamlAction(resource.getAction(actionType));
     }
 
     @Override

@@ -12,13 +12,11 @@
  */
 package com.phoenixnap.oss.ramlapisync.style.checkers;
 
-import com.phoenixnap.oss.ramlapisync.raml.RamlModelFactoryOfFactories;
-import com.phoenixnap.oss.ramlapisync.raml.RamlResource;
+import com.phoenixnap.oss.ramlapisync.raml.RamlAction;
 import com.phoenixnap.oss.ramlapisync.raml.RamlRoot;
 import com.phoenixnap.oss.ramlapisync.style.RamlStyleCheckerAdapter;
 import com.phoenixnap.oss.ramlapisync.style.StyleIssue;
 import com.phoenixnap.oss.ramlapisync.verification.IssueLocation;
-import org.raml.model.Action;
 import org.raml.model.ActionType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -55,7 +53,7 @@ public class ResponseCodeDefinitionStyleChecker extends RamlStyleCheckerAdapter 
 
 	
 	@Override
-	public Set<StyleIssue> checkActionStyle(ActionType key, Action value,
+	public Set<StyleIssue> checkActionStyle(ActionType key, RamlAction value,
 			IssueLocation location, RamlRoot raml) {
 		logger.debug("Checking Action: " + key);
 		Set<StyleIssue> issues = new LinkedHashSet<>();
@@ -67,9 +65,7 @@ public class ResponseCodeDefinitionStyleChecker extends RamlStyleCheckerAdapter 
 				for (HttpStatus check : statuses) {
 					if (value.getResponses() == null
 							|| !value.getResponses().containsKey(String.valueOf(check.value()))) {
-						// TODO #1 remove when Action becomes a RamlAction
-						RamlResource ramlResource = RamlModelFactoryOfFactories.createRamlModelFactory().createRamlResource(value.getResource());
-						issues.add(new StyleIssue(location, String.format(DESCRIPTION, key, check.name(), check.value()), ramlResource, value));
+						issues.add(new StyleIssue(location, String.format(DESCRIPTION, key, check.name(), check.value()), value.getResource(), value));
 					} 
 				}
 				

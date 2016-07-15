@@ -1,9 +1,11 @@
 package com.phoenixnap.oss.ramlapisync.raml.jrp.raml08v1;
 
+import com.phoenixnap.oss.ramlapisync.raml.RamlAction;
 import com.phoenixnap.oss.ramlapisync.raml.RamlModelEmitter;
 import com.phoenixnap.oss.ramlapisync.raml.RamlModelFactory;
 import com.phoenixnap.oss.ramlapisync.raml.RamlResource;
 import com.phoenixnap.oss.ramlapisync.raml.RamlRoot;
+import org.raml.model.Action;
 import org.raml.model.Raml;
 import org.raml.model.Resource;
 import org.raml.parser.visitor.RamlDocumentBuilder;
@@ -35,6 +37,9 @@ public class Jrp08V1RamlModelFactory implements RamlModelFactory {
     }
 
     private RamlRoot createRamlRoot(Raml raml) {
+        if(raml == null) {
+            return null;
+        }
         return new Jrp08V1RamlRoot(raml);
     }
 
@@ -57,4 +62,21 @@ public class Jrp08V1RamlModelFactory implements RamlModelFactory {
         return ((Jrp08V1RamlResource)ramlResource).getResource();
     }
 
+    @Override
+    public RamlAction createRamlAction(Object action) {
+        if(action == null) {
+            return null;
+        }
+        return new Jrp08V1RamlAction((Action)action);
+    }
+
+    @Override
+    public RamlAction createRamlAction() {
+        return createRamlAction(new Action());
+    }
+
+    @Override
+    public Action extractAction(RamlAction ramlAction) {
+        return ((Jrp08V1RamlAction)ramlAction).getAction();
+    }
 }

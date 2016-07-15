@@ -12,13 +12,11 @@
  */
 package com.phoenixnap.oss.ramlapisync.style.checkers;
 
-import com.phoenixnap.oss.ramlapisync.raml.RamlModelFactoryOfFactories;
-import com.phoenixnap.oss.ramlapisync.raml.RamlResource;
+import com.phoenixnap.oss.ramlapisync.raml.RamlAction;
 import com.phoenixnap.oss.ramlapisync.raml.RamlRoot;
 import com.phoenixnap.oss.ramlapisync.style.RamlStyleCheckerAdapter;
 import com.phoenixnap.oss.ramlapisync.style.StyleIssue;
 import com.phoenixnap.oss.ramlapisync.verification.IssueLocation;
-import org.raml.model.Action;
 import org.raml.model.ActionType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -44,7 +42,7 @@ public class ActionSecurityResponseChecker extends RamlStyleCheckerAdapter {
 	public static String DESCRIPTION = "Secured Resources should define 401 and 403 responses";
 	
 	@Override
-	public Set<StyleIssue> checkActionStyle(ActionType key, Action value,
+	public Set<StyleIssue> checkActionStyle(ActionType key, RamlAction value,
 			IssueLocation location, RamlRoot raml) {
 		logger.debug("Checking Action: " + key);
 		Set<StyleIssue> issues = new LinkedHashSet<>();
@@ -58,9 +56,7 @@ public class ActionSecurityResponseChecker extends RamlStyleCheckerAdapter {
 			if (value.getResponses() == null
 					|| !value.getResponses().containsKey("401")
 					|| !value.getResponses().containsKey("403")) {
-				// TODO #1 remove when Action becomes RamlAction
-				RamlResource ramlResource = RamlModelFactoryOfFactories.createRamlModelFactory().createRamlResource(value.getResource());
-				issues.add(new StyleIssue(location, DESCRIPTION, ramlResource, value));
+				issues.add(new StyleIssue(location, DESCRIPTION, value.getResource(), value));
 			} 
 		}
 		

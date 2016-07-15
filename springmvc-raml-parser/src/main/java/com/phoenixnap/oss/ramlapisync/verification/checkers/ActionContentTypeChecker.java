@@ -13,14 +13,13 @@ package com.phoenixnap.oss.ramlapisync.verification.checkers;
 import com.phoenixnap.oss.ramlapisync.naming.Pair;
 import com.phoenixnap.oss.ramlapisync.naming.RamlHelper;
 import com.phoenixnap.oss.ramlapisync.parser.ResourceParser;
-import com.phoenixnap.oss.ramlapisync.raml.RamlModelFactoryOfFactories;
+import com.phoenixnap.oss.ramlapisync.raml.RamlAction;
 import com.phoenixnap.oss.ramlapisync.raml.RamlResource;
 import com.phoenixnap.oss.ramlapisync.verification.Issue;
 import com.phoenixnap.oss.ramlapisync.verification.IssueLocation;
 import com.phoenixnap.oss.ramlapisync.verification.IssueSeverity;
 import com.phoenixnap.oss.ramlapisync.verification.IssueType;
 import com.phoenixnap.oss.ramlapisync.verification.RamlActionVisitorCheck;
-import org.raml.model.Action;
 import org.raml.model.ActionType;
 import org.raml.model.Response;
 import org.slf4j.Logger;
@@ -51,7 +50,7 @@ public class ActionContentTypeChecker
 
 
 	@Override
-	public Pair<Set<Issue>, Set<Issue>> check(ActionType name, Action reference, Action target, IssueLocation location, IssueSeverity maxSeverity) {
+	public Pair<Set<Issue>, Set<Issue>> check(ActionType name, RamlAction reference, RamlAction target, IssueLocation location, IssueSeverity maxSeverity) {
 		logger.debug("Checking action " + name);
 		Set<Issue> errors = new LinkedHashSet<>();
 		Set<Issue> warnings = new LinkedHashSet<>();
@@ -62,8 +61,7 @@ public class ActionContentTypeChecker
 			return new Pair<>(warnings, errors);
 		}
 
-		// TODO #1 remove when Action becomes a RamlAction
-		RamlResource referenceRamlResource = RamlModelFactoryOfFactories.createRamlModelFactory().createRamlResource(reference.getResource());
+		RamlResource referenceRamlResource = reference.getResource();
 
 		// Request First
 		// First lets check if we have defined a request media type.
