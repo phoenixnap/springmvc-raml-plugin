@@ -1,8 +1,6 @@
 package com.phoenixnap.oss.ramlapisync.raml.jrp.raml08v1;
 
 import com.phoenixnap.oss.ramlapisync.raml.RamlAction;
-import com.phoenixnap.oss.ramlapisync.raml.RamlModelFactory;
-import com.phoenixnap.oss.ramlapisync.raml.RamlModelFactoryOfFactories;
 import com.phoenixnap.oss.ramlapisync.raml.RamlResource;
 import org.raml.model.Action;
 import org.raml.model.ActionType;
@@ -18,7 +16,7 @@ import java.util.Map;
  */
 public class Jrp08V1RamlResource implements RamlResource {
 
-    private static RamlModelFactory ramlModelFactory = RamlModelFactoryOfFactories.createRamlModelFactory();
+    private static Jrp08V1RamlModelFactory ramlModelFactory = new Jrp08V1RamlModelFactory();
 
     private final Resource resource;
     private Map<String, RamlResource> resources = new LinkedHashMap<>();
@@ -62,7 +60,7 @@ public class Jrp08V1RamlResource implements RamlResource {
 
     @Override
     public void addAction(ActionType actionType, RamlAction action) {
-        resource.getActions().put(actionType, ramlModelFactory.extractAction(action));
+        resource.getActions().put(actionType, Jrp08V1RamlModelFactory.extractAction(action));
         actions.put(actionType, action);
     }
 

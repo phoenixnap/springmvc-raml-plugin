@@ -36,7 +36,7 @@ public class Jrp08V1RamlModelFactory implements RamlModelFactory {
         return createRamlRoot(raml);
     }
 
-    private RamlRoot createRamlRoot(Raml raml) {
+    RamlRoot createRamlRoot(Raml raml) {
         if(raml == null) {
             return null;
         }
@@ -56,8 +56,7 @@ public class Jrp08V1RamlModelFactory implements RamlModelFactory {
         return new Jrp08V1RamlResource((Resource)resource);
     }
 
-    @Override
-    public Resource extractResource(RamlResource ramlResource) {
+    Resource extractResource(RamlResource ramlResource) {
         if(ramlResource == null) return null;
         return ((Jrp08V1RamlResource)ramlResource).getResource();
     }
@@ -75,8 +74,7 @@ public class Jrp08V1RamlModelFactory implements RamlModelFactory {
         return createRamlAction(new Action());
     }
 
-    @Override
-    public Action extractAction(RamlAction ramlAction) {
+    static Action extractAction(RamlAction ramlAction) {
         return ((Jrp08V1RamlAction)ramlAction).getAction();
     }
 }
