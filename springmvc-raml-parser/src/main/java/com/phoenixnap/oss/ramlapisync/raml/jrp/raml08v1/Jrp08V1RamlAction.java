@@ -2,13 +2,13 @@ package com.phoenixnap.oss.ramlapisync.raml.jrp.raml08v1;
 
 import com.phoenixnap.oss.ramlapisync.raml.RamlAction;
 import com.phoenixnap.oss.ramlapisync.raml.RamlActionType;
+import com.phoenixnap.oss.ramlapisync.raml.RamlHeader;
 import com.phoenixnap.oss.ramlapisync.raml.RamlMimeType;
 import com.phoenixnap.oss.ramlapisync.raml.RamlResource;
 import com.phoenixnap.oss.ramlapisync.raml.RamlResponse;
 import org.raml.model.Action;
 import org.raml.model.Response;
 import org.raml.model.SecurityReference;
-import org.raml.model.parameter.Header;
 import org.raml.model.parameter.QueryParameter;
 
 import java.util.Collections;
@@ -28,6 +28,8 @@ public class Jrp08V1RamlAction implements RamlAction {
     private Map<String, RamlResponse> responses = new LinkedHashMap<>();
 
     private Map<String, RamlMimeType> body = new LinkedHashMap<>();
+
+    private Map<String, RamlHeader> headers = new LinkedHashMap<>();
 
     public Jrp08V1RamlAction(Action action) {
         this.action = action;
@@ -80,8 +82,13 @@ public class Jrp08V1RamlAction implements RamlAction {
     }
 
     @Override
-    public Map<String, Header> getHeaders() {
-        return action.getHeaders();
+    public Map<String, RamlHeader> getHeaders() {
+        syncHeaders();
+        return Collections.unmodifiableMap(headers);
+    }
+
+    private void syncHeaders() {
+        ramlModelFactory.syncFromTo(action.getHeaders(), headers, ramlModelFactory::createRamlHeader);
     }
 
     @Override

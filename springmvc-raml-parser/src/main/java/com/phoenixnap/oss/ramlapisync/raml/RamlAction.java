@@ -1,7 +1,6 @@
 package com.phoenixnap.oss.ramlapisync.raml;
 
 import org.raml.model.SecurityReference;
-import org.raml.model.parameter.Header;
 import org.raml.model.parameter.QueryParameter;
 
 import java.util.List;
@@ -20,7 +19,7 @@ public interface RamlAction {
 
     RamlResource getResource();
 
-    Map<String, Header> getHeaders();
+    Map<String, RamlHeader> getHeaders();
 
     Map<String, RamlMimeType> getBody();
 

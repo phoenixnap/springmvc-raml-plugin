@@ -12,19 +12,18 @@
  */
 package com.phoenixnap.oss.ramlapisync.generation.rules.spring;
 
-import org.raml.model.parameter.Header;
+import com.phoenixnap.oss.ramlapisync.data.ApiActionMetadata;
+import com.phoenixnap.oss.ramlapisync.data.ApiParameterMetadata;
+import com.phoenixnap.oss.ramlapisync.generation.CodeModelHelper;
+import com.phoenixnap.oss.ramlapisync.generation.rules.basic.MethodParamsRule;
+import com.phoenixnap.oss.ramlapisync.raml.RamlHeader;
+import com.sun.codemodel.JAnnotationUse;
+import com.sun.codemodel.JVar;
 import org.raml.model.parameter.UriParameter;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestParam;
-
-import com.phoenixnap.oss.ramlapisync.data.ApiActionMetadata;
-import com.phoenixnap.oss.ramlapisync.data.ApiParameterMetadata;
-import com.phoenixnap.oss.ramlapisync.generation.CodeModelHelper;
-import com.phoenixnap.oss.ramlapisync.generation.rules.basic.MethodParamsRule;
-import com.sun.codemodel.JAnnotationUse;
-import com.sun.codemodel.JVar;
 
 /**
  * Generates all method parameters with Spring annotations needed for an endpoint defined by ApiMappingMetadata.
@@ -66,7 +65,7 @@ public class SpringMethodParamsRule extends MethodParamsRule {
         if (paramMetaData.getRamlParam() != null && paramMetaData.getRamlParam() instanceof UriParameter) {
             jVar.annotate(PathVariable.class);
             return jVar;
-        } else if (paramMetaData.getRamlParam() != null && paramMetaData.getRamlParam() instanceof Header) {
+        } else if (paramMetaData.getRamlParam() != null && paramMetaData.getRamlParam() instanceof RamlHeader) {
             jAnnotationUse = jVar.annotate(RequestHeader.class);
             jAnnotationUse.param("name", paramMetaData.getName());
             if (!paramMetaData.getRamlParam().isRequired()) {

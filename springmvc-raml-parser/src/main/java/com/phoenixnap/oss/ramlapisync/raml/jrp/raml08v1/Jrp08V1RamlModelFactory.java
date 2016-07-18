@@ -3,6 +3,7 @@ package com.phoenixnap.oss.ramlapisync.raml.jrp.raml08v1;
 import com.phoenixnap.oss.ramlapisync.raml.RamlAction;
 import com.phoenixnap.oss.ramlapisync.raml.RamlActionType;
 import com.phoenixnap.oss.ramlapisync.raml.RamlDocumentationItem;
+import com.phoenixnap.oss.ramlapisync.raml.RamlHeader;
 import com.phoenixnap.oss.ramlapisync.raml.RamlMimeType;
 import com.phoenixnap.oss.ramlapisync.raml.RamlModelEmitter;
 import com.phoenixnap.oss.ramlapisync.raml.RamlModelFactory;
@@ -16,6 +17,7 @@ import org.raml.model.MimeType;
 import org.raml.model.Raml;
 import org.raml.model.Resource;
 import org.raml.model.Response;
+import org.raml.model.parameter.Header;
 import org.raml.parser.visitor.RamlDocumentBuilder;
 
 import java.util.LinkedHashMap;
@@ -165,5 +167,10 @@ public class Jrp08V1RamlModelFactory implements RamlModelFactory {
 
     MimeType extractMimeType(RamlMimeType ramlMimeType) {
         return ((Jrp08V1RamlMimeType)ramlMimeType).getMimeType();
+    }
+
+    @Override
+    public RamlHeader createRamlHeader(Object header) {
+        return new Jrp08V1RamlHeader((Header)header);
     }
 }

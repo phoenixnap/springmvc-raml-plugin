@@ -40,15 +40,16 @@ public interface RamlModelFactory {
 
     RamlMimeType createRamlMimeTypeWithMime(String mime);
 
+    RamlHeader createRamlHeader(Object haeder);
+
     default <K, SV, TV> void syncFromTo(Map<K, SV> source, Map<K, TV> target, Function<SV, TV> valueTransformer) {
         syncFromTo(source, target, valueTransformer, this::identity);
     }
 
-    default <SK, TK,  SV, TV> void syncFromTo(Map<SK, SV> source, Map<TK, TV> target, Function<SV, TV> valueTransformer, Function<SK, TK> keyTransformer) {
-        if(source == null) {
+    default <SK, TK, SV, TV> void syncFromTo(Map<SK, SV> source, Map<TK, TV> target, Function<SV, TV> valueTransformer, Function<SK, TK> keyTransformer) {
+        if (source == null) {
             target.clear();
-        }
-        else if(target.size() != source.size()) {
+        } else if (target.size() != source.size()) {
             target.clear();
             for (SK key : source.keySet()) {
                 TV targetValue = valueTransformer.apply(source.get(key));
@@ -61,4 +62,5 @@ public interface RamlModelFactory {
     default <T> T identity(T object) {
         return object;
     }
+
 }
