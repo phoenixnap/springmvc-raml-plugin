@@ -26,6 +26,7 @@ import com.phoenixnap.oss.ramlapisync.raml.RamlAction;
 import com.phoenixnap.oss.ramlapisync.raml.RamlActionType;
 import com.phoenixnap.oss.ramlapisync.raml.RamlModelFactoryOfFactories;
 import com.phoenixnap.oss.ramlapisync.raml.RamlResource;
+import com.phoenixnap.oss.ramlapisync.raml.RamlResponse;
 import com.phoenixnap.oss.ramlapisync.raml.RamlRoot;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -34,7 +35,6 @@ import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
 import org.raml.model.MimeType;
 import org.raml.model.ParamType;
-import org.raml.model.Response;
 import org.raml.model.parameter.FormParameter;
 import org.raml.model.parameter.QueryParameter;
 import org.raml.model.parameter.UriParameter;
@@ -84,7 +84,7 @@ public class SpringMvcResourceParserTest {
 
 	private void validateSimpleAjaxResponse(RamlAction action) {
 		assertEquals(1, action.getResponses().size());
-		Response response = RamlHelper.getSuccessfulResponse(action);
+		RamlResponse response = RamlHelper.getSuccessfulResponse(action);
 		assertEquals("Checking return javadoc", RETURN_JAVADOC, response.getDescription());
 		assertEquals(1, response.getBody().size());
 		assertNotNull("Check Response is there", response.getBody().get(DEFAULT_MEDIA_TYPE));
@@ -93,7 +93,7 @@ public class SpringMvcResourceParserTest {
 	
 	private void validateMultipleResponse(RamlAction action) {
 		assertEquals(1, action.getResponses().size());
-		Response response = RamlHelper.getSuccessfulResponse(action);
+		RamlResponse response = RamlHelper.getSuccessfulResponse(action);
 		assertEquals("Checking return javadoc", RETURN_JAVADOC, response.getDescription());
 		assertEquals(2, response.getBody().size());
 		assertNotNull("Check Response is there", response.getBody().get(MediaType.APPLICATION_JSON_VALUE));		

@@ -1,5 +1,7 @@
 package com.phoenixnap.oss.ramlapisync.raml;
 
+import java.util.Map;
+
 /**
  * @author armin.weisser
  */
@@ -21,9 +23,15 @@ public interface RamlModelFactory {
 
     RamlAction createRamlAction();
 
-    RamlDocumentationItem createDocumentationItem();
+    RamlDocumentationItem createRamlDocumentationItem();
 
-    RamlDocumentationItem createDocumentationItem(Object documentationItem);
+    RamlDocumentationItem createRamlDocumentationItem(Object documentationItem);
 
-    RamlActionType createActionType(Object type);
+    RamlActionType createRamlActionType(Object type);
+
+    Map<String,RamlResponse> createRamlResponses(Map<String, ? extends Object> responses);
+
+    RamlResponse createRamlResponse();
+
+    RamlResponse createRamlResponse(Object response);
 }

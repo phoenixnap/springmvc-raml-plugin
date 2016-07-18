@@ -16,12 +16,12 @@ import com.phoenixnap.oss.ramlapisync.parser.ResourceParser;
 import com.phoenixnap.oss.ramlapisync.raml.RamlAction;
 import com.phoenixnap.oss.ramlapisync.raml.RamlActionType;
 import com.phoenixnap.oss.ramlapisync.raml.RamlResource;
+import com.phoenixnap.oss.ramlapisync.raml.RamlResponse;
 import com.phoenixnap.oss.ramlapisync.verification.Issue;
 import com.phoenixnap.oss.ramlapisync.verification.IssueLocation;
 import com.phoenixnap.oss.ramlapisync.verification.IssueSeverity;
 import com.phoenixnap.oss.ramlapisync.verification.IssueType;
 import com.phoenixnap.oss.ramlapisync.verification.RamlActionVisitorCheck;
-import org.raml.model.Response;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -86,10 +86,10 @@ public class ActionContentTypeChecker
 		}
 		
 		//Now the response
-		Response response = RamlHelper.getSuccessfulResponse(reference);
+		RamlResponse response = RamlHelper.getSuccessfulResponse(reference);
 		//successful response
 		if (response != null && response.getBody() != null && !response.getBody().isEmpty()) {
-			Response targetResponse = RamlHelper.getSuccessfulResponse(target);
+			RamlResponse targetResponse = RamlHelper.getSuccessfulResponse(target);
 			
 			if (targetResponse == null) {
 				issue = new Issue(maxSeverity, location, IssueType.MISSING, RESPONSE_BODY_MISSING, referenceRamlResource, reference);

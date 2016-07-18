@@ -19,8 +19,8 @@ import com.phoenixnap.oss.ramlapisync.parser.ResourceParser;
 import com.phoenixnap.oss.ramlapisync.raml.RamlAction;
 import com.phoenixnap.oss.ramlapisync.raml.RamlActionType;
 import com.phoenixnap.oss.ramlapisync.raml.RamlResource;
+import com.phoenixnap.oss.ramlapisync.raml.RamlResponse;
 import org.raml.model.MimeType;
-import org.raml.model.Response;
 import org.raml.model.parameter.FormParameter;
 import org.raml.model.parameter.UriParameter;
 import org.springframework.http.MediaType;
@@ -163,7 +163,7 @@ public class ApiActionMetadata {
 	}
 
 	private void parseResponse(String responseContentTypeFilter) {
-		Response response = RamlHelper.getSuccessfulResponse(action);
+		RamlResponse response = RamlHelper.getSuccessfulResponse(action);
 
 		if (response != null && response.getBody() != null && !response.getBody().isEmpty()) {
 			for (Entry<String, MimeType> body : response.getBody().entrySet()) {

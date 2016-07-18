@@ -22,9 +22,9 @@ import com.phoenixnap.oss.ramlapisync.raml.RamlAction;
 import com.phoenixnap.oss.ramlapisync.raml.RamlActionType;
 import com.phoenixnap.oss.ramlapisync.raml.RamlModelFactoryOfFactories;
 import com.phoenixnap.oss.ramlapisync.raml.RamlResource;
+import com.phoenixnap.oss.ramlapisync.raml.RamlResponse;
 import org.raml.model.MimeType;
 import org.raml.model.ParamType;
-import org.raml.model.Response;
 import org.raml.model.parameter.QueryParameter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -318,8 +318,8 @@ public abstract class ResourceParser {
 	 * @param responseComment The JavaDoc (if any) for this response
 	 * @return The response RAML model for this method (success only)
 	 */
-	protected Response extractResponseFromMethod(Method method, String responseComment) {
-		Response response = new Response();
+	protected RamlResponse extractResponseFromMethod(Method method, String responseComment) {
+		RamlResponse response = RamlModelFactoryOfFactories.createRamlModelFactory().createRamlResponse();
 		String mime = extractMimeTypeFromMethod(method);
 		MimeType jsonType = new MimeType(mime); // TODO this would be coolto annotate
 												// TO/VO/DO/weO with the mime type

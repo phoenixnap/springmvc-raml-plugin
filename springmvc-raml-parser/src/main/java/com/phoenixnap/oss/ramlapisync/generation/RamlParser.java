@@ -18,8 +18,8 @@ import com.phoenixnap.oss.ramlapisync.raml.RamlAction;
 import com.phoenixnap.oss.ramlapisync.raml.RamlActionType;
 import com.phoenixnap.oss.ramlapisync.raml.RamlModelFactoryOfFactories;
 import com.phoenixnap.oss.ramlapisync.raml.RamlResource;
+import com.phoenixnap.oss.ramlapisync.raml.RamlResponse;
 import com.phoenixnap.oss.ramlapisync.raml.RamlRoot;
-import org.raml.model.Response;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -145,7 +145,7 @@ public class RamlParser {
 		if (resource.getActions() != null && !resource.getActions().isEmpty()) {			
 			for (Entry<RamlActionType, RamlAction> childResource : resource.getActions().entrySet()) {
 				//if we have multiple response types in the raml, this should produce different calls
-				Response response = null;
+				RamlResponse response = null;
 				
 				if (childResource.getValue().getResponses() != null) {
 					response = RamlHelper.getSuccessfulResponse(childResource.getValue());

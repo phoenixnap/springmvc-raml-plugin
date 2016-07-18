@@ -156,7 +156,7 @@ public class RamlGenerator {
 		List<RamlDocumentationItem> documentInfos = new ArrayList<>();
 		for (ApiDocumentMetadata documentInfo : documents) {
 			logger.info("Adding document: " + documentInfo.getDocumentTitle());
-			RamlDocumentationItem documentItem = RamlModelFactoryOfFactories.createRamlModelFactory().createDocumentationItem();
+			RamlDocumentationItem documentItem = RamlModelFactoryOfFactories.createRamlModelFactory().createRamlDocumentationItem();
 
 			documentItem.setContent("!include " + documentInfo.getDocumentPath());
 			documentItem.setTitle(documentInfo.getDocumentTitle());

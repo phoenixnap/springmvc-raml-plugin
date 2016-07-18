@@ -28,9 +28,9 @@ import com.phoenixnap.oss.ramlapisync.raml.RamlAction;
 import com.phoenixnap.oss.ramlapisync.raml.RamlActionType;
 import com.phoenixnap.oss.ramlapisync.raml.RamlModelFactoryOfFactories;
 import com.phoenixnap.oss.ramlapisync.raml.RamlResource;
+import com.phoenixnap.oss.ramlapisync.raml.RamlResponse;
 import org.raml.model.MimeType;
 import org.raml.model.ParamType;
-import org.raml.model.Response;
 import org.raml.model.parameter.FormParameter;
 import org.raml.model.parameter.UriParameter;
 import org.slf4j.Logger;
@@ -441,7 +441,7 @@ public class SpringMvcResourceParser extends ResourceParser {
 			logger.info("Added call: " + apiName + " " +apiAction  + " from method: " + method.getName()  );
 
 			String responseComment = docEntry == null ? null : docEntry.getReturnTypeComment();
-			Response response = extractResponseFromMethod(method, responseComment);
+			RamlResponse response = extractResponseFromMethod(method, responseComment);
 			Map<String, String> parameterComments = (docEntry == null ? Collections.emptyMap() : docEntry
 					.getParameterComments());
 			// Lets extract any query parameters (for Verbs that don't support bodies) and insert them in the Action

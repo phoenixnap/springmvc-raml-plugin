@@ -71,7 +71,7 @@ public class Jrp08V1RamlResource implements RamlResource {
             Map<ActionType, Action> baseActions = resource.getActions();
             for (ActionType key : baseActions.keySet()) {
                 RamlAction ramlAction = ramlModelFactory.createRamlAction(baseActions.get(key));
-                actions.put(ramlModelFactory.createActionType(key), ramlAction);
+                actions.put(ramlModelFactory.createRamlActionType(key), ramlAction);
             }
         }
     }

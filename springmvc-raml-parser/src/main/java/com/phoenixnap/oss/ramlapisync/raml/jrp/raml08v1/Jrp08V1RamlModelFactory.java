@@ -6,15 +6,19 @@ import com.phoenixnap.oss.ramlapisync.raml.RamlDocumentationItem;
 import com.phoenixnap.oss.ramlapisync.raml.RamlModelEmitter;
 import com.phoenixnap.oss.ramlapisync.raml.RamlModelFactory;
 import com.phoenixnap.oss.ramlapisync.raml.RamlResource;
+import com.phoenixnap.oss.ramlapisync.raml.RamlResponse;
 import com.phoenixnap.oss.ramlapisync.raml.RamlRoot;
 import org.raml.model.Action;
 import org.raml.model.ActionType;
 import org.raml.model.DocumentationItem;
 import org.raml.model.Raml;
 import org.raml.model.Resource;
+import org.raml.model.Response;
 import org.raml.parser.visitor.RamlDocumentBuilder;
 
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 /**
@@ -86,12 +90,12 @@ public class Jrp08V1RamlModelFactory implements RamlModelFactory {
     }
 
     @Override
-    public RamlDocumentationItem createDocumentationItem() {
-        return createDocumentationItem(new DocumentationItem());
+    public RamlDocumentationItem createRamlDocumentationItem() {
+        return createRamlDocumentationItem(new DocumentationItem());
     }
 
     @Override
-    public RamlDocumentationItem createDocumentationItem(Object documentationItem) {
+    public RamlDocumentationItem createRamlDocumentationItem(Object documentationItem) {
         return new Jrp08V1RamlDocumentationItem((DocumentationItem)documentationItem);
     }
 
@@ -109,11 +113,37 @@ public class Jrp08V1RamlModelFactory implements RamlModelFactory {
     }
 
     @Override
-    public RamlActionType createActionType(Object type) {
+    public RamlActionType createRamlActionType(Object type) {
         return RamlActionType.valueOf(((ActionType)type).name());
     }
 
     ActionType extractActionType(RamlActionType ramlActionType) {
         return ActionType.valueOf(ramlActionType.name());
     }
+
+    @Override
+    public Map<String, RamlResponse> createRamlResponses(Map<String, ? extends Object> responses) {
+        if(responses == null) {
+            return null;
+        }
+        Map<String, RamlResponse> ramlResponses = new LinkedHashMap<>(responses.size());
+        for(String key: responses.keySet()) {
+            ramlResponses.put(key, createRamlResponse(responses.get(key)));
+        }
+        return ramlResponses;
+    }
+
+    @Override
+    public RamlResponse createRamlResponse() {
+        return createRamlResponse(new Response());
+    }
+
+    public RamlResponse createRamlResponse(Object response) {
+        if(response == null) {
+            return null;
+        }
+        return new Jrp08V1RamlResponse((Response)response);
+    }
+
+
 }
