@@ -38,4 +38,6 @@ public interface RamlAction {
     void setType(RamlActionType actionType);
 
     List<SecurityReference> getSecuredBy();
+
+    void addResponse(String httpStatus, RamlResponse response);
 }

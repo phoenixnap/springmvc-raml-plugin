@@ -18,4 +18,5 @@ public interface RamlResponse {
     void setDescription(String description);
 
     String getDescription();
+
 }

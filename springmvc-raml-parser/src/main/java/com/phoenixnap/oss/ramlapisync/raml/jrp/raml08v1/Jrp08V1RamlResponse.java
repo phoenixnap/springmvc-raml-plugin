@@ -16,6 +16,14 @@ public class Jrp08V1RamlResponse implements RamlResponse {
         this.response = response;
     }
 
+    /**
+     * Expose internal representation only package private
+     * @return the internal model
+     */
+    Response getResponse() {
+        return response;
+    }
+
     @Override
     public void setBody(Map<String, MimeType> body) {
         response.setBody(body);

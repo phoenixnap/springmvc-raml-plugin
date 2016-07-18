@@ -460,7 +460,7 @@ public class SpringMvcResourceParser extends ResourceParser {
 			} else {
 				action.setDescription(method.getName());
 			}
-			action.getResponses().put("200", response);
+			action.addResponse("200", response);
 
 			RamlResource idResource = null;
 			RamlResource leafResource = null;

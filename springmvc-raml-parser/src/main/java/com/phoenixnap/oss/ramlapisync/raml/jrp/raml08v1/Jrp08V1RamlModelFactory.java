@@ -16,9 +16,7 @@ import org.raml.model.Resource;
 import org.raml.model.Response;
 import org.raml.parser.visitor.RamlDocumentBuilder;
 
-import java.util.LinkedHashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.stream.Collectors;
 
 /**
@@ -122,18 +120,6 @@ public class Jrp08V1RamlModelFactory implements RamlModelFactory {
     }
 
     @Override
-    public Map<String, RamlResponse> createRamlResponses(Map<String, ? extends Object> responses) {
-        if(responses == null) {
-            return null;
-        }
-        Map<String, RamlResponse> ramlResponses = new LinkedHashMap<>(responses.size());
-        for(String key: responses.keySet()) {
-            ramlResponses.put(key, createRamlResponse(responses.get(key)));
-        }
-        return ramlResponses;
-    }
-
-    @Override
     public RamlResponse createRamlResponse() {
         return createRamlResponse(new Response());
     }
@@ -146,4 +132,7 @@ public class Jrp08V1RamlModelFactory implements RamlModelFactory {
     }
 
 
+    public Response extractResponse(RamlResponse ramlResponse) {
+        return ((Jrp08V1RamlResponse)ramlResponse).getResponse();
+    }
 }
