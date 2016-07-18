@@ -2,7 +2,6 @@ package com.phoenixnap.oss.ramlapisync.raml.jrp.raml08v1;
 
 import com.phoenixnap.oss.ramlapisync.raml.RamlMimeType;
 import com.phoenixnap.oss.ramlapisync.raml.RamlResponse;
-import org.raml.model.MimeType;
 import org.raml.model.Response;
 
 import java.util.Collections;
@@ -45,14 +44,7 @@ public class Jrp08V1RamlResponse implements RamlResponse {
     }
 
     private void syncBody() {
-        if(body.size() != response.getBody().size()) {
-            body.clear();
-            Map<String, MimeType> baseBody = response.getBody();
-            for (String key : baseBody.keySet()) {
-                RamlMimeType ramlBody = ramlModelFactory.createRamlMimeType(baseBody.get(key));
-                body.put(key, ramlBody);
-            }
-        }
+        ramlModelFactory.syncFromTo(response.getBody(), body, ramlModelFactory::createRamlMimeType);
     }
 
     @Override

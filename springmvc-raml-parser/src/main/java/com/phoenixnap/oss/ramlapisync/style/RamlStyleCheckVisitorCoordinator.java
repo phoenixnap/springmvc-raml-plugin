@@ -43,7 +43,7 @@ import java.util.Set;
 public class RamlStyleCheckVisitorCoordinator implements RamlChecker {
 	
 	/**
-	 * Boolean flag to enable style checking of code too. Since RAML and code should be in sync this could be kept off to improve performance
+	 * Boolean flag to enable style checking of code too. Since RAML and code should be in syncFromTo this could be kept off to improve performance
 	 */
 	private boolean ignoreCodeStyle = true;
 	

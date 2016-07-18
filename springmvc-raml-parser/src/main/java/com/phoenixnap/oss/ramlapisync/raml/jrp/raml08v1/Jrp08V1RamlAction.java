@@ -6,7 +6,6 @@ import com.phoenixnap.oss.ramlapisync.raml.RamlMimeType;
 import com.phoenixnap.oss.ramlapisync.raml.RamlResource;
 import com.phoenixnap.oss.ramlapisync.raml.RamlResponse;
 import org.raml.model.Action;
-import org.raml.model.MimeType;
 import org.raml.model.Response;
 import org.raml.model.SecurityReference;
 import org.raml.model.parameter.Header;
@@ -92,17 +91,7 @@ public class Jrp08V1RamlAction implements RamlAction {
     }
 
     private void syncBody() {
-        if(action.getBody() == null) {
-            body.clear();
-        }
-        else if(body.size() != action.getBody().size()) {
-            body.clear();
-            Map<String, MimeType> baseBody = action.getBody();
-            for (String key : baseBody.keySet()) {
-                RamlMimeType ramlBody = ramlModelFactory.createRamlMimeType(baseBody.get(key));
-                body.put(key, ramlBody);
-            }
-        }
+        ramlModelFactory.syncFromTo(action.getBody(), body, ramlModelFactory::createRamlMimeType);
     }
 
     @Override

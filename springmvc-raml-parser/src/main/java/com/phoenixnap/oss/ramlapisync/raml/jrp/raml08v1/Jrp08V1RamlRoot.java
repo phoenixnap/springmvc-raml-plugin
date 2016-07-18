@@ -4,7 +4,6 @@ import com.phoenixnap.oss.ramlapisync.raml.RamlDocumentationItem;
 import com.phoenixnap.oss.ramlapisync.raml.RamlResource;
 import com.phoenixnap.oss.ramlapisync.raml.RamlRoot;
 import org.raml.model.Raml;
-import org.raml.model.Resource;
 
 import java.util.Collections;
 import java.util.LinkedHashMap;
@@ -30,14 +29,7 @@ public class Jrp08V1RamlRoot implements RamlRoot {
     }
 
     private void syncResources() {
-        if(resources.size() != raml.getResources().size()) {
-            resources.clear();
-            Map<String, Resource> baseResources = raml.getResources();
-            for (String key : baseResources.keySet()) {
-                RamlResource ramlResource = ramlModelFactory.createRamlResource(baseResources.get(key));
-                this.resources.put(key, ramlResource);
-            }
-        }
+        ramlModelFactory.syncFromTo(raml.getResources(), resources, ramlModelFactory::createRamlResource);
     }
 
     /**

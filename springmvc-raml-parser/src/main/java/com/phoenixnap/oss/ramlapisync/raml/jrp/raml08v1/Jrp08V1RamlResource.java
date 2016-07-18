@@ -66,14 +66,7 @@ public class Jrp08V1RamlResource implements RamlResource {
     }
 
     private void syncActions() {
-        if(actions.size() != resource.getActions().size()) {
-            actions.clear();
-            Map<ActionType, Action> baseActions = resource.getActions();
-            for (ActionType key : baseActions.keySet()) {
-                RamlAction ramlAction = ramlModelFactory.createRamlAction(baseActions.get(key));
-                actions.put(ramlModelFactory.createRamlActionType(key), ramlAction);
-            }
-        }
+        ramlModelFactory.syncFromTo(resource.getActions(), actions, ramlModelFactory::createRamlAction, ramlModelFactory::createRamlActionType);
     }
 
     @Override
@@ -102,14 +95,7 @@ public class Jrp08V1RamlResource implements RamlResource {
     }
 
     private void syncResources() {
-        if(resources.size() != resource.getResources().size()) {
-            resources.clear();
-            Map<String, Resource> baseResources = resource.getResources();
-            for (String key : baseResources.keySet()) {
-                RamlResource ramlResource = ramlModelFactory.createRamlResource(baseResources.get(key));
-                resources.put(key, ramlResource);
-            }
-        }
+        ramlModelFactory.syncFromTo(resource.getResources(), resources, ramlModelFactory::createRamlResource);
     }
 
     @Override
