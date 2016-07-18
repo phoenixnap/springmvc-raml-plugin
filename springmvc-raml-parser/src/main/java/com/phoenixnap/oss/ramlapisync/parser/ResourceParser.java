@@ -20,10 +20,11 @@ import com.phoenixnap.oss.ramlapisync.naming.Pair;
 import com.phoenixnap.oss.ramlapisync.naming.SchemaHelper;
 import com.phoenixnap.oss.ramlapisync.raml.RamlAction;
 import com.phoenixnap.oss.ramlapisync.raml.RamlActionType;
+import com.phoenixnap.oss.ramlapisync.raml.RamlMimeType;
+import com.phoenixnap.oss.ramlapisync.raml.RamlModelFactory;
 import com.phoenixnap.oss.ramlapisync.raml.RamlModelFactoryOfFactories;
 import com.phoenixnap.oss.ramlapisync.raml.RamlResource;
 import com.phoenixnap.oss.ramlapisync.raml.RamlResponse;
-import org.raml.model.MimeType;
 import org.raml.model.ParamType;
 import org.raml.model.parameter.QueryParameter;
 import org.slf4j.Logger;
@@ -184,7 +185,7 @@ public abstract class ResourceParser {
 	 * @param parameterComments The parameter comments associated with these parameters
 	 * @return A map of supported mime types for the request
 	 */
-	protected Map<String, MimeType> extractRequestBodyFromMethod(RamlActionType apiAction, Method method,
+	protected Map<String, RamlMimeType> extractRequestBodyFromMethod(RamlActionType apiAction, Method method,
 			Map<String, String> parameterComments) {
 
 		if (!(doesActionTypeSupportRequestBody(apiAction)) || method.getParameterCount() == 0) {
@@ -197,7 +198,7 @@ public abstract class ResourceParser {
 			//We only have url params it seems
 			return Collections.emptyMap();
 		}
-		Pair<String, MimeType> schemaAndMime = extractRequestBody(method, parameterComments, comment, apiParameters);
+		Pair<String, RamlMimeType> schemaAndMime = extractRequestBody(method, parameterComments, comment, apiParameters);
 
 		return Collections.singletonMap(schemaAndMime.getFirst(), schemaAndMime.getSecond());
 	}
@@ -212,10 +213,10 @@ public abstract class ResourceParser {
 	 * @param apiParameters The Parameters identifed from this method
 	 * @return The Request Body as a schema and the associated mime type
 	 */
-	protected Pair<String, MimeType> extractRequestBody(Method method, Map<String, String> parameterComments,
+	protected Pair<String, RamlMimeType> extractRequestBody(Method method, Map<String, String> parameterComments,
 			String comment, List<ApiParameterMetadata> apiParameters) {
 		String schema;
-		MimeType mimeType = new MimeType();
+		RamlMimeType mimeType = RamlModelFactoryOfFactories.createRamlModelFactory().createRamlMimeType();
 		if (apiParameters.size() == 1) {
 			if (parameterComments != null && parameterComments.size() == 1) {
 				comment = parameterComments.values().iterator().next();
@@ -319,15 +320,16 @@ public abstract class ResourceParser {
 	 * @return The response RAML model for this method (success only)
 	 */
 	protected RamlResponse extractResponseFromMethod(Method method, String responseComment) {
-		RamlResponse response = RamlModelFactoryOfFactories.createRamlModelFactory().createRamlResponse();
+		RamlModelFactory ramlModelFactory = RamlModelFactoryOfFactories.createRamlModelFactory();
+		RamlResponse response = ramlModelFactory.createRamlResponse();
 		String mime = extractMimeTypeFromMethod(method);
-		MimeType jsonType = new MimeType(mime); // TODO this would be coolto annotate
+		RamlMimeType jsonType = ramlModelFactory.createRamlMimeTypeWithMime(mime);// TODO this would be coolto annotate
 												// TO/VO/DO/weO with the mime type
 												// they represent and chuck it in here
 		jsonType.setSchema(SchemaHelper.convertClassToJsonSchema(method.getGenericReturnType(), responseComment,
 				javaDocs.getJavaDoc(method.getReturnType())));
 
-		LinkedHashMap<String, MimeType> body = new LinkedHashMap<>();
+		LinkedHashMap<String, RamlMimeType> body = new LinkedHashMap<>();
 		body.put(mime, jsonType);
 		response.setBody(body);
 		if (StringUtils.hasText(responseComment)) {

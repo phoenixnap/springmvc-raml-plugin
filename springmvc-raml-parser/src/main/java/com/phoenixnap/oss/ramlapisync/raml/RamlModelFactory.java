@@ -30,4 +30,10 @@ public interface RamlModelFactory {
     RamlResponse createRamlResponse();
 
     RamlResponse createRamlResponse(Object response);
+
+    RamlMimeType createRamlMimeType();
+
+    RamlMimeType createRamlMimeType(Object mimeType);
+
+    RamlMimeType createRamlMimeTypeWithMime(String mime);
 }

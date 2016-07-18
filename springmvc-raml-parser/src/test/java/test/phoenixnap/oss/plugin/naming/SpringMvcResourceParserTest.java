@@ -24,6 +24,7 @@ import com.phoenixnap.oss.ramlapisync.parser.FileSearcher;
 import com.phoenixnap.oss.ramlapisync.parser.SpringMvcResourceParser;
 import com.phoenixnap.oss.ramlapisync.raml.RamlAction;
 import com.phoenixnap.oss.ramlapisync.raml.RamlActionType;
+import com.phoenixnap.oss.ramlapisync.raml.RamlMimeType;
 import com.phoenixnap.oss.ramlapisync.raml.RamlModelFactoryOfFactories;
 import com.phoenixnap.oss.ramlapisync.raml.RamlResource;
 import com.phoenixnap.oss.ramlapisync.raml.RamlResponse;
@@ -33,7 +34,6 @@ import org.junit.Test;
 import org.mockito.Mockito;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
-import org.raml.model.MimeType;
 import org.raml.model.ParamType;
 import org.raml.model.parameter.FormParameter;
 import org.raml.model.parameter.QueryParameter;
@@ -246,9 +246,9 @@ public class SpringMvcResourceParserTest {
 		assertEquals("Assert Javadoc", COMMENT_JAVADOC, postAction.getDescription());
 
 		// validate Post
-		MimeType getMimeType = getAction.getBody().get(MediaType.TEXT_PLAIN_VALUE);
+		RamlMimeType getMimeType = getAction.getBody().get(MediaType.TEXT_PLAIN_VALUE);
 		assertNull(getMimeType);
-		MimeType postMimeType = postAction.getBody().get(MediaType.TEXT_PLAIN_VALUE);
+		RamlMimeType postMimeType = postAction.getBody().get(MediaType.TEXT_PLAIN_VALUE);
 		assertNotNull(postMimeType);
 
 	}

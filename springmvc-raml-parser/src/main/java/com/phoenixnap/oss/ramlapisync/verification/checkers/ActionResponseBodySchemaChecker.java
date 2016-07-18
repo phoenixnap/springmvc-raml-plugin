@@ -15,6 +15,7 @@ package com.phoenixnap.oss.ramlapisync.verification.checkers;
 import com.phoenixnap.oss.ramlapisync.naming.Pair;
 import com.phoenixnap.oss.ramlapisync.raml.RamlAction;
 import com.phoenixnap.oss.ramlapisync.raml.RamlActionType;
+import com.phoenixnap.oss.ramlapisync.raml.RamlMimeType;
 import com.phoenixnap.oss.ramlapisync.raml.RamlResource;
 import com.phoenixnap.oss.ramlapisync.verification.Issue;
 import com.phoenixnap.oss.ramlapisync.verification.IssueLocation;
@@ -30,7 +31,6 @@ import org.jsonschema2pojo.SchemaGenerator;
 import org.jsonschema2pojo.SchemaMapper;
 import org.jsonschema2pojo.SchemaStore;
 import org.jsonschema2pojo.rules.RuleFactory;
-import org.raml.model.MimeType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.util.StringUtils;
@@ -83,9 +83,9 @@ public class ActionResponseBodySchemaChecker implements RamlActionVisitorCheck {
 			RamlResource referenceRamlResource = reference.getResource();
 
 			//successful response
-			Map<String, MimeType> response = reference.getResponses().get("200").getBody();
-			for (Entry<String, MimeType> responseBodyMime : response.entrySet()) {
-				MimeType value = responseBodyMime.getValue();
+			Map<String, RamlMimeType> response = reference.getResponses().get("200").getBody();
+			for (Entry<String, RamlMimeType> responseBodyMime : response.entrySet()) {
+				RamlMimeType value = responseBodyMime.getValue();
 				if (StringUtils.hasText(value.getSchema())) {
 					logger.debug("Found body for mime type " + responseBodyMime.getKey());
 					String targetSchema = null;

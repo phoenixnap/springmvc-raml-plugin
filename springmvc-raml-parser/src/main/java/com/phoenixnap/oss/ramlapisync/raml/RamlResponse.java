@@ -1,7 +1,5 @@
 package com.phoenixnap.oss.ramlapisync.raml;
 
-import org.raml.model.MimeType;
-
 import java.util.Map;
 
 /**
@@ -9,9 +7,9 @@ import java.util.Map;
  */
 public interface RamlResponse {
 
-    void setBody(Map<String, MimeType> body);
+    void setBody(Map<String, RamlMimeType> body);
 
-    Map<String, MimeType> getBody();
+    Map<String, RamlMimeType> getBody();
 
     boolean hasBody();
 
@@ -19,4 +17,5 @@ public interface RamlResponse {
 
     String getDescription();
 
+    void addToBody(String key, RamlMimeType value);
 }

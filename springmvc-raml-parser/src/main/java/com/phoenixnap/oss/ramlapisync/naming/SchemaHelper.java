@@ -23,6 +23,7 @@ import com.phoenixnap.oss.ramlapisync.data.ApiBodyMetadata;
 import com.phoenixnap.oss.ramlapisync.data.ApiParameterMetadata;
 import com.phoenixnap.oss.ramlapisync.javadoc.JavaDocEntry;
 import com.phoenixnap.oss.ramlapisync.javadoc.JavaDocStore;
+import com.phoenixnap.oss.ramlapisync.raml.RamlMimeType;
 import com.phoenixnap.oss.ramlapisync.raml.RamlRoot;
 import com.sun.codemodel.JCodeModel;
 import org.jsonschema2pojo.Annotator;
@@ -33,7 +34,6 @@ import org.jsonschema2pojo.SchemaGenerator;
 import org.jsonschema2pojo.SchemaMapper;
 import org.jsonschema2pojo.SchemaStore;
 import org.jsonschema2pojo.rules.RuleFactory;
-import org.raml.model.MimeType;
 import org.raml.model.ParamType;
 import org.raml.model.parameter.QueryParameter;
 import org.raml.parser.utils.Inflector;
@@ -522,13 +522,13 @@ public class SchemaHelper {
 	 * @param checkForValidSchema if false, we will omit checks to see if the schema is valid
 	 * @return true if at least 1 valid schema exists
 	 */
-	public static boolean containsBodySchema(Map<String, MimeType> body, RamlRoot document, boolean checkForValidSchema) {
+	public static boolean containsBodySchema(Map<String, RamlMimeType> body, RamlRoot document, boolean checkForValidSchema) {
 		if (CollectionUtils.isEmpty(body)) {
 			return false;
 		}
 		//successful response
-		for (Entry<String, MimeType> bodyMime : body.entrySet()) {
-			MimeType mime = bodyMime.getValue();
+		for (Entry<String, RamlMimeType> bodyMime : body.entrySet()) {
+			RamlMimeType mime = bodyMime.getValue();
 			if (mime != null && StringUtils.hasText(mime.getSchema())) {
 				if (checkForValidSchema) {
 					try {

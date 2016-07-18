@@ -3,6 +3,7 @@ package com.phoenixnap.oss.ramlapisync.raml.jrp.raml08v1;
 import com.phoenixnap.oss.ramlapisync.raml.RamlAction;
 import com.phoenixnap.oss.ramlapisync.raml.RamlActionType;
 import com.phoenixnap.oss.ramlapisync.raml.RamlDocumentationItem;
+import com.phoenixnap.oss.ramlapisync.raml.RamlMimeType;
 import com.phoenixnap.oss.ramlapisync.raml.RamlModelEmitter;
 import com.phoenixnap.oss.ramlapisync.raml.RamlModelFactory;
 import com.phoenixnap.oss.ramlapisync.raml.RamlResource;
@@ -11,12 +12,15 @@ import com.phoenixnap.oss.ramlapisync.raml.RamlRoot;
 import org.raml.model.Action;
 import org.raml.model.ActionType;
 import org.raml.model.DocumentationItem;
+import org.raml.model.MimeType;
 import org.raml.model.Raml;
 import org.raml.model.Resource;
 import org.raml.model.Response;
 import org.raml.parser.visitor.RamlDocumentBuilder;
 
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 /**
@@ -132,7 +136,34 @@ public class Jrp08V1RamlModelFactory implements RamlModelFactory {
     }
 
 
-    public Response extractResponse(RamlResponse ramlResponse) {
+    Response extractResponse(RamlResponse ramlResponse) {
         return ((Jrp08V1RamlResponse)ramlResponse).getResponse();
+    }
+
+    @Override
+    public RamlMimeType createRamlMimeType() {
+        return createRamlMimeType(new MimeType());
+    }
+
+    @Override
+    public RamlMimeType createRamlMimeTypeWithMime(String mime) {
+        return createRamlMimeType(new MimeType(mime));
+    }
+
+    @Override
+    public RamlMimeType createRamlMimeType(Object mimeType) {
+        return new Jrp08V1RamlMimeType((MimeType)mimeType);
+    }
+
+    Map<String, MimeType> extractBody(Map<String, RamlMimeType> ramlBody) {
+        Map<String, MimeType> body = new LinkedHashMap<>(ramlBody.size());
+        for(String key: ramlBody.keySet()) {
+            body.put(key, extractMimeType(ramlBody.get(key)));
+        }
+        return body;
+    }
+
+    MimeType extractMimeType(RamlMimeType ramlMimeType) {
+        return ((Jrp08V1RamlMimeType)ramlMimeType).getMimeType();
     }
 }

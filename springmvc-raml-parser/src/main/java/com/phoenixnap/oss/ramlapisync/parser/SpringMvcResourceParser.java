@@ -26,10 +26,10 @@ import com.phoenixnap.oss.ramlapisync.naming.RamlHelper;
 import com.phoenixnap.oss.ramlapisync.naming.SchemaHelper;
 import com.phoenixnap.oss.ramlapisync.raml.RamlAction;
 import com.phoenixnap.oss.ramlapisync.raml.RamlActionType;
+import com.phoenixnap.oss.ramlapisync.raml.RamlMimeType;
 import com.phoenixnap.oss.ramlapisync.raml.RamlModelFactoryOfFactories;
 import com.phoenixnap.oss.ramlapisync.raml.RamlResource;
 import com.phoenixnap.oss.ramlapisync.raml.RamlResponse;
-import org.raml.model.MimeType;
 import org.raml.model.ParamType;
 import org.raml.model.parameter.FormParameter;
 import org.raml.model.parameter.UriParameter;
@@ -78,9 +78,9 @@ public class SpringMvcResourceParser extends ResourceParser {
 	}
 
 	@Override
-	protected Pair<String, MimeType> extractRequestBody(Method method, Map<String, String> parameterComments,
-			String comment, List<ApiParameterMetadata> apiParameters) {
-		MimeType mimeType = new MimeType();
+	protected Pair<String, RamlMimeType> extractRequestBody(Method method, Map<String, String> parameterComments,
+															String comment, List<ApiParameterMetadata> apiParameters) {
+		RamlMimeType mimeType = RamlModelFactoryOfFactories.createRamlModelFactory().createRamlMimeType();
 		String type;
 		//Handle empty body
 		if (apiParameters != null && apiParameters.size() == 0) {

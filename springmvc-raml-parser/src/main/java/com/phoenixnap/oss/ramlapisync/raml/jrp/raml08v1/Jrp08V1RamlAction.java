@@ -2,6 +2,7 @@ package com.phoenixnap.oss.ramlapisync.raml.jrp.raml08v1;
 
 import com.phoenixnap.oss.ramlapisync.raml.RamlAction;
 import com.phoenixnap.oss.ramlapisync.raml.RamlActionType;
+import com.phoenixnap.oss.ramlapisync.raml.RamlMimeType;
 import com.phoenixnap.oss.ramlapisync.raml.RamlResource;
 import com.phoenixnap.oss.ramlapisync.raml.RamlResponse;
 import org.raml.model.Action;
@@ -26,6 +27,8 @@ public class Jrp08V1RamlAction implements RamlAction {
     private final Action action;
 
     private Map<String, RamlResponse> responses = new LinkedHashMap<>();
+
+    private Map<String, RamlMimeType> body = new LinkedHashMap<>();
 
     public Jrp08V1RamlAction(Action action) {
         this.action = action;
@@ -83,8 +86,29 @@ public class Jrp08V1RamlAction implements RamlAction {
     }
 
     @Override
-    public Map<String, MimeType> getBody() {
-        return action.getBody();
+    public Map<String, RamlMimeType> getBody() {
+        syncBody();
+        return Collections.unmodifiableMap(body);
+    }
+
+    private void syncBody() {
+        if(action.getBody() == null) {
+            body.clear();
+        }
+        else if(body.size() != action.getBody().size()) {
+            body.clear();
+            Map<String, MimeType> baseBody = action.getBody();
+            for (String key : baseBody.keySet()) {
+                RamlMimeType ramlBody = ramlModelFactory.createRamlMimeType(baseBody.get(key));
+                body.put(key, ramlBody);
+            }
+        }
+    }
+
+    @Override
+    public void setBody(Map<String, RamlMimeType> body) {
+        this.body = body;
+        this.action.setBody(ramlModelFactory.extractBody(body));
     }
 
     @Override
@@ -100,11 +124,6 @@ public class Jrp08V1RamlAction implements RamlAction {
     @Override
     public void setDescription(String description) {
         action.setDescription(description);
-    }
-
-    @Override
-    public void setBody(Map<String, MimeType> body) {
-        action.setBody(body);
     }
 
     @Override

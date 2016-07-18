@@ -18,9 +18,9 @@ import com.phoenixnap.oss.ramlapisync.naming.SchemaHelper;
 import com.phoenixnap.oss.ramlapisync.parser.ResourceParser;
 import com.phoenixnap.oss.ramlapisync.raml.RamlAction;
 import com.phoenixnap.oss.ramlapisync.raml.RamlActionType;
+import com.phoenixnap.oss.ramlapisync.raml.RamlMimeType;
 import com.phoenixnap.oss.ramlapisync.raml.RamlResource;
 import com.phoenixnap.oss.ramlapisync.raml.RamlResponse;
-import org.raml.model.MimeType;
 import org.raml.model.parameter.FormParameter;
 import org.raml.model.parameter.UriParameter;
 import org.springframework.http.MediaType;
@@ -133,7 +133,7 @@ public class ApiActionMetadata {
 		}
 	}
 
-	private void collectBodyParams(Entry<String, MimeType> mime) {
+	private void collectBodyParams(Entry<String, RamlMimeType> mime) {
 		if (mime.getKey().equals(MediaType.MULTIPART_FORM_DATA_VALUE) && ResourceParser.doesActionTypeSupportMultipartMime(actionType)) {
 			collectRequestParamsForMime(action.getBody().get(MediaType.MULTIPART_FORM_DATA_VALUE));
 		} else if (mime.getKey().equals(MediaType.APPLICATION_FORM_URLENCODED_VALUE) && ResourceParser.doesActionTypeSupportMultipartMime(actionType)) {
@@ -153,7 +153,7 @@ public class ApiActionMetadata {
 		}
 	}
 
-	private void collectRequestParamsForMime(MimeType requestBody) {
+	private void collectRequestParamsForMime(RamlMimeType requestBody) {
 		if(requestBody == null) return;
 		for (Entry<String, List<FormParameter>> params : requestBody.getFormParameters().entrySet()) {
 			for (FormParameter param : params.getValue()) {
@@ -166,7 +166,7 @@ public class ApiActionMetadata {
 		RamlResponse response = RamlHelper.getSuccessfulResponse(action);
 
 		if (response != null && response.getBody() != null && !response.getBody().isEmpty()) {
-			for (Entry<String, MimeType> body : response.getBody().entrySet()) {
+			for (Entry<String, RamlMimeType> body : response.getBody().entrySet()) {
 				if (responseContentTypeFilter == null || body.getKey().equals(responseContentTypeFilter)) {
 					if (body.getKey().toLowerCase().contains("json")) { //if we have a json type we need to return an object
 						// Continue here!

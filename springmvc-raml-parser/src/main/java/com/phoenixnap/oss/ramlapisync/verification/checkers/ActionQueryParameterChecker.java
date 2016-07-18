@@ -16,13 +16,13 @@ import com.phoenixnap.oss.ramlapisync.naming.Pair;
 import com.phoenixnap.oss.ramlapisync.parser.ResourceParser;
 import com.phoenixnap.oss.ramlapisync.raml.RamlAction;
 import com.phoenixnap.oss.ramlapisync.raml.RamlActionType;
+import com.phoenixnap.oss.ramlapisync.raml.RamlMimeType;
 import com.phoenixnap.oss.ramlapisync.raml.RamlResource;
 import com.phoenixnap.oss.ramlapisync.verification.Issue;
 import com.phoenixnap.oss.ramlapisync.verification.IssueLocation;
 import com.phoenixnap.oss.ramlapisync.verification.IssueSeverity;
 import com.phoenixnap.oss.ramlapisync.verification.IssueType;
 import com.phoenixnap.oss.ramlapisync.verification.RamlActionVisitorCheck;
-import org.raml.model.MimeType;
 import org.raml.model.parameter.QueryParameter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -79,7 +79,7 @@ public class ActionQueryParameterChecker implements RamlActionVisitorCheck {
 					}
 					
 					//lets check if they are defined as form parameters since spring does not distinguish this. Do so only if we are checking the contract
-					Map<String, MimeType> targetBody = target.getBody();
+					Map<String, RamlMimeType> targetBody = target.getBody();
 					if (location == IssueLocation.SOURCE 
 							&& targetBody != null 
 							&& targetBody.containsKey(MediaType.APPLICATION_FORM_URLENCODED_VALUE)

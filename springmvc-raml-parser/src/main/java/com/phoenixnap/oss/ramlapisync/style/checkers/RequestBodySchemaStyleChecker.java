@@ -15,11 +15,11 @@ package com.phoenixnap.oss.ramlapisync.style.checkers;
 import com.phoenixnap.oss.ramlapisync.naming.SchemaHelper;
 import com.phoenixnap.oss.ramlapisync.raml.RamlAction;
 import com.phoenixnap.oss.ramlapisync.raml.RamlActionType;
+import com.phoenixnap.oss.ramlapisync.raml.RamlMimeType;
 import com.phoenixnap.oss.ramlapisync.raml.RamlRoot;
 import com.phoenixnap.oss.ramlapisync.style.RamlStyleCheckerAdapter;
 import com.phoenixnap.oss.ramlapisync.style.StyleIssue;
 import com.phoenixnap.oss.ramlapisync.verification.IssueLocation;
-import org.raml.model.MimeType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.util.StringUtils;
@@ -66,7 +66,7 @@ public class RequestBodySchemaStyleChecker extends RamlStyleCheckerAdapter {
 			boolean schemaFound = false;
 			// Now the response
 			if (value.hasBody()) {
-				Map<String, MimeType> successResponse = value.getBody();
+				Map<String, RamlMimeType> successResponse = value.getBody();
 				if (SchemaHelper.containsBodySchema(successResponse, raml, true)) {
 					schemaFound = true;
 				}
