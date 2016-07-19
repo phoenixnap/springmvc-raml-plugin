@@ -15,15 +15,15 @@ package com.phoenixnap.oss.ramlapisync.style;
 import com.phoenixnap.oss.ramlapisync.naming.Pair;
 import com.phoenixnap.oss.ramlapisync.raml.RamlAction;
 import com.phoenixnap.oss.ramlapisync.raml.RamlActionType;
+import com.phoenixnap.oss.ramlapisync.raml.RamlQueryParameter;
 import com.phoenixnap.oss.ramlapisync.raml.RamlResource;
 import com.phoenixnap.oss.ramlapisync.raml.RamlRoot;
+import com.phoenixnap.oss.ramlapisync.raml.RamlUriParameter;
 import com.phoenixnap.oss.ramlapisync.verification.Issue;
 import com.phoenixnap.oss.ramlapisync.verification.IssueLocation;
 import com.phoenixnap.oss.ramlapisync.verification.IssueSeverity;
 import com.phoenixnap.oss.ramlapisync.verification.IssueType;
 import com.phoenixnap.oss.ramlapisync.verification.RamlChecker;
-import org.raml.model.parameter.QueryParameter;
-import org.raml.model.parameter.UriParameter;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -43,7 +43,7 @@ import java.util.Set;
 public class RamlStyleCheckVisitorCoordinator implements RamlChecker {
 	
 	/**
-	 * Boolean flag to enable style checking of code too. Since RAML and code should be in syncFromTo this could be kept off to improve performance
+	 * Boolean flag to enable style checking of code too. Since RAML and code should be in transformToUnmodifiableMap this could be kept off to improve performance
 	 */
 	private boolean ignoreCodeStyle = true;
 	
@@ -83,9 +83,9 @@ public class RamlStyleCheckVisitorCoordinator implements RamlChecker {
 					warnings.addAll(checker.checkResourceStyle(entry.getKey(), resource, location, raml));
 				}
 				
-				Map<String, UriParameter> uriParameters = resource.getUriParameters();
+				Map<String, RamlUriParameter> uriParameters = resource.getUriParameters();
 				if(uriParameters != null) {
-					for (Entry<String, UriParameter> uriParameter : uriParameters.entrySet()) {
+					for (Entry<String, RamlUriParameter> uriParameter : uriParameters.entrySet()) {
 						for (RamlStyleChecker checker : checkers) {
 							warnings.addAll(checker.checkParameterStyle(uriParameter.getKey(), uriParameter.getValue()));
 						}
@@ -102,9 +102,9 @@ public class RamlStyleCheckVisitorCoordinator implements RamlChecker {
 						/*
 						 * If we have query parameters in this call check it 
 						 */
-						Map<String, QueryParameter> queryParameters = actionEntry.getValue().getQueryParameters();
+						Map<String, RamlQueryParameter> queryParameters = actionEntry.getValue().getQueryParameters();
 						if(queryParameters != null) {
-							for (Entry<String, QueryParameter> queryParam : queryParameters.entrySet()) {
+							for (Entry<String, RamlQueryParameter> queryParam : queryParameters.entrySet()) {
 								for (RamlStyleChecker checker : checkers) {
 									warnings.addAll(checker.checkParameterStyle(queryParam.getKey(), queryParam.getValue()));
 								}

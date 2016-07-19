@@ -17,13 +17,13 @@ import com.phoenixnap.oss.ramlapisync.parser.ResourceParser;
 import com.phoenixnap.oss.ramlapisync.raml.RamlAction;
 import com.phoenixnap.oss.ramlapisync.raml.RamlActionType;
 import com.phoenixnap.oss.ramlapisync.raml.RamlMimeType;
+import com.phoenixnap.oss.ramlapisync.raml.RamlQueryParameter;
 import com.phoenixnap.oss.ramlapisync.raml.RamlResource;
 import com.phoenixnap.oss.ramlapisync.verification.Issue;
 import com.phoenixnap.oss.ramlapisync.verification.IssueLocation;
 import com.phoenixnap.oss.ramlapisync.verification.IssueSeverity;
 import com.phoenixnap.oss.ramlapisync.verification.IssueType;
 import com.phoenixnap.oss.ramlapisync.verification.RamlActionVisitorCheck;
-import org.raml.model.parameter.QueryParameter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.MediaType;
@@ -64,7 +64,7 @@ public class ActionQueryParameterChecker implements RamlActionVisitorCheck {
 		//Resource (and all children) missing - Log it
 		Issue issue;
 		if (reference.getQueryParameters() != null && !reference.getQueryParameters().isEmpty()) {
-			for(Entry<String, QueryParameter> cParam : reference.getQueryParameters().entrySet()) {
+			for(Entry<String, RamlQueryParameter> cParam : reference.getQueryParameters().entrySet()) {
 				logger.debug("ActionQueryParameterChecker Checking param " + cParam.getKey());
 				IssueSeverity targetSeverity = maxSeverity;
 				if (target.getQueryParameters() == null 
@@ -94,8 +94,8 @@ public class ActionQueryParameterChecker implements RamlActionVisitorCheck {
 					}
 					RamlCheckerResourceVisitorCoordinator.addIssue(errors, warnings, issue, issue.getDescription() + "  "+ cParam.getKey() + " in " + location.name());
 				} else {
-					QueryParameter referenceParameter = cParam.getValue();
-					QueryParameter targetParameter = target.getQueryParameters().get(cParam.getKey());
+					RamlQueryParameter referenceParameter = cParam.getValue();
+					RamlQueryParameter targetParameter = target.getQueryParameters().get(cParam.getKey());
 					
 					if (referenceParameter.isRequired() == false && targetParameter.isRequired()) {
 						issue = new Issue(maxSeverity, location, IssueType.DIFFERENT, REQUIRED_PARAM_HIDDEN , referenceRamlResource, reference, cParam.getKey());

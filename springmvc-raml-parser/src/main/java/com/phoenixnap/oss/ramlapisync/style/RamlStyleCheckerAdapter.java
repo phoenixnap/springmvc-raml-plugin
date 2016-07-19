@@ -12,12 +12,12 @@
  */
 package com.phoenixnap.oss.ramlapisync.style;
 
+import com.phoenixnap.oss.ramlapisync.raml.RamlAbstractParam;
 import com.phoenixnap.oss.ramlapisync.raml.RamlAction;
 import com.phoenixnap.oss.ramlapisync.raml.RamlActionType;
 import com.phoenixnap.oss.ramlapisync.raml.RamlResource;
 import com.phoenixnap.oss.ramlapisync.raml.RamlRoot;
 import com.phoenixnap.oss.ramlapisync.verification.IssueLocation;
-import org.raml.model.parameter.AbstractParam;
 
 import java.util.Collections;
 import java.util.Set;
@@ -32,7 +32,7 @@ import java.util.Set;
 public class RamlStyleCheckerAdapter implements RamlStyleChecker {
 
 	@Override
-	public Set<StyleIssue> checkParameterStyle(String name, AbstractParam param) {
+	public Set<StyleIssue> checkParameterStyle(String name, RamlAbstractParam param) {
 		return Collections.emptySet();
 	}
 

@@ -4,14 +4,12 @@ import com.phoenixnap.oss.ramlapisync.raml.RamlAction;
 import com.phoenixnap.oss.ramlapisync.raml.RamlActionType;
 import com.phoenixnap.oss.ramlapisync.raml.RamlHeader;
 import com.phoenixnap.oss.ramlapisync.raml.RamlMimeType;
+import com.phoenixnap.oss.ramlapisync.raml.RamlQueryParameter;
 import com.phoenixnap.oss.ramlapisync.raml.RamlResource;
 import com.phoenixnap.oss.ramlapisync.raml.RamlResponse;
 import org.raml.model.Action;
-import org.raml.model.Response;
 import org.raml.model.SecurityReference;
-import org.raml.model.parameter.QueryParameter;
 
-import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -31,6 +29,8 @@ public class Jrp08V1RamlAction implements RamlAction {
 
     private Map<String, RamlHeader> headers = new LinkedHashMap<>();
 
+    private Map<String, RamlQueryParameter> queryParameters = new LinkedHashMap<>();
+
     public Jrp08V1RamlAction(Action action) {
         this.action = action;
     }
@@ -49,25 +49,13 @@ public class Jrp08V1RamlAction implements RamlAction {
     }
 
     @Override
-    public Map<String, QueryParameter> getQueryParameters() {
-        return action.getQueryParameters();
+    public Map<String, RamlQueryParameter> getQueryParameters() {
+        return ramlModelFactory.transformToUnmodifiableMap(action.getQueryParameters(), queryParameters, ramlModelFactory::createRamlQueryParameter);
     }
 
     @Override
     public Map<String, RamlResponse> getResponses() {
-        syncResponses();
-        return Collections.unmodifiableMap(responses);
-    }
-
-    private void syncResponses() {
-        if(responses.size() != action.getResponses().size()) {
-            responses.clear();
-            Map<String, Response> baseResponses = action.getResponses();
-            for (String key : baseResponses.keySet()) {
-                RamlResponse ramlResponse = ramlModelFactory.createRamlResponse(baseResponses.get(key));
-                responses.put(key, ramlResponse);
-            }
-        }
+        return ramlModelFactory.transformToUnmodifiableMap(action.getResponses(), responses, ramlModelFactory::createRamlResponse);
     }
 
     @Override
@@ -83,22 +71,12 @@ public class Jrp08V1RamlAction implements RamlAction {
 
     @Override
     public Map<String, RamlHeader> getHeaders() {
-        syncHeaders();
-        return Collections.unmodifiableMap(headers);
-    }
-
-    private void syncHeaders() {
-        ramlModelFactory.syncFromTo(action.getHeaders(), headers, ramlModelFactory::createRamlHeader);
+        return ramlModelFactory.transformToUnmodifiableMap(action.getHeaders(), headers, ramlModelFactory::createRamlHeader);
     }
 
     @Override
     public Map<String, RamlMimeType> getBody() {
-        syncBody();
-        return Collections.unmodifiableMap(body);
-    }
-
-    private void syncBody() {
-        ramlModelFactory.syncFromTo(action.getBody(), body, ramlModelFactory::createRamlMimeType);
+        return ramlModelFactory.transformToUnmodifiableMap(action.getBody(), body, ramlModelFactory::createRamlMimeType);
     }
 
     @Override
@@ -135,5 +113,17 @@ public class Jrp08V1RamlAction implements RamlAction {
     @Override
     public List<SecurityReference> getSecuredBy() {
         return action.getSecuredBy();
+    }
+
+    @Override
+    public void addQueryParameters(Map<String, RamlQueryParameter> queryParameters) {
+        for(String key: queryParameters.keySet()) {
+            addQueryParameter(key, queryParameters.get(key));
+        }
+    }
+
+    private void addQueryParameter(String key, RamlQueryParameter ramlQueryParameter) {
+        queryParameters.put(key, ramlQueryParameter);
+        action.getQueryParameters().put(key, ramlModelFactory.extractQueryParameter(ramlQueryParameter));
     }
 }

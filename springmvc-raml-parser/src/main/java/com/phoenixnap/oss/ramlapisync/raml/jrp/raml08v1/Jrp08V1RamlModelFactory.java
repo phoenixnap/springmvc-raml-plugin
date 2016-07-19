@@ -1,5 +1,6 @@
 package com.phoenixnap.oss.ramlapisync.raml.jrp.raml08v1;
 
+import com.phoenixnap.oss.ramlapisync.data.RamlFormParameter;
 import com.phoenixnap.oss.ramlapisync.raml.RamlAction;
 import com.phoenixnap.oss.ramlapisync.raml.RamlActionType;
 import com.phoenixnap.oss.ramlapisync.raml.RamlDocumentationItem;
@@ -7,9 +8,11 @@ import com.phoenixnap.oss.ramlapisync.raml.RamlHeader;
 import com.phoenixnap.oss.ramlapisync.raml.RamlMimeType;
 import com.phoenixnap.oss.ramlapisync.raml.RamlModelEmitter;
 import com.phoenixnap.oss.ramlapisync.raml.RamlModelFactory;
+import com.phoenixnap.oss.ramlapisync.raml.RamlQueryParameter;
 import com.phoenixnap.oss.ramlapisync.raml.RamlResource;
 import com.phoenixnap.oss.ramlapisync.raml.RamlResponse;
 import com.phoenixnap.oss.ramlapisync.raml.RamlRoot;
+import com.phoenixnap.oss.ramlapisync.raml.RamlUriParameter;
 import org.raml.model.Action;
 import org.raml.model.ActionType;
 import org.raml.model.DocumentationItem;
@@ -17,7 +20,10 @@ import org.raml.model.MimeType;
 import org.raml.model.Raml;
 import org.raml.model.Resource;
 import org.raml.model.Response;
+import org.raml.model.parameter.FormParameter;
 import org.raml.model.parameter.Header;
+import org.raml.model.parameter.QueryParameter;
+import org.raml.model.parameter.UriParameter;
 import org.raml.parser.visitor.RamlDocumentBuilder;
 
 import java.util.LinkedHashMap;
@@ -157,6 +163,16 @@ public class Jrp08V1RamlModelFactory implements RamlModelFactory {
         return new Jrp08V1RamlMimeType((MimeType)mimeType);
     }
 
+    @Override
+    public RamlHeader createRamlHeader(Object header) {
+        return new Jrp08V1RamlHeader((Header)header);
+    }
+
+    @Override
+    public RamlUriParameter createRamlUriParameter(Object uriParameter) {
+        return new Jrp08V1RamlUriParameter((UriParameter)uriParameter);
+    }
+
     Map<String, MimeType> extractBody(Map<String, RamlMimeType> ramlBody) {
         Map<String, MimeType> body = new LinkedHashMap<>(ramlBody.size());
         for(String key: ramlBody.keySet()) {
@@ -169,8 +185,59 @@ public class Jrp08V1RamlModelFactory implements RamlModelFactory {
         return ((Jrp08V1RamlMimeType)ramlMimeType).getMimeType();
     }
 
-    @Override
-    public RamlHeader createRamlHeader(Object header) {
-        return new Jrp08V1RamlHeader((Header)header);
+    UriParameter extractUriParameter(RamlUriParameter ramlUriParameter) {
+        return ((Jrp08V1RamlUriParameter)ramlUriParameter).getUriParameter();
     }
+
+    @Override
+    public RamlUriParameter createRamlUriParameterWithName(String name) {
+        return new Jrp08V1RamlUriParameter(new UriParameter(name));
+    }
+
+    @Override
+    public RamlQueryParameter createRamlQueryParameter() {
+        return createRamlQueryParameter(new QueryParameter());
+    }
+
+    @Override
+    public RamlQueryParameter createRamlQueryParameter(Object queryParameter) {
+        return new Jrp08V1RamlQueryParameter((QueryParameter)queryParameter);
+    }
+
+    QueryParameter extractQueryParameter(RamlQueryParameter ramlQueryParameter) {
+        return ((Jrp08V1RamlQueryParameter)ramlQueryParameter).getQueryParameter();
+    }
+
+    Map<String, List<FormParameter>> extractFormParameters(Map<String, List<RamlFormParameter>> ramlFormParameters) {
+        Map<String, List<FormParameter>> formParameters = new LinkedHashMap<>(ramlFormParameters.size());
+        for(String key: ramlFormParameters.keySet()) {
+            formParameters.put(key, extractFormParameters(ramlFormParameters.get(key)));
+        }
+        return formParameters;
+    }
+
+    List<FormParameter> extractFormParameters(List<RamlFormParameter> ramlFormParameters) {
+        return ramlFormParameters.stream().map(this::extractFormParameter).collect(Collectors.toList());
+    }
+
+    FormParameter extractFormParameter(RamlFormParameter ramlFormParameter) {
+        return ((Jrp08V1RamlFormParameter)ramlFormParameter).getFormParameter();
+    }
+
+    @Override
+    public RamlFormParameter createRamlFormParameter() {
+        return createRamlFormParameter(new FormParameter());
+    }
+
+    @Override
+    public List<RamlFormParameter> createRamlFormParameters(List<? extends Object> formParameters) {
+        return formParameters.stream().map(this::createRamlFormParameter).collect(Collectors.toList());
+    }
+
+    @Override
+    public RamlFormParameter createRamlFormParameter(Object formParameter) {
+        return new Jrp08V1RamlFormParameter((FormParameter)formParameter);
+    }
+
+
 }

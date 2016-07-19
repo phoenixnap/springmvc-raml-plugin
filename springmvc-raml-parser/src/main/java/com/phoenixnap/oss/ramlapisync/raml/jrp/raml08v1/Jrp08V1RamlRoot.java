@@ -5,7 +5,6 @@ import com.phoenixnap.oss.ramlapisync.raml.RamlResource;
 import com.phoenixnap.oss.ramlapisync.raml.RamlRoot;
 import org.raml.model.Raml;
 
-import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -28,10 +27,6 @@ public class Jrp08V1RamlRoot implements RamlRoot {
         this.raml = raml;
     }
 
-    private void syncResources() {
-        ramlModelFactory.syncFromTo(raml.getResources(), resources, ramlModelFactory::createRamlResource);
-    }
-
     /**
      * Expose internal representation only package private
      * @return the internal model
@@ -48,8 +43,7 @@ public class Jrp08V1RamlRoot implements RamlRoot {
 
     @Override
     public Map<String, RamlResource> getResources() {
-        syncResources();
-        return Collections.unmodifiableMap(resources);
+        return ramlModelFactory.transformToUnmodifiableMap(raml.getResources(), resources, ramlModelFactory::createRamlResource);
     }
 
     @Override

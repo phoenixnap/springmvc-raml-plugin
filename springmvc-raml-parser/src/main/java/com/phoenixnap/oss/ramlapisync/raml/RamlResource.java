@@ -1,6 +1,5 @@
 package com.phoenixnap.oss.ramlapisync.raml;
 
-import org.raml.model.parameter.UriParameter;
 
 import java.util.Map;
 
@@ -13,9 +12,11 @@ public interface RamlResource extends RamlResourceRoot {
 
     Map<RamlActionType, RamlAction> getActions();
 
-    Map<String, UriParameter> getUriParameters();
+    Map<String, RamlUriParameter> getUriParameters();
 
-    Map<String, UriParameter> getResolvedUriParameters();
+    void addUriParameter(String name, RamlUriParameter uriParameter);
+
+    Map<String, RamlUriParameter> getResolvedUriParameters();
 
     String getUri();
 

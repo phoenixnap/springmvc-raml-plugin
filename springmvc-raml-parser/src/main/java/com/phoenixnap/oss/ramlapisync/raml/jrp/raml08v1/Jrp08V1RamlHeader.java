@@ -16,17 +16,47 @@ public class Jrp08V1RamlHeader extends RamlHeader {
     }
 
     @Override
-    protected String getDisplayNameIntern() {
+    public String getDisplayName() {
         return header.getDisplayName();
     }
 
-    @Override
-    protected ParamType getTypeIntern() {
+    public void setDisplayName(String displayName) {
+        header.setDisplayName(displayName);
+    }
+
+    public ParamType getType() {
         return header.getType();
     }
 
-    @Override
-    protected boolean isRequiredIntern() {
+    public void setType(ParamType type) {
+        header.setType(type);
+    }
+
+    public boolean isRequired() {
         return header.isRequired();
+    }
+
+    public void setRequired(boolean required) {
+        header.setRequired(required);
+    }
+
+    @Override
+    public void setExample(String example) {
+        header.setExample(example);
+    }
+
+    @Override
+    public void setDescription(String description) {
+        header.setDescription(description);
+    }
+
+    @Override
+    public String getExample() {
+        return header.getExample();
+    }
+
+    @Override
+    public String getDescription() {
+        return header.getDescription();
     }
 }

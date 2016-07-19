@@ -3,12 +3,11 @@ package com.phoenixnap.oss.ramlapisync.raml.jrp.raml08v1;
 import com.phoenixnap.oss.ramlapisync.raml.RamlAction;
 import com.phoenixnap.oss.ramlapisync.raml.RamlActionType;
 import com.phoenixnap.oss.ramlapisync.raml.RamlResource;
+import com.phoenixnap.oss.ramlapisync.raml.RamlUriParameter;
 import org.raml.model.Action;
 import org.raml.model.ActionType;
 import org.raml.model.Resource;
-import org.raml.model.parameter.UriParameter;
 
-import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
@@ -22,6 +21,8 @@ public class Jrp08V1RamlResource implements RamlResource {
     private final Resource resource;
     private Map<String, RamlResource> resources = new LinkedHashMap<>();
     private Map<RamlActionType, RamlAction> actions = new LinkedHashMap<>();
+    private Map<String, RamlUriParameter> uriParameters = new LinkedHashMap<>();
+    private Map<String, RamlUriParameter> resolvedUriParameters = new LinkedHashMap<>();
 
     public Jrp08V1RamlResource(Resource resource) {
         this.resource = resource;
@@ -47,8 +48,7 @@ public class Jrp08V1RamlResource implements RamlResource {
 
     @Override
     public Map<RamlActionType, RamlAction> getActions() {
-        syncActions();
-        return Collections.unmodifiableMap(actions);
+        return ramlModelFactory.transformToUnmodifiableMap(resource.getActions(), actions, ramlModelFactory::createRamlAction, ramlModelFactory::createRamlActionType);
     }
 
 
@@ -63,10 +63,6 @@ public class Jrp08V1RamlResource implements RamlResource {
     public void addAction(RamlActionType actionType, RamlAction action) {
         resource.getActions().put(ramlModelFactory.extractActionType(actionType), ramlModelFactory.extractAction(action));
         actions.put(actionType, action);
-    }
-
-    private void syncActions() {
-        ramlModelFactory.syncFromTo(resource.getActions(), actions, ramlModelFactory::createRamlAction, ramlModelFactory::createRamlActionType);
     }
 
     @Override
@@ -90,12 +86,7 @@ public class Jrp08V1RamlResource implements RamlResource {
 
     @Override
     public Map<String, RamlResource> getResources() {
-        syncResources();
-        return Collections.unmodifiableMap(resources);
-    }
-
-    private void syncResources() {
-        ramlModelFactory.syncFromTo(resource.getResources(), resources, ramlModelFactory::createRamlResource);
+        return ramlModelFactory.transformToUnmodifiableMap(resource.getResources(), resources, ramlModelFactory::createRamlResource);
     }
 
     @Override
@@ -104,13 +95,19 @@ public class Jrp08V1RamlResource implements RamlResource {
     }
 
     @Override
-    public Map<String, UriParameter> getUriParameters() {
-        return resource.getUriParameters();
+    public Map<String, RamlUriParameter> getUriParameters() {
+        return ramlModelFactory.transformToUnmodifiableMap(resource.getUriParameters(), uriParameters, ramlModelFactory::createRamlUriParameter);
     }
 
     @Override
-    public Map<String, UriParameter> getResolvedUriParameters() {
-        return resource.getResolvedUriParameters();
+    public void addUriParameter(String name, RamlUriParameter uriParameter) {
+        uriParameters.put(name, uriParameter);
+        resource.getUriParameters().put(name, ramlModelFactory.extractUriParameter(uriParameter));
+    }
+
+    @Override
+    public Map<String, RamlUriParameter> getResolvedUriParameters() {
+        return ramlModelFactory.transformToUnmodifiableMap(resource.getResolvedUriParameters(), resolvedUriParameters, ramlModelFactory::createRamlUriParameter);
     }
 
     @Override

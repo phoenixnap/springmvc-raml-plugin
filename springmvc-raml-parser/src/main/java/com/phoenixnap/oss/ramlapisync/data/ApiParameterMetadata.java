@@ -12,21 +12,20 @@
  */
 package com.phoenixnap.oss.ramlapisync.data;
 
-import java.lang.annotation.Annotation;
-import java.lang.reflect.Parameter;
-import java.lang.reflect.Type;
-
+import com.phoenixnap.oss.ramlapisync.annotations.Example;
+import com.phoenixnap.oss.ramlapisync.naming.SchemaHelper;
+import com.phoenixnap.oss.ramlapisync.naming.TypeHelper;
+import com.phoenixnap.oss.ramlapisync.raml.RamlAbstractParam;
+import com.phoenixnap.oss.ramlapisync.raml.RamlUriParameter;
 import org.apache.commons.lang.NullArgumentException;
-import org.raml.model.parameter.AbstractParam;
-import org.raml.model.parameter.UriParameter;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 
-import com.phoenixnap.oss.ramlapisync.annotations.Example;
-import com.phoenixnap.oss.ramlapisync.naming.SchemaHelper;
-import com.phoenixnap.oss.ramlapisync.naming.TypeHelper;
+import java.lang.annotation.Annotation;
+import java.lang.reflect.Parameter;
+import java.lang.reflect.Type;
 
 /**
  * Data object containing information kept at runtime for Api Call Parameters. This class is used by the RAML generator
@@ -53,7 +52,7 @@ public class ApiParameterMetadata {
 	/**
 	 * RAML Parameter data relating to this parameter
 	 */
-	private AbstractParam ramlParam;
+	private RamlAbstractParam ramlParam;
 
 	/**
 	 * The Java Type of the parameter
@@ -100,7 +99,7 @@ public class ApiParameterMetadata {
 	 * @param name	The name of this parameter if different in annotation
 	 * @param param Java Parameter representation
 	 */
-	public ApiParameterMetadata(String name, AbstractParam param) {
+	public ApiParameterMetadata(String name, RamlAbstractParam param) {
 		super();
 
 		if (param == null) {
@@ -108,7 +107,7 @@ public class ApiParameterMetadata {
 		}
 
 
-		if (param instanceof UriParameter) {
+		if (param instanceof RamlUriParameter) {
 			resourceId = true;
 			nullable = false;
 		} else {
@@ -253,11 +252,11 @@ public class ApiParameterMetadata {
 		return "ApiParameterMetadata [name=" + name + ", type=" + type + "]";
 	}
 
-	public AbstractParam getRamlParam() {
+	public RamlAbstractParam getRamlParam() {
 		return ramlParam;
 	}
 
-	private void setRamlParam(AbstractParam ramlParam) {
+	private void setRamlParam(RamlAbstractParam ramlParam) {
 		this.ramlParam = ramlParam;
 	}
 

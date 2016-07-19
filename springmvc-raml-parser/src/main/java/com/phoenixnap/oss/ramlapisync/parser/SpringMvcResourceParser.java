@@ -19,6 +19,7 @@ import com.fasterxml.jackson.module.jsonSchema.factories.SchemaFactoryWrapper;
 import com.phoenixnap.oss.ramlapisync.annotations.Description;
 import com.phoenixnap.oss.ramlapisync.annotations.data.PathDescription;
 import com.phoenixnap.oss.ramlapisync.data.ApiParameterMetadata;
+import com.phoenixnap.oss.ramlapisync.data.RamlFormParameter;
 import com.phoenixnap.oss.ramlapisync.javadoc.JavaDocEntry;
 import com.phoenixnap.oss.ramlapisync.naming.NamingHelper;
 import com.phoenixnap.oss.ramlapisync.naming.Pair;
@@ -27,12 +28,12 @@ import com.phoenixnap.oss.ramlapisync.naming.SchemaHelper;
 import com.phoenixnap.oss.ramlapisync.raml.RamlAction;
 import com.phoenixnap.oss.ramlapisync.raml.RamlActionType;
 import com.phoenixnap.oss.ramlapisync.raml.RamlMimeType;
+import com.phoenixnap.oss.ramlapisync.raml.RamlModelFactory;
 import com.phoenixnap.oss.ramlapisync.raml.RamlModelFactoryOfFactories;
 import com.phoenixnap.oss.ramlapisync.raml.RamlResource;
 import com.phoenixnap.oss.ramlapisync.raml.RamlResponse;
+import com.phoenixnap.oss.ramlapisync.raml.RamlUriParameter;
 import org.raml.model.ParamType;
-import org.raml.model.parameter.FormParameter;
-import org.raml.model.parameter.UriParameter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Controller;
@@ -115,7 +116,7 @@ public class SpringMvcResourceParser extends ResourceParser {
 						|| (!apiParameters.get(0).isAnnotationPresent(RequestBody.class) && String.class.equals(apiParameters.get(0).getType())))) {
 			type = "application/x-www-form-urlencoded";
 			for (ApiParameterMetadata param : apiParameters) {
-				FormParameter formParameter = new FormParameter();
+				RamlFormParameter formParameter = RamlModelFactoryOfFactories.createRamlModelFactory().createRamlFormParameter();
 				formParameter.setDisplayName(param.getName());
 				formParameter.setExample(param.getExample());
 				ParamType simpleType = SchemaHelper.mapSimpleType(param.getType());
@@ -126,14 +127,14 @@ public class SpringMvcResourceParser extends ResourceParser {
 				}
 				formParameter.setDescription(description);
 				formParameter.setRequired(!param.isNullable());
-				Map<String, List<FormParameter>> paramMap;
+				Map<String, List<RamlFormParameter>> paramMap;
 				if (mimeType.getFormParameters() == null) {
 					paramMap = new TreeMap<>();
 					mimeType.setFormParameters(paramMap);
 				} else {
 					paramMap = mimeType.getFormParameters();
 				}
-				mimeType.getFormParameters().put(param.getName(), Collections.singletonList(formParameter));
+				mimeType.addFormParameters(param.getName(), Collections.singletonList(formParameter));
 			}
 			return new Pair<>(type, mimeType);
 		} else {
@@ -428,9 +429,11 @@ public class SpringMvcResourceParser extends ResourceParser {
 	@Override
 	protected void extractAndAppendResourceInfo(Method method, JavaDocEntry docEntry, RamlResource parentResource) {
 
+		RamlModelFactory ramlModelFactory = RamlModelFactoryOfFactories.createRamlModelFactory();
+
 		Map<RamlActionType, String> methodActions = getHttpMethodAndName(method);
 		for (Entry<RamlActionType, String> methodAction : methodActions.entrySet()) {
-			RamlAction action = RamlModelFactoryOfFactories.createRamlModelFactory().createRamlAction();
+			RamlAction action = ramlModelFactory.createRamlAction();
 			RamlActionType apiAction = methodAction.getKey();
 			String apiName = methodAction.getValue();
 			//Method assumes that the name starts with /
@@ -446,7 +449,7 @@ public class SpringMvcResourceParser extends ResourceParser {
 					.getParameterComments());
 			// Lets extract any query parameters (for Verbs that don't support bodies) and insert them in the Action
 			// model
-			action.getQueryParameters().putAll(extractQueryParameters(apiAction, method, parameterComments));
+			action.addQueryParameters(extractQueryParameters(apiAction, method, parameterComments));
 
 			// Lets extract any request data that should go in the request body as json and insert it in the action
 			// model
@@ -486,7 +489,7 @@ public class SpringMvcResourceParser extends ResourceParser {
 																	// contains a resource
 
 				if (idResource == null) {
-					idResource = RamlModelFactoryOfFactories.createRamlModelFactory().createRamlResource();
+					idResource = ramlModelFactory.createRamlResource();
 					idResource.setRelativeUri(resourceName);
 					String displayName = StringUtils.capitalize(partialUrl) + " Resource";
 					String resourceDescription = displayName;
@@ -497,7 +500,7 @@ public class SpringMvcResourceParser extends ResourceParser {
 						displayName = "A specific "
 								+ StringUtils.capitalize(partialUrl).replace("{", "").replace("}", "");
 						ApiParameterMetadata resourceIdParameter = resourceIdParameterMap.get(partialUrl);
-						UriParameter uriParameter = new UriParameter(resourceIdParameter.getName());
+						RamlUriParameter uriParameter = ramlModelFactory.createRamlUriParameterWithName(resourceIdParameter.getName());
 						ParamType simpleType = SchemaHelper.mapSimpleType(resourceIdParameter.getType());
 						if (simpleType == null) {
 							logger.warn("Only simple parameters are supported for URL Parameters, defaulting " + resourceIdParameter.getType() + " to String");
@@ -514,7 +517,7 @@ public class SpringMvcResourceParser extends ResourceParser {
 							uriParameter.setDescription(paramComment);
 						}
 
-						idResource.getUriParameters().put(resourceIdParameter.getName(), uriParameter);
+						idResource.addUriParameter(resourceIdParameter.getName(), uriParameter);
 					}
 
 					idResource.setDisplayName(displayName); // TODO allow the Api annotation to specify this stuff :)

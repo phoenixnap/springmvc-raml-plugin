@@ -4,7 +4,6 @@ import com.phoenixnap.oss.ramlapisync.raml.RamlMimeType;
 import com.phoenixnap.oss.ramlapisync.raml.RamlResponse;
 import org.raml.model.Response;
 
-import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
@@ -39,12 +38,7 @@ public class Jrp08V1RamlResponse implements RamlResponse {
 
     @Override
     public Map<String, RamlMimeType> getBody() {
-        syncBody();
-        return Collections.unmodifiableMap(body);
-    }
-
-    private void syncBody() {
-        ramlModelFactory.syncFromTo(response.getBody(), body, ramlModelFactory::createRamlMimeType);
+        return ramlModelFactory.transformToUnmodifiableMap(response.getBody(), body, ramlModelFactory::createRamlMimeType);
     }
 
     @Override

@@ -1,9 +1,10 @@
 package com.phoenixnap.oss.ramlapisync.raml.jrp.raml08v1;
 
+import com.phoenixnap.oss.ramlapisync.data.RamlFormParameter;
 import com.phoenixnap.oss.ramlapisync.raml.RamlMimeType;
 import org.raml.model.MimeType;
-import org.raml.model.parameter.FormParameter;
 
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -12,10 +13,15 @@ import java.util.Map;
  */
 public class Jrp08V1RamlMimeType implements RamlMimeType {
 
+    private static Jrp08V1RamlModelFactory ramlModelFactory = new Jrp08V1RamlModelFactory();
+
     private final MimeType mimeType;
+
+    private Map<String, List<RamlFormParameter>> formParameters = new LinkedHashMap<>();
 
     public Jrp08V1RamlMimeType(MimeType mimeType) {
         this.mimeType = mimeType;
+        this.mimeType.setFormParameters(new LinkedHashMap<>());
     }
 
     /**
@@ -27,14 +33,14 @@ public class Jrp08V1RamlMimeType implements RamlMimeType {
     }
 
     @Override
-    public Map<String, List<FormParameter>> getFormParameters() {
-        return mimeType.getFormParameters();
+    public Map<String, List<RamlFormParameter>> getFormParameters() {
+        return ramlModelFactory.transformToUnmodifiableMap(mimeType.getFormParameters(), formParameters, ramlModelFactory::createRamlFormParameters);
     }
 
-
     @Override
-    public void setFormParameters(Map<String, List<FormParameter>> formParameters) {
-        mimeType.setFormParameters(formParameters);
+    public void setFormParameters(Map<String, List<RamlFormParameter>> formParameters) {
+        this.formParameters = formParameters;
+        mimeType.setFormParameters(ramlModelFactory.extractFormParameters(formParameters));
     }
 
     @Override
@@ -51,4 +57,11 @@ public class Jrp08V1RamlMimeType implements RamlMimeType {
     public void setExample(String example) {
         mimeType.setExample(example);
     }
+
+    @Override
+    public void addFormParameters(String name, List<RamlFormParameter> ramlFormParameters) {
+        this.formParameters.put(name, ramlFormParameters);
+        this.mimeType.getFormParameters().put(name, ramlModelFactory.extractFormParameters(ramlFormParameters));
+    }
+
 }

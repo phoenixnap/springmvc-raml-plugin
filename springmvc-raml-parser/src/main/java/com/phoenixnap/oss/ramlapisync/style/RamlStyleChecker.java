@@ -12,12 +12,12 @@
  */
 package com.phoenixnap.oss.ramlapisync.style;
 
+import com.phoenixnap.oss.ramlapisync.raml.RamlAbstractParam;
 import com.phoenixnap.oss.ramlapisync.raml.RamlAction;
 import com.phoenixnap.oss.ramlapisync.raml.RamlActionType;
 import com.phoenixnap.oss.ramlapisync.raml.RamlResource;
 import com.phoenixnap.oss.ramlapisync.raml.RamlRoot;
 import com.phoenixnap.oss.ramlapisync.verification.IssueLocation;
-import org.raml.model.parameter.AbstractParam;
 
 import java.util.Set;
 
@@ -37,7 +37,7 @@ public interface RamlStyleChecker {
 	 * @param param The Parameter from the RAML Model
 	 * @return A list of style issues or an Empty List if none are found. This method must not return null.
 	 */
-	public Set<StyleIssue> checkParameterStyle(String name, AbstractParam param);
+	public Set<StyleIssue> checkParameterStyle(String name, RamlAbstractParam param);
 	
 	/**
 	 * Check the style of a particular action

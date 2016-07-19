@@ -4,7 +4,5 @@ package com.phoenixnap.oss.ramlapisync.raml;
 /**
  * @author armin.weisser
  */
-public abstract class RamlHeader extends RamlAbstractParam {
-
-
+public abstract class RamlUriParameter extends RamlAbstractParam {
 }

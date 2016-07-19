@@ -21,8 +21,7 @@ import com.phoenixnap.oss.ramlapisync.raml.RamlActionType;
 import com.phoenixnap.oss.ramlapisync.raml.RamlMimeType;
 import com.phoenixnap.oss.ramlapisync.raml.RamlResource;
 import com.phoenixnap.oss.ramlapisync.raml.RamlResponse;
-import org.raml.model.parameter.FormParameter;
-import org.raml.model.parameter.UriParameter;
+import com.phoenixnap.oss.ramlapisync.raml.RamlUriParameter;
 import org.springframework.http.MediaType;
 import org.springframework.util.StringUtils;
 
@@ -95,7 +94,7 @@ public class ApiActionMetadata {
 		RamlResource targetResource = action.getResource();
 
 		do {
-			for (Entry<String, UriParameter> param : targetResource.getUriParameters().entrySet()) {
+			for (Entry<String, RamlUriParameter> param : targetResource.getUriParameters().entrySet()) {
 				pathVariables.add(new ApiParameterMetadata(param.getKey(), param.getValue()));
 			}
 			targetResource = targetResource.getParentResource();
@@ -155,8 +154,8 @@ public class ApiActionMetadata {
 
 	private void collectRequestParamsForMime(RamlMimeType requestBody) {
 		if(requestBody == null) return;
-		for (Entry<String, List<FormParameter>> params : requestBody.getFormParameters().entrySet()) {
-			for (FormParameter param : params.getValue()) {
+		for (Entry<String, List<RamlFormParameter>> params : requestBody.getFormParameters().entrySet()) {
+			for (RamlFormParameter param : params.getValue()) {
 				requestParameters.add(new ApiParameterMetadata(params.getKey(), param));
 			}
 		}

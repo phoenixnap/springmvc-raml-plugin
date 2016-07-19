@@ -23,10 +23,10 @@ import com.phoenixnap.oss.ramlapisync.raml.RamlActionType;
 import com.phoenixnap.oss.ramlapisync.raml.RamlMimeType;
 import com.phoenixnap.oss.ramlapisync.raml.RamlModelFactory;
 import com.phoenixnap.oss.ramlapisync.raml.RamlModelFactoryOfFactories;
+import com.phoenixnap.oss.ramlapisync.raml.RamlQueryParameter;
 import com.phoenixnap.oss.ramlapisync.raml.RamlResource;
 import com.phoenixnap.oss.ramlapisync.raml.RamlResponse;
 import org.raml.model.ParamType;
-import org.raml.model.parameter.QueryParameter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.util.StringUtils;
@@ -133,13 +133,13 @@ public abstract class ResourceParser {
 	 * @param parameterComments The parameter comments associated with these parameters
 	 * @return A collection of parameters keyed by name
 	 */
-	protected Map<String, QueryParameter> extractQueryParameters(RamlActionType apiAction, Method method,
-			Map<String, String> parameterComments) {
+	protected Map<String, RamlQueryParameter> extractQueryParameters(RamlActionType apiAction, Method method,
+																	 Map<String, String> parameterComments) {
 		// Since POST requests have a body we choose to keep all request data in one place as much as possible
 		if (apiAction.equals(RamlActionType.POST) || method.getParameterCount() == 0) {
 			return Collections.emptyMap();
 		}
-		Map<String, QueryParameter> queryParams = new LinkedHashMap<>();
+		Map<String, RamlQueryParameter> queryParams = new LinkedHashMap<>();
 
 		for (Parameter param : method.getParameters()) {
 			if (isQueryParameter(param)) { // Lets skip resourceIds since these are going to be going in the URL

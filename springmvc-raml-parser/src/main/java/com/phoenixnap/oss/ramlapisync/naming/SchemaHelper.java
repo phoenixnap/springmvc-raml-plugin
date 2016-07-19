@@ -24,6 +24,9 @@ import com.phoenixnap.oss.ramlapisync.data.ApiParameterMetadata;
 import com.phoenixnap.oss.ramlapisync.javadoc.JavaDocEntry;
 import com.phoenixnap.oss.ramlapisync.javadoc.JavaDocStore;
 import com.phoenixnap.oss.ramlapisync.raml.RamlMimeType;
+import com.phoenixnap.oss.ramlapisync.raml.RamlModelFactory;
+import com.phoenixnap.oss.ramlapisync.raml.RamlModelFactoryOfFactories;
+import com.phoenixnap.oss.ramlapisync.raml.RamlQueryParameter;
 import com.phoenixnap.oss.ramlapisync.raml.RamlRoot;
 import com.sun.codemodel.JCodeModel;
 import org.jsonschema2pojo.Annotator;
@@ -35,7 +38,6 @@ import org.jsonschema2pojo.SchemaMapper;
 import org.jsonschema2pojo.SchemaStore;
 import org.jsonschema2pojo.rules.RuleFactory;
 import org.raml.model.ParamType;
-import org.raml.model.parameter.QueryParameter;
 import org.raml.parser.utils.Inflector;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -75,9 +77,9 @@ public class SchemaHelper {
 	 * @param paramComment The associated Javadoc if any
 	 * @return A map of query parameters that map into the supplied type
 	 */
-	public static Map<String, QueryParameter> convertParameterToQueryParameter(final Parameter param,
+	public static Map<String, RamlQueryParameter> convertParameterToQueryParameter(final Parameter param,
 			final String paramComment) {
-		QueryParameter queryParam = new QueryParameter();
+		RamlQueryParameter queryParam = RamlModelFactoryOfFactories.createRamlModelFactory().createRamlQueryParameter();
 		ApiParameterMetadata parameterMetadata = new ApiParameterMetadata(param);
 
 		ParamType type = mapSimpleType(param.getType());
@@ -133,9 +135,9 @@ public class SchemaHelper {
 	 * @param javaDocStore The associated JavaDoc (if any)
 	 * @return a Map of Parameter RAML models keyed by parameter name
 	 */
-	public static Map<String, QueryParameter> convertClassToQueryParameters(final Parameter param,
+	public static Map<String, RamlQueryParameter> convertClassToQueryParameters(final Parameter param,
 			final JavaDocStore javaDocStore) {
-		final Map<String, QueryParameter> outParams = new TreeMap<>();
+		final Map<String, RamlQueryParameter> outParams = new TreeMap<>();
 
 		if (param == null || param.equals(Void.class)) {
 			return outParams;
@@ -148,11 +150,12 @@ public class SchemaHelper {
 		}
 
 		try {
+			RamlModelFactory ramlModelFactory = RamlModelFactoryOfFactories.createRamlModelFactory();
 			for (Field field : param.getType().getDeclaredFields()) {
 				if (!java.lang.reflect.Modifier.isStatic(field.getModifiers())
 						&& !java.lang.reflect.Modifier.isTransient(field.getModifiers())
 						&& !java.lang.reflect.Modifier.isVolatile(field.getModifiers())) {
-					QueryParameter queryParam = new QueryParameter();
+					RamlQueryParameter queryParam = ramlModelFactory.createRamlQueryParameter();
 
 					// Check if we have comments
 					JavaDocEntry paramComment = javaDocStore == null ? null : javaDocStore.getJavaDoc(field.getName());

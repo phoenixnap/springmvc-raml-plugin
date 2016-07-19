@@ -1,5 +1,9 @@
 package com.phoenixnap.oss.ramlapisync.raml;
 
+import com.phoenixnap.oss.ramlapisync.data.RamlFormParameter;
+
+import java.util.Collections;
+import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
 
@@ -42,11 +46,25 @@ public interface RamlModelFactory {
 
     RamlHeader createRamlHeader(Object haeder);
 
-    default <K, SV, TV> void syncFromTo(Map<K, SV> source, Map<K, TV> target, Function<SV, TV> valueTransformer) {
-        syncFromTo(source, target, valueTransformer, this::identity);
+    RamlUriParameter createRamlUriParameter(Object o);
+
+    RamlUriParameter createRamlUriParameterWithName(String name);
+
+    RamlQueryParameter createRamlQueryParameter();
+
+    RamlQueryParameter createRamlQueryParameter(Object queryParameter);
+
+    RamlFormParameter createRamlFormParameter();
+
+    RamlFormParameter createRamlFormParameter(Object formParameter);
+
+    List<RamlFormParameter> createRamlFormParameters(List<? extends Object> formParameters);
+
+    default <K, SV, TV> Map<K, TV> transformToUnmodifiableMap(Map<K, SV> source, Map<K, TV> target, Function<SV, TV> valueTransformer) {
+        return transformToUnmodifiableMap(source, target, valueTransformer, this::identity);
     }
 
-    default <SK, TK, SV, TV> void syncFromTo(Map<SK, SV> source, Map<TK, TV> target, Function<SV, TV> valueTransformer, Function<SK, TK> keyTransformer) {
+    default <SK, TK, SV, TV> Map<TK, TV> transformToUnmodifiableMap(Map<SK, SV> source, Map<TK, TV> target, Function<SV, TV> valueTransformer, Function<SK, TK> keyTransformer) {
         if (source == null) {
             target.clear();
         } else if (target.size() != source.size()) {
@@ -57,6 +75,7 @@ public interface RamlModelFactory {
                 target.put(targetKey, targetValue);
             }
         }
+        return Collections.unmodifiableMap(target);
     }
 
     default <T> T identity(T object) {

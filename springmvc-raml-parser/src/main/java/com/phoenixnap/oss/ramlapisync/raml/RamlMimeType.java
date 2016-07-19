@@ -1,6 +1,6 @@
 package com.phoenixnap.oss.ramlapisync.raml;
 
-import org.raml.model.parameter.FormParameter;
+import com.phoenixnap.oss.ramlapisync.data.RamlFormParameter;
 
 import java.util.List;
 import java.util.Map;
@@ -10,9 +10,11 @@ import java.util.Map;
  */
 public interface RamlMimeType {
 
-    Map<String, List<FormParameter>> getFormParameters();
+    Map<String, List<RamlFormParameter>> getFormParameters();
 
-    void setFormParameters(Map<String, List<FormParameter>> formParameters);
+    void setFormParameters(Map<String, List<RamlFormParameter>> formParameters);
+
+    void addFormParameters(String name, List<RamlFormParameter> formParameters);
 
     String getSchema();
 

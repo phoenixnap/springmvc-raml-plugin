@@ -1,7 +1,6 @@
 package com.phoenixnap.oss.ramlapisync.raml;
 
 import org.raml.model.SecurityReference;
-import org.raml.model.parameter.QueryParameter;
 
 import java.util.List;
 import java.util.Map;
@@ -13,7 +12,7 @@ public interface RamlAction {
 
     RamlActionType getType();
 
-    Map<String, QueryParameter> getQueryParameters();
+    Map<String, RamlQueryParameter> getQueryParameters();
 
     Map<String, RamlResponse> getResponses();
 
@@ -38,4 +37,6 @@ public interface RamlAction {
     List<SecurityReference> getSecuredBy();
 
     void addResponse(String httpStatus, RamlResponse response);
+
+    void addQueryParameters(Map<String, RamlQueryParameter> queryParameters);
 }
