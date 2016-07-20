@@ -1,4 +1,4 @@
-package com.phoenixnap.oss.ramlapisync.raml.jrp.raml08v1;
+package com.phoenixnap.oss.ramlapisync.raml.rjp.raml08v1;
 
 import com.phoenixnap.oss.ramlapisync.raml.RamlParamType;
 import com.phoenixnap.oss.ramlapisync.raml.RamlQueryParameter;
@@ -9,13 +9,13 @@ import java.math.BigDecimal;
 /**
  * @author armin.weisser
  */
-public class Jrp08V1RamlQueryParameter extends RamlQueryParameter {
+public class RJP08V1RamlQueryParameter extends RamlQueryParameter {
 
-    private static Jrp08V1RamlModelFactory ramlModelFactory = new Jrp08V1RamlModelFactory();
+    private static RJP08V1RamlModelFactory ramlModelFactory = new RJP08V1RamlModelFactory();
 
     private final QueryParameter queryParameter;
 
-    public Jrp08V1RamlQueryParameter(QueryParameter queryParameter) {
+    public RJP08V1RamlQueryParameter(QueryParameter queryParameter) {
         this.queryParameter = queryParameter;
     }
 

@@ -1,4 +1,4 @@
-package com.phoenixnap.oss.ramlapisync.raml.jrp.raml08v1;
+package com.phoenixnap.oss.ramlapisync.raml.rjp.raml08v1;
 
 import com.phoenixnap.oss.ramlapisync.raml.RamlAction;
 import com.phoenixnap.oss.ramlapisync.raml.RamlActionType;
@@ -14,9 +14,9 @@ import java.util.Map;
 /**
  * @author armin.weisser
  */
-public class Jrp08V1RamlResource implements RamlResource {
+public class RJP08V1RamlResource implements RamlResource {
 
-    private static Jrp08V1RamlModelFactory ramlModelFactory = new Jrp08V1RamlModelFactory();
+    private static RJP08V1RamlModelFactory ramlModelFactory = new RJP08V1RamlModelFactory();
 
     private final Resource resource;
     private Map<String, RamlResource> resources = new LinkedHashMap<>();
@@ -24,7 +24,7 @@ public class Jrp08V1RamlResource implements RamlResource {
     private Map<String, RamlUriParameter> uriParameters = new LinkedHashMap<>();
     private Map<String, RamlUriParameter> resolvedUriParameters = new LinkedHashMap<>();
 
-    public Jrp08V1RamlResource(Resource resource) {
+    public RJP08V1RamlResource(Resource resource) {
         this.resource = resource;
     }
 

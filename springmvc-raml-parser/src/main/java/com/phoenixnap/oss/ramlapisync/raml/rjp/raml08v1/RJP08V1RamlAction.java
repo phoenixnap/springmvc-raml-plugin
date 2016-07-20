@@ -1,4 +1,4 @@
-package com.phoenixnap.oss.ramlapisync.raml.jrp.raml08v1;
+package com.phoenixnap.oss.ramlapisync.raml.rjp.raml08v1;
 
 import com.phoenixnap.oss.ramlapisync.raml.RamlAction;
 import com.phoenixnap.oss.ramlapisync.raml.RamlActionType;
@@ -17,9 +17,9 @@ import java.util.Map;
 /**
  * @author armin.weisser
  */
-public class Jrp08V1RamlAction implements RamlAction {
+public class RJP08V1RamlAction implements RamlAction {
 
-    private static Jrp08V1RamlModelFactory ramlModelFactory = new Jrp08V1RamlModelFactory();
+    private static RJP08V1RamlModelFactory ramlModelFactory = new RJP08V1RamlModelFactory();
 
     private final Action action;
 
@@ -31,7 +31,7 @@ public class Jrp08V1RamlAction implements RamlAction {
 
     private Map<String, RamlQueryParameter> queryParameters = new LinkedHashMap<>();
 
-    public Jrp08V1RamlAction(Action action) {
+    public RJP08V1RamlAction(Action action) {
         this.action = action;
     }
 

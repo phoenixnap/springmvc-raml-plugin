@@ -1,4 +1,4 @@
-package com.phoenixnap.oss.ramlapisync.raml.jrp.raml08v1;
+package com.phoenixnap.oss.ramlapisync.raml.rjp.raml08v1;
 
 import com.phoenixnap.oss.ramlapisync.raml.RamlHeader;
 import com.phoenixnap.oss.ramlapisync.raml.RamlParamType;
@@ -7,13 +7,13 @@ import org.raml.model.parameter.Header;
 /**
  * @author armin.weisser
  */
-public class Jrp08V1RamlHeader extends RamlHeader {
+public class RJP08V1RamlHeader extends RamlHeader {
 
-    private static Jrp08V1RamlModelFactory ramlModelFactory = new Jrp08V1RamlModelFactory();
+    private static RJP08V1RamlModelFactory ramlModelFactory = new RJP08V1RamlModelFactory();
 
     private final Header header;
 
-    public Jrp08V1RamlHeader(Header header) {
+    public RJP08V1RamlHeader(Header header) {
         this.header = header;
     }
 

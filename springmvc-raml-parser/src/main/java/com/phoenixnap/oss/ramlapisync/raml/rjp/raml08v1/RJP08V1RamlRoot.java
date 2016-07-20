@@ -1,4 +1,4 @@
-package com.phoenixnap.oss.ramlapisync.raml.jrp.raml08v1;
+package com.phoenixnap.oss.ramlapisync.raml.rjp.raml08v1;
 
 import com.phoenixnap.oss.ramlapisync.raml.RamlDocumentationItem;
 import com.phoenixnap.oss.ramlapisync.raml.RamlResource;
@@ -12,15 +12,15 @@ import java.util.Map;
 /**
  * @author armin.weisser
  */
-public class Jrp08V1RamlRoot implements RamlRoot {
+public class RJP08V1RamlRoot implements RamlRoot {
 
-    private static Jrp08V1RamlModelFactory ramlModelFactory = new Jrp08V1RamlModelFactory();
+    private static RJP08V1RamlModelFactory ramlModelFactory = new RJP08V1RamlModelFactory();
 
     private final Raml raml;
 
     private Map<String, RamlResource> resources = new LinkedHashMap<>();
 
-    public Jrp08V1RamlRoot(Raml raml) {
+    public RJP08V1RamlRoot(Raml raml) {
         if(raml == null) {
             throw new IllegalArgumentException("The Raml instance must not be null");
         }

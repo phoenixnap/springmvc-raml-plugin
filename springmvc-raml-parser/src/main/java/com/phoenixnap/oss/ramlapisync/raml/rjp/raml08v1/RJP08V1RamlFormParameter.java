@@ -1,4 +1,4 @@
-package com.phoenixnap.oss.ramlapisync.raml.jrp.raml08v1;
+package com.phoenixnap.oss.ramlapisync.raml.rjp.raml08v1;
 
 import com.phoenixnap.oss.ramlapisync.data.RamlFormParameter;
 import com.phoenixnap.oss.ramlapisync.raml.RamlParamType;
@@ -7,13 +7,13 @@ import org.raml.model.parameter.FormParameter;
 /**
  * @author armin.weisser
  */
-public class Jrp08V1RamlFormParameter extends RamlFormParameter {
+public class RJP08V1RamlFormParameter extends RamlFormParameter {
 
-    private static Jrp08V1RamlModelFactory ramlModelFactory = new Jrp08V1RamlModelFactory();
+    private static RJP08V1RamlModelFactory ramlModelFactory = new RJP08V1RamlModelFactory();
 
     private final FormParameter formParameter;
 
-    public Jrp08V1RamlFormParameter(FormParameter formParameter) {
+    public RJP08V1RamlFormParameter(FormParameter formParameter) {
         this.formParameter = formParameter;
     }
 

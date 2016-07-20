@@ -1,4 +1,4 @@
-package com.phoenixnap.oss.ramlapisync.raml.jrp.raml08v1;
+package com.phoenixnap.oss.ramlapisync.raml.rjp.raml08v1;
 
 import com.phoenixnap.oss.ramlapisync.data.RamlFormParameter;
 import com.phoenixnap.oss.ramlapisync.raml.RamlAction;
@@ -38,11 +38,11 @@ import java.util.stream.Collectors;
 /**
  * @author armin.weisser
  */
-public class Jrp08V1RamlModelFactory implements RamlModelFactory {
+public class RJP08V1RamlModelFactory implements RamlModelFactory {
 
     @Override
     public RamlModelEmitter createRamlModelEmitter() {
-        return new Jrp08V1RamlModelEmitter();
+        return new RJP08V1RamlModelEmitter();
     }
 
     @Override
@@ -65,7 +65,7 @@ public class Jrp08V1RamlModelFactory implements RamlModelFactory {
         if (raml == null) {
             return null;
         }
-        return new Jrp08V1RamlRoot(raml);
+        return new RJP08V1RamlRoot(raml);
     }
 
     @Override
@@ -78,12 +78,12 @@ public class Jrp08V1RamlModelFactory implements RamlModelFactory {
         if (resource == null) {
             return null;
         }
-        return new Jrp08V1RamlResource((Resource) resource);
+        return new RJP08V1RamlResource((Resource) resource);
     }
 
     Resource extractResource(RamlResource ramlResource) {
         if (ramlResource == null) return null;
-        return ((Jrp08V1RamlResource) ramlResource).getResource();
+        return ((RJP08V1RamlResource) ramlResource).getResource();
     }
 
     @Override
@@ -91,7 +91,7 @@ public class Jrp08V1RamlModelFactory implements RamlModelFactory {
         if (action == null) {
             return null;
         }
-        return new Jrp08V1RamlAction((Action) action);
+        return new RJP08V1RamlAction((Action) action);
     }
 
     @Override
@@ -100,7 +100,7 @@ public class Jrp08V1RamlModelFactory implements RamlModelFactory {
     }
 
     Action extractAction(RamlAction ramlAction) {
-        return ((Jrp08V1RamlAction) ramlAction).getAction();
+        return ((RJP08V1RamlAction) ramlAction).getAction();
     }
 
     @Override
@@ -110,7 +110,7 @@ public class Jrp08V1RamlModelFactory implements RamlModelFactory {
 
     @Override
     public RamlDocumentationItem createRamlDocumentationItem(Object documentationItem) {
-        return new Jrp08V1RamlDocumentationItem((DocumentationItem)documentationItem);
+        return new RJP08V1RamlDocumentationItem((DocumentationItem)documentationItem);
     }
 
     List<DocumentationItem> extractDocumentationItems(List<RamlDocumentationItem> ramlRocumentationItems) {
@@ -123,7 +123,7 @@ public class Jrp08V1RamlModelFactory implements RamlModelFactory {
     }
 
     private DocumentationItem extractDocumentationItem(RamlDocumentationItem ramlDocumentationItem) {
-        return ((Jrp08V1RamlDocumentationItem) ramlDocumentationItem).getDocumentationItem();
+        return ((RJP08V1RamlDocumentationItem) ramlDocumentationItem).getDocumentationItem();
     }
 
     @Override
@@ -144,12 +144,12 @@ public class Jrp08V1RamlModelFactory implements RamlModelFactory {
         if(response == null) {
             return null;
         }
-        return new Jrp08V1RamlResponse((Response)response);
+        return new RJP08V1RamlResponse((Response)response);
     }
 
 
     Response extractResponse(RamlResponse ramlResponse) {
-        return ((Jrp08V1RamlResponse)ramlResponse).getResponse();
+        return ((RJP08V1RamlResponse)ramlResponse).getResponse();
     }
 
     @Override
@@ -164,17 +164,17 @@ public class Jrp08V1RamlModelFactory implements RamlModelFactory {
 
     @Override
     public RamlMimeType createRamlMimeType(Object mimeType) {
-        return new Jrp08V1RamlMimeType((MimeType)mimeType);
+        return new RJP08V1RamlMimeType((MimeType)mimeType);
     }
 
     @Override
     public RamlHeader createRamlHeader(Object header) {
-        return new Jrp08V1RamlHeader((Header)header);
+        return new RJP08V1RamlHeader((Header)header);
     }
 
     @Override
     public RamlUriParameter createRamlUriParameter(Object uriParameter) {
-        return new Jrp08V1RamlUriParameter((UriParameter)uriParameter);
+        return new RJP08V1RamlUriParameter((UriParameter)uriParameter);
     }
 
     Map<String, MimeType> extractBody(Map<String, RamlMimeType> ramlBody) {
@@ -186,16 +186,16 @@ public class Jrp08V1RamlModelFactory implements RamlModelFactory {
     }
 
     MimeType extractMimeType(RamlMimeType ramlMimeType) {
-        return ((Jrp08V1RamlMimeType)ramlMimeType).getMimeType();
+        return ((RJP08V1RamlMimeType)ramlMimeType).getMimeType();
     }
 
     UriParameter extractUriParameter(RamlUriParameter ramlUriParameter) {
-        return ((Jrp08V1RamlUriParameter)ramlUriParameter).getUriParameter();
+        return ((RJP08V1RamlUriParameter)ramlUriParameter).getUriParameter();
     }
 
     @Override
     public RamlUriParameter createRamlUriParameterWithName(String name) {
-        return new Jrp08V1RamlUriParameter(new UriParameter(name));
+        return new RJP08V1RamlUriParameter(new UriParameter(name));
     }
 
     @Override
@@ -205,11 +205,11 @@ public class Jrp08V1RamlModelFactory implements RamlModelFactory {
 
     @Override
     public RamlQueryParameter createRamlQueryParameter(Object queryParameter) {
-        return new Jrp08V1RamlQueryParameter((QueryParameter)queryParameter);
+        return new RJP08V1RamlQueryParameter((QueryParameter)queryParameter);
     }
 
     QueryParameter extractQueryParameter(RamlQueryParameter ramlQueryParameter) {
-        return ((Jrp08V1RamlQueryParameter)ramlQueryParameter).getQueryParameter();
+        return ((RJP08V1RamlQueryParameter)ramlQueryParameter).getQueryParameter();
     }
 
     Map<String, List<FormParameter>> extractFormParameters(Map<String, List<RamlFormParameter>> ramlFormParameters) {
@@ -225,7 +225,7 @@ public class Jrp08V1RamlModelFactory implements RamlModelFactory {
     }
 
     FormParameter extractFormParameter(RamlFormParameter ramlFormParameter) {
-        return ((Jrp08V1RamlFormParameter)ramlFormParameter).getFormParameter();
+        return ((RJP08V1RamlFormParameter)ramlFormParameter).getFormParameter();
     }
 
     @Override
@@ -240,7 +240,7 @@ public class Jrp08V1RamlModelFactory implements RamlModelFactory {
 
     @Override
     public RamlFormParameter createRamlFormParameter(Object formParameter) {
-        return new Jrp08V1RamlFormParameter((FormParameter)formParameter);
+        return new RJP08V1RamlFormParameter((FormParameter)formParameter);
     }
 
     @Override
@@ -250,7 +250,7 @@ public class Jrp08V1RamlModelFactory implements RamlModelFactory {
 
     @Override
     public RamlSecurityReference createRamlSecurityReference(Object securityReference) {
-        return new Jrp08V1RamlSecurityReference((SecurityReference)securityReference);
+        return new RJP08V1RamlSecurityReference((SecurityReference)securityReference);
     }
 
     @Override

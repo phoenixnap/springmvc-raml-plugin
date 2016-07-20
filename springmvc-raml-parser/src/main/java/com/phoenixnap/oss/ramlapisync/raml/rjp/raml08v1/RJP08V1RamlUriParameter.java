@@ -1,4 +1,4 @@
-package com.phoenixnap.oss.ramlapisync.raml.jrp.raml08v1;
+package com.phoenixnap.oss.ramlapisync.raml.rjp.raml08v1;
 
 import com.phoenixnap.oss.ramlapisync.raml.RamlParamType;
 import com.phoenixnap.oss.ramlapisync.raml.RamlUriParameter;
@@ -7,13 +7,13 @@ import org.raml.model.parameter.UriParameter;
 /**
  * @author armin.weisser
  */
-public class Jrp08V1RamlUriParameter extends RamlUriParameter {
+public class RJP08V1RamlUriParameter extends RamlUriParameter {
 
-    private static Jrp08V1RamlModelFactory ramlModelFactory = new Jrp08V1RamlModelFactory();
+    private static RJP08V1RamlModelFactory ramlModelFactory = new RJP08V1RamlModelFactory();
 
     private final UriParameter uriParameter;
 
-    public Jrp08V1RamlUriParameter(UriParameter uriParameter) {
+    public RJP08V1RamlUriParameter(UriParameter uriParameter) {
         this.uriParameter = uriParameter;
     }
 

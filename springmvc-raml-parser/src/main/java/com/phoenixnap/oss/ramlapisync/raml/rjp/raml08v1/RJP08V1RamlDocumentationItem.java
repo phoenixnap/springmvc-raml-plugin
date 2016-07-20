@@ -1,4 +1,4 @@
-package com.phoenixnap.oss.ramlapisync.raml.jrp.raml08v1;
+package com.phoenixnap.oss.ramlapisync.raml.rjp.raml08v1;
 
 import com.phoenixnap.oss.ramlapisync.raml.RamlDocumentationItem;
 import org.raml.model.DocumentationItem;
@@ -6,11 +6,11 @@ import org.raml.model.DocumentationItem;
 /**
  * @author armin.weisser
  */
-public class Jrp08V1RamlDocumentationItem implements RamlDocumentationItem {
+public class RJP08V1RamlDocumentationItem implements RamlDocumentationItem {
 
     private final DocumentationItem documentationItem;
 
-    public Jrp08V1RamlDocumentationItem(DocumentationItem documentationItem) {
+    public RJP08V1RamlDocumentationItem(DocumentationItem documentationItem) {
         this.documentationItem = documentationItem;
     }
 
