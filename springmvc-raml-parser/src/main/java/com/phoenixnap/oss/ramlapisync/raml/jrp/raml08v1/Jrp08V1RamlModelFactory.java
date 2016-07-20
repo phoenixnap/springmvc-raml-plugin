@@ -12,6 +12,7 @@ import com.phoenixnap.oss.ramlapisync.raml.RamlQueryParameter;
 import com.phoenixnap.oss.ramlapisync.raml.RamlResource;
 import com.phoenixnap.oss.ramlapisync.raml.RamlResponse;
 import com.phoenixnap.oss.ramlapisync.raml.RamlRoot;
+import com.phoenixnap.oss.ramlapisync.raml.RamlSecurityReference;
 import com.phoenixnap.oss.ramlapisync.raml.RamlUriParameter;
 import org.raml.model.Action;
 import org.raml.model.ActionType;
@@ -20,6 +21,7 @@ import org.raml.model.MimeType;
 import org.raml.model.Raml;
 import org.raml.model.Resource;
 import org.raml.model.Response;
+import org.raml.model.SecurityReference;
 import org.raml.model.parameter.FormParameter;
 import org.raml.model.parameter.Header;
 import org.raml.model.parameter.QueryParameter;
@@ -239,5 +241,13 @@ public class Jrp08V1RamlModelFactory implements RamlModelFactory {
         return new Jrp08V1RamlFormParameter((FormParameter)formParameter);
     }
 
+    @Override
+    public List<RamlSecurityReference> createRamlSecurityReferences(List<? extends Object> securityReferences) {
+        return securityReferences.stream().map(this::createRamlSecurityReference).collect(Collectors.toList());
+    }
 
+    @Override
+    public RamlSecurityReference createRamlSecurityReference(Object securityReference) {
+        return new Jrp08V1RamlSecurityReference((SecurityReference)securityReference);
+    }
 }

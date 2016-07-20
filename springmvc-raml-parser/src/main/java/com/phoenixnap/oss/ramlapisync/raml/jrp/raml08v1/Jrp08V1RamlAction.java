@@ -7,8 +7,8 @@ import com.phoenixnap.oss.ramlapisync.raml.RamlMimeType;
 import com.phoenixnap.oss.ramlapisync.raml.RamlQueryParameter;
 import com.phoenixnap.oss.ramlapisync.raml.RamlResource;
 import com.phoenixnap.oss.ramlapisync.raml.RamlResponse;
+import com.phoenixnap.oss.ramlapisync.raml.RamlSecurityReference;
 import org.raml.model.Action;
-import org.raml.model.SecurityReference;
 
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -111,8 +111,8 @@ public class Jrp08V1RamlAction implements RamlAction {
     }
 
     @Override
-    public List<SecurityReference> getSecuredBy() {
-        return action.getSecuredBy();
+    public List<RamlSecurityReference> getSecuredBy() {
+        return ramlModelFactory.createRamlSecurityReferences(action.getSecuredBy());
     }
 
     @Override

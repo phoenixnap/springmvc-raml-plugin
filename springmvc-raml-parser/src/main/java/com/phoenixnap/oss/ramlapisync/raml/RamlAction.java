@@ -1,7 +1,5 @@
 package com.phoenixnap.oss.ramlapisync.raml;
 
-import org.raml.model.SecurityReference;
-
 import java.util.List;
 import java.util.Map;
 
@@ -34,7 +32,7 @@ public interface RamlAction {
 
     void setType(RamlActionType actionType);
 
-    List<SecurityReference> getSecuredBy();
+    List<RamlSecurityReference> getSecuredBy();
 
     void addResponse(String httpStatus, RamlResponse response);
 

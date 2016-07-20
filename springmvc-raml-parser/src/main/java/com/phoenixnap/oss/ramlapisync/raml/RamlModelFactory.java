@@ -60,6 +60,10 @@ public interface RamlModelFactory {
 
     List<RamlFormParameter> createRamlFormParameters(List<? extends Object> formParameters);
 
+    List<RamlSecurityReference> createRamlSecurityReferences(List<? extends Object> securityReferences);
+
+    RamlSecurityReference createRamlSecurityReference(Object securityReference);
+
     default <K, SV, TV> Map<K, TV> transformToUnmodifiableMap(Map<K, SV> source, Map<K, TV> target, Function<SV, TV> valueTransformer) {
         return transformToUnmodifiableMap(source, target, valueTransformer, this::identity);
     }
@@ -81,5 +85,4 @@ public interface RamlModelFactory {
     default <T> T identity(T object) {
         return object;
     }
-
 }
