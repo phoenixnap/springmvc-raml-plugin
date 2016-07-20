@@ -21,7 +21,6 @@ public class Jrp08V1RamlMimeType implements RamlMimeType {
 
     public Jrp08V1RamlMimeType(MimeType mimeType) {
         this.mimeType = mimeType;
-        this.mimeType.setFormParameters(new LinkedHashMap<>());
     }
 
     /**
@@ -61,6 +60,9 @@ public class Jrp08V1RamlMimeType implements RamlMimeType {
     @Override
     public void addFormParameters(String name, List<RamlFormParameter> ramlFormParameters) {
         this.formParameters.put(name, ramlFormParameters);
+        if(this.mimeType.getFormParameters() == null) {
+            this.mimeType.setFormParameters(new LinkedHashMap<>());
+        }
         this.mimeType.getFormParameters().put(name, ramlModelFactory.extractFormParameters(ramlFormParameters));
     }
 
