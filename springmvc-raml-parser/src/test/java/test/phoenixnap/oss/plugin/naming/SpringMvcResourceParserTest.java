@@ -43,6 +43,13 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.MediaType;
 
+import test.phoenixnap.oss.plugin.naming.testclasses.BugController;
+import test.phoenixnap.oss.plugin.naming.testclasses.MultipleContentTypeTestController;
+import test.phoenixnap.oss.plugin.naming.testclasses.NoValueController;
+import test.phoenixnap.oss.plugin.naming.testclasses.TestController;
+import test.phoenixnap.oss.plugin.naming.testclasses.UriPrefixIgnoredController;
+import test.phoenixnap.oss.plugin.naming.testclasses.WrappedResponseBodyTestController;
+
 import com.phoenixnap.oss.ramlapisync.data.ApiActionMetadata;
 import com.phoenixnap.oss.ramlapisync.data.ApiResourceMetadata;
 import com.phoenixnap.oss.ramlapisync.generation.RamlParser;
@@ -53,12 +60,6 @@ import com.phoenixnap.oss.ramlapisync.javadoc.JavaDocStore;
 import com.phoenixnap.oss.ramlapisync.naming.RamlHelper;
 import com.phoenixnap.oss.ramlapisync.parser.FileSearcher;
 import com.phoenixnap.oss.ramlapisync.parser.SpringMvcResourceParser;
-
-import test.phoenixnap.oss.plugin.naming.testclasses.BugController;
-import test.phoenixnap.oss.plugin.naming.testclasses.MultipleContentTypeTestController;
-import test.phoenixnap.oss.plugin.naming.testclasses.NoValueController;
-import test.phoenixnap.oss.plugin.naming.testclasses.TestController;
-import test.phoenixnap.oss.plugin.naming.testclasses.UriPrefixIgnoredController;
 
 /**
  * Unit tests for the Spring MVC Parser
@@ -133,10 +134,38 @@ public class SpringMvcResourceParserTest {
 		baseResourceTestController = parser.extractResourceInfo(TestController.class);
 	}
 	
+	@Test
+	public void test_wrappedResponseBody__Success() {
+		Resource resourceInfo = parser.extractResourceInfo(WrappedResponseBodyTestController.class);
+
+		Resource testResource = resourceInfo.getResource("/base").getResource("/endpointWithResponseType");
+		String testClassId = "urn:jsonschema:test:phoenixnap:oss:plugin:naming:testclasses:ThreeElementClass";
+		checkResourceWrappedResponse(testResource, testClassId);
+		
+		testResource = resourceInfo.getResource("/base").getResource("/endpointWithResponseTypeNonGeneric");
+		testClassId = "\"type\" : \"any\"";
+		checkResourceWrappedResponse(testResource, testClassId);
+
+
+	}
+
+	public void checkResourceWrappedResponse(Resource testResource, String testClassId) {
+		assertEquals("Assert resources size", 2, testResource.getActions().size());
+		Action getAction = testResource.getActions().get(ActionType.GET);
+		Action postAction = testResource.getActions().get(ActionType.POST);
+		assertNotNull(getAction);
+		assertNotNull(postAction);
+		assertEquals("Assert Javadoc", COMMENT_JAVADOC, getAction.getDescription());
+		assertEquals("Assert Javadoc", COMMENT_JAVADOC, postAction.getDescription());
+		assertTrue(getAction.getResponses().get("200").getBody().get("application/test+json").getSchema().contains(testClassId));
+		assertTrue(postAction.getResponses().get("200").getBody().get("application/test+json").getSchema().contains(testClassId));
+	}
+	
 
 	private static String combineConstantAndName(String constant, String name) {
 		return name + constant;
 	}
+	
 
     @Test
     public void test_seperateContentType__Success() throws Exception {

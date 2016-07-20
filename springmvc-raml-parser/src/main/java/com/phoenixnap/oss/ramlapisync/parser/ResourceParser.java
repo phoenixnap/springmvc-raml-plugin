@@ -15,6 +15,7 @@ package com.phoenixnap.oss.ramlapisync.parser;
 import java.io.File;
 import java.lang.reflect.Method;
 import java.lang.reflect.Parameter;
+import java.lang.reflect.Type;
 import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -30,7 +31,9 @@ import org.raml.model.Response;
 import org.raml.model.parameter.QueryParameter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.http.ResponseEntity;
 import org.springframework.util.StringUtils;
+import org.springframework.web.context.request.async.DeferredResult;
 
 import com.phoenixnap.oss.ramlapisync.data.ApiParameterMetadata;
 import com.phoenixnap.oss.ramlapisync.javadoc.JavaDocEntry;
@@ -38,6 +41,7 @@ import com.phoenixnap.oss.ramlapisync.javadoc.JavaDocExtractor;
 import com.phoenixnap.oss.ramlapisync.javadoc.JavaDocStore;
 import com.phoenixnap.oss.ramlapisync.naming.Pair;
 import com.phoenixnap.oss.ramlapisync.naming.SchemaHelper;
+import com.phoenixnap.oss.ramlapisync.naming.TypeHelper;
 
 /**
  * Common service scanning functionality
@@ -324,8 +328,22 @@ public abstract class ResourceParser {
 		MimeType jsonType = new MimeType(mime); // TODO this would be coolto annotate
 												// TO/VO/DO/weO with the mime type
 												// they represent and chuck it in here
-		jsonType.setSchema(SchemaHelper.convertClassToJsonSchema(method.getGenericReturnType(), responseComment,
-				javaDocs.getJavaDoc(method.getReturnType())));
+		Class<?> returnType = method.getReturnType();
+		Type genericReturnType = method.getGenericReturnType();
+		Type inferGenericType = TypeHelper.inferGenericType(genericReturnType);
+		if (returnType != null && (returnType.equals(DeferredResult.class) || returnType.equals(ResponseEntity.class))) { //unwrap spring classes from response body
+			if (inferGenericType == null) {
+				inferGenericType = Object.class;
+			} 
+			
+			if( inferGenericType instanceof Class) {
+				returnType = (Class<?>) inferGenericType;
+			}
+			genericReturnType = inferGenericType;
+		}
+			
+		jsonType.setSchema(SchemaHelper.convertClassToJsonSchema(genericReturnType, responseComment,
+				javaDocs.getJavaDoc(returnType)));
 
 		LinkedHashMap<String, MimeType> body = new LinkedHashMap<>();
 		body.put(mime, jsonType);
