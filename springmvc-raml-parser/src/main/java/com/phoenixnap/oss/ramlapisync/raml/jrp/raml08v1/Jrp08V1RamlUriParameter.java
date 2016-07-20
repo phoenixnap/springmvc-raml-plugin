@@ -1,13 +1,15 @@
 package com.phoenixnap.oss.ramlapisync.raml.jrp.raml08v1;
 
+import com.phoenixnap.oss.ramlapisync.raml.RamlParamType;
 import com.phoenixnap.oss.ramlapisync.raml.RamlUriParameter;
-import org.raml.model.ParamType;
 import org.raml.model.parameter.UriParameter;
 
 /**
  * @author armin.weisser
  */
 public class Jrp08V1RamlUriParameter extends RamlUriParameter {
+
+    private static Jrp08V1RamlModelFactory ramlModelFactory = new Jrp08V1RamlModelFactory();
 
     private final UriParameter uriParameter;
 
@@ -23,26 +25,32 @@ public class Jrp08V1RamlUriParameter extends RamlUriParameter {
         return uriParameter;
     }
 
+    @Override
     public String getDisplayName() {
         return uriParameter.getDisplayName();
     }
 
+    @Override
     public void setDisplayName(String displayName) {
         uriParameter.setDisplayName(displayName);
     }
 
-    public ParamType getType() {
-        return uriParameter.getType();
+    @Override
+    public RamlParamType getType() {
+        return ramlModelFactory.createRamlParamType(uriParameter.getType());
     }
 
-    public void setType(ParamType type) {
-        uriParameter.setType(type);
+    @Override
+    public void setType(RamlParamType paramType) {
+        uriParameter.setType(ramlModelFactory.extractRamlParam(paramType));
     }
 
+    @Override
     public boolean isRequired() {
         return uriParameter.isRequired();
     }
 
+    @Override
     public void setRequired(boolean required) {
         uriParameter.setRequired(required);
     }

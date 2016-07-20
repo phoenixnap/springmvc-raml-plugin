@@ -8,6 +8,7 @@ import com.phoenixnap.oss.ramlapisync.raml.RamlHeader;
 import com.phoenixnap.oss.ramlapisync.raml.RamlMimeType;
 import com.phoenixnap.oss.ramlapisync.raml.RamlModelEmitter;
 import com.phoenixnap.oss.ramlapisync.raml.RamlModelFactory;
+import com.phoenixnap.oss.ramlapisync.raml.RamlParamType;
 import com.phoenixnap.oss.ramlapisync.raml.RamlQueryParameter;
 import com.phoenixnap.oss.ramlapisync.raml.RamlResource;
 import com.phoenixnap.oss.ramlapisync.raml.RamlResponse;
@@ -18,6 +19,7 @@ import org.raml.model.Action;
 import org.raml.model.ActionType;
 import org.raml.model.DocumentationItem;
 import org.raml.model.MimeType;
+import org.raml.model.ParamType;
 import org.raml.model.Raml;
 import org.raml.model.Resource;
 import org.raml.model.Response;
@@ -249,5 +251,14 @@ public class Jrp08V1RamlModelFactory implements RamlModelFactory {
     @Override
     public RamlSecurityReference createRamlSecurityReference(Object securityReference) {
         return new Jrp08V1RamlSecurityReference((SecurityReference)securityReference);
+    }
+
+    @Override
+    public RamlParamType createRamlParamType(Object paramType) {
+        return RamlParamType.valueOf(((ParamType)paramType).name());
+    }
+
+    ParamType extractRamlParam(RamlParamType ramlParamType) {
+        return ParamType.valueOf(ramlParamType.name());
     }
 }

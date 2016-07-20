@@ -23,10 +23,10 @@ import com.phoenixnap.oss.ramlapisync.raml.RamlActionType;
 import com.phoenixnap.oss.ramlapisync.raml.RamlMimeType;
 import com.phoenixnap.oss.ramlapisync.raml.RamlModelFactory;
 import com.phoenixnap.oss.ramlapisync.raml.RamlModelFactoryOfFactories;
+import com.phoenixnap.oss.ramlapisync.raml.RamlParamType;
 import com.phoenixnap.oss.ramlapisync.raml.RamlQueryParameter;
 import com.phoenixnap.oss.ramlapisync.raml.RamlResource;
 import com.phoenixnap.oss.ramlapisync.raml.RamlResponse;
-import org.raml.model.ParamType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.util.StringUtils;
@@ -143,7 +143,7 @@ public abstract class ResourceParser {
 
 		for (Parameter param : method.getParameters()) {
 			if (isQueryParameter(param)) { // Lets skip resourceIds since these are going to be going in the URL
-				ParamType simpleType = SchemaHelper.mapSimpleType(param.getType());
+				RamlParamType simpleType = SchemaHelper.mapSimpleType(param.getType());
 
 				if (simpleType == null) {
 					queryParams.putAll(SchemaHelper.convertClassToQueryParameters(param,

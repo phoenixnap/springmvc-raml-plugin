@@ -1,7 +1,7 @@
 package com.phoenixnap.oss.ramlapisync.raml.jrp.raml08v1;
 
+import com.phoenixnap.oss.ramlapisync.raml.RamlParamType;
 import com.phoenixnap.oss.ramlapisync.raml.RamlQueryParameter;
-import org.raml.model.ParamType;
 import org.raml.model.parameter.QueryParameter;
 
 import java.math.BigDecimal;
@@ -10,6 +10,8 @@ import java.math.BigDecimal;
  * @author armin.weisser
  */
 public class Jrp08V1RamlQueryParameter extends RamlQueryParameter {
+
+    private static Jrp08V1RamlModelFactory ramlModelFactory = new Jrp08V1RamlModelFactory();
 
     private final QueryParameter queryParameter;
 
@@ -27,8 +29,8 @@ public class Jrp08V1RamlQueryParameter extends RamlQueryParameter {
     }
 
     @Override
-    public void setType(ParamType paramType) {
-        queryParameter.setType(paramType);
+    public void setType(RamlParamType paramType) {
+        queryParameter.setType(ramlModelFactory.extractRamlParam(paramType));
     }
 
     @Override
@@ -52,8 +54,8 @@ public class Jrp08V1RamlQueryParameter extends RamlQueryParameter {
     }
 
     @Override
-    public ParamType getType() {
-        return queryParameter.getType();
+    public RamlParamType getType() {
+        return ramlModelFactory.createRamlParamType(queryParameter.getType());
     }
 
     @Override

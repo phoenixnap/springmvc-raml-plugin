@@ -12,14 +12,12 @@
  */
 package com.phoenixnap.oss.ramlapisync.data;
 
-import org.jsonschema2pojo.Annotator;
-import org.jsonschema2pojo.GenerationConfig;
-import org.raml.model.ParamType;
-
 import com.phoenixnap.oss.ramlapisync.naming.NamingHelper;
 import com.phoenixnap.oss.ramlapisync.naming.SchemaHelper;
+import com.phoenixnap.oss.ramlapisync.raml.RamlParamType;
 import com.sun.codemodel.JCodeModel;
-
+import org.jsonschema2pojo.Annotator;
+import org.jsonschema2pojo.GenerationConfig;
 
 /**
  * 
@@ -57,7 +55,7 @@ public class ApiBodyMetadata {
 					if (codeModel.countArtifacts() == 0) {
 						if (!"object".equals(possibleType.toLowerCase())) {
 							try {
-								this.name = SchemaHelper.mapSimpleType(ParamType.valueOf(possibleType.toUpperCase())).getSimpleName();
+								this.name = SchemaHelper.mapSimpleType(RamlParamType.valueOf(possibleType.toUpperCase())).getSimpleName();
 							} catch (Exception ex) {
 								this.name = String.class.getSimpleName(); //default to string
 							}

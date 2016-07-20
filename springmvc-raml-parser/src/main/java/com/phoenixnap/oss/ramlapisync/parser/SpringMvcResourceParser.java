@@ -30,10 +30,10 @@ import com.phoenixnap.oss.ramlapisync.raml.RamlActionType;
 import com.phoenixnap.oss.ramlapisync.raml.RamlMimeType;
 import com.phoenixnap.oss.ramlapisync.raml.RamlModelFactory;
 import com.phoenixnap.oss.ramlapisync.raml.RamlModelFactoryOfFactories;
+import com.phoenixnap.oss.ramlapisync.raml.RamlParamType;
 import com.phoenixnap.oss.ramlapisync.raml.RamlResource;
 import com.phoenixnap.oss.ramlapisync.raml.RamlResponse;
 import com.phoenixnap.oss.ramlapisync.raml.RamlUriParameter;
-import org.raml.model.ParamType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Controller;
@@ -119,8 +119,8 @@ public class SpringMvcResourceParser extends ResourceParser {
 				RamlFormParameter formParameter = RamlModelFactoryOfFactories.createRamlModelFactory().createRamlFormParameter();
 				formParameter.setDisplayName(param.getName());
 				formParameter.setExample(param.getExample());
-				ParamType simpleType = SchemaHelper.mapSimpleType(param.getType());
-				formParameter.setType(simpleType == null ? ParamType.STRING : simpleType);
+				RamlParamType simpleType = SchemaHelper.mapSimpleType(param.getType());
+				formParameter.setType(simpleType == null ? RamlParamType.STRING : simpleType);
 				String description = parameterComments.get(param.getJavaName());
 				if (description == null) {
 					description = param.getName();
@@ -501,10 +501,10 @@ public class SpringMvcResourceParser extends ResourceParser {
 								+ StringUtils.capitalize(partialUrl).replace("{", "").replace("}", "");
 						ApiParameterMetadata resourceIdParameter = resourceIdParameterMap.get(partialUrl);
 						RamlUriParameter uriParameter = ramlModelFactory.createRamlUriParameterWithName(resourceIdParameter.getName());
-						ParamType simpleType = SchemaHelper.mapSimpleType(resourceIdParameter.getType());
+						RamlParamType simpleType = SchemaHelper.mapSimpleType(resourceIdParameter.getType());
 						if (simpleType == null) {
 							logger.warn("Only simple parameters are supported for URL Parameters, defaulting " + resourceIdParameter.getType() + " to String");
-							simpleType = ParamType.STRING;
+							simpleType = RamlParamType.STRING;
 							// TODO support Map<String, String implementations> or not?
 						}
 						uriParameter.setType(simpleType);

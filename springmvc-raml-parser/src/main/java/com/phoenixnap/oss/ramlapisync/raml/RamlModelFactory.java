@@ -64,6 +64,8 @@ public interface RamlModelFactory {
 
     RamlSecurityReference createRamlSecurityReference(Object securityReference);
 
+    RamlParamType createRamlParamType(Object paramType);
+
     default <K, SV, TV> Map<K, TV> transformToUnmodifiableMap(Map<K, SV> source, Map<K, TV> target, Function<SV, TV> valueTransformer) {
         return transformToUnmodifiableMap(source, target, valueTransformer, this::identity);
     }
@@ -85,4 +87,5 @@ public interface RamlModelFactory {
     default <T> T identity(T object) {
         return object;
     }
+
 }

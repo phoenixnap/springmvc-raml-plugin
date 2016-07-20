@@ -1,13 +1,15 @@
 package com.phoenixnap.oss.ramlapisync.raml.jrp.raml08v1;
 
 import com.phoenixnap.oss.ramlapisync.raml.RamlHeader;
-import org.raml.model.ParamType;
+import com.phoenixnap.oss.ramlapisync.raml.RamlParamType;
 import org.raml.model.parameter.Header;
 
 /**
  * @author armin.weisser
  */
 public class Jrp08V1RamlHeader extends RamlHeader {
+
+    private static Jrp08V1RamlModelFactory ramlModelFactory = new Jrp08V1RamlModelFactory();
 
     private final Header header;
 
@@ -20,22 +22,27 @@ public class Jrp08V1RamlHeader extends RamlHeader {
         return header.getDisplayName();
     }
 
+    @Override
     public void setDisplayName(String displayName) {
         header.setDisplayName(displayName);
     }
 
-    public ParamType getType() {
-        return header.getType();
+    @Override
+    public RamlParamType getType() {
+        return ramlModelFactory.createRamlParamType(header.getType());
     }
 
-    public void setType(ParamType type) {
-        header.setType(type);
+    @Override
+    public void setType(RamlParamType paramType) {
+        header.setType(ramlModelFactory.extractRamlParam(paramType));
     }
 
+    @Override
     public boolean isRequired() {
         return header.isRequired();
     }
 
+    @Override
     public void setRequired(boolean required) {
         header.setRequired(required);
     }

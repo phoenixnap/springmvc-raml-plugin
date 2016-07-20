@@ -1,13 +1,15 @@
 package com.phoenixnap.oss.ramlapisync.raml.jrp.raml08v1;
 
 import com.phoenixnap.oss.ramlapisync.data.RamlFormParameter;
-import org.raml.model.ParamType;
+import com.phoenixnap.oss.ramlapisync.raml.RamlParamType;
 import org.raml.model.parameter.FormParameter;
 
 /**
  * @author armin.weisser
  */
 public class Jrp08V1RamlFormParameter extends RamlFormParameter {
+
+    private static Jrp08V1RamlModelFactory ramlModelFactory = new Jrp08V1RamlModelFactory();
 
     private final FormParameter formParameter;
 
@@ -24,8 +26,8 @@ public class Jrp08V1RamlFormParameter extends RamlFormParameter {
     }
 
     @Override
-    public void setType(ParamType paramType) {
-        formParameter.setType(paramType);
+    public void setType(RamlParamType paramType) {
+        formParameter.setType(ramlModelFactory.extractRamlParam(paramType));
     }
 
     @Override
@@ -49,8 +51,8 @@ public class Jrp08V1RamlFormParameter extends RamlFormParameter {
     }
 
     @Override
-    public ParamType getType() {
-        return formParameter.getType();
+    public RamlParamType getType() {
+        return ramlModelFactory.createRamlParamType(formParameter.getType());
     }
 
     @Override

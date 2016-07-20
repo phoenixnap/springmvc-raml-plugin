@@ -26,6 +26,7 @@ import com.phoenixnap.oss.ramlapisync.javadoc.JavaDocStore;
 import com.phoenixnap.oss.ramlapisync.raml.RamlMimeType;
 import com.phoenixnap.oss.ramlapisync.raml.RamlModelFactory;
 import com.phoenixnap.oss.ramlapisync.raml.RamlModelFactoryOfFactories;
+import com.phoenixnap.oss.ramlapisync.raml.RamlParamType;
 import com.phoenixnap.oss.ramlapisync.raml.RamlQueryParameter;
 import com.phoenixnap.oss.ramlapisync.raml.RamlRoot;
 import com.sun.codemodel.JCodeModel;
@@ -37,7 +38,6 @@ import org.jsonschema2pojo.SchemaGenerator;
 import org.jsonschema2pojo.SchemaMapper;
 import org.jsonschema2pojo.SchemaStore;
 import org.jsonschema2pojo.rules.RuleFactory;
-import org.raml.model.ParamType;
 import org.raml.parser.utils.Inflector;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -82,7 +82,7 @@ public class SchemaHelper {
 		RamlQueryParameter queryParam = RamlModelFactoryOfFactories.createRamlModelFactory().createRamlQueryParameter();
 		ApiParameterMetadata parameterMetadata = new ApiParameterMetadata(param);
 
-		ParamType type = mapSimpleType(param.getType());
+		RamlParamType type = mapSimpleType(param.getType());
 
 		if (type == null) {
 			throw new IllegalArgumentException("This method is only applicable to simple types or primitives");
@@ -166,8 +166,8 @@ public class SchemaHelper {
 					// Populate parameter model with data such as name, type and
 					// required/not
 					queryParam.setDisplayName(field.getName());
-					ParamType simpleType = mapSimpleType(field.getType());
-					queryParam.setType(simpleType == null ? ParamType.STRING : simpleType);
+					RamlParamType simpleType = mapSimpleType(field.getType());
+					queryParam.setType(simpleType == null ? RamlParamType.STRING : simpleType);
 					queryParam.setRequired(parameterMetadata.isNullable());
 					queryParam.setRepeat(false); // TODO we could add validation
 													// info
@@ -278,7 +278,7 @@ public class SchemaHelper {
 	 * @param clazz The Class to map
 	 * @return The Simple RAML ParamType which maps to this class or null if one is not found
 	 */
-	public static ParamType mapSimpleType(Class<?> clazz) {
+	public static RamlParamType mapSimpleType(Class<?> clazz) {
 		Class<?> targetClazz = clazz;
 		if (targetClazz.isArray() && clazz.getComponentType() != null) {
 			targetClazz = clazz.getComponentType();
@@ -286,14 +286,14 @@ public class SchemaHelper {
 		if (targetClazz.equals(Long.TYPE) || targetClazz.equals(Long.class) || targetClazz.equals(Integer.TYPE)
 				|| targetClazz.equals(Integer.class) || targetClazz.equals(Short.TYPE)
 				|| targetClazz.equals(Short.class) || targetClazz.equals(Byte.TYPE) || targetClazz.equals(Byte.class)) {
-			return ParamType.INTEGER;
+			return RamlParamType.INTEGER;
 		} else if (targetClazz.equals(Float.TYPE) || targetClazz.equals(Float.class) || targetClazz.equals(Double.TYPE)
 				|| targetClazz.equals(Double.class) || targetClazz.equals(BigDecimal.class)) {
-			return ParamType.NUMBER;
+			return RamlParamType.NUMBER;
 		} else if (targetClazz.equals(Boolean.class) || targetClazz.equals(Boolean.TYPE)) {
-			return ParamType.BOOLEAN;
+			return RamlParamType.BOOLEAN;
 		} else if (targetClazz.equals(String.class)) {
-			return ParamType.STRING;
+			return RamlParamType.STRING;
 		}
 		return null; // default to string
 	}
@@ -304,7 +304,7 @@ public class SchemaHelper {
 	 * @param param The Type to map
 	 * @return The Java Class which maps to this Simple RAML ParamType or string if one is not found
 	 */
-	public static Class<?> mapSimpleType(ParamType param) {
+	public static Class<?> mapSimpleType(RamlParamType param) {
 
 		switch (param) {
 			case BOOLEAN:

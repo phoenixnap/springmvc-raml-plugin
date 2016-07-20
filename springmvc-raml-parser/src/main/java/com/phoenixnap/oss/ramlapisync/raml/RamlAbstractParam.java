@@ -1,13 +1,11 @@
 package com.phoenixnap.oss.ramlapisync.raml;
 
-import org.raml.model.ParamType;
-
 /**
  * @author armin.weisser
  */
 public abstract class RamlAbstractParam { //extends AbstractParam {
 
-    public abstract void setType(ParamType paramType);
+    public abstract void setType(RamlParamType paramType);
 
     public abstract void setRequired(boolean required);
 
@@ -17,7 +15,7 @@ public abstract class RamlAbstractParam { //extends AbstractParam {
 
     public abstract boolean isRequired();
 
-    public abstract ParamType getType();
+    public abstract RamlParamType getType();
 
     public abstract String getExample();
 
