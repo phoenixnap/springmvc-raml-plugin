@@ -12,6 +12,44 @@
  */
 package test.phoenixnap.oss.plugin.naming;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
+
+import java.lang.reflect.Method;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
+import org.junit.BeforeClass;
+import org.junit.Test;
+import org.mockito.Mockito;
+import org.mockito.invocation.InvocationOnMock;
+import org.mockito.stubbing.Answer;
+import org.raml.model.Action;
+import org.raml.model.ActionType;
+import org.raml.model.MimeType;
+import org.raml.model.ParamType;
+import org.raml.model.Raml;
+import org.raml.model.Resource;
+import org.raml.model.Response;
+import org.raml.model.parameter.FormParameter;
+import org.raml.model.parameter.QueryParameter;
+import org.raml.model.parameter.UriParameter;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.http.MediaType;
+
+import test.phoenixnap.oss.plugin.naming.testclasses.BugController;
+import test.phoenixnap.oss.plugin.naming.testclasses.MultipleContentTypeTestController;
+import test.phoenixnap.oss.plugin.naming.testclasses.NoValueController;
+import test.phoenixnap.oss.plugin.naming.testclasses.TestController;
+import test.phoenixnap.oss.plugin.naming.testclasses.UriPrefixIgnoredController;
+import test.phoenixnap.oss.plugin.naming.testclasses.WrappedResponseBodyTestController;
+
 import com.phoenixnap.oss.ramlapisync.data.ApiActionMetadata;
 import com.phoenixnap.oss.ramlapisync.data.ApiResourceMetadata;
 import com.phoenixnap.oss.ramlapisync.data.RamlFormParameter;
@@ -58,6 +96,7 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
+
 
 /**
  * Unit tests for the Spring MVC Parser
@@ -132,10 +171,38 @@ public class SpringMvcResourceParserTest {
 		baseResourceTestController = parser.extractResourceInfo(TestController.class);
 	}
 	
+	@Test
+	public void test_wrappedResponseBody__Success() {
+		Resource resourceInfo = parser.extractResourceInfo(WrappedResponseBodyTestController.class);
+
+		Resource testResource = resourceInfo.getResource("/base").getResource("/endpointWithResponseType");
+		String testClassId = "urn:jsonschema:test:phoenixnap:oss:plugin:naming:testclasses:ThreeElementClass";
+		checkResourceWrappedResponse(testResource, testClassId);
+
+		testResource = resourceInfo.getResource("/base").getResource("/endpointWithResponseTypeNonGeneric");
+		testClassId = "\"type\" : \"any\"";
+		checkResourceWrappedResponse(testResource, testClassId);
+
+
+	}
+
+	public void checkResourceWrappedResponse(Resource testResource, String testClassId) {
+		assertEquals("Assert resources size", 2, testResource.getActions().size());
+		Action getAction = testResource.getActions().get(ActionType.GET);
+		Action postAction = testResource.getActions().get(ActionType.POST);
+		assertNotNull(getAction);
+		assertNotNull(postAction);
+		assertEquals("Assert Javadoc", COMMENT_JAVADOC, getAction.getDescription());
+		assertEquals("Assert Javadoc", COMMENT_JAVADOC, postAction.getDescription());
+		assertTrue(getAction.getResponses().get("200").getBody().get("application/test+json").getSchema().contains(testClassId));
+		assertTrue(postAction.getResponses().get("200").getBody().get("application/test+json").getSchema().contains(testClassId));
+	}
+
 
 	private static String combineConstantAndName(String constant, String name) {
 		return name + constant;
 	}
+
 
     @Test
     public void test_seperateContentType__Success() throws Exception {
