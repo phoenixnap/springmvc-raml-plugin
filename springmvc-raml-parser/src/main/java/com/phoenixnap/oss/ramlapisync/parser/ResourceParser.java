@@ -18,6 +18,7 @@ import com.phoenixnap.oss.ramlapisync.javadoc.JavaDocExtractor;
 import com.phoenixnap.oss.ramlapisync.javadoc.JavaDocStore;
 import com.phoenixnap.oss.ramlapisync.naming.Pair;
 import com.phoenixnap.oss.ramlapisync.naming.SchemaHelper;
+import com.phoenixnap.oss.ramlapisync.naming.TypeHelper;
 import com.phoenixnap.oss.ramlapisync.raml.RamlAction;
 import com.phoenixnap.oss.ramlapisync.raml.RamlActionType;
 import com.phoenixnap.oss.ramlapisync.raml.RamlMimeType;
@@ -29,7 +30,9 @@ import com.phoenixnap.oss.ramlapisync.raml.RamlResource;
 import com.phoenixnap.oss.ramlapisync.raml.RamlResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.http.ResponseEntity;
 import org.springframework.util.StringUtils;
+import org.springframework.web.context.request.async.DeferredResult;
 
 import java.io.File;
 import java.lang.reflect.Method;
@@ -40,27 +43,6 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.regex.Pattern;
-
-import org.raml.model.Action;
-import org.raml.model.ActionType;
-import org.raml.model.MimeType;
-import org.raml.model.ParamType;
-import org.raml.model.Resource;
-import org.raml.model.Response;
-import org.raml.model.parameter.QueryParameter;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.http.ResponseEntity;
-import org.springframework.util.StringUtils;
-import org.springframework.web.context.request.async.DeferredResult;
-
-import com.phoenixnap.oss.ramlapisync.data.ApiParameterMetadata;
-import com.phoenixnap.oss.ramlapisync.javadoc.JavaDocEntry;
-import com.phoenixnap.oss.ramlapisync.javadoc.JavaDocExtractor;
-import com.phoenixnap.oss.ramlapisync.javadoc.JavaDocStore;
-import com.phoenixnap.oss.ramlapisync.naming.Pair;
-import com.phoenixnap.oss.ramlapisync.naming.SchemaHelper;
-import com.phoenixnap.oss.ramlapisync.naming.TypeHelper;
 
 /**
  * Common service scanning functionality
