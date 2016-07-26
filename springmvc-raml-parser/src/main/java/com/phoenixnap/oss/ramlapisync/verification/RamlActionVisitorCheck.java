@@ -12,12 +12,11 @@
  */
 package com.phoenixnap.oss.ramlapisync.verification;
 
-import java.util.Set;
-
-import org.raml.model.Action;
-import org.raml.model.ActionType;
-
 import com.phoenixnap.oss.ramlapisync.naming.Pair;
+import com.phoenixnap.oss.ramlapisync.raml.RamlAction;
+import com.phoenixnap.oss.ramlapisync.raml.RamlActionType;
+
+import java.util.Set;
 
 /**
  * A visitor that will be invoked when an action is identified
@@ -40,7 +39,7 @@ public interface RamlActionVisitorCheck {
 	 * @return A pair containing a set of Warnings and Errors (as first and second respectively). This method must not return null.
 	 * 
 	 */
-	public Pair<Set<Issue>, Set<Issue>> check (ActionType name, Action reference, Action target, IssueLocation location, IssueSeverity maxSeverity);
+	public Pair<Set<Issue>, Set<Issue>> check (RamlActionType name, RamlAction reference, RamlAction target, IssueLocation location, IssueSeverity maxSeverity);
 
 
 }

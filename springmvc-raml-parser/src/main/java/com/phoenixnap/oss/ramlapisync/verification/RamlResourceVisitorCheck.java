@@ -12,11 +12,10 @@
  */
 package com.phoenixnap.oss.ramlapisync.verification;
 
-import java.util.Set;
-
-import org.raml.model.Resource;
-
 import com.phoenixnap.oss.ramlapisync.naming.Pair;
+import com.phoenixnap.oss.ramlapisync.raml.RamlResource;
+
+import java.util.Set;
 
 /**
  * A visitor that will be invoked when an resource is identified
@@ -37,7 +36,7 @@ public interface RamlResourceVisitorCheck {
 	 * @param maxSeverity The maximum allowed severity of Issue that can be generated
 	 * @return A pair containing a set of Warnings and Errors (as first and second respectively). This method must not return null.
 	 */
-	public Pair<Set<Issue>, Set<Issue>> check (String name, Resource reference, Resource target, IssueLocation location, IssueSeverity maxSeverity);
+	public Pair<Set<Issue>, Set<Issue>> check (String name, RamlResource reference, RamlResource target, IssueLocation location, IssueSeverity maxSeverity);
 
 
 }

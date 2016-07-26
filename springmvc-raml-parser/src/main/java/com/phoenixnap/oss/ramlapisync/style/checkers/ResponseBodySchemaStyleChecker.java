@@ -12,22 +12,21 @@
  */
 package com.phoenixnap.oss.ramlapisync.style.checkers;
 
-import java.util.LinkedHashSet;
-import java.util.Map;
-import java.util.Set;
-
-import org.raml.model.Action;
-import org.raml.model.ActionType;
-import org.raml.model.MimeType;
-import org.raml.model.Raml;
+import com.phoenixnap.oss.ramlapisync.naming.SchemaHelper;
+import com.phoenixnap.oss.ramlapisync.raml.RamlAction;
+import com.phoenixnap.oss.ramlapisync.raml.RamlActionType;
+import com.phoenixnap.oss.ramlapisync.raml.RamlMimeType;
+import com.phoenixnap.oss.ramlapisync.raml.RamlRoot;
+import com.phoenixnap.oss.ramlapisync.style.RamlStyleCheckerAdapter;
+import com.phoenixnap.oss.ramlapisync.style.StyleIssue;
+import com.phoenixnap.oss.ramlapisync.verification.IssueLocation;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.util.StringUtils;
 
-import com.phoenixnap.oss.ramlapisync.naming.SchemaHelper;
-import com.phoenixnap.oss.ramlapisync.style.RamlStyleCheckerAdapter;
-import com.phoenixnap.oss.ramlapisync.style.StyleIssue;
-import com.phoenixnap.oss.ramlapisync.verification.IssueLocation;
+import java.util.LinkedHashSet;
+import java.util.Map;
+import java.util.Set;
 
 /**
  * 
@@ -56,8 +55,8 @@ public class ResponseBodySchemaStyleChecker extends RamlStyleCheckerAdapter {
 	}
 
 	@Override
-	public Set<StyleIssue> checkActionStyle(ActionType key, Action value,
-			IssueLocation location, Raml raml) {
+	public Set<StyleIssue> checkActionStyle(RamlActionType key, RamlAction value,
+											IssueLocation location, RamlRoot raml) {
 		logger.debug("Checking Action: " + key);
 		Set<StyleIssue> issues = new LinkedHashSet<>();
 		
@@ -67,13 +66,13 @@ public class ResponseBodySchemaStyleChecker extends RamlStyleCheckerAdapter {
 			// Now the response
 			if (value.getResponses() != null && !value.getResponses().isEmpty()) {
 				if (value.getResponses().containsKey("200") && value.getResponses().get("200").getBody() != null) {
-					Map<String, MimeType> successResponse = value.getResponses().get("200").getBody();
+					Map<String, RamlMimeType> successResponse = value.getResponses().get("200").getBody();
 					if (SchemaHelper.containsBodySchema(successResponse, raml, true)) {
 						schemaFound = true;
 					}
 				}
 				if (value.getResponses().containsKey("201") && value.getResponses().get("201").getBody() != null) {
-					Map<String, MimeType> createdResponse = value.getResponses().get("201").getBody();
+					Map<String, RamlMimeType> createdResponse = value.getResponses().get("201").getBody();
 					if (SchemaHelper.containsBodySchema(createdResponse, raml, true)) {
 						schemaFound = true;
 					}

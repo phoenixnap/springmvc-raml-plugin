@@ -12,6 +12,19 @@
  */
 package com.phoenixnap.oss.ramlapisync.data;
 
+import com.phoenixnap.oss.ramlapisync.naming.NamingHelper;
+import com.phoenixnap.oss.ramlapisync.naming.RamlHelper;
+import com.phoenixnap.oss.ramlapisync.naming.SchemaHelper;
+import com.phoenixnap.oss.ramlapisync.parser.ResourceParser;
+import com.phoenixnap.oss.ramlapisync.raml.RamlAction;
+import com.phoenixnap.oss.ramlapisync.raml.RamlActionType;
+import com.phoenixnap.oss.ramlapisync.raml.RamlMimeType;
+import com.phoenixnap.oss.ramlapisync.raml.RamlResource;
+import com.phoenixnap.oss.ramlapisync.raml.RamlResponse;
+import com.phoenixnap.oss.ramlapisync.raml.RamlUriParameter;
+import org.springframework.http.MediaType;
+import org.springframework.util.StringUtils;
+
 import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
@@ -20,21 +33,6 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 import java.util.stream.Collectors;
-
-import org.raml.model.Action;
-import org.raml.model.ActionType;
-import org.raml.model.MimeType;
-import org.raml.model.Resource;
-import org.raml.model.Response;
-import org.raml.model.parameter.FormParameter;
-import org.raml.model.parameter.UriParameter;
-import org.springframework.http.MediaType;
-import org.springframework.util.StringUtils;
-
-import com.phoenixnap.oss.ramlapisync.naming.NamingHelper;
-import com.phoenixnap.oss.ramlapisync.naming.RamlHelper;
-import com.phoenixnap.oss.ramlapisync.naming.SchemaHelper;
-import com.phoenixnap.oss.ramlapisync.parser.ResourceParser;
 
 
 /**
@@ -47,9 +45,9 @@ import com.phoenixnap.oss.ramlapisync.parser.ResourceParser;
 public class ApiActionMetadata {
 
 	ApiResourceMetadata parent;
-	Resource resource;
-	ActionType actionType;
-	Action action;
+	RamlResource resource;
+	RamlActionType actionType;
+	RamlAction action;
 
 	String requestBodyMime = null;
 	ApiBodyMetadata requestBody = null;
@@ -61,7 +59,7 @@ public class ApiActionMetadata {
 
 	private String responseContentTypeFilter;
 
-	public ApiActionMetadata(ApiResourceMetadata parent, Resource resource, ActionType actionType, Action action, String responseContentTypeFilter, boolean injectHttpHeadersParameter) {
+	public ApiActionMetadata(ApiResourceMetadata parent, RamlResource resource, RamlActionType actionType, RamlAction action, String responseContentTypeFilter, boolean injectHttpHeadersParameter) {
 		super();
 		this.parent = parent;
 		this.resource = resource;
@@ -74,7 +72,7 @@ public class ApiActionMetadata {
 
 	}
 
-	public ApiActionMetadata(ApiResourceMetadata parent, Resource resource, ActionType actionType, Action action) {
+	public ApiActionMetadata(ApiResourceMetadata parent, RamlResource resource, RamlActionType actionType, RamlAction action) {
 		this(parent, resource, actionType, action, null, false);
 	}
 
@@ -93,10 +91,10 @@ public class ApiActionMetadata {
 		}
 		pathVariables = new LinkedHashSet<>();
 
-		Resource targetResource = action.getResource();
+		RamlResource targetResource = action.getResource();
 
 		do {
-			for (Entry<String, UriParameter> param : targetResource.getUriParameters().entrySet()) {
+			for (Entry<String, RamlUriParameter> param : targetResource.getUriParameters().entrySet()) {
 				pathVariables.add(new ApiParameterMetadata(param.getKey(), param.getValue()));
 			}
 			targetResource = targetResource.getParentResource();
@@ -134,7 +132,7 @@ public class ApiActionMetadata {
 		}
 	}
 
-	private void collectBodyParams(Entry<String, MimeType> mime) {
+	private void collectBodyParams(Entry<String, RamlMimeType> mime) {
 		if (mime.getKey().equals(MediaType.MULTIPART_FORM_DATA_VALUE) && ResourceParser.doesActionTypeSupportMultipartMime(actionType)) {
 			collectRequestParamsForMime(action.getBody().get(MediaType.MULTIPART_FORM_DATA_VALUE));
 		} else if (mime.getKey().equals(MediaType.APPLICATION_FORM_URLENCODED_VALUE) && ResourceParser.doesActionTypeSupportMultipartMime(actionType)) {
@@ -154,20 +152,20 @@ public class ApiActionMetadata {
 		}
 	}
 
-	private void collectRequestParamsForMime(MimeType requestBody) {
+	private void collectRequestParamsForMime(RamlMimeType requestBody) {
 		if(requestBody == null) return;
-		for (Entry<String, List<FormParameter>> params : requestBody.getFormParameters().entrySet()) {
-			for (FormParameter param : params.getValue()) {
+		for (Entry<String, List<RamlFormParameter>> params : requestBody.getFormParameters().entrySet()) {
+			for (RamlFormParameter param : params.getValue()) {
 				requestParameters.add(new ApiParameterMetadata(params.getKey(), param));
 			}
 		}
 	}
 
 	private void parseResponse(String responseContentTypeFilter) {
-		Response response = RamlHelper.getSuccessfulResponse(action);
+		RamlResponse response = RamlHelper.getSuccessfulResponse(action);
 
 		if (response != null && response.getBody() != null && !response.getBody().isEmpty()) {
-			for (Entry<String, MimeType> body : response.getBody().entrySet()) {
+			for (Entry<String, RamlMimeType> body : response.getBody().entrySet()) {
 				if (responseContentTypeFilter == null || body.getKey().equals(responseContentTypeFilter)) {
 					if (body.getKey().toLowerCase().contains("json")) { //if we have a json type we need to return an object
 						// Continue here!
@@ -251,27 +249,27 @@ public class ApiActionMetadata {
 		this.parent = parent;
 	}
 
-	public Resource getResource() {
+	public RamlResource getResource() {
 		return resource;
 	}
 
-	public void setResource(Resource resource) {
+	public void setResource(RamlResource resource) {
 		this.resource = resource;
 	}
 
-	public ActionType getActionType() {
+	public RamlActionType getActionType() {
 		return actionType;
 	}
 
-	public void setActionType(ActionType actionType) {
+	public void setActionType(RamlActionType actionType) {
 		this.actionType = actionType;
 	}
 
-	public Action getAction() {
+	public RamlAction getAction() {
 		return action;
 	}
 
-	public void setAction(Action action) {
+	public void setAction(RamlAction action) {
 		this.action = action;
 	}
 

@@ -12,22 +12,10 @@
  */
 package test.phoenixnap.oss.plugin.naming;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
-
-import java.util.Collections;
-
-import org.junit.Test;
-import org.raml.model.Raml;
-import org.springframework.http.HttpMethod;
-import org.springframework.http.HttpStatus;
-import org.springframework.util.LinkedMultiValueMap;
-import org.springframework.util.MultiValueMap;
-
 import com.phoenixnap.oss.ramlapisync.generation.RamlGenerator;
 import com.phoenixnap.oss.ramlapisync.generation.RamlVerifier;
 import com.phoenixnap.oss.ramlapisync.parser.SpringMvcResourceParser;
+import com.phoenixnap.oss.ramlapisync.raml.RamlRoot;
 import com.phoenixnap.oss.ramlapisync.style.checkers.ActionSecurityResponseChecker;
 import com.phoenixnap.oss.ramlapisync.style.checkers.RequestBodySchemaStyleChecker;
 import com.phoenixnap.oss.ramlapisync.style.checkers.ResourceCollectionPluralisationChecker;
@@ -38,6 +26,17 @@ import com.phoenixnap.oss.ramlapisync.verification.Issue;
 import com.phoenixnap.oss.ramlapisync.verification.IssueLocation;
 import com.phoenixnap.oss.ramlapisync.verification.IssueSeverity;
 import com.phoenixnap.oss.ramlapisync.verification.IssueType;
+import org.junit.Test;
+import org.springframework.http.HttpMethod;
+import org.springframework.http.HttpStatus;
+import org.springframework.util.LinkedMultiValueMap;
+import org.springframework.util.MultiValueMap;
+
+import java.util.Collections;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
 /**
  * Unit tests for the Style Checkers
@@ -53,7 +52,7 @@ public class RamlStyleCheckerTest {
 	
 	@Test
 	public void test_UrlStyleChecker_Success() {
-		Raml published = RamlVerifier.loadRamlFromFile("test-style-success.raml");
+		RamlRoot published = RamlVerifier.loadRamlFromFile("test-style-success.raml");
 		
 		RamlVerifier verifier = new RamlVerifier(published, null, Collections.emptyList(), null, null, Collections.singletonList(new ResourceUrlStyleChecker()));
 		assertFalse("Check that raml passes rules", verifier.hasErrors());
@@ -63,7 +62,7 @@ public class RamlStyleCheckerTest {
 	
 	@Test
 	public void test_PluralChecker_Success() {
-		Raml published = RamlVerifier.loadRamlFromFile("test-style-pluralised-success.raml");
+		RamlRoot published = RamlVerifier.loadRamlFromFile("test-style-pluralised-success.raml");
 		
 		RamlVerifier verifier = new RamlVerifier(published, null, Collections.emptyList(), null, null, Collections.singletonList(new ResourceCollectionPluralisationChecker()));
 		assertFalse("Check that raml passes rules", verifier.hasErrors());
@@ -73,7 +72,7 @@ public class RamlStyleCheckerTest {
 	
 	@Test
 	public void test_PluralChecker_Fails() {
-		Raml published = RamlVerifier.loadRamlFromFile("test-style-pluralised-singularcollection.raml");
+		RamlRoot published = RamlVerifier.loadRamlFromFile("test-style-pluralised-singularcollection.raml");
 		
 		RamlVerifier verifier = new RamlVerifier(published, null, Collections.emptyList(), null, null, Collections.singletonList(new ResourceCollectionPluralisationChecker()));
 		assertFalse("Check that raml passes rules", verifier.hasErrors());
@@ -87,7 +86,7 @@ public class RamlStyleCheckerTest {
 	
 	@Test
 	public void test_ActionSecurityResponseCheck_Success() {
-		Raml published = RamlVerifier.loadRamlFromFile("test-style-actionsecurity-success.raml");
+		RamlRoot published = RamlVerifier.loadRamlFromFile("test-style-actionsecurity-success.raml");
 		
 		RamlVerifier verifier = new RamlVerifier(published, null, Collections.emptyList(), null, null, Collections.singletonList(new ActionSecurityResponseChecker()));
 		assertFalse("Check that raml passes rules", verifier.hasErrors());
@@ -96,7 +95,7 @@ public class RamlStyleCheckerTest {
 	
 	@Test
 	public void test_ActionSecurityResponseCheck_Fails() {
-		Raml published = RamlVerifier.loadRamlFromFile("test-style-actionsecurity-fails.raml");
+		RamlRoot published = RamlVerifier.loadRamlFromFile("test-style-actionsecurity-fails.raml");
 		
 		RamlVerifier verifier = new RamlVerifier(published, null, Collections.emptyList(), null, null, Collections.singletonList(new ActionSecurityResponseChecker()));
 		assertFalse("Check that raml passes rules", verifier.hasErrors());
@@ -109,7 +108,7 @@ public class RamlStyleCheckerTest {
 	
 	@Test
 	public void test_RequestBodyCheck_Success() {
-		Raml published = RamlVerifier.loadRamlFromFile("test-style-missing-request-bodies.raml");
+		RamlRoot published = RamlVerifier.loadRamlFromFile("test-style-missing-request-bodies.raml");
 		
 		RamlVerifier verifier = new RamlVerifier(published, null, Collections.emptyList(), null, null, Collections.singletonList(new RequestBodySchemaStyleChecker("PUT,POST")));
 		assertFalse("Check that raml passes rules", verifier.hasErrors());
@@ -127,7 +126,7 @@ public class RamlStyleCheckerTest {
 	
 	@Test
 	public void test_RequestBodyCheck_Fails() {
-		Raml published = RamlVerifier.loadRamlFromFile("test-style-missing-request-bodies-fails.raml");
+		RamlRoot published = RamlVerifier.loadRamlFromFile("test-style-missing-request-bodies-fails.raml");
 		
 		RamlVerifier verifier = new RamlVerifier(published, null, Collections.emptyList(), null, null, Collections.singletonList(new RequestBodySchemaStyleChecker("PUT,POST")));
 		assertFalse("Check that raml passes rules", verifier.hasErrors());
@@ -140,7 +139,7 @@ public class RamlStyleCheckerTest {
 	
 	@Test
 	public void test_ResponseBodyCheck_Success() {
-		Raml published = RamlVerifier.loadRamlFromFile("test-style-missing-response-bodies.raml");
+		RamlRoot published = RamlVerifier.loadRamlFromFile("test-style-missing-response-bodies.raml");
 		
 		RamlVerifier verifier = new RamlVerifier(published, null, Collections.emptyList(), null, null, Collections.singletonList(new ResponseBodySchemaStyleChecker("GET,POST")));
 		assertFalse("Check that raml passes rules", verifier.hasErrors());
@@ -158,7 +157,7 @@ public class RamlStyleCheckerTest {
 	
 	@Test
 	public void test_ResponseBodyCheck_Fails() {
-		Raml published = RamlVerifier.loadRamlFromFile("test-style-missing-response-bodies-fails.raml");
+		RamlRoot published = RamlVerifier.loadRamlFromFile("test-style-missing-response-bodies-fails.raml");
 		
 		RamlVerifier verifier = new RamlVerifier(published, null, Collections.emptyList(), null, null, Collections.singletonList(new ResponseBodySchemaStyleChecker("GET,POST")));
 		assertFalse("Check that raml passes rules", verifier.hasErrors());
@@ -171,7 +170,7 @@ public class RamlStyleCheckerTest {
 	
 	@Test
 	public void test_Get404Check_Success() {
-		Raml published = RamlVerifier.loadRamlFromFile("test-style-missing-get404.raml");
+		RamlRoot published = RamlVerifier.loadRamlFromFile("test-style-missing-get404.raml");
 		MultiValueMap<String, HttpStatus> statusChecks = new LinkedMultiValueMap<>();
 		statusChecks.add(HttpMethod.GET.name(), HttpStatus.NOT_FOUND);
 		RamlVerifier verifier = new RamlVerifier(published, null, Collections.emptyList(), null, null, Collections.singletonList(new ResponseCodeDefinitionStyleChecker(statusChecks)));
@@ -183,7 +182,7 @@ public class RamlStyleCheckerTest {
 
 	@Test
 	public void test_Get404Check_Fails() {
-		Raml published = RamlVerifier.loadRamlFromFile("test-style-missing-get404-fails.raml");
+		RamlRoot published = RamlVerifier.loadRamlFromFile("test-style-missing-get404-fails.raml");
 		MultiValueMap<String, HttpStatus> statusChecks = new LinkedMultiValueMap<>();
 		HttpStatus status = HttpStatus.NOT_FOUND;
 		statusChecks.add(HttpMethod.GET.name(), status);

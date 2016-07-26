@@ -12,9 +12,8 @@
  */
 package com.phoenixnap.oss.ramlapisync.style;
 
-import org.raml.model.Action;
-import org.raml.model.Resource;
-
+import com.phoenixnap.oss.ramlapisync.raml.RamlAction;
+import com.phoenixnap.oss.ramlapisync.raml.RamlResource;
 import com.phoenixnap.oss.ramlapisync.verification.Issue;
 import com.phoenixnap.oss.ramlapisync.verification.IssueLocation;
 import com.phoenixnap.oss.ramlapisync.verification.IssueSeverity;
@@ -29,7 +28,7 @@ import com.phoenixnap.oss.ramlapisync.verification.IssueType;
  */
 public class StyleIssue extends Issue {
 
-	public StyleIssue(IssueLocation location, String description, Resource resource, Action action) {
+	public StyleIssue(IssueLocation location, String description, RamlResource resource, RamlAction action) {
 		super(IssueSeverity.WARNING, location, IssueType.STYLE, description, resource, action);
 	}
 	

@@ -12,18 +12,17 @@
  */
 package com.phoenixnap.oss.ramlapisync.style.checkers;
 
-import java.util.LinkedHashSet;
-import java.util.Set;
-
-import org.raml.model.Action;
-import org.raml.model.ActionType;
-import org.raml.model.Raml;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
+import com.phoenixnap.oss.ramlapisync.raml.RamlAction;
+import com.phoenixnap.oss.ramlapisync.raml.RamlActionType;
+import com.phoenixnap.oss.ramlapisync.raml.RamlRoot;
 import com.phoenixnap.oss.ramlapisync.style.RamlStyleCheckerAdapter;
 import com.phoenixnap.oss.ramlapisync.style.StyleIssue;
 import com.phoenixnap.oss.ramlapisync.verification.IssueLocation;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.util.LinkedHashSet;
+import java.util.Set;
 
 
 /**
@@ -43,8 +42,8 @@ public class ActionSecurityResponseChecker extends RamlStyleCheckerAdapter {
 	public static String DESCRIPTION = "Secured Resources should define 401 and 403 responses";
 	
 	@Override
-	public Set<StyleIssue> checkActionStyle(ActionType key, Action value,
-			IssueLocation location, Raml raml) {
+	public Set<StyleIssue> checkActionStyle(RamlActionType key, RamlAction value,
+											IssueLocation location, RamlRoot raml) {
 		logger.debug("Checking Action: " + key);
 		Set<StyleIssue> issues = new LinkedHashSet<>();
 		

@@ -12,26 +12,26 @@
  */
 package com.phoenixnap.oss.ramlapisync.verification.checkers;
 
-import java.util.LinkedHashSet;
-import java.util.Map;
-import java.util.Map.Entry;
-import java.util.Set;
-
-import org.raml.model.Action;
-import org.raml.model.ActionType;
-import org.raml.model.MimeType;
-import org.raml.model.parameter.QueryParameter;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.http.MediaType;
-
 import com.phoenixnap.oss.ramlapisync.naming.Pair;
 import com.phoenixnap.oss.ramlapisync.parser.ResourceParser;
+import com.phoenixnap.oss.ramlapisync.raml.RamlAction;
+import com.phoenixnap.oss.ramlapisync.raml.RamlActionType;
+import com.phoenixnap.oss.ramlapisync.raml.RamlMimeType;
+import com.phoenixnap.oss.ramlapisync.raml.RamlQueryParameter;
+import com.phoenixnap.oss.ramlapisync.raml.RamlResource;
 import com.phoenixnap.oss.ramlapisync.verification.Issue;
 import com.phoenixnap.oss.ramlapisync.verification.IssueLocation;
 import com.phoenixnap.oss.ramlapisync.verification.IssueSeverity;
 import com.phoenixnap.oss.ramlapisync.verification.IssueType;
 import com.phoenixnap.oss.ramlapisync.verification.RamlActionVisitorCheck;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.http.MediaType;
+
+import java.util.LinkedHashSet;
+import java.util.Map;
+import java.util.Map.Entry;
+import java.util.Set;
 
 /**
  * A visitor that will be invoked when an action is identified
@@ -54,14 +54,17 @@ public class ActionQueryParameterChecker implements RamlActionVisitorCheck {
 	protected static final Logger logger = LoggerFactory.getLogger(ActionQueryParameterChecker.class);
 
 	@Override
-	public Pair<Set<Issue>, Set<Issue>> check(ActionType name, Action reference, Action target, IssueLocation location, IssueSeverity maxSeverity) {
+	public Pair<Set<Issue>, Set<Issue>> check(RamlActionType name, RamlAction reference, RamlAction target, IssueLocation location, IssueSeverity maxSeverity) {
 		logger.debug("Checking Action " + name);
 		Set<Issue> errors = new LinkedHashSet<>();
 		Set<Issue> warnings = new LinkedHashSet<>();
+
+		RamlResource referenceRamlResource =reference.getResource();
+
 		//Resource (and all children) missing - Log it
 		Issue issue;
 		if (reference.getQueryParameters() != null && !reference.getQueryParameters().isEmpty()) {
-			for(Entry<String, QueryParameter> cParam : reference.getQueryParameters().entrySet()) {
+			for(Entry<String, RamlQueryParameter> cParam : reference.getQueryParameters().entrySet()) {
 				logger.debug("ActionQueryParameterChecker Checking param " + cParam.getKey());
 				IssueSeverity targetSeverity = maxSeverity;
 				if (target.getQueryParameters() == null 
@@ -76,7 +79,7 @@ public class ActionQueryParameterChecker implements RamlActionVisitorCheck {
 					}
 					
 					//lets check if they are defined as form parameters since spring does not distinguish this. Do so only if we are checking the contract
-					Map<String, MimeType> targetBody = target.getBody();
+					Map<String, RamlMimeType> targetBody = target.getBody();
 					if (location == IssueLocation.SOURCE 
 							&& targetBody != null 
 							&& targetBody.containsKey(MediaType.APPLICATION_FORM_URLENCODED_VALUE)
@@ -84,22 +87,23 @@ public class ActionQueryParameterChecker implements RamlActionVisitorCheck {
 							&& targetBody.get(MediaType.APPLICATION_FORM_URLENCODED_VALUE).getFormParameters() != null
 							&& targetBody.get(MediaType.APPLICATION_FORM_URLENCODED_VALUE).getFormParameters().containsKey(cParam.getKey())
 							&& ResourceParser.doesActionTypeSupportRequestBody(reference.getType())) {
-					   issue = new Issue(IssueSeverity.WARNING, location, IssueType.MISSING, QUERY_PARAMETER_FOUND_IN_FORM , reference.getResource(), reference, cParam.getKey());
+
+					   issue = new Issue(IssueSeverity.WARNING, location, IssueType.MISSING, QUERY_PARAMETER_FOUND_IN_FORM , referenceRamlResource, reference, cParam.getKey());
 					} else {
-					   issue = new Issue(targetSeverity, location, IssueType.MISSING, QUERY_PARAMETER_MISSING , reference.getResource(), reference, cParam.getKey());
+					   issue = new Issue(targetSeverity, location, IssueType.MISSING, QUERY_PARAMETER_MISSING , referenceRamlResource, reference, cParam.getKey());
 					}
 					RamlCheckerResourceVisitorCoordinator.addIssue(errors, warnings, issue, issue.getDescription() + "  "+ cParam.getKey() + " in " + location.name());
 				} else {
-					QueryParameter referenceParameter = cParam.getValue();
-					QueryParameter targetParameter = target.getQueryParameters().get(cParam.getKey());
+					RamlQueryParameter referenceParameter = cParam.getValue();
+					RamlQueryParameter targetParameter = target.getQueryParameters().get(cParam.getKey());
 					
 					if (referenceParameter.isRequired() == false && targetParameter.isRequired()) {
-						issue = new Issue(maxSeverity, location, IssueType.DIFFERENT, REQUIRED_PARAM_HIDDEN , reference.getResource(), reference, cParam.getKey());					
+						issue = new Issue(maxSeverity, location, IssueType.DIFFERENT, REQUIRED_PARAM_HIDDEN , referenceRamlResource, reference, cParam.getKey());
 						RamlCheckerResourceVisitorCoordinator.addIssue(errors, warnings, issue, REQUIRED_PARAM_HIDDEN + " "+ cParam.getKey() + " in " + location.name());
 					}
 					
 					if (referenceParameter.getType() != null && !referenceParameter.getType().equals(targetParameter.getType())) {
-						issue = new Issue(IssueSeverity.WARNING, location, IssueType.DIFFERENT, INCOMPATIBLE_TYPES , reference.getResource(), reference, cParam.getKey());					
+						issue = new Issue(IssueSeverity.WARNING, location, IssueType.DIFFERENT, INCOMPATIBLE_TYPES , referenceRamlResource, reference, cParam.getKey());
 						RamlCheckerResourceVisitorCoordinator.addIssue(errors, warnings, issue, INCOMPATIBLE_TYPES + " "+ cParam.getKey() + " in " + location.name());
 					}
 					
@@ -108,7 +112,7 @@ public class ActionQueryParameterChecker implements RamlActionVisitorCheck {
 							|| (referenceParameter.getMaximum() != null && !referenceParameter.getMaximum().equals(targetParameter.getMaximum()))
 							|| (referenceParameter.getMinimum() != null && !referenceParameter.getMinimum().equals(targetParameter.getMinimum()))
 							|| (referenceParameter.getPattern() != null && !referenceParameter.getPattern().equals(targetParameter.getPattern()))) {
-						issue = new Issue(IssueSeverity.WARNING, location, IssueType.DIFFERENT, INCOMPATIBLE_VALIDATION , reference.getResource(), reference, cParam.getKey());					
+						issue = new Issue(IssueSeverity.WARNING, location, IssueType.DIFFERENT, INCOMPATIBLE_VALIDATION , referenceRamlResource, reference, cParam.getKey());
 						RamlCheckerResourceVisitorCoordinator.addIssue(errors, warnings, issue, INCOMPATIBLE_VALIDATION + " "+ cParam.getKey() + " in " + location.name());
 					}
 					

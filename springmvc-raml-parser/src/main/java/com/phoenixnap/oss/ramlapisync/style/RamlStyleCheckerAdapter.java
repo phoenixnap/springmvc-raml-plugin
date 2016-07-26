@@ -12,16 +12,15 @@
  */
 package com.phoenixnap.oss.ramlapisync.style;
 
+import com.phoenixnap.oss.ramlapisync.raml.RamlAbstractParam;
+import com.phoenixnap.oss.ramlapisync.raml.RamlAction;
+import com.phoenixnap.oss.ramlapisync.raml.RamlActionType;
+import com.phoenixnap.oss.ramlapisync.raml.RamlResource;
+import com.phoenixnap.oss.ramlapisync.raml.RamlRoot;
+import com.phoenixnap.oss.ramlapisync.verification.IssueLocation;
+
 import java.util.Collections;
 import java.util.Set;
-
-import org.raml.model.Action;
-import org.raml.model.ActionType;
-import org.raml.model.Raml;
-import org.raml.model.Resource;
-import org.raml.model.parameter.AbstractParam;
-
-import com.phoenixnap.oss.ramlapisync.verification.IssueLocation;
 
 /**
  * Adapter pattern for Raml Style Checkers.
@@ -33,19 +32,19 @@ import com.phoenixnap.oss.ramlapisync.verification.IssueLocation;
 public class RamlStyleCheckerAdapter implements RamlStyleChecker {
 
 	@Override
-	public Set<StyleIssue> checkParameterStyle(String name, AbstractParam param) {
+	public Set<StyleIssue> checkParameterStyle(String name, RamlAbstractParam param) {
 		return Collections.emptySet();
 	}
 
 	@Override
-	public Set<StyleIssue> checkActionStyle(ActionType key, Action value,
-			IssueLocation location, Raml raml) {
+	public Set<StyleIssue> checkActionStyle(RamlActionType key, RamlAction value,
+											IssueLocation location, RamlRoot raml) {
 		return Collections.emptySet();
 	}
 
 	@Override
-	public Set<StyleIssue> checkResourceStyle(String name, Resource resource,
-			IssueLocation location, Raml raml) {
+	public Set<StyleIssue> checkResourceStyle(String name, RamlResource resource,
+			IssueLocation location, RamlRoot raml) {
 		return Collections.emptySet();
 	}
 	

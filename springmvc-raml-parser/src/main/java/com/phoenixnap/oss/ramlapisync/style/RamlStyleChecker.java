@@ -12,15 +12,14 @@
  */
 package com.phoenixnap.oss.ramlapisync.style;
 
-import java.util.Set;
-
-import org.raml.model.Action;
-import org.raml.model.ActionType;
-import org.raml.model.Raml;
-import org.raml.model.Resource;
-import org.raml.model.parameter.AbstractParam;
-
+import com.phoenixnap.oss.ramlapisync.raml.RamlAbstractParam;
+import com.phoenixnap.oss.ramlapisync.raml.RamlAction;
+import com.phoenixnap.oss.ramlapisync.raml.RamlActionType;
+import com.phoenixnap.oss.ramlapisync.raml.RamlResource;
+import com.phoenixnap.oss.ramlapisync.raml.RamlRoot;
 import com.phoenixnap.oss.ramlapisync.verification.IssueLocation;
+
+import java.util.Set;
 
 /**
  * Parent Interface for all Raml Style Checkers. Implement this interface and add it to the RamlStyleCheckCoordinator to enable this check
@@ -38,7 +37,7 @@ public interface RamlStyleChecker {
 	 * @param param The Parameter from the RAML Model
 	 * @return A list of style issues or an Empty List if none are found. This method must not return null.
 	 */
-	public Set<StyleIssue> checkParameterStyle(String name, AbstractParam param);
+	public Set<StyleIssue> checkParameterStyle(String name, RamlAbstractParam param);
 	
 	/**
 	 * Check the style of a particular action
@@ -49,7 +48,7 @@ public interface RamlStyleChecker {
 	 * @param raml The Raml Document being checked
 	 * @return A list of style issues or an Empty List if none are found. This method must not return null.
 	 */
-	public Set<StyleIssue> checkActionStyle(ActionType key, Action value, IssueLocation location, Raml raml);
+	public Set<StyleIssue> checkActionStyle(RamlActionType key, RamlAction value, IssueLocation location, RamlRoot raml);
 
 	/**
 	 * Check the style of a particular resource. This will be called on all child resources by the coordinator.
@@ -60,6 +59,6 @@ public interface RamlStyleChecker {
 	 * @param raml The Raml Document being checked
 	 * @return A list of style issues or an Empty List if none are found. This method must not return null.
 	 */
-	public Set<StyleIssue> checkResourceStyle(String name, Resource resource, IssueLocation location, Raml raml);
+	public Set<StyleIssue> checkResourceStyle(String name, RamlResource resource, IssueLocation location, RamlRoot raml);
 
 }

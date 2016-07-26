@@ -12,37 +12,6 @@
  */
 package com.phoenixnap.oss.ramlapisync.naming;
 
-import java.io.IOException;
-import java.lang.reflect.Field;
-import java.lang.reflect.Parameter;
-import java.lang.reflect.Type;
-import java.math.BigDecimal;
-import java.net.URI;
-import java.util.Collections;
-import java.util.Date;
-import java.util.Map;
-import java.util.Map.Entry;
-import java.util.TreeMap;
-
-import org.jsonschema2pojo.Annotator;
-import org.jsonschema2pojo.DefaultGenerationConfig;
-import org.jsonschema2pojo.GenerationConfig;
-import org.jsonschema2pojo.Jackson2Annotator;
-import org.jsonschema2pojo.SchemaGenerator;
-import org.jsonschema2pojo.SchemaMapper;
-import org.jsonschema2pojo.SchemaStore;
-import org.jsonschema2pojo.rules.RuleFactory;
-import org.raml.model.MimeType;
-import org.raml.model.ParamType;
-import org.raml.model.Raml;
-import org.raml.model.parameter.QueryParameter;
-import org.raml.parser.utils.Inflector;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.util.CollectionUtils;
-import org.springframework.util.StringUtils;
-import org.springframework.web.multipart.MultipartFile;
-
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.module.jsonSchema.JsonSchema;
@@ -54,7 +23,39 @@ import com.phoenixnap.oss.ramlapisync.data.ApiBodyMetadata;
 import com.phoenixnap.oss.ramlapisync.data.ApiParameterMetadata;
 import com.phoenixnap.oss.ramlapisync.javadoc.JavaDocEntry;
 import com.phoenixnap.oss.ramlapisync.javadoc.JavaDocStore;
+import com.phoenixnap.oss.ramlapisync.raml.RamlMimeType;
+import com.phoenixnap.oss.ramlapisync.raml.RamlModelFactory;
+import com.phoenixnap.oss.ramlapisync.raml.RamlModelFactoryOfFactories;
+import com.phoenixnap.oss.ramlapisync.raml.RamlParamType;
+import com.phoenixnap.oss.ramlapisync.raml.RamlQueryParameter;
+import com.phoenixnap.oss.ramlapisync.raml.RamlRoot;
 import com.sun.codemodel.JCodeModel;
+import org.jsonschema2pojo.Annotator;
+import org.jsonschema2pojo.DefaultGenerationConfig;
+import org.jsonschema2pojo.GenerationConfig;
+import org.jsonschema2pojo.Jackson2Annotator;
+import org.jsonschema2pojo.SchemaGenerator;
+import org.jsonschema2pojo.SchemaMapper;
+import org.jsonschema2pojo.SchemaStore;
+import org.jsonschema2pojo.rules.RuleFactory;
+import org.raml.parser.utils.Inflector;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.util.CollectionUtils;
+import org.springframework.util.StringUtils;
+import org.springframework.web.multipart.MultipartFile;
+
+import java.io.IOException;
+import java.lang.reflect.Field;
+import java.lang.reflect.Parameter;
+import java.lang.reflect.Type;
+import java.math.BigDecimal;
+import java.net.URI;
+import java.util.Collections;
+import java.util.Date;
+import java.util.Map;
+import java.util.Map.Entry;
+import java.util.TreeMap;
 
 /**
  * Class containing convenience methods relating to the extracting of information from Java types for use as Parameters.
@@ -76,12 +77,12 @@ public class SchemaHelper {
 	 * @param paramComment The associated Javadoc if any
 	 * @return A map of query parameters that map into the supplied type
 	 */
-	public static Map<String, QueryParameter> convertParameterToQueryParameter(final Parameter param,
+	public static Map<String, RamlQueryParameter> convertParameterToQueryParameter(final Parameter param,
 			final String paramComment) {
-		QueryParameter queryParam = new QueryParameter();
+		RamlQueryParameter queryParam = RamlModelFactoryOfFactories.createRamlModelFactory().createRamlQueryParameter();
 		ApiParameterMetadata parameterMetadata = new ApiParameterMetadata(param);
 
-		ParamType type = mapSimpleType(param.getType());
+		RamlParamType type = mapSimpleType(param.getType());
 
 		if (type == null) {
 			throw new IllegalArgumentException("This method is only applicable to simple types or primitives");
@@ -112,7 +113,7 @@ public class SchemaHelper {
 	 * @param document The Parent Raml Document
 	 * @return The full schema if contained in the raml document or null if not found
 	 */
-	public static String resolveSchema(String schema, Raml document) {
+	public static String resolveSchema(String schema, RamlRoot document) {
 		if (document == null || schema == null ||schema.indexOf("{") != -1) {
 			return null;
 		}
@@ -134,9 +135,9 @@ public class SchemaHelper {
 	 * @param javaDocStore The associated JavaDoc (if any)
 	 * @return a Map of Parameter RAML models keyed by parameter name
 	 */
-	public static Map<String, QueryParameter> convertClassToQueryParameters(final Parameter param,
+	public static Map<String, RamlQueryParameter> convertClassToQueryParameters(final Parameter param,
 			final JavaDocStore javaDocStore) {
-		final Map<String, QueryParameter> outParams = new TreeMap<>();
+		final Map<String, RamlQueryParameter> outParams = new TreeMap<>();
 
 		if (param == null || param.equals(Void.class)) {
 			return outParams;
@@ -149,11 +150,12 @@ public class SchemaHelper {
 		}
 
 		try {
+			RamlModelFactory ramlModelFactory = RamlModelFactoryOfFactories.createRamlModelFactory();
 			for (Field field : param.getType().getDeclaredFields()) {
 				if (!java.lang.reflect.Modifier.isStatic(field.getModifiers())
 						&& !java.lang.reflect.Modifier.isTransient(field.getModifiers())
 						&& !java.lang.reflect.Modifier.isVolatile(field.getModifiers())) {
-					QueryParameter queryParam = new QueryParameter();
+					RamlQueryParameter queryParam = ramlModelFactory.createRamlQueryParameter();
 
 					// Check if we have comments
 					JavaDocEntry paramComment = javaDocStore == null ? null : javaDocStore.getJavaDoc(field.getName());
@@ -164,8 +166,8 @@ public class SchemaHelper {
 					// Populate parameter model with data such as name, type and
 					// required/not
 					queryParam.setDisplayName(field.getName());
-					ParamType simpleType = mapSimpleType(field.getType());
-					queryParam.setType(simpleType == null ? ParamType.STRING : simpleType);
+					RamlParamType simpleType = mapSimpleType(field.getType());
+					queryParam.setType(simpleType == null ? RamlParamType.STRING : simpleType);
 					queryParam.setRequired(parameterMetadata.isNullable());
 					queryParam.setRepeat(false); // TODO we could add validation
 													// info
@@ -276,7 +278,7 @@ public class SchemaHelper {
 	 * @param clazz The Class to map
 	 * @return The Simple RAML ParamType which maps to this class or null if one is not found
 	 */
-	public static ParamType mapSimpleType(Class<?> clazz) {
+	public static RamlParamType mapSimpleType(Class<?> clazz) {
 		Class<?> targetClazz = clazz;
 		if (targetClazz.isArray() && clazz.getComponentType() != null) {
 			targetClazz = clazz.getComponentType();
@@ -284,14 +286,14 @@ public class SchemaHelper {
 		if (targetClazz.equals(Long.TYPE) || targetClazz.equals(Long.class) || targetClazz.equals(Integer.TYPE)
 				|| targetClazz.equals(Integer.class) || targetClazz.equals(Short.TYPE)
 				|| targetClazz.equals(Short.class) || targetClazz.equals(Byte.TYPE) || targetClazz.equals(Byte.class)) {
-			return ParamType.INTEGER;
+			return RamlParamType.INTEGER;
 		} else if (targetClazz.equals(Float.TYPE) || targetClazz.equals(Float.class) || targetClazz.equals(Double.TYPE)
 				|| targetClazz.equals(Double.class) || targetClazz.equals(BigDecimal.class)) {
-			return ParamType.NUMBER;
+			return RamlParamType.NUMBER;
 		} else if (targetClazz.equals(Boolean.class) || targetClazz.equals(Boolean.TYPE)) {
-			return ParamType.BOOLEAN;
+			return RamlParamType.BOOLEAN;
 		} else if (targetClazz.equals(String.class)) {
-			return ParamType.STRING;
+			return RamlParamType.STRING;
 		}
 		return null; // default to string
 	}
@@ -302,7 +304,7 @@ public class SchemaHelper {
 	 * @param param The Type to map
 	 * @return The Java Class which maps to this Simple RAML ParamType or string if one is not found
 	 */
-	public static Class<?> mapSimpleType(ParamType param) {
+	public static Class<?> mapSimpleType(RamlParamType param) {
 
 		switch (param) {
 			case BOOLEAN:
@@ -374,7 +376,7 @@ public class SchemaHelper {
 	 * @param schemaLocation Base location of this schema, will be used to create absolute URIs for $ref tags eg "classpath:/" 
 	 * @return Object representing this Body
 	 */
-	public static ApiBodyMetadata mapSchemaToPojo(Raml document, String schema, String basePackage, String name, String schemaLocation) {
+	public static ApiBodyMetadata mapSchemaToPojo(RamlRoot document, String schema, String basePackage, String name, String schemaLocation) {
 		String resolvedName = null;
 		String schemaName = schema;
 		
@@ -523,13 +525,13 @@ public class SchemaHelper {
 	 * @param checkForValidSchema if false, we will omit checks to see if the schema is valid
 	 * @return true if at least 1 valid schema exists
 	 */
-	public static boolean containsBodySchema(Map<String, MimeType> body, Raml document, boolean checkForValidSchema) {
+	public static boolean containsBodySchema(Map<String, RamlMimeType> body, RamlRoot document, boolean checkForValidSchema) {
 		if (CollectionUtils.isEmpty(body)) {
 			return false;
 		}
 		//successful response
-		for (Entry<String, MimeType> bodyMime : body.entrySet()) {
-			MimeType mime = bodyMime.getValue();
+		for (Entry<String, RamlMimeType> bodyMime : body.entrySet()) {
+			RamlMimeType mime = bodyMime.getValue();
 			if (mime != null && StringUtils.hasText(mime.getSchema())) {
 				if (checkForValidSchema) {
 					try {

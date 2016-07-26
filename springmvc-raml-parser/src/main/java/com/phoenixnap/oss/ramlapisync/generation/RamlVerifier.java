@@ -12,20 +12,11 @@
  */
 package com.phoenixnap.oss.ramlapisync.generation;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.LinkedHashSet;
-import java.util.List;
-import java.util.Set;
-
-import org.raml.model.Raml;
-import org.raml.parser.visitor.RamlDocumentBuilder;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.util.StringUtils;
-
 import com.phoenixnap.oss.ramlapisync.naming.Pair;
 import com.phoenixnap.oss.ramlapisync.naming.RamlHelper;
+import com.phoenixnap.oss.ramlapisync.raml.RamlModelFactory;
+import com.phoenixnap.oss.ramlapisync.raml.RamlModelFactoryOfFactories;
+import com.phoenixnap.oss.ramlapisync.raml.RamlRoot;
 import com.phoenixnap.oss.ramlapisync.style.RamlStyleCheckVisitorCoordinator;
 import com.phoenixnap.oss.ramlapisync.style.RamlStyleChecker;
 import com.phoenixnap.oss.ramlapisync.verification.Issue;
@@ -34,6 +25,15 @@ import com.phoenixnap.oss.ramlapisync.verification.RamlChecker;
 import com.phoenixnap.oss.ramlapisync.verification.RamlResourceVisitorCheck;
 import com.phoenixnap.oss.ramlapisync.verification.checkers.RamlCheckerResourceVisitorCoordinator;
 import com.phoenixnap.oss.ramlapisync.verification.checkers.ResourceExistenceChecker;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.util.StringUtils;
+
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.LinkedHashSet;
+import java.util.List;
+import java.util.Set;
 
 /**
  * Engine that aims to compare RAML as loaded from a raml file that is published as our API contract with RAML generated from the Spring MVC implementation
@@ -48,9 +48,11 @@ public class RamlVerifier {
 	 * Class Logger
 	 */
 	protected static final Logger logger = LoggerFactory.getLogger(RamlVerifier.class);
-	
-	private Raml published;
-	private Raml implemented;
+
+	private static RamlModelFactory ramlModelFactory = RamlModelFactoryOfFactories.createRamlModelFactory();
+
+	private RamlRoot published;
+	private RamlRoot implemented;
 	
 	private Set<Issue> errors = new LinkedHashSet<>();
 	private Set<Issue> warnings = new LinkedHashSet<>();
@@ -69,7 +71,7 @@ public class RamlVerifier {
 	 * @param styleChecks Style Checks that will be applied to the models
 	 * 
 	 */
-	public RamlVerifier(Raml published, Raml implemented, List<RamlChecker> checkers, List<RamlActionVisitorCheck> actionCheckers, List<RamlResourceVisitorCheck> resourceCheckers, List<RamlStyleChecker> styleChecks) {
+	public RamlVerifier(RamlRoot published, RamlRoot implemented, List<RamlChecker> checkers, List<RamlActionVisitorCheck> actionCheckers, List<RamlResourceVisitorCheck> resourceCheckers, List<RamlStyleChecker> styleChecks) {
 		this(published, implemented, checkers, actionCheckers, resourceCheckers, styleChecks, null);
 	}
 	
@@ -86,7 +88,7 @@ public class RamlVerifier {
 	 * @param implementedUrlPrefixToIgnore The Portion of the url to ignore from the implementation. use this to align urls as an alternative to baseUri
 	 * 
 	 */
-	public RamlVerifier(Raml published, Raml implemented, List<RamlChecker> checkers, List<RamlActionVisitorCheck> actionCheckers, List<RamlResourceVisitorCheck> resourceCheckers, List<RamlStyleChecker> styleChecks, String implementedUrlPrefixToIgnore) {
+	public RamlVerifier(RamlRoot published, RamlRoot implemented, List<RamlChecker> checkers, List<RamlActionVisitorCheck> actionCheckers, List<RamlResourceVisitorCheck> resourceCheckers, List<RamlStyleChecker> styleChecks, String implementedUrlPrefixToIgnore) {
 		this.published = published;
 		this.implemented = implemented;
 		this.checkers = new ArrayList<>();
@@ -117,7 +119,7 @@ public class RamlVerifier {
 	 * @param actionCheckers Checker Visitors that will trigger to compare individual actions
 	 * @param resourceCheckers Checker Visitors that will trigger to compare individual resources
 	 */
-	public RamlVerifier(Raml published, Raml implemented, List<RamlChecker> checkers, List<RamlActionVisitorCheck> actionCheckers, List<RamlResourceVisitorCheck> resourceCheckers) {
+	public RamlVerifier(RamlRoot published, RamlRoot implemented, List<RamlChecker> checkers, List<RamlActionVisitorCheck> actionCheckers, List<RamlResourceVisitorCheck> resourceCheckers) {
 		this (published, implemented, checkers, actionCheckers, resourceCheckers, null);
 	}
 	
@@ -166,9 +168,9 @@ public class RamlVerifier {
 	 * @param ramlFileUrl The path to the file, this can either be a resource on the class path (in which case the classpath: prefix should be omitted) or a file on disk (in which case the file: prefix should be included)
 	 * @return Built Raml model
 	 */
-	public static Raml loadRamlFromFile(String ramlFileUrl) {
+	public static RamlRoot loadRamlFromFile(String ramlFileUrl) {
 		try {
-			return new RamlDocumentBuilder().build(ramlFileUrl);
+			return ramlModelFactory.createRamlRoot(ramlFileUrl);
 		} catch (NullPointerException npe) {
 			logger.error("File not found at " + ramlFileUrl);
 			return null;
