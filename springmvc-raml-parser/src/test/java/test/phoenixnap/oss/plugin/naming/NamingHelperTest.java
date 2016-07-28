@@ -42,16 +42,16 @@ public class NamingHelperTest {
 		RamlResource testResource = RamlModelFactoryOfFactories.createRamlModelFactory().createRamlResource();
 		
 		testResource.setRelativeUri("/service_thingy");
-		assertEquals("Should deal with underscores", "ServiceThingy", NamingHelper.getResourceName(testResource));
+		assertEquals("Should deal with underscores", "ServiceThingy", NamingHelper.getResourceName(testResource, true));
 		
 		testResource.setRelativeUri("/quotes");
-		assertEquals("Should deal with plural", "Quote", NamingHelper.getResourceName(testResource));
+		assertEquals("Should deal with plural", "Quote", NamingHelper.getResourceName(testResource, true));
 		
 		testResource.setRelativeUri("/2342quotes");
-		assertEquals("Should deal with invalid java identifiers", "_2342quote", NamingHelper.getResourceName(testResource));
+		assertEquals("Should deal with invalid java identifiers", "_2342quote", NamingHelper.getResourceName(testResource, true));
 		
 		testResource.setRelativeUri("/;qu%ot'es");
-		assertEquals("Should deal with invalid java characters", "quote", NamingHelper.getResourceName(testResource));
+		assertEquals("Should deal with invalid java characters", "quote", NamingHelper.getResourceName(testResource, true));
 	}
 
 	@Test

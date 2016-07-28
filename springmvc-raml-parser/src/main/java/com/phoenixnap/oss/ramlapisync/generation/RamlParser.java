@@ -93,11 +93,28 @@ public class RamlParser {
 			return controllers;
 		}
 
+		Set<String> names = new LinkedHashSet<>();
+		Set<String> namesToDisable = new LinkedHashSet<>();
 		//Iterate on all parent resources
 		//if we have child resources, just append the url and go down the chain until we hit the first action.
 		//if an action is found we need to 
 		for (Entry<String, RamlResource> resource : raml.getResources().entrySet()) {
-			controllers.addAll(checkResource(startUrl, resource.getValue(), null, raml));
+			Set<ApiResourceMetadata> resources = checkResource(startUrl, resource.getValue(), null, raml);
+			for (ApiResourceMetadata resourceMetadata : resources) {
+				if (names.contains(resourceMetadata.getResourceName())) {
+					//collision has occured, lets mark this for 2nd pass
+					namesToDisable.add(resourceMetadata.getResourceName());
+				}
+				names.add(resourceMetadata.getResourceName());
+				controllers.add(resourceMetadata);
+			}
+		}
+		
+		//second pass, disabling singularisation
+		for (ApiResourceMetadata resourceMetadata : controllers) {
+			if (namesToDisable.contains(resourceMetadata.getResourceName())) {
+				resourceMetadata.setSingularizeName(false);
+			}
 		}
 		
 		return controllers;

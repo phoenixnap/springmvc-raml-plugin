@@ -39,6 +39,7 @@ public class ApiResourceMetadata {
 	private transient RamlResource resource;
 	private String basePackage;
 	private RamlRoot document;
+	private boolean singularizeName = true;
 	
 	Set<ApiActionMetadata> apiCalls = new LinkedHashSet<>();
 	
@@ -64,7 +65,7 @@ public class ApiResourceMetadata {
 	}
     
     public String getName() {
-    	String name = NamingHelper.getResourceName(resource);
+    	String name = NamingHelper.getResourceName(resource, singularizeName);
     	if (name != null) {
     		return name + CONTROLLER_SUFFIX;
     	}
@@ -78,7 +79,7 @@ public class ApiResourceMetadata {
 	}
 	
 	public String getResourceName() {
-		return NamingHelper.getResourceName(resource);
+		return NamingHelper.getResourceName(resource, singularizeName);
 	}
 	
 	public String getResourceUri() {
@@ -117,5 +118,10 @@ public class ApiResourceMetadata {
 
 	public RamlRoot getDocument() {
 		return document;
+	}
+
+
+	public void setSingularizeName(boolean singularizeName) {
+		this.singularizeName = singularizeName;		
 	}
 }

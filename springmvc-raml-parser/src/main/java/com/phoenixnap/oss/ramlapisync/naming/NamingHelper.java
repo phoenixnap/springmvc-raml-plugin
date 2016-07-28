@@ -253,14 +253,15 @@ public class NamingHelper {
 	 * Attempts to infer the name of a resource from a resources's relative URL
 	 * 
 	 * @param resource The raml resource being parsed
+	 * @param singularize indicates if the resource name should be singularized or not
 	 * @return A name representing this resource or null if one cannot be inferred
 	 */
-	public static String getResourceName(RamlResource resource) {
+	public static String getResourceName(RamlResource resource, boolean singularize) {
 		String url = resource.getRelativeUri();
     	if (StringUtils.hasText(url)) {
 			if (url.contains("/") 
 					&& (url.lastIndexOf("/") < url.length())) {
-				return getResourceName(url.substring(url.lastIndexOf("/")+1));
+				return getResourceName(url.substring(url.lastIndexOf("/")+1), singularize);
 			}
 		}
     	return null;
@@ -270,11 +271,15 @@ public class NamingHelper {
 	 * Attempts to infer the name of a resource from a resources's relative URL
 	 * 
 	 * @param resource The Url representation of this object
+	 * @param singularize indicates if the resource name should be singularized or not
 	 * @return A name representing this resource or null if one cannot be inferred
 	 */
-	public static String getResourceName(String resource) {
+	public static String getResourceName(String resource, boolean singularize) {
 		if (StringUtils.hasText(resource)) {
-				String resourceName = Inflector.singularize(StringUtils.capitalize(resource));
+				String resourceName = StringUtils.capitalize(resource);
+				if (singularize) {
+					resourceName = Inflector.singularize(resourceName);
+				} 
 				resourceName = cleanNameForJava(resourceName);
 				return resourceName;
 		}
