@@ -48,7 +48,7 @@ public class ApiBodyMetadata {
 				int nextQuoteIdxIdx = schema.indexOf("\"", quoteIdx+1);
 				if (nextQuoteIdxIdx != -1) {
 					String possibleType = schema.substring(quoteIdx+1, nextQuoteIdxIdx);
-					this.name = NamingHelper.getResourceName(this.name);
+					this.name = NamingHelper.getResourceName(this.name, true);
 					if ("array".equals(possibleType.toLowerCase())) {
 						array = true;
 					}
