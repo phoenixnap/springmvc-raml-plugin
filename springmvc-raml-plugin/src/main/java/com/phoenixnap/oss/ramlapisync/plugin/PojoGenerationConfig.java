@@ -34,6 +34,12 @@ public class PojoGenerationConfig extends DefaultGenerationConfig
     */
    @Parameter(required = false, readonly = true, defaultValue = "false")
    protected Boolean useLongIntegers = Boolean.FALSE;
+   
+   /**
+    * We will pass on this configuration to the jsonschema2pojo library for creation of JSR303 Annotations
+    */
+   @Parameter(required = false, readonly = true, defaultValue = "false")
+   protected Boolean includeJsr303Annotations = Boolean.FALSE;
 
    /**
     * We will pass on this configuration to the jsonschema2pojo library for creation of primitives instead of Objects
@@ -146,6 +152,15 @@ public class PojoGenerationConfig extends DefaultGenerationConfig
          return useLongIntegers;
       }
       return super.isUseLongIntegers();
+   }
+   
+   @Override
+   public boolean isIncludeJsr303Annotations()
+   {
+      if (includeJsr303Annotations != null){
+         return includeJsr303Annotations;
+      }
+      return super.isIncludeJsr303Annotations();
    }
 
    @Override
