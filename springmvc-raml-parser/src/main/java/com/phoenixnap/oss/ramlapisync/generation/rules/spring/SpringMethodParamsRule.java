@@ -12,6 +12,13 @@
  */
 package com.phoenixnap.oss.ramlapisync.generation.rules.spring;
 
+import javax.validation.Valid;
+
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestHeader;
+import org.springframework.web.bind.annotation.RequestParam;
+
 import com.phoenixnap.oss.ramlapisync.data.ApiActionMetadata;
 import com.phoenixnap.oss.ramlapisync.data.ApiParameterMetadata;
 import com.phoenixnap.oss.ramlapisync.generation.CodeModelHelper;
@@ -20,10 +27,6 @@ import com.phoenixnap.oss.ramlapisync.raml.RamlHeader;
 import com.phoenixnap.oss.ramlapisync.raml.RamlUriParameter;
 import com.sun.codemodel.JAnnotationUse;
 import com.sun.codemodel.JVar;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestHeader;
-import org.springframework.web.bind.annotation.RequestParam;
 
 /**
  * Generates all method parameters with Spring annotations needed for an endpoint defined by ApiMappingMetadata.
@@ -88,6 +91,7 @@ public class SpringMethodParamsRule extends MethodParamsRule {
     @Override
     protected JVar param(ApiActionMetadata endpointMetadata, CodeModelHelper.JExtMethod generatableType) {
         JVar param = super.param(endpointMetadata, generatableType);
+        param.annotate(Valid.class);
         param.annotate(RequestBody.class);
         return param;
     }
