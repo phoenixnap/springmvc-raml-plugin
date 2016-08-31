@@ -234,12 +234,16 @@ public class SpringRestClientMethodBodyRule implements Rule<CodeModelHelper.JExt
         //check if return is parameterized
         if (!CollectionUtils.isEmpty(returnType.getTypeParameters())) {
             //if yes - build the parameterized type reference and change returnExpression
-            //ParameterizedTypeReference<List<String>> typeRef = new ParameterizedTypeReference<List<String>>() {};
+            //Due to issue 61, it is generated as
+            //class _P extends org.springframework.core.ParameterizedTypeReference<java.util.List<java.lang.String>>
+            //ParameterizedTypeReference<List<String>> typeRef = new _P();
             //Create Map with Uri Path Variables
             JClass paramTypeRefClass = owner.ref(ParameterizedTypeReference.class);
             paramTypeRefClass = paramTypeRefClass.narrow(returnType);
+
+            body.directStatement("class _P extends " + paramTypeRefClass.fullName() + ";");
             
-            JExpression paramTypeRefInit = JExpr._new(owner.anonymousClass(paramTypeRefClass));
+            JExpression paramTypeRefInit = JExpr._new(owner.directClass("_P"));
             returnExpression = body.decl(paramTypeRefClass, "typeReference", paramTypeRefInit);
         }
         
