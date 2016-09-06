@@ -1,0 +1,13 @@
+{
+   "$schema": "http://json-schema.org/draft-04/schema#",
+   "title": "Sample Schema",
+   "id": "Sample Unit",
+   "type": "object",
+   "description": "The schema of a Sample",
+   "properties": {
+      "t_string": {
+         "type": "string",
+         "description": "The type string."
+      }
+   }
+}
