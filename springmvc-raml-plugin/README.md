@@ -238,6 +238,7 @@ Then simply include the following code in the POM of the project you wish to gen
     <addTimestampFolder>false</addTimestampFolder>
     <basePackage>com.gen.wow</basePackage>
     <baseUri>/api</baseUri>
+    <generateUnreferencedSchemas>true</generateUnreferencedSchemas>
 	<generationConfig>
 		<includeAdditionalProperties>false</includeAdditionalProperties>
 		...
@@ -276,6 +277,9 @@ Then simply include the following code in the POM of the project you wish to gen
 
 ### baseUri
 (optional) Base URI for generated Spring controllers. This overrules the baseUri attribute from inside the .raml spec.
+
+### generateUnreferencedSchemas
+(optional) Determines whether POJOs for unreferenced schemas included in the RAML file should be generated.
 
 ### generationConfig
 (optional) This object contains a map of configuration for the JsonSchema2Pojo generator. The full list of configurable attributes, their description and default values can be found here [GenerationConfig][]
