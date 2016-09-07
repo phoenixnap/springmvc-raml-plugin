@@ -95,7 +95,7 @@ public class SampleUnitClientImpl
         UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl(url);
         UriComponents uriComponents = builder.build();
         HttpEntity httpEntity = new HttpEntity(httpHeaders);
-        class _P extends org.springframework.core.ParameterizedTypeReference<java.util.List<com.gen.test.model.SampleUnit>>;
+        class _P extends org.springframework.core.ParameterizedTypeReference<java.util.List<com.gen.test.model.SampleUnit>>{};
         ParameterizedTypeReference<List<com.gen.test.model.SampleUnit>> typeReference = new _P();
         return this.restTemplate.exchange(uriComponents.encode().toUri(), HttpMethod.GET, httpEntity, typeReference);
     }
