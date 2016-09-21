@@ -20,7 +20,7 @@ public interface BaseController {
 	 * No description
 	 *
 	 */
-	public ResponseEntity getBase(HttpHeaders httpHeaders);
+	public ResponseEntity<?> getBase(HttpHeaders httpHeaders);
 
     /**
      * Get base entity by ID
@@ -32,7 +32,7 @@ public interface BaseController {
      * No description
      *
      */
-    public ResponseEntity getElements(String id, Long requiredQueryParam, String optionalQueryParam, BigDecimal optionalQueryParam2, Long xMyHeader, String xAnotherHeader, HttpHeaders httpHeaders);
+    public ResponseEntity<?> getElements(String id, Long requiredQueryParam, String optionalQueryParam, BigDecimal optionalQueryParam2, Long xMyHeader, String xAnotherHeader, HttpHeaders httpHeaders);
 
 }
 -----------------------------------com.gen.test.BaseControllerDecorator.java-----------------------------------
@@ -72,7 +72,7 @@ public class BaseControllerDecorator
 	 *
 	 */
 	@RequestMapping(value = "", method = RequestMethod.GET)
-	public ResponseEntity getBase(
+	public ResponseEntity<?> getBase(
 	     @RequestHeader
 	     HttpHeaders httpHeaders) {
         return this.baseControllerDelegate.getBase(httpHeaders);
@@ -97,7 +97,7 @@ public class BaseControllerDecorator
      *
      */
     @RequestMapping(value = "/{id}/elements", method = RequestMethod.GET)
-    public ResponseEntity getElements(
+    public ResponseEntity<?> getElements(
         @PathVariable
         String id,
         @RequestParam
