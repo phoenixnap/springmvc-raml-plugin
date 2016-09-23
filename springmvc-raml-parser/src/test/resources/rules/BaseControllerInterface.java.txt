@@ -28,7 +28,7 @@ public interface BaseController {
 	 *
 	 */
 	@RequestMapping(value = "", method = RequestMethod.GET)
-	public ResponseEntity getBase();
+	public ResponseEntity<?> getBase();
 
     /**
      * Get base entity by ID
@@ -44,7 +44,7 @@ public interface BaseController {
      *
      */
     @RequestMapping(value = "/{id}/elements", method = RequestMethod.GET)
-    public ResponseEntity getElements(
+    public ResponseEntity<?> getElements(
         @PathVariable
         String id,
         @RequestParam

@@ -19,7 +19,7 @@ public interface BaseClient {
      * No description
      * 
      */
-    public ResponseEntity getBase();
+    public ResponseEntity<?> getBase();
 
     /**
      * Get base entity by ID
@@ -38,7 +38,7 @@ public interface BaseClient {
      * @param optionalQueryParam2
      * @param xMyHeader
      */
-    public ResponseEntity getElements(String id, Long requiredQueryParam, String optionalQueryParam, BigDecimal optionalQueryParam2, Long xMyHeader, String xAnotherHeader);
+    public ResponseEntity<?> getElements(String id, Long requiredQueryParam, String optionalQueryParam, BigDecimal optionalQueryParam2, Long xMyHeader, String xAnotherHeader);
 
 }
 -----------------------------------com.gen.test.BaseClientImpl.java-----------------------------------
@@ -82,7 +82,7 @@ public class BaseClientImpl
      * No description
      * 
      */
-    public ResponseEntity getBase() {
+    public ResponseEntity<?> getBase() {
         HttpHeaders httpHeaders = new HttpHeaders();
         //  Add Accepts Headers and Body Content-Type
         ArrayList<MediaType> acceptsList = new ArrayList<MediaType>();
@@ -119,7 +119,7 @@ public class BaseClientImpl
      * No description
      * 
      */
-    public ResponseEntity getElements(String id, Long requiredQueryParam, String optionalQueryParam, BigDecimal optionalQueryParam2, Long xMyHeader, String xAnotherHeader) {
+    public ResponseEntity<?> getElements(String id, Long requiredQueryParam, String optionalQueryParam, BigDecimal optionalQueryParam2, Long xMyHeader, String xAnotherHeader) {
         HttpHeaders httpHeaders = new HttpHeaders();
         //  Add Accepts Headers and Body Content-Type
         ArrayList<MediaType> acceptsList = new ArrayList<MediaType>();

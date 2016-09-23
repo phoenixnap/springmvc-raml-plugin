@@ -28,7 +28,7 @@ public class ControllerMethodSignatureRuleTest extends AbstractRuleTestBase {
         assertThat(jMethod, is(notNullValue()));
         assertThat(jMethod.name(), equalTo("getBase"));
         assertThat(jMethod.mods().getValue(), equalTo(JMod.PUBLIC));
-        assertThat(jMethod.type().name(), equalTo("ResponseEntity"));
+        assertThat(jMethod.type().name(), equalTo("ResponseEntity<? extends Object>"));
         assertThat(jMethod.annotations(), hasSize(0)); // no implicit annotations
         assertThat(jMethod.body().isEmpty(), is(true));
     }

@@ -19,7 +19,7 @@ public interface SampleUnitClient {
      *
      * @param sampleUnit The Request Body Payload
      */
-    public ResponseEntity createSampleUnit(com.gen.test.model.SampleUnit sampleUnit);
+    public ResponseEntity<?> createSampleUnit(com.gen.test.model.SampleUnit sampleUnit);
 
     /**
      * Retrieves  samples
@@ -67,7 +67,7 @@ public class SampleUnitClientImpl
      * Creates a sample unit
      *
      */
-    public ResponseEntity createSampleUnit(com.gen.test.model.SampleUnit sampleUnit) {
+    public ResponseEntity<?> createSampleUnit(com.gen.test.model.SampleUnit sampleUnit) {
         HttpHeaders httpHeaders = new HttpHeaders();
         //  Add Accepts Headers and Body Content-Type
         ArrayList<MediaType> acceptsList = new ArrayList<MediaType>();
