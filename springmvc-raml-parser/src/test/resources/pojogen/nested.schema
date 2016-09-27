@@ -1,0 +1,62 @@
+{
+ "javaType": "javaName1st",
+ "type": "object",
+ "javaType": "javaName2nd",
+ "id" : "ID",
+ "properties": {
+   "name": {
+     "type": "string"
+   },
+   "location": {
+     "type": "string"
+   },
+   "model": {
+     "type": "string"
+   },
+   "enabled": {
+     "type": "boolean"
+   },
+   "waterCapacity": {
+     "type": "object",
+     "properties": {
+       "unit": {
+         "type": "string"
+       },
+       "used": {
+         "type": "integer"
+       },
+       "limit": {
+         "type": "integer"
+       }
+     }
+   },
+   "airCapacity": {
+     "type": "object",
+     "properties": {
+       "unit": {
+         "type": "string"
+       },
+       "used": {
+         "type": "integer"
+       },
+       "limit": {
+         "type": "integer"
+       }
+     }
+   },
+   "fuelCapacity": {
+     "type": "object",
+     "properties": {
+       "unit": {
+         "type": "string"
+       },
+       "used": {
+         "type": "integer"
+       },
+       "limit": {
+         "type": "integer"
+       }
+     }
+   }
+ }
+}

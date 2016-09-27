@@ -26,6 +26,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.TreeMap;
 
+import org.apache.commons.io.IOUtils;
 import org.jsonschema2pojo.Annotator;
 import org.jsonschema2pojo.DefaultGenerationConfig;
 import org.jsonschema2pojo.GenerationConfig;
@@ -385,39 +386,99 @@ public class SchemaHelper {
      */
     public static String extractNameFromSchema(String schema, String schemaName, String fallbackName) {
         String resolvedName = null;
-        if (schema != null && schema.contains("\"id\"")) { // check if id can give us exact name
-            int propIdx = schema.indexOf("\"properties\"");
-            int idIdx = schema.indexOf("\"id\"");
-            if (propIdx > idIdx) { // make sure we're not in a nested id
-                // find the 1st and second " after the idx
-                int startIdx = schema.indexOf("\"", idIdx + 4);
-                int endIdx = schema.indexOf("\"", startIdx + 1);
-                String id = schema.substring(startIdx + 1, endIdx);
-                if (id.startsWith("urn:") && ((id.lastIndexOf(":") + 1) < id.length())) {
-                    id = id.substring(id.lastIndexOf(":") + 1);
-                }
-                else if (id.startsWith(JSON_SCHEMA_IDENT)) {
-                    if (id.length() > (JSON_SCHEMA_IDENT.length() + 3)) {
-                        id = id.substring(JSON_SCHEMA_IDENT.length());
-                    }
-                }
-                else {
-                    resolvedName = StringUtils.capitalize(id);
-                }
-            }
-        }
-        if (!NamingHelper.isValidJavaClassName(resolvedName)) {
-            if (NamingHelper.isValidJavaClassName(schemaName)) {
-                return Inflector.capitalize(schemaName); // try schema name
-            }
-            else {
-                resolvedName = fallbackName; // fallback to generated
-            }
-        }
+        if (schema != null) { 
+        	//if we have an array type we need to recurse into it
+        	int startIdx = 0;
+        	String type =  extractTopItem("type", schema, startIdx);
+        	if (type != null && type.equalsIgnoreCase("array")) {
+        		int itemsIdx = schema.indexOf("\"items\"");
+        		if (itemsIdx != -1) {
+        			startIdx = itemsIdx + 7;
+        		}
+        		//lets check if we have a ref
+        		String ref = extractTopItem("$ref", schema, startIdx);
+        		if (ref != null) {
+        			logger.info("Loading referenced schema " + ref);
+        			ref = ref.replace("classpath:", "");
+        			try {
+						schema = IOUtils.toString(
+								Thread.currentThread().getContextClassLoader().getResourceAsStream(ref),
+							      "UTF-8"
+							    );
+						startIdx = 0; //reset pointer since we recursed into schema
+					} catch (IOException e) {
+						logger.info("Erro Loading referenced schema " + ref, e);
+					}
+        		}
+        	}
+        	// check if javaType can give us exact name
+        	String javaType =  extractTopItem("javaType", schema, startIdx);
+        	if (StringUtils.hasText(javaType)) {
+        		//do stuff to it
+        		int dotIdx = javaType.lastIndexOf(".");
+        		if (dotIdx > -1) {
+        			javaType = javaType.substring(dotIdx+1);
+        		}
+        		resolvedName = javaType;
+        		
+        	} else {
+        		String id =  extractTopItem("id", schema, startIdx);
+        		if (StringUtils.hasText(id)) {
+            		//do stuff to it
+        			 if (id.startsWith("urn:") && ((id.lastIndexOf(":") + 1) < id.length())) {
+                         id = id.substring(id.lastIndexOf(":") + 1);
+                     }
+                     else if (id.startsWith(JSON_SCHEMA_IDENT)) {
+                         if (id.length() > (JSON_SCHEMA_IDENT.length() + 3)) {
+                             id = id.substring(JSON_SCHEMA_IDENT.length());
+                         }
+                     }
+                     
+                     resolvedName = StringUtils.capitalize(id);
+                     
+            	}
+        		 if (!NamingHelper.isValidJavaClassName(resolvedName)) {
+        	            if (NamingHelper.isValidJavaClassName(schemaName)) {
+        	                return Inflector.capitalize(schemaName); // try schema name
+        	            }
+        	            else {
+        	                resolvedName = fallbackName; // fallback to generated
+        	            }
+        	        }
+        	}
+        } 
+       
         return resolvedName;
     }
 
 
+    /**
+     * Extracts the value of a specified parameter in a schema 
+     * 
+     * @param searchString element to search for
+     * @param schema Schema as a string
+     * @return the value or null if not found
+     */
+	private static String extractTopItem(String searchString, String schema, int startIdx) {
+		String extracted = null;
+		int propIdx = schema.indexOf("\"properties\"", startIdx);
+		if (propIdx == -1) {
+			propIdx = Integer.MAX_VALUE;
+		}
+		//check for second
+		int idIdx = schema.indexOf("\"" + searchString + "\"", startIdx);
+		int secondIdIdx = schema.indexOf("\"" + searchString + "\"", idIdx + 1);
+		if (secondIdIdx != -1 && propIdx > secondIdIdx) {
+			idIdx = secondIdIdx;
+		}
+		if (idIdx != -1 && propIdx > idIdx) { // make sure we're not in a nested id
+			// find the 1st and second " after the idx
+			int valueStartIdx = schema.indexOf("\"", idIdx + (searchString.length()+2));
+			int valueEndIdx = schema.indexOf("\"", valueStartIdx + 1);
+			extracted = schema.substring(valueStartIdx + 1, valueEndIdx);
+		}
+		return extracted;
+	}
 
     private static String JSON_SCHEMA_IDENT = "http://jsonschema.net";
 
