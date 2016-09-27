@@ -126,6 +126,44 @@ public class JsonSchema2PojoTest {
             assertThat(e.getMessage(), is(nullValue()));
         }
     }
+	
+	@Test
+	public void test_schemaNaming_Nested() throws Exception  {
+		String resourceName = path + "nested.schema";
+		URL url = Resources.getResource(resourceName);
+		String text = Resources.toString(url, Charsets.UTF_8);
+		String path = "file:" + URLDecoder.decode(url.getPath(), Charsets.UTF_8.name()).replace(resourceName, "");
+        ApiBodyMetadata mapSchemaToPojo = SchemaHelper.mapSchemaToPojo(null, text, "com.test", "Fallback", path);
+        assertNotNull(mapSchemaToPojo);
+        ByteArrayOutputStream bos = new ByteArrayOutputStream();
+        assertThat(mapSchemaToPojo.getName(), is("JavaName2nd"));
+        try {
+        	 mapSchemaToPojo.getCodeModel().build(new SingleStreamCodeWriter(bos));
+        	 logger.debug(bos.toString());
+        } catch (IOException e) {
+            assertThat(e.getMessage(), is(nullValue()));
+        }
+		
+	}
+	
+	@Test
+	public void test_schemaNaming_Nested_Ref() throws Exception  {
+		String resourceName = path + "nested-ref.schema";
+		URL url = Resources.getResource(resourceName);
+		String text = Resources.toString(url, Charsets.UTF_8);
+		String path = "file:" + URLDecoder.decode(url.getPath(), Charsets.UTF_8.name()).replace(resourceName, "");
+        ApiBodyMetadata mapSchemaToPojo = SchemaHelper.mapSchemaToPojo(null, text, "com.test", "Fallback", path);
+        assertNotNull(mapSchemaToPojo);
+        ByteArrayOutputStream bos = new ByteArrayOutputStream();
+        assertThat(mapSchemaToPojo.getName(), is("JavaName2nd"));
+        try {
+        	 mapSchemaToPojo.getCodeModel().build(new SingleStreamCodeWriter(bos));
+        	 logger.debug(bos.toString());
+        } catch (IOException e) {
+            assertThat(e.getMessage(), is(nullValue()));
+        }
+		
+	}
     
 
 }

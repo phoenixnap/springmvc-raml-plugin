@@ -1,0 +1,24 @@
+#%RAML 0.8
+title: Schema Test Service
+version: 1.2.3
+mediaType: application/vnd.test-service.v.1+json
+baseUri: /
+schemas:
+  - nestedList: |
+      {
+        "$schema": "http://json-schema.org/draft-04/schema",
+        "type" : "array",
+        "items" :  {
+           "$ref" : "classpath:nested.schema"
+        }
+      }
+
+/nests:
+  get:
+    description: Returns a list of Nests
+    responses:
+      200:
+        description: Successful
+        body:
+          application/vnd.test-service.v.1+json:
+            schema: nestedList
