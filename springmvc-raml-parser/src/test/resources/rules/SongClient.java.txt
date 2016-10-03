@@ -1,0 +1,69 @@
+-----------------------------------com.gen.test.SongClient.java-----------------------------------
+
+package com.gen.test;
+
+import java.util.List;
+import org.springframework.cloud.netflix.feign.FeignClient;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+
+
+/**
+ * Songs services
+ * (Generated with springmvc-raml-parser v.${project.version})
+ * 
+ */
+@FeignClient(url = "/api/songs", name = "songClient")
+public interface SongClient {
+
+
+    /**
+     * Gets all songs
+     * 
+     */
+    @RequestMapping(value = "", method = RequestMethod.GET)
+    public ResponseEntity<List<com.gen.test.model.Song>> getSongs();
+
+    /**
+     * Creates new song
+     * 
+     */
+    @RequestMapping(value = "", method = RequestMethod.POST)
+    public ResponseEntity<com.gen.test.model.Song> createSong(
+        @javax.validation.Valid
+        @org.springframework.web.bind.annotation.RequestBody
+        com.gen.test.model.Song song);
+
+    /**
+     * Gets song by id
+     * 
+     */
+    @RequestMapping(value = "/{songId}", method = RequestMethod.GET)
+    public ResponseEntity<com.gen.test.model.Song> getSongById(
+        @PathVariable
+        String songId);
+
+    /**
+     * Updates song
+     * 
+     */
+    @RequestMapping(value = "/{songId}", method = RequestMethod.PUT)
+    public ResponseEntity<com.gen.test.model.Song> updateSongById(
+        @PathVariable
+        String songId,
+        @javax.validation.Valid
+        @org.springframework.web.bind.annotation.RequestBody
+        com.gen.test.model.Song song);
+
+    /**
+     * Deletes song
+     * 
+     */
+    @RequestMapping(value = "/{songId}", method = RequestMethod.DELETE)
+    public ResponseEntity deleteSongById(
+        @PathVariable
+        String songId);
+
+}

@@ -1,0 +1,154 @@
+#%RAML 0.8
+title: Song API
+version: v1
+baseUri: http://abc:8000
+schemas:
+  - song: |
+      {
+        "type": "object",
+        "id": "song",
+        "$schema": "song",
+        "properties": {
+          "songId": {
+            "type": "string"
+          },
+          "songTitle": {
+            "type": "string"
+          },
+          "artist": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "songId",
+          "songTitle",
+          "artist"
+        ]
+      }
+  - songs: |
+      {
+        "type": "array",
+        "id": "songs",
+        "$schema": "songs",
+        "properties" : {
+            "songs" : {
+                "type" : "array",
+                "items": {
+                  "properties": {
+                    "songId": {
+                      "type": "string"
+                    },
+                    "songTitle": {
+                      "type": "string"
+                    },
+                    "artist": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "songId",
+                    "songTitle",
+                    "artist"
+                  ]
+                }
+            }
+        }
+      }
+/songs:
+  displayName: Songs
+  description: Songs services
+  get:
+    description: Gets all songs
+    responses:
+      200:
+        description: Successful Response
+        body:
+          application/json:
+            schema: songs
+            example: |
+              [
+                {
+                  "songId": "0594ad16-e9ab-45eb-b7f3-490c955034a6",
+                  "songTitle": "Into The Night",
+                  "artist": "Carlos Santana"
+                },
+                {
+                  "songId": "7fc8d30e-4fd4-4b36-b5d2-06010110150d",
+                  "songTitle": "People Are Strange",
+                  "artist": "The Doors"
+                }
+              ]
+  post:
+    description: Creates new song
+    body:
+      application/json:
+        schema: song
+        example: |
+          {
+            "songId": "2ab846ba-75b6-4b1e-aa3c-937492cd1982",
+            "songTitle": "Insane In The Brain",
+            "artist": "Cypress Hill"
+          }
+    responses:
+      200:
+        description: Successful Response
+        body:
+          application/json:
+            schema: song
+            example: |
+              {
+                "songId": "2ab846ba-75b6-4b1e-aa3c-937492cd1982",
+                "songTitle": "Insane In The Brain",
+                "artist": "Cypress Hill"
+              }
+  /{songId}:
+    uriParameters:
+      songId:
+        description: Unique id of song
+        example: "2ab846ba-75b6-4b1e-aa3c-937492cd1982"
+        type: string
+        required: true
+    displayName: Song
+    description: Some song
+    get:
+      description: Gets song by id
+      responses:
+        200:
+          description: Successful Response
+          body:
+            application/json:
+              schema: song
+              example: |
+                {
+                  "songId": "2ab846ba-75b6-4b1e-aa3c-937492cd1982",
+                  "songTitle": "Insane In The Brain",
+                  "artist": "Cypress Hill"
+                }
+    put:
+      description: Updates song
+      body:
+        application/json:
+          schema: song
+          example: |
+            {
+              "songId": "2ab846ba-75b6-4b1e-aa3c-937492cd1982",
+              "songTitle": "Insane In The Brain",
+              "artist": "Cypress Hill"
+            }
+      responses:
+        200:
+          description: Successful Response
+          body:
+            application/json:
+              schema: song
+              example: |
+                {
+                  "songId": "2ab846ba-75b6-4b1e-aa3c-937492cd1982",
+                  "songTitle": "Insane In The Brain",
+                  "artist": "Cypress Hill"
+                }
+    delete:
+      description: Deletes song
+      responses:
+        200:
+          description: Successful Response

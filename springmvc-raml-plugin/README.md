@@ -21,7 +21,7 @@ The SpringMVC-To-RAML plugin  is released under version 2.0 of the [Apache Licen
 
 ## Usage 1 - Generating RAML from Implementation
 
-### Sample Maven Code 
+### Sample Maven Code
 
 The first step is to download and compile these projects using Maven. Simply run mvn clean install in the parent directory and both the plugin and annotations artifacts will be compiled. These can optionally be deployed to your
 Artifactory or similar repo.
@@ -99,7 +99,7 @@ Then simply include the following code in the POM of the project you wish to gen
 
 ## Usage 2 - Style Checking RAML document and Verifying against Implementation
 
-### Sample Maven Code 
+### Sample Maven Code
 
 The first step is to download and compile these projects using Maven. Simply run mvn clean install in the parent directory and both the plugin and annotations artifacts will be compiled. These can optionally be deployed to your
 Artifactory or similar repo.
@@ -129,7 +129,7 @@ Then simply include the following code in the POM of the project you wish to gen
 	<checkForResponseBodySchema>true</checkForResponseBodySchema>
 	<breakBuildOnWarnings>false</breakBuildOnWarnings>
     <logWarnings>true</logWarnings>
-    <logErrors>true</logErrors>	
+    <logErrors>true</logErrors>
 	<ignoredList>
 	   <param>com.package.to.ignore</param>
 	   <param>com.specificClass.to.ignore.ClassName</param>
@@ -166,7 +166,7 @@ Then simply include the following code in the POM of the project you wish to gen
 (optional, default: true) Flag that will enable or disable Style Checking of the RAML file. If this is set to false it will override other style check flags
 
 ### checkForResourceExistence
-(optional, default: true) Flag that will enable or disable Checks for existence of Resources 
+(optional, default: true) Flag that will enable or disable Checks for existence of Resources
 
 ### checkForActionExistence
 (optional, default: true) Flag that will enable or disable Checks for existence of Actions/Verbs
@@ -218,7 +218,7 @@ Then simply include the following code in the POM of the project you wish to gen
 
 ## Usage 3 - Generating SpringMVC Server Endpoints from a RAML file
 
-### Sample Maven Code 
+### Sample Maven Code
 
 The first step is to download and compile these projects using Maven. Simply run mvn clean install in the parent directory and both the plugin and annotations artifacts will be compiled. These can optionally be deployed to your
 Artifactory or similar repo.
@@ -288,7 +288,7 @@ Then simply include the following code in the POM of the project you wish to gen
 (optional, default: false) If set to true, we will generate a `HttpHeaders` parameter for each method to allow using request HTTP headers directly.
 
 ### seperateMethodsByContentType
-(optional, default: false) Should we generate separate API methods for endpoints which define multiple content types in their 200 response. 
+(optional, default: false) Should we generate separate API methods for endpoints which define multiple content types in their 200 response.
 
 ### useJackson1xCompatibility
 (optional, default: false) If set to true, we will generate Jackson 1 annotations inside the model objects.
@@ -297,16 +297,16 @@ Then simply include the following code in the POM of the project you wish to gen
 (optional) This is a key/value map for configuration of individual rules. Not all rules support configuration.
 
 ### rule
-(optional, default: com.phoenixnap.oss.ramlapisync.generation.rules.Spring4ControllerStubRule) The rule class to be used for code generation. 
+(optional, default: com.phoenixnap.oss.ramlapisync.generation.rules.Spring4ControllerStubRule) The rule class to be used for code generation.
 
 #### Available Rules
 - **com.phoenixnap.oss.ramlapisync.generation.rules.Spring3ControllerStubRule**:
-- **com.phoenixnap.oss.ramlapisync.generation.rule.Spring4ControllerStubRule**: 
+- **com.phoenixnap.oss.ramlapisync.generation.rule.Spring4ControllerStubRule**:
 The standard rule. It creates simple controller stubs classes with Spring MVC annotations and empty method bodies (like in v.0.2.4).
 All you have to do is to implement the empty method body for each endpoint. This is simple and easy.
 The drawback: When you regenerate the controller stubs your code will be overriden.
 
-- **com.phoenixnap.oss.ramlapisync.generation.rules.Spring3ControllerDecoratorRule**: 
+- **com.phoenixnap.oss.ramlapisync.generation.rules.Spring3ControllerDecoratorRule**:
 - **com.phoenixnap.oss.ramlapisync.generation.rules.Spring4ControllerDecoratorRule**:
 Creates a controller interface and a decorator with Spring MVC annotations for each top level endpoint.
 The decorator implements the controller interface and delegates all method calls to an @Autowired ControllerDelegate.
@@ -326,6 +326,9 @@ Configuration:
 	restTemplateFieldName: The name of the RestTemplate field
 	restTemplateQualifierBeanName: [OPTIONAL] The name of the bean for the rest template used in the generated client. Default: NONE
 ```
+
+- **com.phoenixnap.oss.ramlapisync.generation.rules.SpringFeignClientInterfaceRule**:
+Creates a standalone `org.springframework.cloud.netflix.feign.FeignClient` (REST client) for each top level endpoint.
 
 ## Contributing
 [Pull requests][] are welcome; Be a good citizen and create unit tests for any bugs squished or features added
