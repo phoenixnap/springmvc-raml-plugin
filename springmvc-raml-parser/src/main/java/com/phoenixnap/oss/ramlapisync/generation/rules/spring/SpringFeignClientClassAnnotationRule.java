@@ -22,7 +22,7 @@ import com.sun.codemodel.JDefinedClass;
 /**
  * Adds a {@literal @}FeignClient annotation at class level.
  * The "url" of the {@literal @}FeignClient is the endpoint url from the ApiControllerMetadata instance.
- * <br/>
+ * <br>
  * 
  * INPUT:
  * <pre class="code">

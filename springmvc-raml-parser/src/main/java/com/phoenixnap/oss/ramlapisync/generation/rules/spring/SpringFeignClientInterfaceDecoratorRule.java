@@ -28,7 +28,7 @@ import com.sun.codemodel.JDefinedClass;
 /**
  * A code generation Rule that provides a standalone {@link FeignClient}.
  * The goal is to generate code that does not have to be manually extended by the user.
- * <br/>
+ * <br>
  * A raml endpoint called /people exposed on http://somehost:8080 for example would lead to the 
  * following interface:
  *
@@ -37,7 +37,7 @@ import com.sun.codemodel.JDefinedClass;
  * interface PeopleFeignClient {
  * 
  *     {@literal @}RequestMapping(value="", method=RequestMethod.GET)
- *     ResponseEntity{@literal <}com.gen.test.model.People> getPeople();
+ *     ResponseEntity{@literal <}com.gen.test.model.People{@literal >} getPeople();
  * }
  * </pre>
  *

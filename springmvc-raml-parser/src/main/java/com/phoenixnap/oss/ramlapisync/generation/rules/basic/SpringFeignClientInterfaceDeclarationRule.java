@@ -20,7 +20,7 @@ import com.sun.codemodel.JPackage;
 
 /**
  * Generates an interface declaration based on the controller name in ApiControllerMetadata.
- * <br/>
+ * <br>
  * INPUT:
  * <pre class="code">
  * #%RAML 0.8
