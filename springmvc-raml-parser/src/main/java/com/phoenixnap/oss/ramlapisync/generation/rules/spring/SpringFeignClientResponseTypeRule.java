@@ -29,7 +29,7 @@ import com.sun.codemodel.JType;
 /**
  * Creates a {@link ResponseEntity} as a return type for an endpoint.
  * If the endpoint declares a response body the first type of the response body will used as return type instead.
- * <br/>
+ * <br>
  * INPUT:
  * <pre class="code">
  * #%RAML 0.8
@@ -50,11 +50,11 @@ import com.sun.codemodel.JType;
  * </pre>
  * OUTPUT:
  * <pre class="code">
- * ResponseEntity{@literal <}NamedResponseType>
+ * ResponseEntity{@literal <}NamedResponseType{@literal >}
  * </pre>
  * OR:
  * <pre class="code">
- * ResponseEntity{@literal <}List{@literal <}NamedResponseType>> (if the NamedResponseType is an "array")
+ * ResponseEntity{@literal <}List{@literal <}NamedResponseType{@literal >}{@literal >} (if the NamedResponseType is an "array")
  * </pre>
  * 
  * @author Aleksandar Stojsavljevic
