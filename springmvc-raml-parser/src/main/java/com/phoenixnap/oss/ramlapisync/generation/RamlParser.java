@@ -20,6 +20,7 @@ import com.phoenixnap.oss.ramlapisync.raml.RamlModelFactoryOfFactories;
 import com.phoenixnap.oss.ramlapisync.raml.RamlResource;
 import com.phoenixnap.oss.ramlapisync.raml.RamlResponse;
 import com.phoenixnap.oss.ramlapisync.raml.RamlRoot;
+import com.phoenixnap.oss.ramlapisync.raml.InvalidRamlResourceException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -192,9 +193,9 @@ public class RamlParser {
 	 * @param ramlFileUrl The path to the file, this can either be a resource on the class path (in which case the classpath: prefix should be omitted) or a file on disk (in which case the file: prefix should be included)
 	 * @return Built Raml model
 	 */
-	public static RamlRoot loadRamlFromFile(String ramlFileUrl) {
+	public static RamlRoot loadRamlFromFile(String ramlFileUrl) throws InvalidRamlResourceException {
 		try {
-			return RamlModelFactoryOfFactories.createRamlModelFactory().buildRamlRoot(ramlFileUrl);
+			return RamlModelFactoryOfFactories.createRamlModelFactoryV08().buildRamlRoot(ramlFileUrl);
 		} catch (NullPointerException npe) {
 			logger.error("File not found at " + ramlFileUrl);
 			return null;

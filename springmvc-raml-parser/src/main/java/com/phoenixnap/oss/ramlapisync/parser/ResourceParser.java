@@ -220,7 +220,7 @@ public abstract class ResourceParser {
 	protected Pair<String, RamlMimeType> extractRequestBody(Method method, Map<String, String> parameterComments,
 			String comment, List<ApiParameterMetadata> apiParameters) {
 		String schema;
-		RamlMimeType mimeType = RamlModelFactoryOfFactories.createRamlModelFactory().createRamlMimeType();
+		RamlMimeType mimeType = RamlModelFactoryOfFactories.createRamlModelFactoryV08().createRamlMimeType();
 		if (apiParameters.size() == 1) {
 			if (parameterComments != null && parameterComments.size() == 1) {
 				comment = parameterComments.values().iterator().next();
@@ -324,7 +324,7 @@ public abstract class ResourceParser {
 	 * @return The response RAML model for this method (success only)
 	 */
 	protected RamlResponse extractResponseFromMethod(Method method, String responseComment) {
-		RamlModelFactory ramlModelFactory = RamlModelFactoryOfFactories.createRamlModelFactory();
+		RamlModelFactory ramlModelFactory = RamlModelFactoryOfFactories.createRamlModelFactoryV08();
 		RamlResponse response = ramlModelFactory.createRamlResponse();
 		String mime = extractMimeTypeFromMethod(method);
 		RamlMimeType jsonType = ramlModelFactory.createRamlMimeTypeWithMime(mime);// TODO this would be coolto annotate
@@ -368,7 +368,7 @@ public abstract class ResourceParser {
 	 */
 	public RamlResource extractResourceInfo(Class<?> clazz) {
 		logger.info("Parsing resource: " + clazz.getSimpleName() + " ");
-		RamlResource resource = RamlModelFactoryOfFactories.createRamlModelFactory().createRamlResource();
+		RamlResource resource = RamlModelFactoryOfFactories.createRamlModelFactoryV08().createRamlResource();
 		resource.setRelativeUri("/" + getResourceName(clazz));
 		resource.setDisplayName(clazz.getSimpleName()); // TODO allow the Api annotation to specify
 														// this stuff :)

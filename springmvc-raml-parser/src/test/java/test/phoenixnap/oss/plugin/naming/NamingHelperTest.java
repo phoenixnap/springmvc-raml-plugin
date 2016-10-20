@@ -39,7 +39,7 @@ public class NamingHelperTest {
 	
 	@Test
 	public void test_getResourceName_Success() {
-		RamlResource testResource = RamlModelFactoryOfFactories.createRamlModelFactory().createRamlResource();
+		RamlResource testResource = RamlModelFactoryOfFactories.createRamlModelFactoryV08().createRamlResource();
 		
 		testResource.setRelativeUri("/service_thingy");
 		assertEquals("Should deal with underscores", "ServiceThingy", NamingHelper.getResourceName(testResource, true));

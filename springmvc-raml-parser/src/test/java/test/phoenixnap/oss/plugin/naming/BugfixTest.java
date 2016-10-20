@@ -20,6 +20,7 @@ import com.phoenixnap.oss.ramlapisync.generation.RamlParser;
 import com.phoenixnap.oss.ramlapisync.parser.ResourceParser;
 import com.phoenixnap.oss.ramlapisync.parser.SpringMvcResourceParser;
 import com.phoenixnap.oss.ramlapisync.raml.RamlRoot;
+import com.phoenixnap.oss.ramlapisync.raml.InvalidRamlResourceException;
 import org.junit.Test;
 
 import java.util.Set;
@@ -39,7 +40,7 @@ public class BugfixTest {
 	RamlGenerator generator = new RamlGenerator(parser);
 	
 	@Test
-	public void test_Issue15_MissingQueryParameters() {
+	public void test_Issue15_MissingQueryParameters() throws InvalidRamlResourceException {
 		RamlRoot loadRamlFromFile = RamlParser.loadRamlFromFile( "issue-15.raml" );
 		RamlParser par = new RamlParser("com.gen.test"); 
 		Set<ApiResourceMetadata> controllers = par.extractControllers(loadRamlFromFile);

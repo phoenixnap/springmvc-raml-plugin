@@ -228,7 +228,7 @@ public class SpringMvcResourceParserTest {
 	@Test
 	public void test_uriPrefixIgnored() {
 		RamlResource resourceInfo = parser.extractResourceInfo(UriPrefixIgnoredController.class);
-		RamlRoot raml = RamlModelFactoryOfFactories.createRamlModelFactory().createRamlRoot();
+		RamlRoot raml = RamlModelFactoryOfFactories.createRamlModelFactoryV08().createRamlRoot();
 		RamlHelper.mergeResources(raml, resourceInfo, true);
 		RamlHelper.removeResourceTree(raml, UriPrefixIgnoredController.IGNORED);
 

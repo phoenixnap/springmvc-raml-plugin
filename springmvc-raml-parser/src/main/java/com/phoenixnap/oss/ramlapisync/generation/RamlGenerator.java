@@ -109,7 +109,7 @@ public class RamlGenerator {
 
 		assertResourceParser();
 
-		RamlRoot raml = RamlModelFactoryOfFactories.createRamlModelFactory().createRamlRoot();
+		RamlRoot raml = RamlModelFactoryOfFactories.createRamlModelFactoryV08().createRamlRoot();
 		raml.setBaseUri(baseUri);
 		raml.setVersion(version);
 		raml.setTitle(title);
@@ -156,7 +156,7 @@ public class RamlGenerator {
 		List<RamlDocumentationItem> documentInfos = new ArrayList<>();
 		for (ApiDocumentMetadata documentInfo : documents) {
 			logger.info("Adding document: " + documentInfo.getDocumentTitle());
-			RamlDocumentationItem documentItem = RamlModelFactoryOfFactories.createRamlModelFactory().createRamlDocumentationItem();
+			RamlDocumentationItem documentItem = RamlModelFactoryOfFactories.createRamlModelFactoryV08().createRamlDocumentationItem();
 
 			documentItem.setContent("!include " + documentInfo.getDocumentPath());
 			documentItem.setTitle(documentInfo.getDocumentTitle());
@@ -195,7 +195,7 @@ public class RamlGenerator {
 		if (this.raml == null) {
 			return "";
 		}
-		RamlModelEmitter ramlEmitter = RamlModelFactoryOfFactories.createRamlModelFactory().createRamlModelEmitter();
+		RamlModelEmitter ramlEmitter = RamlModelFactoryOfFactories.createRamlModelFactoryV08().createRamlModelEmitter();
 		return postProcessRaml(ramlEmitter.dump(this.raml));
 	}
 

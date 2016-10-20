@@ -29,7 +29,7 @@ public interface RamlModelFactory {
 
     RamlModelEmitter createRamlModelEmitter();
 
-    RamlRoot buildRamlRoot(String ramlFileUrl);
+    RamlRoot buildRamlRoot(String ramlFileUrl) throws InvalidRamlResourceException;
 
     RamlRoot createRamlRoot();
 

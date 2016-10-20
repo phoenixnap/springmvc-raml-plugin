@@ -14,16 +14,30 @@ package com.phoenixnap.oss.ramlapisync.raml;
 
 
 import com.phoenixnap.oss.ramlapisync.raml.rjp.raml08v1.RJP08V1RamlModelFactory;
+import com.phoenixnap.oss.ramlapisync.raml.rjp.raml10v2.RJP10V2RamlModelFactory;
 
 /**
- * Factory which creates Raml Factory. Currently only produces Raml 0.8 factories 
+ * Factory for creating different instances of RamlModelFactory.
  * 
  * @author armin.weisser
  * @since 0.8.1
  */
-public interface RamlModelFactoryOfFactories {
-    static RamlModelFactory createRamlModelFactory() {
-        // Currently we only have java-raml-parser v1 for raml 0.8
-        return new RJP08V1RamlModelFactory();
+public abstract class RamlModelFactoryOfFactories {
+
+    /**
+     * TODO depcricate method in favor to createRamlModelFactoryFor(RamlVersion)
+     * @return a RJP08V1RamlModelFactory instance.
+     */
+    public static RamlModelFactory createRamlModelFactoryV08() {
+        return createRamlModelFactoryFor(RamlVersion.V08);
     }
+
+    public static RamlModelFactory createRamlModelFactoryFor(RamlVersion ramlVersion) {
+        switch(ramlVersion) {
+            case V08: return new RJP08V1RamlModelFactory();
+            case V10: return new RJP10V2RamlModelFactory();
+            default: throw new UnsupportedRamlVersionError(ramlVersion, RamlVersion.V08, RamlVersion.V10);
+        }
+    }
+
 }

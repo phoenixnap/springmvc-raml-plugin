@@ -4,6 +4,7 @@
 
 package com.phoenixnap.oss.ramlapisync.generation.rules;
 
+import com.phoenixnap.oss.ramlapisync.raml.InvalidRamlResourceException;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.springframework.core.ParameterizedTypeReference;
@@ -18,7 +19,7 @@ public class Issue61RulesTest extends AbstractRuleTestBase  {
    private Rule<JCodeModel, JDefinedClass, ApiResourceMetadata> rule;
 
    @BeforeClass
-   public static void initRaml() {
+   public static void initRaml() throws InvalidRamlResourceException {
       AbstractRuleTestBase.RAML = RamlParser.loadRamlFromFile("issue-61.raml");
 
       class P extends ParameterizedTypeReference<String> {

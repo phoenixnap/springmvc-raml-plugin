@@ -92,7 +92,7 @@ public class SchemaHelper {
      */
     public static Map<String, RamlQueryParameter> convertParameterToQueryParameter(final Parameter param,
             final String paramComment) {
-        RamlQueryParameter queryParam = RamlModelFactoryOfFactories.createRamlModelFactory().createRamlQueryParameter();
+        RamlQueryParameter queryParam = RamlModelFactoryOfFactories.createRamlModelFactoryV08().createRamlQueryParameter();
         ApiParameterMetadata parameterMetadata = new ApiParameterMetadata(param);
 
         RamlParamType type = mapSimpleType(param.getType());
@@ -171,7 +171,7 @@ public class SchemaHelper {
         }
 
         try {
-            RamlModelFactory ramlModelFactory = RamlModelFactoryOfFactories.createRamlModelFactory();
+            RamlModelFactory ramlModelFactory = RamlModelFactoryOfFactories.createRamlModelFactoryV08();
             for (Field field : param.getType().getDeclaredFields()) {
                 if (!java.lang.reflect.Modifier.isStatic(field.getModifiers())
                         && !java.lang.reflect.Modifier.isTransient(field.getModifiers())

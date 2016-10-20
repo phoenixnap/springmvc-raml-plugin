@@ -1,5 +1,6 @@
 package com.phoenixnap.oss.ramlapisync.generation.rules;
 
+import com.phoenixnap.oss.ramlapisync.raml.InvalidRamlResourceException;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
@@ -18,7 +19,7 @@ public class SpringFeignClientRulesTest extends AbstractRuleTestBase {
     private Rule<JCodeModel, JDefinedClass, ApiResourceMetadata> rule;
     
     @BeforeClass
-	public static void initRaml() {
+	public static void initRaml() throws InvalidRamlResourceException {
 		AbstractRuleTestBase.RAML = RamlParser.loadRamlFromFile("test-feign-client.raml");
 	}
     

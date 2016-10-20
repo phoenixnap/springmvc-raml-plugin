@@ -49,7 +49,7 @@ public class RamlVerifier {
 	 */
 	protected static final Logger logger = LoggerFactory.getLogger(RamlVerifier.class);
 
-	private static RamlModelFactory ramlModelFactory = RamlModelFactoryOfFactories.createRamlModelFactory();
+	private static RamlModelFactory ramlModelFactory = RamlModelFactoryOfFactories.createRamlModelFactoryV08();
 
 	private RamlRoot published;
 	private RamlRoot implemented;
