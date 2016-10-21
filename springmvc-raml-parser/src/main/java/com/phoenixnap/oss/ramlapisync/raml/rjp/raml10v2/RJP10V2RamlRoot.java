@@ -18,7 +18,10 @@ import java.util.stream.Collectors;
  */
 public class RJP10V2RamlRoot implements RamlRoot {
 
+    private static RJP10V2RamlModelFactory ramlModelFactory = new RJP10V2RamlModelFactory();
+
     private final Api api;
+    private Map<String, RamlResource> resources = new LinkedHashMap<>();
 
     public RJP10V2RamlRoot(Api api) {
         this.api = api;
@@ -26,16 +29,15 @@ public class RJP10V2RamlRoot implements RamlRoot {
 
     @Override
     public Map<String, RamlResource> getResources() {
-        throw new UnsupportedOperationException();
+        return ramlModelFactory.transformToUnmodifiableMap(
+                api.resources(),
+                resources,
+                ramlModelFactory::createRamlResource,
+                r -> r.relativeUri().value());
     }
 
     @Override
     public void addResource(String path, RamlResource childResource) {
-        throw new UnsupportedOperationException();
-    }
-
-    @Override
-    public RamlResource getResource(String path) {
         throw new UnsupportedOperationException();
     }
 

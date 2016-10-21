@@ -14,6 +14,7 @@ package com.phoenixnap.oss.ramlapisync.raml;
 
 import com.phoenixnap.oss.ramlapisync.data.RamlFormParameter;
 
+import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
@@ -93,6 +94,20 @@ public interface RamlModelFactory {
             for (SK key : source.keySet()) {
                 TV targetValue = valueTransformer.apply(source.get(key));
                 TK targetKey = keyTransformer.apply(key);
+                target.put(targetKey, targetValue);
+            }
+        }
+        return Collections.unmodifiableMap(target);
+    }
+
+    default <SK, TK, SV, TV> Map<TK, TV> transformToUnmodifiableMap(Collection<SV> source, Map<TK, TV> target, Function<SV, TV> valueTransformer, Function<SV, TK> keyTransformer) {
+        if (source == null) {
+            target.clear();
+        } else if (target.size() != source.size()) {
+            target.clear();
+            for (SV value: source) {
+                TV targetValue = valueTransformer.apply(value);
+                TK targetKey = keyTransformer.apply(value);
                 target.put(targetKey, targetValue);
             }
         }

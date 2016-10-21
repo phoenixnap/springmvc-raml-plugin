@@ -3,9 +3,11 @@ package com.phoenixnap.oss.ramlapisync.raml.rjp.raml10v2;
 import com.phoenixnap.oss.ramlapisync.data.RamlFormParameter;
 import com.phoenixnap.oss.ramlapisync.raml.*;
 import com.phoenixnap.oss.ramlapisync.raml.InvalidRamlResourceException;
+import com.phoenixnap.oss.ramlapisync.raml.rjp.raml08v1.RJP08V1RamlResource;
 import org.raml.v2.api.RamlModelBuilder;
 import org.raml.v2.api.RamlModelResult;
 import org.raml.v2.api.model.v10.api.Api;
+import org.raml.v2.api.model.v10.resources.Resource;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -54,7 +56,10 @@ public class RJP10V2RamlModelFactory implements RamlModelFactory {
 
     @Override
     public RamlResource createRamlResource(Object resource) {
-        throw new UnsupportedOperationException();
+        if(resource == null) {
+            return null;
+        }
+        return new RJP10V2RamlResource((Resource)resource);
     }
 
     @Override
