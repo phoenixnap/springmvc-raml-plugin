@@ -20,6 +20,7 @@ public class RJP10V2RamlResource implements RamlResource {
 
     @Override
     public Map<String, RamlResource> getResources() {
+        Object o = delegate;
         throw new UnsupportedOperationException();
     }
 
