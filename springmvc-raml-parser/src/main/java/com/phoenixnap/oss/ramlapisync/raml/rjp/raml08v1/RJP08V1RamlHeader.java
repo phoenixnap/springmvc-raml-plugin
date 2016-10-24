@@ -12,14 +12,16 @@
  */
 package com.phoenixnap.oss.ramlapisync.raml.rjp.raml08v1;
 
+import org.raml.model.parameter.Header;
+
 import com.phoenixnap.oss.ramlapisync.raml.RamlHeader;
 import com.phoenixnap.oss.ramlapisync.raml.RamlParamType;
-import org.raml.model.parameter.Header;
 
 /**
  * Implementation based on the Raml 0.8 Parser
  * 
  * @author armin.weisser
+ * @author Aleksandar Stojsavljevic
  * @since 0.8.1
  */
 public class RJP08V1RamlHeader extends RamlHeader {
@@ -81,4 +83,9 @@ public class RJP08V1RamlHeader extends RamlHeader {
     public String getDescription() {
         return header.getDescription();
     }
+
+	@Override
+	public String getDefaultValue() {
+		return header.getDefaultValue();
+	}
 }

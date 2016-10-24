@@ -12,14 +12,16 @@
  */
 package com.phoenixnap.oss.ramlapisync.raml.rjp.raml08v1;
 
+import org.raml.model.parameter.FormParameter;
+
 import com.phoenixnap.oss.ramlapisync.data.RamlFormParameter;
 import com.phoenixnap.oss.ramlapisync.raml.RamlParamType;
-import org.raml.model.parameter.FormParameter;
 
 /**
  * Implementation based on the Raml 0.8 Parser
  * 
  * @author armin.weisser
+ * @author Aleksandar Stojsavljevic
  * @since 0.8.1
  */
 public class RJP08V1RamlFormParameter extends RamlFormParameter {
@@ -89,4 +91,9 @@ public class RJP08V1RamlFormParameter extends RamlFormParameter {
     public String getDisplayName() {
         return formParameter.getDisplayName();
     }
+
+	@Override
+	public String getDefaultValue() {
+		return formParameter.getDefaultValue();
+	}
 }
