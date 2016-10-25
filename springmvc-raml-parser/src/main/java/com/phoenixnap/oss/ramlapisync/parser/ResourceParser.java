@@ -86,7 +86,7 @@ public abstract class ResourceParser {
 		try {
 			for (Method method : clazz.getMethods()) {
 				if (!IGNORE_METHOD_REGEX.matcher(method.getName()).matches() && shouldAddMethodToApi(method)) {
-					extractAndAppendResourceInfo(method, javaDoc.getJavaDoc(method), parentResource);
+					extractAndAppendResourceInfo(clazz, method, javaDoc.getJavaDoc(method), parentResource);
 				}
 			}
 		} catch (NoClassDefFoundError nEx) {
@@ -274,19 +274,22 @@ public abstract class ResourceParser {
 
 	/**
 	 * Extracts the http method (verb) as well as the name of the api call
+	 * 
+	 * @param clazz The controller class
 	 * @param method The Method to inspect
 	 * @return The Verb and Name (partial url if a resource needs to be created) of this method
 	 */
-	protected abstract Map<RamlActionType, String> getHttpMethodAndName(Method method);
+	protected abstract Map<RamlActionType, String> getHttpMethodAndName(Class<?> clazz, Method method);
 
 	/**
 	 * Extracts relevant info from a Java method and converts it into a RAML resource
 	 * 
+	 * @param clazz The controller class
 	 * @param method The Java method to introspect
 	 * @param docEntry The associated JavaDoc (may be null)
 	 * @param parentResource The Resource which contains this method
 	 */
-	protected abstract void extractAndAppendResourceInfo(Method method, JavaDocEntry docEntry, RamlResource parentResource);
+	protected abstract void extractAndAppendResourceInfo(Class<?> clazz, Method method, JavaDocEntry docEntry, RamlResource parentResource);
 
 	/**
 	 * Checks is this api call is made directly on a resource without a trailing command in the URL. eg: POST on
