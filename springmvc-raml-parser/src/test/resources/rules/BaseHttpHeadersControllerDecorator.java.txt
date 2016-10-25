@@ -100,11 +100,11 @@ public class BaseControllerDecorator
         String id,
         @RequestParam
         Long requiredQueryParam,
-        @RequestParam(required = false)
+        @RequestParam(required = false, defaultValue = "dummyDefault")
         String optionalQueryParam,
-        @RequestParam(required = false)
+        @RequestParam(required = false, defaultValue = "2")
         BigDecimal optionalQueryParam2,
-        @RequestHeader(name = "X-My-Header", required = false)
+        @RequestHeader(name = "X-My-Header", required = false, defaultValue = "3")
         Long xMyHeader,
         @RequestHeader(name = "X-Another-Header")
         String xAnotherHeader,

@@ -1,0 +1,40 @@
+-----------------------------------com.gen.test.BaseClient.java-----------------------------------
+
+package com.gen.test;
+
+import java.math.BigDecimal;
+import org.springframework.cloud.netflix.feign.FeignClient;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.RequestHeader;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
+
+
+/**
+ * Some description
+ * (Generated with springmvc-raml-parser v.${project.version})
+ * 
+ */
+@FeignClient(url = "/api/base", name = "baseClient")
+public interface BaseClient {
+
+
+    /**
+     * Get all objects
+     * 
+     */
+    @RequestMapping(value = "", method = RequestMethod.GET)
+    public ResponseEntity getBase(
+        @RequestParam
+        Long requiredQueryParam,
+        @RequestParam(required = false, defaultValue = "someDefault")
+        String optionalQueryParam,
+        @RequestParam(required = false, defaultValue = "3")
+        BigDecimal optionalQueryParam2,
+        @RequestHeader(name = "X-Optional-Header", required = false, defaultValue = "2")
+        Long xOptionalHeader,
+        @RequestHeader(name = "X-Required-Header")
+        String xRequiredHeader);
+
+}

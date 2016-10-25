@@ -18,6 +18,7 @@ import java.math.BigDecimal;
  * Abstract Representation of a Raml Query Parameter
  * 
  * @author armin.weisser
+ * @author Aleksandar Stojsavljevic
  * @since 0.8.1
  */
 public abstract class RamlQueryParameter extends RamlAbstractParam {
@@ -35,4 +36,6 @@ public abstract class RamlQueryParameter extends RamlAbstractParam {
     public abstract String getPattern();
 
     public abstract boolean isRepeat();
+
+	public abstract String getDefaultValue();
 }

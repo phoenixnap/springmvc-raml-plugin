@@ -14,6 +14,7 @@ package com.phoenixnap.oss.ramlapisync.generation.rules.spring;
 
 import javax.validation.Valid;
 
+import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
@@ -46,23 +47,27 @@ import com.sun.codemodel.JVar;
  *           required: true
  *         optionalQueryParam:
  *           type: string
+ *           default: "someDefault"
  *         optionalQueryParam2:
  *           type: number
  *           required: false
+ *           default: 3
  *
  * OUTPUT:
  * ({@literal @}PathVariable String id
  *  , {@literal @}RequestParam Integer requiredQueryParam
- *  , {@literal @}RequestParam(required=false) String optionalQueryParam
- *  , {@literal @}RequestParam(required=false) BigDecimal optionalQueryParam2
+ *  , {@literal @}RequestParam(required=false, defaultValue = "someDefault") String optionalQueryParam
+ *  , {@literal @}RequestParam(required=false, defaultValue = "3") BigDecimal optionalQueryParam2
  * )
  *
  * @author armin.weisser
+ * @author Aleksandar Stojsavljevic
  * @since 0.4.1
  */
 public class SpringMethodParamsRule extends MethodParamsRule {
 
-    protected JVar param(ApiParameterMetadata paramMetaData, CodeModelHelper.JExtMethod generatableType) {
+    @Override
+	protected JVar param(ApiParameterMetadata paramMetaData, CodeModelHelper.JExtMethod generatableType) {
         JVar jVar = super.param(paramMetaData, generatableType);
         JAnnotationUse jAnnotationUse;
         if (paramMetaData.getRamlParam() != null && paramMetaData.getRamlParam() instanceof RamlUriParameter) {
@@ -74,15 +79,33 @@ public class SpringMethodParamsRule extends MethodParamsRule {
             if (!paramMetaData.getRamlParam().isRequired()) {
                 jAnnotationUse.param("required", false);
             }
+
+			if (StringUtils.hasText(paramMetaData.getRamlParam().getDefaultValue())) {
+				jAnnotationUse.param("defaultValue", paramMetaData.getRamlParam().getDefaultValue());
+				// Supplying a default value implicitly sets required to false.
+				jAnnotationUse.param("required", false);
+			}
+
             return jVar;
         } else {
+			if (paramMetaData.getRamlParam() == null) {
+				return jVar;
+			}
+
             jAnnotationUse = jVar.annotate(RequestParam.class);
             // In RAML parameters are optional unless the required attribute is included and its value set to 'true'.
             // In Spring a parameter is required by default unlesse the required attribute is included and its value is set to 'false'
             // So we just need to set required=false if the RAML "required" parameter is not set or explicitly set to false.
-            if(paramMetaData.getRamlParam() != null && !paramMetaData.getRamlParam().isRequired()) {
+			if (!paramMetaData.getRamlParam().isRequired()) {
                 jAnnotationUse.param("required", false);
             }
+
+			if (StringUtils.hasText(paramMetaData.getRamlParam().getDefaultValue())) {
+				jAnnotationUse.param("defaultValue", paramMetaData.getRamlParam().getDefaultValue());
+				// Supplying a default value implicitly sets required to false.
+				jAnnotationUse.param("required", false);
+			}
+
             return jVar;
         }
 

@@ -1,0 +1,28 @@
+#%RAML 0.8
+title: myapi
+mediaType: application/json
+baseUri: /
+
+/base:
+  description: Some description
+  get:
+    description: Get all objects
+    queryParameters:
+      requiredQueryParam:
+        type: integer
+        required: true
+      optionalQueryParam:
+        type: string
+        default: "someDefault"
+      optionalQueryParam2:
+        type: number
+        default: 3
+        required: false
+    headers:
+      X-Optional-Header:
+        type: integer
+        required: false
+        default: 2
+      X-Required-Header:
+        type: string
+        required: true

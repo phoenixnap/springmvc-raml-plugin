@@ -1,6 +1,5 @@
 package com.phoenixnap.oss.ramlapisync.generation.rules;
 
-import org.junit.BeforeClass;
 import org.junit.Test;
 
 import com.phoenixnap.oss.ramlapisync.data.ApiResourceMetadata;
@@ -17,16 +16,24 @@ public class SpringFeignClientRulesTest extends AbstractRuleTestBase {
 
     private Rule<JCodeModel, JDefinedClass, ApiResourceMetadata> rule;
     
-    @BeforeClass
-	public static void initRaml() {
-		AbstractRuleTestBase.RAML = RamlParser.loadRamlFromFile("test-feign-client.raml");
-	}
-    
     @Test
-    public void applySpring4SpringTemplateClient_shouldCreate_validCode() throws Exception {
+	public void applySpringFeignClient_shouldCreate_validCode() throws Exception {
+
+		AbstractRuleTestBase.RAML = RamlParser.loadRamlFromFile("test-feign-client.raml");
+
+		rule = new SpringFeignClientInterfaceDecoratorRule();
+		rule.apply(getControllerMetadata(), jCodeModel);
+		verifyGeneratedCode("FeignClient");
+	}
+
+	@Test
+	public void applySpringFeignClient_shouldCreate_defaultVaules() throws Exception {
+
+		AbstractRuleTestBase.RAML = RamlParser.loadRamlFromFile("test-default-values.raml");
+
         rule = new SpringFeignClientInterfaceDecoratorRule();
         rule.apply(getControllerMetadata(), jCodeModel);
-        verifyGeneratedCode("SongClient");
+		verifyGeneratedCode("FeignClientDefaultValues");
     }
     
 }

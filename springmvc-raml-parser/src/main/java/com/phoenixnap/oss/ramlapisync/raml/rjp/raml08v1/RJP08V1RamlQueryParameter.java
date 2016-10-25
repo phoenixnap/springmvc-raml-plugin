@@ -12,16 +12,18 @@
  */
 package com.phoenixnap.oss.ramlapisync.raml.rjp.raml08v1;
 
-import com.phoenixnap.oss.ramlapisync.raml.RamlParamType;
-import com.phoenixnap.oss.ramlapisync.raml.RamlQueryParameter;
+import java.math.BigDecimal;
+
 import org.raml.model.parameter.QueryParameter;
 
-import java.math.BigDecimal;
+import com.phoenixnap.oss.ramlapisync.raml.RamlParamType;
+import com.phoenixnap.oss.ramlapisync.raml.RamlQueryParameter;
 
 /**
  * Implementation based on the Raml 0.8 Parser
  * 
  * @author armin.weisser
+ * @author Aleksandar Stojsavljevic
  * @since 0.8.1
  */
 public class RJP08V1RamlQueryParameter extends RamlQueryParameter {
@@ -127,4 +129,9 @@ public class RJP08V1RamlQueryParameter extends RamlQueryParameter {
     public boolean isRepeat() {
         return queryParameter.isRepeat();
     }
+
+	@Override
+	public String getDefaultValue() {
+		return queryParameter.getDefaultValue();
+	}
 }
