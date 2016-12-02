@@ -52,15 +52,16 @@ import com.phoenixnap.oss.ramlapisync.raml.RamlRoot;
 import com.sun.codemodel.JCodeModel;
 import com.sun.codemodel.JDefinedClass;
 
-
-
+import java.io.FileReader;
+import org.apache.maven.model.io.xpp3.MavenXpp3Reader;
+import org.apache.maven.model.Model;
 /**
  * Maven Plugin MOJO specific to Generation of Spring MVC Endpoints from RAML documents.
  *
  * @author Kurt Paris
  * @since 0.2.1
  */
-@Mojo(name = "generate-springmvc-endpoints", requiresDependencyResolution = ResolutionScope.COMPILE_PLUS_RUNTIME, threadSafe = true)
+@Mojo(name = "generate-springmvc-endpoints", requiresDependencyResolution = ResolutionScope.COMPILE_PLUS_RUNTIME ,threadSafe = true,requiresProject = false)
 public class SpringMvcEndpointGeneratorMojo extends AbstractMojo {
 
     /**
@@ -75,13 +76,20 @@ public class SpringMvcEndpointGeneratorMojo extends AbstractMojo {
     /**
      * Path to the raml document to be verified
      */
-    @Parameter(required = true, readonly = true, defaultValue = "")
+    @Parameter(property="ramlPath",required = true, readonly = true, defaultValue = "")
     protected String ramlPath;
+
+    /**
+     * Path to the pom  document to be verified
+     */
+    @Parameter(property="pomPath",required = false, readonly = true, defaultValue = "NA")
+    protected String pomPath;
+
 
     /**
      * Relative file path where the Java files will be saved to
      */
-    @Parameter(required = false, readonly = true, defaultValue = "")
+    @Parameter(property="outputRelativePath",required = false, readonly = true, defaultValue = "")
     protected String outputRelativePath;
 
     /**
@@ -94,7 +102,7 @@ public class SpringMvcEndpointGeneratorMojo extends AbstractMojo {
     /**
      * Java package to be applied to the generated files
      */
-    @Parameter(required = true, readonly = true, defaultValue = "")
+    @Parameter(property="basePackage", required = true, readonly = true, defaultValue = "")
     protected String basePackage;
 
     /**
@@ -165,11 +173,31 @@ public class SpringMvcEndpointGeneratorMojo extends AbstractMojo {
     protected void generateEndpoints()
             throws MojoExecutionException, MojoFailureException, IOException {
 
+     File pomFile = null;
+     if(!pomPath.equals("NA")){
+
+      Model model = null;
+      FileReader reader = null;
+      MavenXpp3Reader mavenreader = new MavenXpp3Reader();
+      pomFile = new File(pomPath);
+      try {
+          reader = new FileReader(pomFile);
+          model = mavenreader.read(reader);
+          model.setPomFile(pomFile);
+       }catch(Exception ex){
+       getLog().info("Exception Occured",ex);
+       }
+       project = new MavenProject(model);
+       project.setFile(pomFile);
+     }
+
         String resolvedPath = project.getBasedir().getAbsolutePath();
         if (resolvedPath.endsWith(File.separator) || resolvedPath.endsWith("/")) {
             resolvedPath = resolvedPath.substring(0, resolvedPath.length() - 1);
         }
+        
         String resolvedRamlPath = project.getBasedir().getAbsolutePath();
+
         if (!ramlPath.startsWith(File.separator) && !ramlPath.startsWith("/")) {
             resolvedRamlPath += File.separator + ramlPath;
         }
