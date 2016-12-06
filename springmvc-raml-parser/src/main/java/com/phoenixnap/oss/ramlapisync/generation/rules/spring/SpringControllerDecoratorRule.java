@@ -12,10 +12,15 @@
  */
 package com.phoenixnap.oss.ramlapisync.generation.rules.spring;
 
-import org.apache.commons.lang.StringUtils;
+import java.util.Map;
 
-import com.phoenixnap.oss.ramlapisync.data.ApiResourceMetadata;
+import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.BooleanUtils;
+import org.springframework.util.CollectionUtils;
+
 import com.phoenixnap.oss.ramlapisync.data.ApiActionMetadata;
+import com.phoenixnap.oss.ramlapisync.data.ApiResourceMetadata;
+import com.phoenixnap.oss.ramlapisync.generation.rules.ConfigurableRule;
 import com.phoenixnap.oss.ramlapisync.generation.rules.GenericJavaClassRule;
 import com.phoenixnap.oss.ramlapisync.generation.rules.Rule;
 import com.phoenixnap.oss.ramlapisync.generation.rules.basic.ClassCommentRule;
@@ -63,7 +68,18 @@ import com.sun.codemodel.JMethod;
  * @author armin.weisser
  * @since 0.4.1
  */
-public abstract class SpringControllerDecoratorRule implements Rule<JCodeModel, JDefinedClass, ApiResourceMetadata> {
+public abstract class SpringControllerDecoratorRule implements ConfigurableRule<JCodeModel, JDefinedClass, ApiResourceMetadata> {
+    public static final String CALLABLE_RESPONSE_CONFIGURATION = "callableResponse";
+
+    private boolean callableResponse;
+
+    public boolean isCallableResponse() {
+        return callableResponse;
+    }
+
+    public void setCallableResponse(boolean callableResponse) {
+        this.callableResponse = callableResponse;
+    }
 
     @Override
     public final JDefinedClass apply(ApiResourceMetadata metadata, JCodeModel generatableType) {
@@ -74,7 +90,7 @@ public abstract class SpringControllerDecoratorRule implements Rule<JCodeModel, 
                 .setClassRule(new ControllerInterfaceDeclarationRule())
                 .setMethodCommentRule(new MethodCommentRule())
                 .setMethodSignatureRule(new ControllerMethodSignatureRule(
-                        new SpringResponseEntityRule(),
+                        isCallableResponse() ? new SpringCallableResponseEntityRule() :  new SpringResponseEntityRule(),
                         new MethodParamsRule()))
                 .apply(metadata, generatableType);
 
@@ -92,11 +108,20 @@ public abstract class SpringControllerDecoratorRule implements Rule<JCodeModel, 
                 .addMethodAnnotationRule(new SpringRequestMappingMethodAnnotationRule())
                 .addMethodAnnotationRule(getResponseBodyAnnotationRule())
                 .setMethodSignatureRule(new ControllerMethodSignatureRule(
-                        new SpringResponseEntityRule(),
+                        isCallableResponse() ? new SpringCallableResponseEntityRule() :  new SpringResponseEntityRule(),
                         new SpringMethodParamsRule()))
                 .setMethodBodyRule(new DelegatingMethodBodyRule(delegateFieldName));
 
         return delegateGenerator.apply(metadata, generatableType);
+    }
+
+    @Override
+    public void applyConfiguration(Map<String, String> configuration) {
+        if(!CollectionUtils.isEmpty(configuration)) {
+            if(configuration.containsKey(CALLABLE_RESPONSE_CONFIGURATION)) {
+                setCallableResponse(BooleanUtils.toBoolean(configuration.get(CALLABLE_RESPONSE_CONFIGURATION)));
+            }
+        }
     }
     
     protected abstract Rule<JDefinedClass, JAnnotationUse, ApiResourceMetadata> getControllerAnnotationRule();
