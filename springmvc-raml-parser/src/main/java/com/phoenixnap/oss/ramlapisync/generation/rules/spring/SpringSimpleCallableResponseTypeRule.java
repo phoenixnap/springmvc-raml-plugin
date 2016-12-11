@@ -53,8 +53,8 @@ import com.sun.codemodel.JType;
  * OR:
  * Callable{@literal <}ArrayList{@literal <}NamedResponseType{@literal >}{@literal >} (if the NamedResponseType is an "array")
  *
- * @author armin.weisser
- * @since 0.4.1
+ * @author mehdi.jouan
+ * @since 0.8.9
  */
 public class SpringSimpleCallableResponseTypeRule implements Rule<JDefinedClass, JType, ApiActionMetadata> {
 

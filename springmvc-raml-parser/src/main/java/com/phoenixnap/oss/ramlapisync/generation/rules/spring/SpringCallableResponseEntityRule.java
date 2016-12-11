@@ -37,8 +37,8 @@ import com.sun.codemodel.JType;
  *
  * OUTPUT: {@literal @}Callable{@literal <}ResponseEntity{@literal <}NamedResponseType{@literal >}{@literal >}
  *
- * @author armin.weisser
- * @since 0.4.1
+ * @author mehdi.jouan
+ * @since 0.8.9
  */
 public class SpringCallableResponseEntityRule implements Rule<JDefinedClass, JType, ApiActionMetadata> {
 

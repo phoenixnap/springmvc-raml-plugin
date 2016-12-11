@@ -71,7 +71,7 @@ import com.sun.codemodel.JMethod;
 public abstract class SpringControllerDecoratorRule implements ConfigurableRule<JCodeModel, JDefinedClass, ApiResourceMetadata> {
     public static final String CALLABLE_RESPONSE_CONFIGURATION = "callableResponse";
 
-    private boolean callableResponse;
+    private boolean callableResponse = false;
 
     public boolean isCallableResponse() {
         return callableResponse;
