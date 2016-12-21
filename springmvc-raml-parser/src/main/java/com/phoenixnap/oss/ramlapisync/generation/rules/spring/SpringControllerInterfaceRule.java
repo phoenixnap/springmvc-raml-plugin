@@ -56,7 +56,7 @@ public abstract class SpringControllerInterfaceRule implements ConfigurableRule<
 
    public static final String CALLABLE_RESPONSE_CONFIGURATION = "callableResponse";
 
-   private boolean callableResponse;
+   private boolean callableResponse = false;
 
    public boolean isCallableResponse() {
       return callableResponse;

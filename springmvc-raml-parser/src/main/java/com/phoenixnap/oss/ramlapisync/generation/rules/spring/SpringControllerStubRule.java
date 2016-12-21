@@ -59,7 +59,7 @@ public abstract class SpringControllerStubRule implements ConfigurableRule<JCode
 
     public static final String CALLABLE_RESPONSE_CONFIGURATION = "callableResponse";
 
-    private boolean callableResponse;
+    private boolean callableResponse = false;
 
     public boolean isCallableResponse() {
         return callableResponse;
