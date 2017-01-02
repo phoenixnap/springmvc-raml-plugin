@@ -16,6 +16,7 @@ package com.phoenixnap.oss.ramlapisync.raml;
  * Abstract Representation of a Raml Parameter
  * 
  * @author armin.weisser
+ * @author Aleksandar Stojsavljevic
  * @since 0.8.1
  */
 public abstract class RamlAbstractParam { //extends AbstractParam {
@@ -39,4 +40,6 @@ public abstract class RamlAbstractParam { //extends AbstractParam {
     public abstract String getDescription();
 
     public abstract String getDisplayName();
+
+	public abstract String getDefaultValue();
 }

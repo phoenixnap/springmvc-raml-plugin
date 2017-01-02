@@ -3,6 +3,7 @@
 package com.gen.test;
 
 import java.math.BigDecimal;
+import java.util.concurrent.Callable;
 import com.gen.test.model.NamedResponseType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -23,19 +24,19 @@ import org.springframework.web.bind.annotation.RestController;
 public interface BaseController {
 
 
-	/**
-	 * No description
-	 *
-	 */
-	@RequestMapping(value = "", method = RequestMethod.GET)
-	public ResponseEntity<?> getBase();
+    /**
+     * No description
+     *
+     */
+    @RequestMapping(value = "", method = RequestMethod.GET)
+    public Callable<ResponseEntity<?>> getBase();
 
     /**
      * Get base entity by ID
      *
      */
-	@RequestMapping(value = "/{id}", method = RequestMethod.GET)
-    public ResponseEntity<NamedResponseType> getBaseById(
+    @RequestMapping(value = "/{id}", method = RequestMethod.GET)
+    public Callable<ResponseEntity<NamedResponseType>> getBaseById(
         @PathVariable
         String id);
 
@@ -44,7 +45,7 @@ public interface BaseController {
      *
      */
     @RequestMapping(value = "/{id}/elements", method = RequestMethod.GET)
-    public ResponseEntity<?> getElements(
+    public Callable<ResponseEntity<?>> getElements(
         @PathVariable
         String id,
         @RequestParam
@@ -59,4 +60,3 @@ public interface BaseController {
         String xAnotherHeader);
 
 }
-

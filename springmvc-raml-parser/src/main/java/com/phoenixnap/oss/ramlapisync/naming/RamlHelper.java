@@ -99,7 +99,7 @@ public class RamlHelper {
 	 * @return The Successful response or null if not found
 	 */
 	public static RamlResponse getSuccessfulResponse(RamlAction action) {
-		String[] successfulResponses = new String[] {"200", "201"};
+		String[] successfulResponses = new String[] {"200", "201", "202"};
 		for (String code : successfulResponses) {
 			if (action != null && !CollectionUtils.isEmpty(action.getResponses()) && action.getResponses().containsKey(code)) {
 				return action.getResponses().get(code);

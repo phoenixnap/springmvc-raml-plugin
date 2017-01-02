@@ -22,13 +22,17 @@ baseUri: /
           required: true
         optionalQueryParam:
           type: string
+          default: dummyDefault
         optionalQueryParam2:
           type: number
+
           required: false
+          default: 2
       headers:
         X-My-Header:
           type: integer
           required: false
+          default: 3
         X-Another-Header:
           type: string
           required: true

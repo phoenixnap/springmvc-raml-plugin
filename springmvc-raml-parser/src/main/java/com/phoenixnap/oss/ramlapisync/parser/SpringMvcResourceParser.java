@@ -344,11 +344,10 @@ public class SpringMvcResourceParser extends ResourceParser {
 	}
 
 	@Override
-	protected Map<RamlActionType, String> getHttpMethodAndName(Method method) {
+	protected Map<RamlActionType, String> getHttpMethodAndName(Class<?> clazz, Method method) {
 		RequestMapping methodMapping = getRequestMapping(method);
-		RequestMapping classMapping = getAnnotation(method.getDeclaringClass(), RequestMapping.class, false);
-		RestController classRestController = getAnnotation(method.getDeclaringClass(), RestController.class,
-				false);
+		RequestMapping classMapping = getAnnotation(clazz, RequestMapping.class, false);
+		RestController classRestController = getAnnotation(clazz, RestController.class, false);
 		Controller classController = getAnnotation(method.getDeclaringClass(), Controller.class, false);
 
 		RequestMethod[] verbs = methodMapping.method();
@@ -427,11 +426,11 @@ public class SpringMvcResourceParser extends ResourceParser {
 	}
 
 	@Override
-	protected void extractAndAppendResourceInfo(Method method, JavaDocEntry docEntry, RamlResource parentResource) {
+	protected void extractAndAppendResourceInfo(Class<?> clazz, Method method, JavaDocEntry docEntry, RamlResource parentResource) {
 
 		RamlModelFactory ramlModelFactory = RamlModelFactoryOfFactories.createRamlModelFactoryV08();
 
-		Map<RamlActionType, String> methodActions = getHttpMethodAndName(method);
+		Map<RamlActionType, String> methodActions = getHttpMethodAndName(clazz, method);
 		for (Entry<RamlActionType, String> methodAction : methodActions.entrySet()) {
 			RamlAction action = ramlModelFactory.createRamlAction();
 			RamlActionType apiAction = methodAction.getKey();

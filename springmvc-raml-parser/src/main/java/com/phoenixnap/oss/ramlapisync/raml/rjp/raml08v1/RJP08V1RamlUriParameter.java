@@ -12,14 +12,16 @@
  */
 package com.phoenixnap.oss.ramlapisync.raml.rjp.raml08v1;
 
+import org.raml.model.parameter.UriParameter;
+
 import com.phoenixnap.oss.ramlapisync.raml.RamlParamType;
 import com.phoenixnap.oss.ramlapisync.raml.RamlUriParameter;
-import org.raml.model.parameter.UriParameter;
 
 /**
  * Implementation based on the Raml 0.8 Parser
  * 
  * @author armin.weisser
+ * @author Aleksandar Stojsavljevic
  * @since 0.8.1
  */
 public class RJP08V1RamlUriParameter extends RamlUriParameter {
@@ -89,4 +91,9 @@ public class RJP08V1RamlUriParameter extends RamlUriParameter {
     public String getDescription() {
         return uriParameter.getDescription();
     }
+
+	@Override
+	public String getDefaultValue() {
+		return uriParameter.getDefaultValue();
+	}
 }
