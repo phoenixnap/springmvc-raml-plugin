@@ -48,11 +48,13 @@ import com.phoenixnap.oss.ramlapisync.generation.rules.Rule;
 import com.phoenixnap.oss.ramlapisync.generation.rules.Spring4ControllerStubRule;
 import com.phoenixnap.oss.ramlapisync.naming.NamingHelper;
 import com.phoenixnap.oss.ramlapisync.naming.SchemaHelper;
+import com.phoenixnap.oss.ramlapisync.raml.InvalidRamlResourceException;
 import com.phoenixnap.oss.ramlapisync.raml.RamlRoot;
 import com.sun.codemodel.JCodeModel;
 import com.sun.codemodel.JDefinedClass;
 
 import java.io.FileReader;
+
 import org.apache.maven.model.io.xpp3.MavenXpp3Reader;
 import org.apache.maven.model.Model;
 /**
@@ -171,7 +173,7 @@ public class SpringMvcEndpointGeneratorMojo extends AbstractMojo {
 
 
     protected void generateEndpoints()
-            throws MojoExecutionException, MojoFailureException, IOException {
+            throws MojoExecutionException, MojoFailureException, IOException, InvalidRamlResourceException {
 
      File pomFile = null;
      if(!pomPath.equals("NA")){
@@ -414,12 +416,15 @@ public class SpringMvcEndpointGeneratorMojo extends AbstractMojo {
 
         try {
             generateEndpoints();
-        }
-        catch (IOException e) {
+        } catch (IOException e) {
             ClassLoaderUtils.restoreOriginalClassLoader();
             throw new MojoExecutionException(e, "Unexpected exception while executing Spring MVC Endpoint Generation Plugin.",
                     e.toString());
-        }
+        } catch (InvalidRamlResourceException e) {
+        	 ClassLoaderUtils.restoreOriginalClassLoader();
+             throw new MojoExecutionException(e, "Supplied RAML has failed validation and cannot be loaded.",
+                     e.toString());
+		}
 
         this.getLog().info("Endpoint Generation Complete in:" + (System.currentTimeMillis() - startTime) + "ms");
     }
