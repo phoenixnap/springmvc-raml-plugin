@@ -12,6 +12,30 @@
  */
 package com.phoenixnap.oss.ramlapisync.parser;
 
+import java.io.File;
+import java.lang.annotation.Annotation;
+import java.lang.reflect.Method;
+import java.lang.reflect.Parameter;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
+import java.util.TreeMap;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.core.annotation.AnnotatedElementUtils;
+import org.springframework.stereotype.Controller;
+import org.springframework.util.StringUtils;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
+
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.module.jsonSchema.JsonSchema;
@@ -34,28 +58,6 @@ import com.phoenixnap.oss.ramlapisync.raml.RamlParamType;
 import com.phoenixnap.oss.ramlapisync.raml.RamlResource;
 import com.phoenixnap.oss.ramlapisync.raml.RamlResponse;
 import com.phoenixnap.oss.ramlapisync.raml.RamlUriParameter;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.stereotype.Controller;
-import org.springframework.util.StringUtils;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
-
-import java.io.File;
-import java.lang.annotation.Annotation;
-import java.lang.reflect.Method;
-import java.lang.reflect.Parameter;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
-import java.util.TreeMap;
 
 /**
  * Service scanner that handles generation from a Spring MVC codebase
@@ -167,12 +169,12 @@ public class SpringMvcResourceParser extends ResourceParser {
 	 * @return
 	 */
 	private RequestMapping getRequestMapping(Method method) {
-		RequestMapping requestMapping = method.getAnnotation(RequestMapping.class);
+		RequestMapping requestMapping = AnnotatedElementUtils.getMergedAnnotation(method, RequestMapping.class);
 		if (requestMapping == null) {
 			for (Class<?> cInterface : method.getDeclaringClass().getInterfaces()) {
 				try {
 					Method methodInInterface = cInterface.getMethod(method.getName(), method.getParameterTypes());
-					requestMapping = methodInInterface.getAnnotation(RequestMapping.class);
+					requestMapping = AnnotatedElementUtils.getMergedAnnotation(methodInInterface, RequestMapping.class);
 					if (requestMapping != null) {
 						return requestMapping;
 					}
@@ -194,7 +196,7 @@ public class SpringMvcResourceParser extends ResourceParser {
 	 * @return
 	 */
 	private <T extends Annotation> T getAnnotation(Class<?> clazz, Class<T> annotation, boolean inherit) {
-		T foundAnnotation = clazz.getAnnotation(annotation);
+		T foundAnnotation = AnnotatedElementUtils.getMergedAnnotation(clazz, annotation);
 		if (foundAnnotation == null && inherit) {
 			for (Class<?> cInterface : clazz.getInterfaces()) {
 				foundAnnotation = cInterface.getAnnotation(annotation);
@@ -390,10 +392,10 @@ public class SpringMvcResourceParser extends ResourceParser {
 
 	@Override
 	protected boolean isActionOnResourceWithoutCommand(Method method) {
-		if (!method.isAnnotationPresent(RequestMapping.class)) {
+		RequestMapping requestMapping = getRequestMapping(method);
+		if (requestMapping == null) {
 			return true;
 		} else {
-			RequestMapping requestMapping = getRequestMapping(method);
 			if (requestMapping.value().length == 0) {
 				return true;
 			}
@@ -417,7 +419,7 @@ public class SpringMvcResourceParser extends ResourceParser {
 
 	@Override
 	protected String getResourceName(Class<?> clazz) {
-		RequestMapping mapping = clazz.getAnnotation(RequestMapping.class);
+		RequestMapping mapping = getAnnotation(clazz, RequestMapping.class, true);
 		String outMapping = "";
 		if (mapping != null && StringUtils.hasText(mapping.name())) {
 			outMapping = mapping.name();
