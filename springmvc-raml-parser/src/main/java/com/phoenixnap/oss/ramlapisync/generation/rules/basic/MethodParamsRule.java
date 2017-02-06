@@ -1,5 +1,5 @@
 /*
- * Copyright 2002-2016 the original author or authors.
+ * Copyright 2002-2017 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with
  * the License. You may obtain a copy of the License at
@@ -21,6 +21,7 @@ import com.sun.codemodel.JClass;
 import com.sun.codemodel.JCodeModel;
 import com.sun.codemodel.JMethod;
 import com.sun.codemodel.JVar;
+
 import org.springframework.http.HttpHeaders;
 import org.springframework.util.StringUtils;
 
@@ -66,9 +67,10 @@ import static org.springframework.util.StringUtils.uncapitalize;
 public class MethodParamsRule implements Rule<CodeModelHelper.JExtMethod, JMethod, ApiActionMetadata> {
 
 	boolean addParameterJavadoc = false;
+	boolean allowArrayParameters = true;
 	
 	public MethodParamsRule () {
-		this(false);
+		this(false, true);
 	}
 	
 	/**
@@ -76,8 +78,9 @@ public class MethodParamsRule implements Rule<CodeModelHelper.JExtMethod, JMetho
 	 * 
 	 * @param addParameterJavadoc Set to true for javadocs for parameters
 	 */
-	public MethodParamsRule (boolean addParameterJavadoc) {
+	public MethodParamsRule (boolean addParameterJavadoc, boolean allowArrayParameters) {
 		this.addParameterJavadoc = addParameterJavadoc;
+		this.allowArrayParameters = allowArrayParameters;
 	}
 	
     @Override
@@ -89,11 +92,11 @@ public class MethodParamsRule implements Rule<CodeModelHelper.JExtMethod, JMetho
         parameterMetadataList.addAll(endpointMetadata.getRequestHeaders());
 
         parameterMetadataList.forEach( paramMetaData -> {
-            param(paramMetaData, generatableType);
+            paramQueryForm(paramMetaData, generatableType);
         });
 
         if (endpointMetadata.getRequestBody() != null) {
-            param(endpointMetadata, generatableType);
+            paramObjects(endpointMetadata, generatableType);
         }
 
        if (endpointMetadata.getInjectHttpHeadersParameter()) {
@@ -103,7 +106,7 @@ public class MethodParamsRule implements Rule<CodeModelHelper.JExtMethod, JMetho
         return generatableType.get();
     }
 
-	protected JVar param(ApiParameterMetadata paramMetaData, CodeModelHelper.JExtMethod generatableType) {
+	protected JVar paramQueryForm(ApiParameterMetadata paramMetaData, CodeModelHelper.JExtMethod generatableType) {
       String javaName = NamingHelper.getParameterName(paramMetaData.getName());
     	if (addParameterJavadoc) {
 			String paramComment = "";
@@ -112,10 +115,16 @@ public class MethodParamsRule implements Rule<CodeModelHelper.JExtMethod, JMetho
 			}
 	    	generatableType.get().javadoc().addParam(javaName + " " + paramComment);
     	}
-        return generatableType.get().param(paramMetaData.getType(), javaName);
+    	Class<?> type = paramMetaData.getType();
+    	if (!allowArrayParameters && paramMetaData.isArray() ) {
+    		type = type.getComponentType();
+    	} else {
+    		
+    	}
+    	return generatableType.get().param(type, javaName);
     }
 
-    protected JVar param(ApiActionMetadata endpointMetadata, CodeModelHelper.JExtMethod generatableType) {
+    protected JVar paramObjects(ApiActionMetadata endpointMetadata, CodeModelHelper.JExtMethod generatableType) {
         String requestBodyName = endpointMetadata.getRequestBody().getName();
         List<JCodeModel> codeModels = new ArrayList<>();
         if (endpointMetadata.getRequestBody().getCodeModel()!=null){

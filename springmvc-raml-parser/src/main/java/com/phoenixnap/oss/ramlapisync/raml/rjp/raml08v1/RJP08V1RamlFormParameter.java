@@ -1,5 +1,5 @@
 /*
- * Copyright 2002-2016 the original author or authors.
+ * Copyright 2002-2017 the original author or authors.
  * 
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with
  * the License. You may obtain a copy of the License at
@@ -95,5 +95,15 @@ public class RJP08V1RamlFormParameter extends RamlFormParameter {
 	@Override
 	public String getDefaultValue() {
 		return formParameter.getDefaultValue();
+	}
+
+	@Override
+	public void setRepeat(boolean repeat) {
+		formParameter.setRepeat(repeat);
+	}
+
+	@Override
+	public boolean isRepeat() {
+		return formParameter.isRepeat();
 	}
 }
