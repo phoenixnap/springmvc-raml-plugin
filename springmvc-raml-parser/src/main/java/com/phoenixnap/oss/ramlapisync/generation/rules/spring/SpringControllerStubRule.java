@@ -1,5 +1,5 @@
 /*
- * Copyright 2002-2016 the original author or authors.
+ * Copyright 2002-2017 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with
  * the License. You may obtain a copy of the License at
@@ -12,14 +12,8 @@
  */
 package com.phoenixnap.oss.ramlapisync.generation.rules.spring;
 
-import java.util.Map;
-
-import org.apache.commons.lang3.BooleanUtils;
-import org.springframework.util.CollectionUtils;
-
 import com.phoenixnap.oss.ramlapisync.data.ApiActionMetadata;
 import com.phoenixnap.oss.ramlapisync.data.ApiResourceMetadata;
-import com.phoenixnap.oss.ramlapisync.generation.rules.ConfigurableRule;
 import com.phoenixnap.oss.ramlapisync.generation.rules.GenericJavaClassRule;
 import com.phoenixnap.oss.ramlapisync.generation.rules.Rule;
 import com.phoenixnap.oss.ramlapisync.generation.rules.basic.ClassCommentRule;
@@ -55,19 +49,9 @@ import com.sun.codemodel.JMethod;
  * @author kurtpa
  * @since 0.4.1
  */
-public abstract class SpringControllerStubRule implements ConfigurableRule<JCodeModel, JDefinedClass, ApiResourceMetadata> {
+public abstract class SpringControllerStubRule extends SpringConfigurableRule {
 
-    public static final String CALLABLE_RESPONSE_CONFIGURATION = "callableResponse";
-
-    private boolean callableResponse = false;
-
-    public boolean isCallableResponse() {
-        return callableResponse;
-    }
-
-    public void setCallableResponse(boolean callableResponse) {
-        this.callableResponse = callableResponse;
-    }
+   
 
     @Override
     public final JDefinedClass apply(ApiResourceMetadata metadata, JCodeModel generatableType) {
@@ -83,21 +67,13 @@ public abstract class SpringControllerStubRule implements ConfigurableRule<JCode
                 .addMethodAnnotationRule(getResponseBodyAnnotationRule())
                 .setMethodSignatureRule(new ControllerMethodSignatureRule(
                         isCallableResponse() ? new SpringSimpleCallableResponseTypeRule() :  new SpringSimpleResponseTypeRule(),
-                        new SpringMethodParamsRule()
+                        new SpringMethodParamsRule(isAddParameterJavadoc(), isAllowArrayParameters())
                 ))
                 .setMethodBodyRule(new ImplementMeMethodBodyRule());
 
         return generator.apply(metadata, generatableType);
     }
 
-    @Override
-    public void applyConfiguration(Map<String, String> configuration) {
-        if(!CollectionUtils.isEmpty(configuration)) {
-            if(configuration.containsKey(CALLABLE_RESPONSE_CONFIGURATION)) {
-                setCallableResponse(BooleanUtils.toBoolean(configuration.get(CALLABLE_RESPONSE_CONFIGURATION)));
-            }
-        }
-    }
 
     protected abstract Rule<JMethod, JAnnotationUse, ApiActionMetadata> getResponseBodyAnnotationRule();
     

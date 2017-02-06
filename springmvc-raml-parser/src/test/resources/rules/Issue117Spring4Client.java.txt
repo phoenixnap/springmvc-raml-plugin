@@ -1,0 +1,75 @@
+-----------------------------------com.gen.test.FileClient.java-----------------------------------
+
+package com.gen.test;
+
+import org.springframework.http.ResponseEntity;
+
+
+/**
+ * No description
+ * (Generated with springmvc-raml-parser v.${project.version})
+ * 
+ */
+public interface FileClient {
+
+
+    /**
+     * Create file.
+     * 
+     * @param stringArray 
+     * @param notArray 
+     */
+    public ResponseEntity<?> getFiles(String notArray, String[] stringArray);
+
+}
+-----------------------------------com.gen.test.FileClientImpl.java-----------------------------------
+
+package com.gen.test;
+
+import java.util.ArrayList;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpMethod;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Component;
+import org.springframework.web.client.RestTemplate;
+import org.springframework.web.util.UriComponents;
+import org.springframework.web.util.UriComponentsBuilder;
+
+
+/**
+ * No description
+ * (Generated with springmvc-raml-parser v.${project.version})
+ * 
+ */
+@Component
+public class FileClientImpl
+    implements FileClient
+{
+
+    @Autowired
+    private RestTemplate restTemplate;
+    @Value("${client.url}")
+    private String baseUrl;
+
+    /**
+     * Create file.
+     * 
+     */
+    public ResponseEntity<?> getFiles(String notArray, String[] stringArray) {
+        HttpHeaders httpHeaders = new HttpHeaders();
+        //  Add Accepts Headers and Body Content-Type
+        ArrayList<MediaType> acceptsList = new ArrayList<MediaType>();
+        acceptsList.add(MediaType.valueOf("application/json"));
+        httpHeaders.setAccept(acceptsList);
+        String url = baseUrl.concat("/files");
+        UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl(url).queryParam("notArray", notArray).queryParam("stringArray", stringArray);
+        UriComponents uriComponents = builder.build();
+        HttpEntity httpEntity = new HttpEntity(httpHeaders);
+        return this.restTemplate.exchange(uriComponents.encode().toUri(), HttpMethod.GET, httpEntity, Object.class);
+    }
+
+}

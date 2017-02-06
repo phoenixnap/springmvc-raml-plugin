@@ -1,0 +1,62 @@
+-----------------------------------com.gen.test.FileController.java-----------------------------------
+
+package com.gen.test;
+
+import org.springframework.http.ResponseEntity;
+
+
+/**
+ * No description
+ * (Generated with springmvc-raml-parser v.${project.version})
+ * 
+ */
+public interface FileController {
+
+
+    /**
+     * Create file.
+     * 
+     */
+    public ResponseEntity<?> getFiles(String notArray, String stringArray);
+
+}
+-----------------------------------com.gen.test.FileControllerDecorator.java-----------------------------------
+
+package com.gen.test;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
+
+
+/**
+ * No description
+ * (Generated with springmvc-raml-parser v.${project.version})
+ * 
+ */
+@RestController
+@RequestMapping(value = "/api/files", produces = "application/json")
+public class FileControllerDecorator
+    implements FileController
+{
+
+    @Autowired
+    private FileController fileControllerDelegate;
+
+    /**
+     * Create file.
+     * 
+     */
+    @RequestMapping(value = "", method = RequestMethod.GET)
+    public ResponseEntity<?> getFiles(
+        @RequestParam
+        String notArray,
+        @RequestParam
+        String stringArray) {
+        return this.fileControllerDelegate.getFiles(notArray, stringArray);
+    }
+
+}
