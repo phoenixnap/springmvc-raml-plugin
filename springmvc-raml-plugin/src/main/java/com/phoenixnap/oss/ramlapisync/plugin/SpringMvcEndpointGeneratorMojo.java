@@ -243,7 +243,7 @@ public class SpringMvcEndpointGeneratorMojo extends AbstractMojo {
                         this.getLog().info("Generating POJO for unreferenced schema " + schemaName);
                         ApiBodyMetadata tempBodyMetadata = SchemaHelper.mapSchemaToPojo(loadRamlFromFile, schemaName, resolvedRamlPath, schemaName, this.resolvedSchemaLocation);
                         // TODO Check if this already has been written to disk
-                        generateModelSources(tempBodyMetadata, rootDir, this.generationConfig, this.useJackson1xCompatibility == true ? new Jackson1Annotator() : null);
+                        generateModelSources(tempBodyMetadata, rootDir, this.generationConfig, this.useJackson1xCompatibility == true ? new Jackson1Annotator(this.generationConfig) : null);
                     }
                 }
             }
@@ -260,7 +260,7 @@ public class SpringMvcEndpointGeneratorMojo extends AbstractMojo {
 
             Set<ApiBodyMetadata> dependencies = met.getDependencies();
             for (ApiBodyMetadata body : dependencies) {
-                generateModelSources(body, rootDir, generationConfig, useJackson1xCompatibility == true ? new Jackson1Annotator() : null);
+                generateModelSources(body, rootDir, generationConfig, useJackson1xCompatibility == true ? new Jackson1Annotator(generationConfig) : null);
             }
 
             generateControllerSource(met, rootDir);

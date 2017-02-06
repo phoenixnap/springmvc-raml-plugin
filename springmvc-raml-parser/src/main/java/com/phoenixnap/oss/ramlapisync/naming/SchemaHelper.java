@@ -576,7 +576,7 @@ public class SchemaHelper {
 
         }
         if (annotator == null) {
-            annotator = new Jackson2Annotator();
+            annotator = new Jackson2Annotator(config);
         }
         RuleFactory ruleFactory = new RuleFactory(config, annotator, schemaStore);
 

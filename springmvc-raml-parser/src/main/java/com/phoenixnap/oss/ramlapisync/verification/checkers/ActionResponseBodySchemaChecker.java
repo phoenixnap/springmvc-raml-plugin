@@ -121,7 +121,7 @@ public class ActionResponseBodySchemaChecker implements RamlActionVisitorCheck {
 						};
 
 						try {
-							SchemaMapper mapper = new SchemaMapper(new RuleFactory(config, new Jackson2Annotator(), new SchemaStore()), new SchemaGenerator());
+							SchemaMapper mapper = new SchemaMapper(new RuleFactory(config, new Jackson2Annotator(config), new SchemaStore()), new SchemaGenerator());
 							mapper.generate(referenceCodeModel, "Reference", "com.response", value.getSchema());
 							mapper.generate(targetCodeModel, "Target", "com.response", targetSchema);
 	
