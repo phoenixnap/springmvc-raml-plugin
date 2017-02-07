@@ -1,5 +1,5 @@
 /*
- * Copyright 2002-2016 the original author or authors.
+ * Copyright 2002-2017 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with
  * the License. You may obtain a copy of the License at
@@ -65,10 +65,20 @@ import com.sun.codemodel.JVar;
  * @since 0.4.1
  */
 public class SpringMethodParamsRule extends MethodParamsRule {
+	
+	
 
-    @Override
-	protected JVar param(ApiParameterMetadata paramMetaData, CodeModelHelper.JExtMethod generatableType) {
-        JVar jVar = super.param(paramMetaData, generatableType);
+    public SpringMethodParamsRule() {
+		super();
+	}
+
+	public SpringMethodParamsRule(boolean addParameterJavadoc, boolean allowArrayParameters) {
+		super(addParameterJavadoc, allowArrayParameters);
+	}
+
+	@Override
+	protected JVar paramQueryForm(ApiParameterMetadata paramMetaData, CodeModelHelper.JExtMethod generatableType) {
+        JVar jVar = super.paramQueryForm(paramMetaData, generatableType);
         JAnnotationUse jAnnotationUse;
         if (paramMetaData.getRamlParam() != null && paramMetaData.getRamlParam() instanceof RamlUriParameter) {
             jVar.annotate(PathVariable.class);
@@ -112,8 +122,8 @@ public class SpringMethodParamsRule extends MethodParamsRule {
     }
 
     @Override
-    protected JVar param(ApiActionMetadata endpointMetadata, CodeModelHelper.JExtMethod generatableType) {
-        JVar param = super.param(endpointMetadata, generatableType);
+    protected JVar paramObjects(ApiActionMetadata endpointMetadata, CodeModelHelper.JExtMethod generatableType) {
+        JVar param = super.paramObjects(endpointMetadata, generatableType);
         param.annotate(Valid.class);
         param.annotate(RequestBody.class);
         return param;

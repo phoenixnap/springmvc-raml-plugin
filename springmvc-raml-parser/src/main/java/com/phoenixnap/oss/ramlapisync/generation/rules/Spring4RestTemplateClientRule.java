@@ -1,5 +1,5 @@
 /*
- * Copyright 2002-2016 the original author or authors.
+ * Copyright 2002-2017 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with
  * the License. You may obtain a copy of the License at
@@ -14,6 +14,7 @@ package com.phoenixnap.oss.ramlapisync.generation.rules;
 
 import java.util.Map;
 
+import org.apache.commons.lang3.BooleanUtils;
 import org.springframework.stereotype.Component;
 import org.springframework.util.CollectionUtils;
 import org.springframework.web.client.RestTemplate;
@@ -59,6 +60,8 @@ import com.sun.codemodel.JDefinedClass;
  */
 public class Spring4RestTemplateClientRule implements ConfigurableRule<JCodeModel, JDefinedClass, ApiResourceMetadata> {
     
+ 	public static final String ARRAY_PARAMETER_CONFIGURATION = "allowArrayParameters";
+	
 	String restTemplateFieldName = "restTemplate";
 	
 	String baseUrlFieldName = "baseUrl";
@@ -66,6 +69,8 @@ public class Spring4RestTemplateClientRule implements ConfigurableRule<JCodeMode
 	String baseUrlConfigurationPath = "${client.url}";
 	
 	String restTemplateQualifierBeanName;
+	
+	boolean allowArrayParameters = true;
 	
     @Override
     public final JDefinedClass apply(ApiResourceMetadata metadata, JCodeModel generatableType) {
@@ -77,12 +82,9 @@ public class Spring4RestTemplateClientRule implements ConfigurableRule<JCodeMode
                 .setMethodCommentRule(new MethodCommentRule())
                 .setMethodSignatureRule(new ControllerMethodSignatureRule(
                         new SpringResponseEntityRule(),
-                        new MethodParamsRule(true)))
+                        new MethodParamsRule(true, allowArrayParameters)))
                 .apply(metadata, generatableType);
 
-        
-        
-        
         
         GenericJavaClassRule clientGenerator = new GenericJavaClassRule()
                 .setPackageRule(new PackageRule())
@@ -95,7 +97,7 @@ public class Spring4RestTemplateClientRule implements ConfigurableRule<JCodeMode
                 .setMethodCommentRule(new MethodCommentRule())                
                 .setMethodSignatureRule(new ControllerMethodSignatureRule(
                         new SpringResponseEntityRule(),
-                        new MethodParamsRule()))
+                        new MethodParamsRule(false, allowArrayParameters)))
                 .setMethodBodyRule(new SpringRestClientMethodBodyRule(restTemplateFieldName, baseUrlFieldName));
 
         return clientGenerator.apply(metadata, generatableType);
@@ -125,6 +127,10 @@ public class Spring4RestTemplateClientRule implements ConfigurableRule<JCodeMode
 			if(configuration.containsKey("baseUrlConfigurationPath")) {
 				this.baseUrlConfigurationPath = configuration.get("baseUrlConfigurationPath");
 			}
+			if(configuration.containsKey(ARRAY_PARAMETER_CONFIGURATION)) {
+            	allowArrayParameters = BooleanUtils.toBoolean(configuration.get(ARRAY_PARAMETER_CONFIGURATION));
+            }
+			
 		}
 	}
     

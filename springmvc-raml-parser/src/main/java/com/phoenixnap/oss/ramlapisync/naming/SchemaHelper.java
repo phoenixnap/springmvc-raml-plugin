@@ -1,5 +1,5 @@
 /*
- * Copyright 2002-2016 the original author or authors.
+ * Copyright 2002-2017 the original author or authors.
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except
  * in compliance with
  * the License. You may obtain a copy of the License at
@@ -44,6 +44,8 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializationFeature;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.fasterxml.jackson.module.jsonSchema.JsonSchema;
 import com.fasterxml.jackson.module.jsonSchema.factories.SchemaFactoryWrapper;
 import com.fasterxml.jackson.module.jsonSchema.types.ArraySchema;
@@ -226,7 +228,10 @@ public class SchemaHelper {
             return "{}";
         }
         try {
-            ObjectMapper m = new ObjectMapper();
+            ObjectMapper m = new ObjectMapper()
+                .registerModule(new JavaTimeModule())
+                .disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
+
             JsonSchema jsonSchema = extractSchemaInternal(clazz.getType(), clazz.getGenericType(), responseDescription,
                     javaDocStore, m);
 
@@ -571,7 +576,7 @@ public class SchemaHelper {
 
         }
         if (annotator == null) {
-            annotator = new Jackson2Annotator();
+            annotator = new Jackson2Annotator(config);
         }
         RuleFactory ruleFactory = new RuleFactory(config, annotator, schemaStore);
 

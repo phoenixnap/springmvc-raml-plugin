@@ -1,5 +1,5 @@
 /*
- * Copyright 2002-2016 the original author or authors.
+ * Copyright 2002-2017 the original author or authors.
  * 
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with
  * the License. You may obtain a copy of the License at
@@ -12,20 +12,23 @@
  */
 package com.phoenixnap.oss.ramlapisync.data;
 
-import com.phoenixnap.oss.ramlapisync.annotations.Example;
-import com.phoenixnap.oss.ramlapisync.naming.SchemaHelper;
-import com.phoenixnap.oss.ramlapisync.naming.TypeHelper;
-import com.phoenixnap.oss.ramlapisync.raml.RamlAbstractParam;
-import com.phoenixnap.oss.ramlapisync.raml.RamlUriParameter;
+import java.lang.annotation.Annotation;
+import java.lang.reflect.Array;
+import java.lang.reflect.Parameter;
+import java.lang.reflect.Type;
+import java.util.List;
+
 import org.apache.commons.lang.NullArgumentException;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 
-import java.lang.annotation.Annotation;
-import java.lang.reflect.Parameter;
-import java.lang.reflect.Type;
+import com.phoenixnap.oss.ramlapisync.annotations.Example;
+import com.phoenixnap.oss.ramlapisync.naming.SchemaHelper;
+import com.phoenixnap.oss.ramlapisync.naming.TypeHelper;
+import com.phoenixnap.oss.ramlapisync.raml.RamlAbstractParam;
+import com.phoenixnap.oss.ramlapisync.raml.RamlUriParameter;
 
 /**
  * Data object containing information kept at runtime for Api Call Parameters. This class is used by the RAML generator
@@ -120,6 +123,12 @@ public class ApiParameterMetadata {
 		this.param = null; //we wont have this.
 		
 		this.type = SchemaHelper.mapSimpleType(param.getType());
+		
+		//If it's a repeatable parameter simply convert to an array of type
+		if(param.isRepeat()) {
+			this.type = Array.newInstance(this.type, 0).getClass();
+		}
+		
 		this.genericType = null;
 
 		this.example = StringUtils.hasText(param.getExample()) ? param.getExample() : null;
@@ -258,6 +267,18 @@ public class ApiParameterMetadata {
 
 	private void setRamlParam(RamlAbstractParam ramlParam) {
 		this.ramlParam = ramlParam;
+	}
+	
+
+	/**
+	 * Quick check to see if this is an array type or not
+	 * @return
+	 */
+	public boolean isArray() {
+		if (type == null) {
+			return false;
+		}
+		return type.isArray() || List.class.isAssignableFrom(type);
 	}
 
 }

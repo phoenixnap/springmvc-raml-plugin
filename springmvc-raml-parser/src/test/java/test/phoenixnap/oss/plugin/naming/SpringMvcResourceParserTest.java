@@ -1,5 +1,5 @@
 /*
- * Copyright 2002-2016 the original author or authors.
+ * Copyright 2002-2017 the original author or authors.
  * 
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with
  * the License. You may obtain a copy of the License at
@@ -33,6 +33,7 @@ import com.phoenixnap.oss.ramlapisync.raml.RamlResource;
 import com.phoenixnap.oss.ramlapisync.raml.RamlResponse;
 import com.phoenixnap.oss.ramlapisync.raml.RamlRoot;
 import com.phoenixnap.oss.ramlapisync.raml.RamlUriParameter;
+
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.mockito.Mockito;
@@ -41,9 +42,11 @@ import org.mockito.stubbing.Answer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.MediaType;
+
 import test.phoenixnap.oss.plugin.naming.testclasses.BugController;
 import test.phoenixnap.oss.plugin.naming.testclasses.MultipleContentTypeTestController;
 import test.phoenixnap.oss.plugin.naming.testclasses.NoValueController;
+import test.phoenixnap.oss.plugin.naming.testclasses.ShorthandTestController;
 import test.phoenixnap.oss.plugin.naming.testclasses.TestController;
 import test.phoenixnap.oss.plugin.naming.testclasses.UriPrefixIgnoredController;
 import test.phoenixnap.oss.plugin.naming.testclasses.WrappedResponseBodyTestController;
@@ -250,6 +253,21 @@ public class SpringMvcResourceParserTest {
 	@Test
 	public void test_simpleGetAndPost() {
 		RamlResource testResource = baseResourceTestController.getResource("/base").getResource("/simpleMethod");
+		assertEquals("Assert resources size", 2, testResource.getActions().size());
+		RamlAction getAction = testResource.getActions().get(RamlActionType.GET);
+		RamlAction postAction = testResource.getActions().get(RamlActionType.POST);
+		assertNotNull(getAction);
+		assertNotNull(postAction);
+		assertEquals("Assert Javadoc", COMMENT_JAVADOC, getAction.getDescription());
+		assertEquals("Assert Javadoc", COMMENT_JAVADOC, postAction.getDescription());
+		validateSimpleAjaxResponse(getAction);
+		validateSimpleAjaxResponse(postAction);
+	}
+	
+	@Test
+	public void test_simpleGetAndPostShorthand() {
+		RamlResource parsed = parser.extractResourceInfo(ShorthandTestController.class);
+		RamlResource testResource = parsed.getResource("/base").getResource("/simpleMethod");
 		assertEquals("Assert resources size", 2, testResource.getActions().size());
 		RamlAction getAction = testResource.getActions().get(RamlActionType.GET);
 		RamlAction postAction = testResource.getActions().get(RamlActionType.POST);

@@ -1,5 +1,5 @@
 /*
- * Copyright 2002-2016 the original author or authors.
+ * Copyright 2002-2017 the original author or authors.
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except
  * in compliance with
  * the License. You may obtain a copy of the License at
@@ -245,7 +245,7 @@ public class SpringMvcEndpointGeneratorMojo extends AbstractMojo {
                         this.getLog().info("Generating POJO for unreferenced schema " + schemaName);
                         ApiBodyMetadata tempBodyMetadata = SchemaHelper.mapSchemaToPojo(loadRamlFromFile, schemaName, resolvedRamlPath, schemaName, this.resolvedSchemaLocation);
                         // TODO Check if this already has been written to disk
-                        generateModelSources(tempBodyMetadata, rootDir, this.generationConfig, this.useJackson1xCompatibility == true ? new Jackson1Annotator() : null);
+                        generateModelSources(tempBodyMetadata, rootDir, this.generationConfig, this.useJackson1xCompatibility == true ? new Jackson1Annotator(this.generationConfig) : null);
                     }
                 }
             }
@@ -262,7 +262,7 @@ public class SpringMvcEndpointGeneratorMojo extends AbstractMojo {
 
             Set<ApiBodyMetadata> dependencies = met.getDependencies();
             for (ApiBodyMetadata body : dependencies) {
-                generateModelSources(body, rootDir, generationConfig, useJackson1xCompatibility == true ? new Jackson1Annotator() : null);
+                generateModelSources(body, rootDir, generationConfig, useJackson1xCompatibility == true ? new Jackson1Annotator(generationConfig) : null);
             }
 
             generateControllerSource(met, rootDir);
