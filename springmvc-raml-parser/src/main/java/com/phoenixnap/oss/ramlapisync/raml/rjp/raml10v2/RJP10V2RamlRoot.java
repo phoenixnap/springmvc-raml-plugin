@@ -7,7 +7,9 @@ import com.phoenixnap.oss.ramlapisync.raml.RamlSpecNotFullySupportedException;
 import org.raml.v2.api.model.v10.api.Api;
 import org.raml.v2.api.model.v10.bodies.MimeType;
 import org.raml.v2.api.model.v10.datamodel.TypeDeclaration;
+import org.raml.v2.api.model.v10.resources.Resource;
 
+import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -38,17 +40,30 @@ public class RJP10V2RamlRoot implements RamlRoot {
 
     @Override
     public void addResource(String path, RamlResource childResource) {
-        throw new UnsupportedOperationException();
+//        throw new UnsupportedOperationException();
+        api.resources().add(ramlModelFactory.extractResource(childResource));
+        resources.put(path, childResource);
     }
 
     @Override
     public void removeResource(String firstResourcePart) {
-        throw new UnsupportedOperationException();
+//        throw new UnsupportedOperationException();
+    	Iterator<Resource> iterator = api.resources().iterator();
+    	while(iterator.hasNext()){
+    		Resource resource = iterator.next();
+    		if(resource.resourcePath().equals(firstResourcePart)){
+    			api.resources().remove(resource);
+    		}
+    	}
+        resources.remove(firstResourcePart);
     }
 
     @Override
     public void addResources(Map<String, RamlResource> resources) {
-        throw new UnsupportedOperationException();
+//        throw new UnsupportedOperationException();
+    	for(String key: resources.keySet()) {
+            addResource(key, resources.get(key));
+        }
     }
 
     @Override
