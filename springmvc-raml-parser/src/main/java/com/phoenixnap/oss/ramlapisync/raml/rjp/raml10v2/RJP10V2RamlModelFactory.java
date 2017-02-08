@@ -1,18 +1,37 @@
 package com.phoenixnap.oss.ramlapisync.raml.rjp.raml10v2;
 
-import com.phoenixnap.oss.ramlapisync.data.RamlFormParameter;
-import com.phoenixnap.oss.ramlapisync.raml.*;
-import com.phoenixnap.oss.ramlapisync.raml.rjp.raml08v1.RJP08V1RamlResource;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
+
 import org.raml.v2.api.RamlModelBuilder;
 import org.raml.v2.api.RamlModelResult;
 import org.raml.v2.api.model.v10.api.Api;
+import org.raml.v2.api.model.v10.bodies.Response;
+import org.raml.v2.api.model.v10.datamodel.TypeDeclaration;
 import org.raml.v2.api.model.v10.resources.Resource;
 
-import java.util.List;
-import java.util.stream.Collectors;
+import com.phoenixnap.oss.ramlapisync.data.RamlFormParameter;
+import com.phoenixnap.oss.ramlapisync.raml.InvalidRamlResourceException;
+import com.phoenixnap.oss.ramlapisync.raml.RamlAction;
+import com.phoenixnap.oss.ramlapisync.raml.RamlActionType;
+import com.phoenixnap.oss.ramlapisync.raml.RamlDocumentationItem;
+import com.phoenixnap.oss.ramlapisync.raml.RamlHeader;
+import com.phoenixnap.oss.ramlapisync.raml.RamlMimeType;
+import com.phoenixnap.oss.ramlapisync.raml.RamlModelEmitter;
+import com.phoenixnap.oss.ramlapisync.raml.RamlModelFactory;
+import com.phoenixnap.oss.ramlapisync.raml.RamlParamType;
+import com.phoenixnap.oss.ramlapisync.raml.RamlQueryParameter;
+import com.phoenixnap.oss.ramlapisync.raml.RamlResource;
+import com.phoenixnap.oss.ramlapisync.raml.RamlResponse;
+import com.phoenixnap.oss.ramlapisync.raml.RamlRoot;
+import com.phoenixnap.oss.ramlapisync.raml.RamlSecurityReference;
+import com.phoenixnap.oss.ramlapisync.raml.RamlUriParameter;
 
 /**
  * @author aweisser
+ * @author Aleksandar Stojsavljevic
  */
 public class RJP10V2RamlModelFactory implements RamlModelFactory {
 
@@ -172,4 +191,45 @@ public class RJP10V2RamlModelFactory implements RamlModelFactory {
         }
         return ((RJP10V2RamlResource) ramlResource).getResource();
     }
+	
+	Response extractResponse(RamlResponse ramlResponse) {
+        return ((RJP10V2RamlResponse)ramlResponse).getResponse();
+    }
+	
+	Map<String, TypeDeclaration> extractBody(Map<String, RamlMimeType> ramlBody) {
+        Map<String, TypeDeclaration> body = new LinkedHashMap<>(ramlBody.size());
+        for(String key: ramlBody.keySet()) {
+            body.put(key, extractMimeType(ramlBody.get(key)));
+        }
+        return body;
+    }
+	
+	TypeDeclaration extractMimeType(RamlMimeType ramlMimeType) {
+        return ((RJP10V2RamlMimeType)ramlMimeType).getMimeType();
+    }
+
+	TypeDeclaration extractUriParameter(RamlUriParameter ramlUriParameter) {
+        return ((RJP10V2RamlUriParameter)ramlUriParameter).getUriParameter();
+    }
+    
+    List<TypeDeclaration> extractFormParameters(List<RamlFormParameter> ramlFormParameters) {
+        return ramlFormParameters.stream().map(this::extractFormParameter).collect(Collectors.toList());
+    }
+
+    TypeDeclaration extractFormParameter(RamlFormParameter ramlFormParameter) {
+        return ((RJP10V2RamlFormParameter)ramlFormParameter).getFormParameter();
+    }
+    
+    Map<String, List<TypeDeclaration>> extractFormParameters(Map<String, List<RamlFormParameter>> ramlFormParameters) {
+        Map<String, List<TypeDeclaration>> formParameters = new LinkedHashMap<>(ramlFormParameters.size());
+        for(String key: ramlFormParameters.keySet()) {
+            formParameters.put(key, extractFormParameters(ramlFormParameters.get(key)));
+        }
+        return formParameters;
+    }
+    
+    TypeDeclaration extractQueryParameter(RamlQueryParameter ramlQueryParameter) {
+        return ((RJP10V2RamlQueryParameter)ramlQueryParameter).getQueryParameter();
+    }
+    
 }
