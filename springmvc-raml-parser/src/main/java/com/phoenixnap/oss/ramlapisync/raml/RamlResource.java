@@ -36,6 +36,8 @@ public interface RamlResource extends RamlResourceRoot {
     String getUri();
 
     String getDescription();
+    
+    String getDisplayName();
 
     RamlResource getParentResource();
 
