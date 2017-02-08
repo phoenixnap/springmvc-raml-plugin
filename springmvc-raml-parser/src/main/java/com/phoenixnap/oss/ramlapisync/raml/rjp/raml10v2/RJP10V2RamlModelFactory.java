@@ -2,7 +2,6 @@ package com.phoenixnap.oss.ramlapisync.raml.rjp.raml10v2;
 
 import com.phoenixnap.oss.ramlapisync.data.RamlFormParameter;
 import com.phoenixnap.oss.ramlapisync.raml.*;
-import com.phoenixnap.oss.ramlapisync.raml.InvalidRamlResourceException;
 import com.phoenixnap.oss.ramlapisync.raml.rjp.raml08v1.RJP08V1RamlResource;
 import org.raml.v2.api.RamlModelBuilder;
 import org.raml.v2.api.RamlModelResult;
@@ -165,5 +164,12 @@ public class RJP10V2RamlModelFactory implements RamlModelFactory {
     @Override
     public RamlParamType createRamlParamType(Object paramType) {
         throw new UnsupportedOperationException();
+    }
+
+	Resource extractResource(RamlResource ramlResource) {
+        if (ramlResource == null) {
+        	return null;
+        }
+        return ((RJP10V2RamlResource) ramlResource).getResource();
     }
 }

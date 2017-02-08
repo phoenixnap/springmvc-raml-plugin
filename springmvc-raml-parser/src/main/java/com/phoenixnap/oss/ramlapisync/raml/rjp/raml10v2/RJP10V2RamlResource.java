@@ -128,4 +128,8 @@ public class RJP10V2RamlResource implements RamlResource {
     public void addActions(Map<RamlActionType, RamlAction> actions) {
         throw new UnsupportedOperationException();
     }
+
+    Resource getResource() {
+        return this.delegate;
+    }
 }
