@@ -114,7 +114,17 @@ public class RJP08V1RamlAction implements RamlAction {
     public void setDescription(String description) {
         action.setDescription(description);
     }
+    
+    @Override
+	public String getDisplayName() {
+		return action.getDisplayName();
+	}
 
+	@Override
+	public void setDisplayName(String displayName) {
+		action.setDisplayName(displayName);
+	}
+    
     @Override
     public void setResource(RamlResource resource) {
         action.setResource(ramlModelFactory.extractResource(resource));
@@ -141,4 +151,5 @@ public class RJP08V1RamlAction implements RamlAction {
         queryParameters.put(key, ramlQueryParameter);
         action.getQueryParameters().put(key, ramlModelFactory.extractQueryParameter(ramlQueryParameter));
     }
+
 }

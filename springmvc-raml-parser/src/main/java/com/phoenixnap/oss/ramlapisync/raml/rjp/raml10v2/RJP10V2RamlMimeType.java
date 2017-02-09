@@ -28,6 +28,7 @@ import com.phoenixnap.oss.ramlapisync.raml.RamlMimeType;
  * Implementation based on the Raml 1.0 Parser
  * 
  * @author Aleksandar Stojsavljevic
+ * @since 0.10.0
  */
 public class RJP10V2RamlMimeType implements RamlMimeType {
 

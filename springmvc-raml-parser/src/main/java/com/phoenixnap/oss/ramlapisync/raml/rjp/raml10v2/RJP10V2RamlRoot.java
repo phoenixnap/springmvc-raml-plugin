@@ -40,14 +40,12 @@ public class RJP10V2RamlRoot implements RamlRoot {
 
     @Override
     public void addResource(String path, RamlResource childResource) {
-//        throw new UnsupportedOperationException();
         api.resources().add(ramlModelFactory.extractResource(childResource));
         resources.put(path, childResource);
     }
 
     @Override
     public void removeResource(String firstResourcePart) {
-//        throw new UnsupportedOperationException();
     	Iterator<Resource> iterator = api.resources().iterator();
     	while(iterator.hasNext()){
     		Resource resource = iterator.next();
@@ -60,7 +58,6 @@ public class RJP10V2RamlRoot implements RamlRoot {
 
     @Override
     public void addResources(Map<String, RamlResource> resources) {
-//        throw new UnsupportedOperationException();
     	for(String key: resources.keySet()) {
             addResource(key, resources.get(key));
         }

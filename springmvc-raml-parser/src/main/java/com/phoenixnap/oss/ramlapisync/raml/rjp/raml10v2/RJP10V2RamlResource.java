@@ -1,8 +1,11 @@
 package com.phoenixnap.oss.ramlapisync.raml.rjp.raml10v2;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
+import org.raml.model.Action;
+import org.raml.model.ActionType;
 import org.raml.v2.api.model.v10.methods.Method;
 import org.raml.v2.api.model.v10.resources.Resource;
 
@@ -14,8 +17,12 @@ import com.phoenixnap.oss.ramlapisync.raml.RamlUriParameter;
 /**
  * @author aweisser
  * @author Aleksandar Stojsavljevic
+ * @since 0.10.0
  */
 public class RJP10V2RamlResource implements RamlResource {
+	
+	private static RJP10V2RamlModelFactory ramlModelFactory = new RJP10V2RamlModelFactory();
+	
     private final Resource delegate;
 
     public RJP10V2RamlResource(Resource resource) {
@@ -129,7 +136,13 @@ public class RJP10V2RamlResource implements RamlResource {
 
     @Override
     public RamlAction getAction(RamlActionType actionType) {
-        throw new UnsupportedOperationException();
+        List<Method> methods = delegate.methods();
+        for(Method method : methods){
+        	if(method.method().equalsIgnoreCase(actionType.toString())){
+        		return ramlModelFactory.createRamlAction(method);
+        	}
+        }
+        return null;
     }
 
     @Override

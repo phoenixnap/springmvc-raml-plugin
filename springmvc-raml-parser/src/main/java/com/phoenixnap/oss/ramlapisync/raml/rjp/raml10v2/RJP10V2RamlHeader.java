@@ -14,8 +14,8 @@ package com.phoenixnap.oss.ramlapisync.raml.rjp.raml10v2;
 
 import org.raml.v2.api.model.v10.datamodel.TypeDeclaration;
 
+import com.phoenixnap.oss.ramlapisync.raml.RamlHeader;
 import com.phoenixnap.oss.ramlapisync.raml.RamlParamType;
-import com.phoenixnap.oss.ramlapisync.raml.RamlUriParameter;
 
 /**
  * Implementation based on the Raml 1.0 Parser
@@ -23,27 +23,19 @@ import com.phoenixnap.oss.ramlapisync.raml.RamlUriParameter;
  * @author Aleksandar Stojsavljevic
  * @since 0.10.0
  */
-public class RJP10V2RamlUriParameter extends RamlUriParameter {
+public class RJP10V2RamlHeader extends RamlHeader {
 
     private static RJP10V2RamlModelFactory ramlModelFactory = new RJP10V2RamlModelFactory();
 
-    private final TypeDeclaration uriParameter;
+    private final TypeDeclaration header;
 
-    public RJP10V2RamlUriParameter(TypeDeclaration uriParameter) {
-        this.uriParameter = uriParameter;
-    }
-
-    /**
-     * Expose internal representation only package private
-     * @return the internal model
-     */
-    TypeDeclaration getUriParameter() {
-        return uriParameter;
+    public RJP10V2RamlHeader(TypeDeclaration header) {
+        this.header = header;
     }
 
     @Override
     public String getDisplayName() {
-        return uriParameter.displayName().value();
+        return header.displayName().value();
     }
 
     @Override
@@ -53,7 +45,7 @@ public class RJP10V2RamlUriParameter extends RamlUriParameter {
 
     @Override
     public RamlParamType getType() {
-        return ramlModelFactory.createRamlParamType(uriParameter.type());
+        return ramlModelFactory.createRamlParamType(header.type());
     }
 
     @Override
@@ -63,7 +55,7 @@ public class RJP10V2RamlUriParameter extends RamlUriParameter {
 
     @Override
     public boolean isRequired() {
-        return uriParameter.required().booleanValue();
+        return header.required().booleanValue();
     }
 
     @Override
@@ -83,16 +75,16 @@ public class RJP10V2RamlUriParameter extends RamlUriParameter {
 
     @Override
     public String getExample() {
-        return uriParameter.example().value();
+        return header.example().value();
     }
 
     @Override
     public String getDescription() {
-        return uriParameter.description().value();
+        return header.description().value();
     }
 
 	@Override
 	public String getDefaultValue() {
-		return uriParameter.defaultValue();
+		return header.defaultValue();
 	}
 }

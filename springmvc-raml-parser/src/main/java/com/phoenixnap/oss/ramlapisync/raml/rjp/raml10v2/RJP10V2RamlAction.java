@@ -31,6 +31,7 @@ import com.phoenixnap.oss.ramlapisync.raml.RamlSecurityReference;
  * Implementation based on the Raml 1.0 Parser
  * 
  * @author Aleksandar Stojsavljevic
+ * @since 0.10.0
  */
 public class RJP10V2RamlAction implements RamlAction {
 
@@ -65,7 +66,11 @@ public class RJP10V2RamlAction implements RamlAction {
 
     @Override
     public Map<String, RamlQueryParameter> getQueryParameters() {
-    	throw new UnsupportedOperationException();
+    	return ramlModelFactory.transformToUnmodifiableMap(
+                method.queryParameters(),
+                queryParameters,
+                ramlModelFactory::createRamlQueryParameter,
+                r -> r.displayName().value());
     }
 
     @Override
@@ -85,12 +90,20 @@ public class RJP10V2RamlAction implements RamlAction {
 
     @Override
     public Map<String, RamlHeader> getHeaders() {
-    	throw new UnsupportedOperationException();
+    	return ramlModelFactory.transformToUnmodifiableMap(
+                method.headers(),
+                headers,
+                ramlModelFactory::createRamlHeader,
+                r -> r.displayName().value());
     }
 
     @Override
     public Map<String, RamlMimeType> getBody() {
-    	throw new UnsupportedOperationException();
+    	return ramlModelFactory.transformToUnmodifiableMap(
+                method.body(),
+                body,
+                ramlModelFactory::createRamlMimeType,
+                r -> r.displayName().value());
     }
 
     @Override
@@ -112,6 +125,16 @@ public class RJP10V2RamlAction implements RamlAction {
     public void setDescription(String description) {
     	throw new UnsupportedOperationException();
     }
+    
+    @Override
+	public String getDisplayName() {
+		return method.displayName().value();
+	}
+
+	@Override
+	public void setDisplayName(String displayName) {
+		throw new UnsupportedOperationException();
+	}
 
     @Override
     public void setResource(RamlResource resource) {

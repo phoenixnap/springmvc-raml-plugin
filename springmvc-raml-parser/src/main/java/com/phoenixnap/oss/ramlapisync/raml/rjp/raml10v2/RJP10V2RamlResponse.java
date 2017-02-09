@@ -24,6 +24,7 @@ import org.raml.v2.api.model.v10.bodies.Response;
  * Implementation based on the Raml 1.0 Parser
  * 
  * @author Aleksandar Stojsavljevic
+ * @since 0.10.0
  */
 public class RJP10V2RamlResponse implements RamlResponse {
 

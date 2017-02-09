@@ -38,8 +38,12 @@ public interface RamlAction {
     boolean hasBody();
 
     String getDescription();
-
+    
     void setDescription(String description);
+    
+    String getDisplayName();
+    
+    void setDisplayName(String displayName);
 
     void setBody(Map<String, RamlMimeType> body);
 

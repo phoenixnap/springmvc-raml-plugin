@@ -1,0 +1,41 @@
+#%RAML 1.0
+title: myapi
+baseUri: api
+mediaType: application/json
+types:
+  Person:
+    type: object
+  Manager:
+    type: Person
+/persons:
+  displayName: Persons handling
+  get:
+    displayName: Persons
+    description: Get all persons
+    queryParameters: 
+      testX: 
+        displayName: testX
+        type: string
+        default: def_value
+        minLength: 3
+        maxLength: 10
+      testY: integer
+    protocols: HTTP
+    headers:
+      Accept:
+        description: Response type acceptable by client
+        required: false
+        default: application/json
+        type: string
+    responses: 
+      200:
+        description: Successful response
+        body: 
+          application/json:
+            schema: Person
+  post:
+    description: Create new person
+    body: 
+      application/json:
+        type: Person
+/managers:

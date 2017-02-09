@@ -14,6 +14,7 @@ package com.phoenixnap.oss.ramlapisync.raml.rjp.raml10v2;
 
 import java.math.BigDecimal;
 
+import org.raml.v2.api.model.v10.datamodel.StringTypeDeclaration;
 import org.raml.v2.api.model.v10.datamodel.TypeDeclaration;
 
 import com.phoenixnap.oss.ramlapisync.raml.RamlParamType;
@@ -23,6 +24,7 @@ import com.phoenixnap.oss.ramlapisync.raml.RamlQueryParameter;
  * Implementation based on the Raml 1.0 Parser
  * 
  * @author Aleksandar Stojsavljevic
+ * @since 0.10.0
  */
 public class RJP10V2RamlQueryParameter extends RamlQueryParameter {
 
@@ -95,11 +97,17 @@ public class RJP10V2RamlQueryParameter extends RamlQueryParameter {
 
     @Override
     public Integer getMinLength() {
-    	throw new UnsupportedOperationException();
+    	if(queryParameter instanceof StringTypeDeclaration){
+    		return ((StringTypeDeclaration) queryParameter).minLength();
+    	}
+        throw new UnsupportedOperationException();
     }
 
     @Override
     public Integer getMaxLength() {
+    	if(queryParameter instanceof StringTypeDeclaration){
+    		return ((StringTypeDeclaration) queryParameter).maxLength();
+    	}
         throw new UnsupportedOperationException();
     }
 

@@ -10,6 +10,7 @@ import org.raml.v2.api.RamlModelResult;
 import org.raml.v2.api.model.v10.api.Api;
 import org.raml.v2.api.model.v10.bodies.Response;
 import org.raml.v2.api.model.v10.datamodel.TypeDeclaration;
+import org.raml.v2.api.model.v10.methods.Method;
 import org.raml.v2.api.model.v10.resources.Resource;
 
 import com.phoenixnap.oss.ramlapisync.data.RamlFormParameter;
@@ -28,10 +29,12 @@ import com.phoenixnap.oss.ramlapisync.raml.RamlResponse;
 import com.phoenixnap.oss.ramlapisync.raml.RamlRoot;
 import com.phoenixnap.oss.ramlapisync.raml.RamlSecurityReference;
 import com.phoenixnap.oss.ramlapisync.raml.RamlUriParameter;
+import com.phoenixnap.oss.ramlapisync.raml.rjp.raml08v1.RJP08V1RamlAction;
 
 /**
  * @author aweisser
  * @author Aleksandar Stojsavljevic
+ * @since 0.10.0
  */
 public class RJP10V2RamlModelFactory implements RamlModelFactory {
 
@@ -82,7 +85,10 @@ public class RJP10V2RamlModelFactory implements RamlModelFactory {
 
     @Override
     public RamlAction createRamlAction(Object action) {
-        throw new UnsupportedOperationException();
+    	if (action == null) {
+            return null;
+        }
+        return new RJP10V2RamlAction((Method) action);
     }
 
     @Override
@@ -122,7 +128,10 @@ public class RJP10V2RamlModelFactory implements RamlModelFactory {
 
     @Override
     public RamlMimeType createRamlMimeType(Object mimeType) {
-        throw new UnsupportedOperationException();
+    	if(mimeType == null) {
+            return null;
+        }
+        return new RJP10V2RamlMimeType((TypeDeclaration) mimeType);
     }
 
     @Override
@@ -132,7 +141,10 @@ public class RJP10V2RamlModelFactory implements RamlModelFactory {
 
     @Override
     public RamlHeader createRamlHeader(Object haeder) {
-        throw new UnsupportedOperationException();
+    	if(haeder == null) {
+            return null;
+        }
+        return new RJP10V2RamlHeader((TypeDeclaration) haeder);
     }
 
     @Override
@@ -152,7 +164,10 @@ public class RJP10V2RamlModelFactory implements RamlModelFactory {
 
     @Override
     public RamlQueryParameter createRamlQueryParameter(Object queryParameter) {
-        throw new UnsupportedOperationException();
+    	if(queryParameter == null) {
+            return null;
+        }
+        return new RJP10V2RamlQueryParameter((TypeDeclaration)queryParameter);
     }
 
     @Override
@@ -182,7 +197,10 @@ public class RJP10V2RamlModelFactory implements RamlModelFactory {
 
     @Override
     public RamlParamType createRamlParamType(Object paramType) {
-        throw new UnsupportedOperationException();
+    	if(paramType == null) {
+            return RamlParamType.STRING;
+        }
+    	return RamlParamType.valueOf(((String) paramType).toUpperCase());
     }
 
 	Resource extractResource(RamlResource ramlResource) {
@@ -231,5 +249,4 @@ public class RJP10V2RamlModelFactory implements RamlModelFactory {
     TypeDeclaration extractQueryParameter(RamlQueryParameter ramlQueryParameter) {
         return ((RJP10V2RamlQueryParameter)ramlQueryParameter).getQueryParameter();
     }
-    
 }
