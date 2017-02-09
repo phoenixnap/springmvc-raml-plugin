@@ -15,12 +15,14 @@ package com.phoenixnap.oss.ramlapisync.raml.rjp.raml10v2;
 import org.raml.v2.api.model.v10.datamodel.TypeDeclaration;
 
 import com.phoenixnap.oss.ramlapisync.data.RamlFormParameter;
+import com.phoenixnap.oss.ramlapisync.naming.RamlTypeHelper;
 import com.phoenixnap.oss.ramlapisync.raml.RamlParamType;
 
 /**
  * Implementation based on the Raml 1.0 Parser
  * 
  * @author Aleksandar Stojsavljevic
+ * @since 0.10.0
  */
 public class RJP10V2RamlFormParameter extends RamlFormParameter {
 
@@ -93,5 +95,15 @@ public class RJP10V2RamlFormParameter extends RamlFormParameter {
 	@Override
 	public String getDefaultValue() {
 		return formParameter.defaultValue();
+	}
+
+	@Override
+	public boolean isRepeat() {
+		return RamlTypeHelper.isArray(formParameter);
+	}
+
+	@Override
+	public void setRepeat(boolean repeat) {
+		throw new UnsupportedOperationException();
 	}
 }

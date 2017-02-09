@@ -262,7 +262,7 @@ public class SchemaHelper {
         }
         try {
             ObjectMapper m = new ObjectMapper();
-            JsonSchema jsonSchema = extractSchemaInternal(clazz, TypeHelper.inferGenericType(clazz),
+            JsonSchema jsonSchema = extractSchemaInternal(clazz, JavaTypeHelper.inferGenericType(clazz),
                     responseDescription, javaDocStore, m);
 
             return m.writerWithDefaultPrettyPrinter().writeValueAsString(jsonSchema);
@@ -310,7 +310,7 @@ public class SchemaHelper {
         }
         else if (jsonSchema instanceof ArraySchema && genericType != null) {
             ArraySchema arraySchema = (ArraySchema) jsonSchema;
-            arraySchema.setItemsSchema(extractSchemaInternal(genericType, TypeHelper.inferGenericType(genericType),
+            arraySchema.setItemsSchema(extractSchemaInternal(genericType, JavaTypeHelper.inferGenericType(genericType),
                     responseDescription, javaDocStore, m));
 
         }

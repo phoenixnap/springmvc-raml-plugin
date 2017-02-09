@@ -18,7 +18,7 @@ import com.phoenixnap.oss.ramlapisync.javadoc.JavaDocExtractor;
 import com.phoenixnap.oss.ramlapisync.javadoc.JavaDocStore;
 import com.phoenixnap.oss.ramlapisync.naming.Pair;
 import com.phoenixnap.oss.ramlapisync.naming.SchemaHelper;
-import com.phoenixnap.oss.ramlapisync.naming.TypeHelper;
+import com.phoenixnap.oss.ramlapisync.naming.JavaTypeHelper;
 import com.phoenixnap.oss.ramlapisync.raml.RamlAction;
 import com.phoenixnap.oss.ramlapisync.raml.RamlActionType;
 import com.phoenixnap.oss.ramlapisync.raml.RamlMimeType;
@@ -335,7 +335,7 @@ public abstract class ResourceParser {
 												// they represent and chuck it in here
 		Class<?> returnType = method.getReturnType();
 		Type genericReturnType = method.getGenericReturnType();
-		Type inferGenericType = TypeHelper.inferGenericType(genericReturnType);
+		Type inferGenericType = JavaTypeHelper.inferGenericType(genericReturnType);
 		if (returnType != null && (returnType.equals(DeferredResult.class) || returnType.equals(ResponseEntity.class))) { //unwrap spring classes from response body
 			if (inferGenericType == null) {
 				inferGenericType = Object.class;

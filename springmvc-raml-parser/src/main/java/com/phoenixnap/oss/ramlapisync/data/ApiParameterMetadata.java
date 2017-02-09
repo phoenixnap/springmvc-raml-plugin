@@ -26,7 +26,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 import com.phoenixnap.oss.ramlapisync.annotations.Example;
 import com.phoenixnap.oss.ramlapisync.naming.SchemaHelper;
-import com.phoenixnap.oss.ramlapisync.naming.TypeHelper;
+import com.phoenixnap.oss.ramlapisync.naming.JavaTypeHelper;
 import com.phoenixnap.oss.ramlapisync.raml.RamlAbstractParam;
 import com.phoenixnap.oss.ramlapisync.raml.RamlUriParameter;
 
@@ -172,7 +172,7 @@ public class ApiParameterMetadata {
 		this.param = param;
 		if (param != null) {
 			this.type = param.getType();
-			this.genericType = TypeHelper.inferGenericType(param.getParameterizedType());
+			this.genericType = JavaTypeHelper.inferGenericType(param.getParameterizedType());
 		}
 
 		Example parameterExample = param.getAnnotation(Example.class);

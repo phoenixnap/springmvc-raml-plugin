@@ -10,32 +10,27 @@
  * an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the
  * specific language governing permissions and limitations under the License.
  */
-package com.phoenixnap.oss.ramlapisync.raml;
+package com.phoenixnap.oss.ramlapisync.naming;
 
-import com.phoenixnap.oss.ramlapisync.data.RamlFormParameter;
-
-import java.util.List;
-import java.util.Map;
+import org.raml.v2.api.model.v10.datamodel.TypeDeclaration;
 
 /**
- * Abstract Representation of a Raml MimeType
+ * Simple class containing utility methods for dealing with Raml Types
  * 
- * @author armin.weisser
- * @since 0.8.1
+ * @author Kurt Paris
+ * @since 0.10.0
+ *
  */
-public interface RamlMimeType {
+public class RamlTypeHelper {
 
-    Map<String, List<RamlFormParameter>> getFormParameters();
+	/**
+	 * Attempts to infer the type in the generic part of the declaration of the type
+	 * @param param The parameter to inspect
+	 * @return The Class in the generic portrion of the typ
+	 */
+	public static boolean isArray(TypeDeclaration param) {
+		throw new UnsupportedOperationException(); //TODO
+	}
 
-    void setFormParameters(Map<String, List<RamlFormParameter>> formParameters);
 
-    void addFormParameters(String name, List<RamlFormParameter> formParameters);
-
-    String getSchema();
-
-    void setSchema(String schema);
-
-    void setExample(String example);
-    
-    
 }

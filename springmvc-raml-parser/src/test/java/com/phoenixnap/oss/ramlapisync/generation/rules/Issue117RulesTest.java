@@ -1,17 +1,15 @@
 package com.phoenixnap.oss.ramlapisync.generation.rules;
 
-import static com.phoenixnap.oss.ramlapisync.generation.rules.spring.SpringControllerDecoratorRule.CALLABLE_RESPONSE_CONFIGURATION;
-
 import java.util.HashMap;
 import java.util.Map;
 
 import org.junit.BeforeClass;
 import org.junit.Test;
-import org.springframework.web.util.UriComponentsBuilder;
 
 import com.phoenixnap.oss.ramlapisync.data.ApiResourceMetadata;
 import com.phoenixnap.oss.ramlapisync.generation.RamlParser;
 import com.phoenixnap.oss.ramlapisync.generation.rules.spring.SpringConfigurableRule;
+import com.phoenixnap.oss.ramlapisync.raml.InvalidRamlResourceException;
 import com.sun.codemodel.JCodeModel;
 import com.sun.codemodel.JDefinedClass;
 
@@ -24,7 +22,7 @@ public class Issue117RulesTest extends AbstractRuleTestBase {
 	private Rule<JCodeModel, JDefinedClass, ApiResourceMetadata> rule;
 
 	@BeforeClass
-	public static void initRaml() {
+	public static void initRaml() throws InvalidRamlResourceException  {
 		AbstractRuleTestBase.RAML = RamlParser.loadRamlFromFile(AbstractRuleTestBase.RESOURCE_BASE + "issue-117.raml");
 	}
 	
