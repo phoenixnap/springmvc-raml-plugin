@@ -194,4 +194,9 @@ public class RJP08V1RamlResource implements RamlResource {
     public int hashCode() {
         return resource.hashCode();
     }
+
+	@Override
+	public String getDisplayName() {
+		throw new UnsupportedOperationException();
+	}
 }

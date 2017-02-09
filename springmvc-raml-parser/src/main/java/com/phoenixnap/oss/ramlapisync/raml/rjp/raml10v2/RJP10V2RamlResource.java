@@ -1,15 +1,19 @@
 package com.phoenixnap.oss.ramlapisync.raml.rjp.raml10v2;
 
+import java.util.HashMap;
+import java.util.Map;
+
+import org.raml.v2.api.model.v10.methods.Method;
+import org.raml.v2.api.model.v10.resources.Resource;
+
 import com.phoenixnap.oss.ramlapisync.raml.RamlAction;
 import com.phoenixnap.oss.ramlapisync.raml.RamlActionType;
 import com.phoenixnap.oss.ramlapisync.raml.RamlResource;
 import com.phoenixnap.oss.ramlapisync.raml.RamlUriParameter;
-import org.raml.v2.api.model.v10.resources.Resource;
-
-import java.util.Map;
 
 /**
  * @author aweisser
+ * @author Aleksandar Stojsavljevic
  */
 public class RJP10V2RamlResource implements RamlResource {
     private final Resource delegate;
@@ -51,7 +55,11 @@ public class RJP10V2RamlResource implements RamlResource {
 
     @Override
     public Map<RamlActionType, RamlAction> getActions() {
-        throw new UnsupportedOperationException();
+    	Map<RamlActionType, RamlAction> actions = new HashMap<RamlActionType, RamlAction>();
+    	for(Method method : this.delegate.methods()){
+    		actions.put(RamlActionType.valueOf(method.method().toUpperCase()), new RJP10V2RamlAction(method));
+    	}
+    	return actions;
     }
 
     @Override
@@ -76,7 +84,12 @@ public class RJP10V2RamlResource implements RamlResource {
 
     @Override
     public String getDescription() {
-        throw new UnsupportedOperationException();
+    	return this.delegate.description().value();
+    }
+    
+    @Override
+    public String getDisplayName() {
+    	return this.delegate.displayName().value();
     }
 
     @Override
