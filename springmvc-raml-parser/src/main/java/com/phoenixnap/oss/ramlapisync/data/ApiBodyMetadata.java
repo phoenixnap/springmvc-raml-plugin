@@ -12,12 +12,13 @@
  */
 package com.phoenixnap.oss.ramlapisync.data;
 
+import org.jsonschema2pojo.Annotator;
+import org.jsonschema2pojo.GenerationConfig;
+
 import com.phoenixnap.oss.ramlapisync.naming.NamingHelper;
 import com.phoenixnap.oss.ramlapisync.naming.SchemaHelper;
 import com.phoenixnap.oss.ramlapisync.raml.RamlParamType;
 import com.sun.codemodel.JCodeModel;
-import org.jsonschema2pojo.Annotator;
-import org.jsonschema2pojo.GenerationConfig;
 
 /**
  * 
@@ -34,32 +35,6 @@ public class ApiBodyMetadata {
 	private JCodeModel codeModel;
 	private boolean array = false;
 	
-	public static void main (String[] args) {
-		String schema = "{"
-				+ "\"$schema\": \"http://json-schema.org/draft-04/schema\","
-				+ "\"type\" : \"object\","
-				+ "\"javaType\": \"com.pnap.pncp.rbac.rest.model.Role\","
-				+ "\"id\" : \"role\","
-				+ "\"properties\" : {"
-				+ "\"id\" : {"
-				+ "  \"type\" : \"integer\""
-				+ "},"
-				+ " \"name\" : {"
-				+ "  \"type\" : \"string\""
-				+ "},"
-				+ "\"description\" : {"
-				+ "  \"type\" : \"string\""
-				+ "},"
-				+ "\"addedOn\" : {"
-				+ "  \"type\" : \"integer\","
-				+ "  \"format\" : \"UTC_MILLISEC\""
-				+ "}"
-				+ "},"
-				+ "\"additionalProperties\" : false"
-				+ "}";
-		ApiBodyMetadata abm = new ApiBodyMetadata("blargh", schema, new JCodeModel());
-		System.out.println(abm.getName());
-	}
 	
 	public ApiBodyMetadata (String name, String schema, JCodeModel codeModel) {
 		super();
