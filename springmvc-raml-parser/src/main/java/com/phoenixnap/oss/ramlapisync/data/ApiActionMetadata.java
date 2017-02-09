@@ -14,14 +14,17 @@ package com.phoenixnap.oss.ramlapisync.data;
 
 import com.phoenixnap.oss.ramlapisync.naming.NamingHelper;
 import com.phoenixnap.oss.ramlapisync.naming.RamlHelper;
+import com.phoenixnap.oss.ramlapisync.naming.RamlTypeHelper;
 import com.phoenixnap.oss.ramlapisync.naming.SchemaHelper;
 import com.phoenixnap.oss.ramlapisync.parser.ResourceParser;
 import com.phoenixnap.oss.ramlapisync.raml.RamlAction;
 import com.phoenixnap.oss.ramlapisync.raml.RamlActionType;
+import com.phoenixnap.oss.ramlapisync.raml.RamlDataType;
 import com.phoenixnap.oss.ramlapisync.raml.RamlMimeType;
 import com.phoenixnap.oss.ramlapisync.raml.RamlResource;
 import com.phoenixnap.oss.ramlapisync.raml.RamlResponse;
 import com.phoenixnap.oss.ramlapisync.raml.RamlUriParameter;
+
 import org.springframework.http.MediaType;
 import org.springframework.util.StringUtils;
 
@@ -142,12 +145,18 @@ public class ApiActionMetadata {
 		if (ResourceParser.doesActionTypeSupportRequestBody(actionType) && mime.getKey().toLowerCase().contains("json")) {
 			// Continue here!
 			String schema = mime.getValue().getSchema();
-			if (StringUtils.hasText(schema)) {
-				ApiBodyMetadata requestBody = SchemaHelper.mapSchemaToPojo(parent.getDocument(), schema, parent.getBasePackage()
-						+ NamingHelper.getDefaultModelPackage(), StringUtils.capitalize(getName()) + "Request", null);
-				if (requestBody != null) {
-					setRequestBody(requestBody, mime.getKey());
-				}
+			RamlDataType type = mime.getValue().getType();
+			//prefer type if we have it.
+			ApiBodyMetadata requestBody = null;
+			String basePackage = parent.getBasePackage() + NamingHelper.getDefaultModelPackage();
+			String name = StringUtils.capitalize(getName()) + "Request";
+			if (type != null && type.getType() != null) {
+				requestBody = RamlTypeHelper.mapTypeToPojo(parent.getDocument(), type.getType(), basePackage, name);
+			} else if (StringUtils.hasText(schema)) {
+				requestBody = SchemaHelper.mapSchemaToPojo(parent.getDocument(), schema, basePackage, name, null);
+			}
+			if (requestBody != null) {
+				setRequestBody(requestBody, mime.getKey());
 			}
 		}
 	}

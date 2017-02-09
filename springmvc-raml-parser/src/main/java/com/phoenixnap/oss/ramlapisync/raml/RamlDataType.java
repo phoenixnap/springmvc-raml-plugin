@@ -12,6 +12,8 @@
  */
 package com.phoenixnap.oss.ramlapisync.raml;
 
+import org.raml.v2.api.model.v10.datamodel.TypeDeclaration;
+
 /**
  * Abstraction model for RAML Data types
  * 
@@ -20,5 +22,7 @@ package com.phoenixnap.oss.ramlapisync.raml;
  *
  */
 public interface RamlDataType {
+	
+	TypeDeclaration getType();
 
 }

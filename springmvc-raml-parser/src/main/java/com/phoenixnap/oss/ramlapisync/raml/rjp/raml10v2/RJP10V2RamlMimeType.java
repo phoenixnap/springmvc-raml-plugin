@@ -16,9 +16,12 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.raml.v2.api.model.v10.datamodel.ExternalTypeDeclaration;
 import org.raml.v2.api.model.v10.datamodel.TypeDeclaration;
 
 import com.phoenixnap.oss.ramlapisync.data.RamlFormParameter;
+import com.phoenixnap.oss.ramlapisync.naming.RamlTypeHelper;
+import com.phoenixnap.oss.ramlapisync.raml.RamlDataType;
 import com.phoenixnap.oss.ramlapisync.raml.RamlMimeType;
 
 /**
@@ -58,7 +61,11 @@ public class RJP10V2RamlMimeType implements RamlMimeType {
 
     @Override
     public String getSchema() {
-        return mimeType.type();
+    	if (RamlTypeHelper.isSchemaType(mimeType)) {
+    		return ((ExternalTypeDeclaration) mimeType).schemaContent();
+    	} else {
+    		return null;
+    	}
     }
 
     @Override
@@ -75,5 +82,17 @@ public class RJP10V2RamlMimeType implements RamlMimeType {
     public void addFormParameters(String name, List<RamlFormParameter> ramlFormParameters) {
     	throw new UnsupportedOperationException();
     }
+
+	@Override
+	public RamlDataType getType() {
+   		return new RJP10V2RamlDataType(mimeType);
+	}
+
+	@Override
+	public void setType(RamlDataType type) {
+		throw new UnsupportedOperationException();
+	}
+	
+	
 
 }

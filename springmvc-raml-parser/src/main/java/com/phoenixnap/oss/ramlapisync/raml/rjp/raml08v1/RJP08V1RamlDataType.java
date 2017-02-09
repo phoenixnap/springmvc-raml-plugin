@@ -12,6 +12,8 @@
  */
 package com.phoenixnap.oss.ramlapisync.raml.rjp.raml08v1;
 
+import org.raml.v2.api.model.v10.datamodel.TypeDeclaration;
+
 import com.phoenixnap.oss.ramlapisync.raml.RamlDataType;
 
 /**
@@ -22,5 +24,10 @@ import com.phoenixnap.oss.ramlapisync.raml.RamlDataType;
  *
  */
 public class RJP08V1RamlDataType implements RamlDataType {
+
+	@Override
+	public TypeDeclaration getType() {
+		throw new UnsupportedOperationException();
+	}
 
 }

@@ -12,10 +12,14 @@
  */
 package com.phoenixnap.oss.ramlapisync.raml.rjp.raml10v2;
 
+import org.raml.v2.api.model.v10.datamodel.TypeDeclaration;
+
 import com.phoenixnap.oss.ramlapisync.raml.RamlDataType;
 
 /**
- * Raml 1.0 implementation for RAML Data type support
+ * Raml 1.0 implementation for RAML Data type support. 
+ * Note this may become very similar to the Mimetype under the hood, however logically it is quite different and this distinction may 
+ * simplify the parser logic. If not we can refactor this away 
  * 
  * @author Kurt Paris
  * @since 0.10.0
@@ -23,4 +27,14 @@ import com.phoenixnap.oss.ramlapisync.raml.RamlDataType;
  */
 public class RJP10V2RamlDataType implements RamlDataType {
 
+    private final TypeDeclaration dataType;
+
+    public RJP10V2RamlDataType(TypeDeclaration dataType) {
+        this.dataType = dataType;
+    }
+
+	@Override
+	public TypeDeclaration getType() {
+		return this.dataType;
+	}
 }

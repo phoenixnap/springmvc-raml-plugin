@@ -32,6 +32,14 @@ public interface RamlMimeType {
     void addFormParameters(String name, List<RamlFormParameter> formParameters);
 
     String getSchema();
+    
+    /**
+     * The Raml data type associated with this schema
+     * @return
+     */
+    RamlDataType getType();
+    
+    void setType(RamlDataType type);
 
     void setSchema(String schema);
 
