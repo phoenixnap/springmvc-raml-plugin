@@ -178,13 +178,21 @@ public class ApiActionMetadata {
 				if (responseContentTypeFilter == null || body.getKey().equals(responseContentTypeFilter)) {
 					if (body.getKey().toLowerCase().contains("json")) { //if we have a json type we need to return an object
 						// Continue here!
+						ApiBodyMetadata responseBody = null;
+						
+						RamlDataType type = body.getValue().getType();
 						String schema = body.getValue().getSchema();
-						if (StringUtils.hasText(schema)) {
-							ApiBodyMetadata responseBody = SchemaHelper.mapSchemaToPojo(parent.getDocument(), schema,
-									parent.getBasePackage() + NamingHelper.getDefaultModelPackage(), StringUtils.capitalize(getName()) + "Response", null);
-							if (responseBody != null) {
-								this.responseBody.put(body.getKey(), responseBody);
-							}
+						//prefer type if we have it.
+						String basePackage = parent.getBasePackage() + NamingHelper.getDefaultModelPackage();
+						String name = StringUtils.capitalize(getName()) + "Response";
+						if (type != null && type.getType() != null) {
+							responseBody = RamlTypeHelper.mapTypeToPojo(parent.getDocument(), type.getType(), basePackage, name);
+						} else if (StringUtils.hasText(schema)) {
+							responseBody = SchemaHelper.mapSchemaToPojo(parent.getDocument(), schema, basePackage, name, null);
+						}
+						
+						if (responseBody != null) {
+							this.responseBody.put(body.getKey(), responseBody);
 						}
 					}
 				}

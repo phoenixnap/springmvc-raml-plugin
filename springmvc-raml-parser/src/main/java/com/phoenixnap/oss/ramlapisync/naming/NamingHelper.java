@@ -175,6 +175,18 @@ public class NamingHelper {
 		}
 		return output;
 	}
+	
+	/**
+	 * Convert a name into a java className.
+	 *
+	 * eg. MonitorServiceImpl becomes Monitor
+	 *
+	 * @param clazz The name
+	 * @return The name for this using Java class convention
+	 */
+	public static String convertToClassName(String clazz) {		
+		return StringUtils.capitalize(cleanNameForJava(clazz));
+	}
 
 	/**
 	 * Convert a class name into its restful Resource representation.

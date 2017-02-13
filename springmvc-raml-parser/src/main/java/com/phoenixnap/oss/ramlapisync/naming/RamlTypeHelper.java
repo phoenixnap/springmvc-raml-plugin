@@ -16,6 +16,7 @@ import org.raml.v2.api.model.v10.datamodel.ExternalTypeDeclaration;
 import org.raml.v2.api.model.v10.datamodel.TypeDeclaration;
 
 import com.phoenixnap.oss.ramlapisync.data.ApiBodyMetadata;
+import com.phoenixnap.oss.ramlapisync.pojo.PojoBuilderFactory;
 import com.phoenixnap.oss.ramlapisync.raml.RamlRoot;
 
 /**
@@ -53,6 +54,7 @@ public class RamlTypeHelper {
      * @return Object representing this Body
      */
 	public static ApiBodyMetadata mapTypeToPojo(RamlRoot document, TypeDeclaration type, String basePackage, String name) {
+		PojoBuilderFactory factory = new PojoBuilderFactory();
 		throw new UnsupportedOperationException(); //TODO
 	}
 	

@@ -63,6 +63,7 @@
 		<reflections.version>0.9.10</reflections.version>
 		<javaparser.version>2.4.0</javaparser.version>
 		<feign.client.version>1.1.6.RELEASE</feign.client.version>
+        <codemodel.version>2.6</codemodel.version>
 	</properties>
   
 	<build>
@@ -117,6 +118,12 @@
 			<scope>import</scope>
 		</dependency>
 		
+        <dependency>
+            <groupId>com.sun.codemodel</groupId>
+            <artifactId>codemodel</artifactId>
+            <version>${codemodel.version}</version>
+        </dependency>
+        
 		<dependency>
 			<groupId>com.github.javaparser</groupId>
 			<artifactId>javaparser-core</artifactId>
