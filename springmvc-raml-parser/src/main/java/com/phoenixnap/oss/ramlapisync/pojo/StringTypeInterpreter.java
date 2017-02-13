@@ -45,7 +45,7 @@ public class StringTypeInterpreter extends BaseTypeInterpreter {
 			//do stringy stuff - enums and stuff.
 		}
 		
-		result.setResolvedClass(CodeModelHelper.findFirstClassBySimpleName(builderModel, "String"));
+		result.setResolvedClass(CodeModelHelper.findFirstClassBySimpleName(builderModel, "java.lang.String"));
 		return result;
 	}
 

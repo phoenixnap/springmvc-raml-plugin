@@ -19,7 +19,6 @@ import org.raml.v2.api.model.v10.datamodel.ObjectTypeDeclaration;
 import org.raml.v2.api.model.v10.datamodel.TypeDeclaration;
 
 import com.phoenixnap.oss.ramlapisync.generation.CodeModelHelper;
-import com.phoenixnap.oss.ramlapisync.naming.NamingHelper;
 import com.phoenixnap.oss.ramlapisync.naming.RamlTypeHelper;
 import com.sun.codemodel.JClass;
 import com.sun.codemodel.JCodeModel;
@@ -65,16 +64,16 @@ public class ObjectTypeInterpreter extends BaseTypeInterpreter {
 		for (TypeDeclaration property : objectType.properties()) {
 			RamlTypeInterpreter interpreterForType = PojoBuilderFactory.getInterpreterForType(property);
 			RamlInterpretationResult interpret = interpreterForType.interpret(property, builderModel, config);
-			String childName = null;
+			String childType = null;
 			if (interpret.getResolvedClass() != null) {
-				childName = interpret.getResolvedClass().fullName();
+				childType = interpret.getResolvedClass().name();
 			} else if (interpret.getBuilder() != null) {
-				childName = interpret.getBuilder().getPojo().name();
+				childType = interpret.getBuilder().getPojo().name();
+			} else {
+				childType = "Object";
 			}
 			
-			if (childName != null) {
-				builder.withField(property.name(), NamingHelper.getParameterName(childName), RamlTypeHelper.getDescription(property));
-			}
+			builder.withField(property.name(), childType, RamlTypeHelper.getDescription(property));
 		}
 		
 		
