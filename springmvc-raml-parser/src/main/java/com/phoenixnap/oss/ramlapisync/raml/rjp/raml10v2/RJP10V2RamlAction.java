@@ -18,6 +18,7 @@ import java.util.Map;
 
 import org.raml.v2.api.model.v10.methods.Method;
 
+import com.phoenixnap.oss.ramlapisync.naming.RamlTypeHelper;
 import com.phoenixnap.oss.ramlapisync.raml.RamlAction;
 import com.phoenixnap.oss.ramlapisync.raml.RamlActionType;
 import com.phoenixnap.oss.ramlapisync.raml.RamlHeader;
@@ -70,12 +71,16 @@ public class RJP10V2RamlAction implements RamlAction {
                 method.queryParameters(),
                 queryParameters,
                 ramlModelFactory::createRamlQueryParameter,
-                r -> r.displayName().value());
+                r -> RamlTypeHelper.getDisplayName(r));
     }
 
     @Override
     public Map<String, RamlResponse> getResponses() {
-    	throw new UnsupportedOperationException();
+    	return ramlModelFactory.transformToUnmodifiableMap(
+                method.responses(),
+                responses,
+                ramlModelFactory::createRamlResponse,
+                r -> r.code().value());
     }
 
     @Override
@@ -94,7 +99,7 @@ public class RJP10V2RamlAction implements RamlAction {
                 method.headers(),
                 headers,
                 ramlModelFactory::createRamlHeader,
-                r -> r.displayName().value());
+                r -> RamlTypeHelper.getDisplayName(r));
     }
 
     @Override
@@ -103,7 +108,7 @@ public class RJP10V2RamlAction implements RamlAction {
                 method.body(),
                 body,
                 ramlModelFactory::createRamlMimeType,
-                r -> r.displayName().value());
+                r -> RamlTypeHelper.getDisplayName(r));
     }
 
     @Override

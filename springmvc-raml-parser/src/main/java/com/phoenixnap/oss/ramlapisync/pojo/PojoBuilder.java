@@ -12,8 +12,6 @@
  */
 package com.phoenixnap.oss.ramlapisync.pojo;
 
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
 import java.io.Serializable;
 import java.text.SimpleDateFormat;
 import java.util.Collection;
@@ -22,10 +20,6 @@ import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.Random;
 
-import org.apache.log4j.ConsoleAppender;
-import org.apache.log4j.Level;
-import org.apache.log4j.Logger;
-import org.apache.log4j.PatternLayout;
 import org.springframework.util.StringUtils;
 
 import com.phoenixnap.oss.ramlapisync.generation.CodeModelHelper;
@@ -41,7 +35,6 @@ import com.sun.codemodel.JMethod;
 import com.sun.codemodel.JMod;
 import com.sun.codemodel.JPackage;
 import com.sun.codemodel.JType;
-import com.sun.codemodel.writer.SingleStreamCodeWriter;
 
 /**
  * Builder pattern for POJO generation using jCodeModel. Provides basic utility methods including extension and
@@ -261,43 +254,5 @@ public class PojoBuilder {
 	private JType resolveType(String type) {
 		return CodeModelHelper.findFirstClassBySimpleName(pojoModel, type);
 	}
-
-	public static void main(String[] args) throws Exception {
-		ConsoleAppender console = new ConsoleAppender();
-		 //configure the appender
-		  String PATTERN = "%d [%p|%c|%C{1}] %m%n";
-		  console.setLayout(new PatternLayout(PATTERN)); 
-		  console.setThreshold(Level.DEBUG);
-		  console.activateOptions();
-		Logger.getRootLogger().addAppender(console);
-		PojoBuilderFactory factory = new PojoBuilderFactory();
-	 	PojoBuilder pojoBuilder = new PojoBuilder("com.gen.foo", "TestClass")
-	 	.withClassComment("Hi there")
-	 	.withField("aField", "Object", null)
-	 	.withField("oohAnother", "String", "No Comment :p");
-	 	
-	 	
-	 	PojoBuilder anotherBuilder = new PojoBuilder(pojoBuilder.getCodeModel(), "com.gen.foo", "AnotherTestClass")
-	 	.withClassComment("Hi there again")
-	 	.withField("zomg", "Integer", null)
-	 	.withField("zomomg", "String", "No Comment :p");
-	 	
-	 	PojoBuilder yetAnotherBuilder = new PojoBuilder(pojoBuilder.getCodeModel(), "com.gen.foo", "ChildTestClass")
-	 	.extendsClass(pojoBuilder)
-	 	.withClassComment("Hi there oh")
-	 	.withField("bob", "java.util.List<Integer>", null)
-	 	.withField("boblet", "String", "No Comment :p")
-	 	.withCompleteConstructor();
-	 	
-		ByteArrayOutputStream bos = new ByteArrayOutputStream();
-		try {
-			anotherBuilder.getCodeModel().build(new SingleStreamCodeWriter(bos));
-		} catch (IOException e) {
-			//do nothing
-		}
-		System.out.println(bos.toString());
-
-	}
-	
 
 }

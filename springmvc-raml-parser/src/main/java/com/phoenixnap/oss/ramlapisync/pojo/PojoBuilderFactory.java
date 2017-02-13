@@ -19,7 +19,6 @@ import org.raml.v2.api.model.v10.datamodel.TypeDeclaration;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-
 /**
  * Factory that will map PojoBuilders for specific RAML types
  * 
@@ -28,40 +27,53 @@ import org.slf4j.LoggerFactory;
  *
  */
 public class PojoBuilderFactory {
-	
-    protected static final Logger logger = LoggerFactory.getLogger(PojoBuilderFactory.class);
-	
-	static RamlTypeInterpreter[] SUPPORTED_INTERPRETERS = { new ObjectTypeInterpreter() };
-	static RamlTypeInterpreter DEFAULT_INTERPRETER = new StringTypeInterpreter() ;
-	
-	private static Map<String, RamlTypeInterpreter> interpreters = new LinkedHashMap<>();
-	
+
+	protected static final Logger logger = LoggerFactory.getLogger(PojoBuilderFactory.class);
+
+	static RamlTypeInterpreter DEFAULT_INTERPRETER = new StringTypeInterpreter();
+	static RamlTypeInterpreter[] SUPPORTED_INTERPRETERS = { new ObjectTypeInterpreter(), new NumberTypeInterpreter(), DEFAULT_INTERPRETER };
+
+	private static Map<Class<? extends TypeDeclaration>, RamlTypeInterpreter> interpreters = new LinkedHashMap<>();
+	private static Map<Class<? extends TypeDeclaration>, RamlTypeInterpreter> interpreterCache = new LinkedHashMap<>();
+
 	static {
 		for (RamlTypeInterpreter interpreter : SUPPORTED_INTERPRETERS) {
 			for (Class<? extends TypeDeclaration> type : interpreter.getSupportedTypes()) {
-				String key = identifyByClass(type);
-				if (interpreters.containsKey(key)) {
-					logger.warn("Overwriting Interpreter " + interpreters.get(key) + " with " + identifyByClass(interpreter) + " for type " + key);
+				if (interpreters.containsKey(type)) {
+					logger.warn("Overwriting Interpreter " + interpreters.get(type) + " with "
+							+ identifyByClass(interpreter) + " for type " + type.getSimpleName());
 				}
-						
-				interpreters.put(key, interpreter);
-				logger.info("Adding Interpreter " + identifyByClass(interpreter) + " for type " + key);
+
+				interpreters.put(type, interpreter);
+				logger.info("Adding Interpreter " + identifyByClass(interpreter) + " for type " + type.getSimpleName());
 			}
 		}
 	}
-	
+
 	private static String identifyByClass(Object obj) {
 		if (obj instanceof Class<?>) {
-			return ((Class<?>)obj).getSimpleName();
+			return ((Class<?>) obj).getSimpleName();
 		} else {
 			return obj.getClass().getSimpleName();
 		}
 	}
-	
-	public static RamlTypeInterpreter getInterpreterForType (TypeDeclaration type) {
-		RamlTypeInterpreter interpreter =  interpreters.get(identifyByClass(type));
+
+	public static RamlTypeInterpreter getInterpreterForType(TypeDeclaration type) {
+		RamlTypeInterpreter interpreter = interpreterCache.get(identifyByClass(type));
+		if (interpreter != null) {
+			return interpreter;
+		}
+
+		for (Class<? extends TypeDeclaration> key : interpreters.keySet()) {
+			if (key.isAssignableFrom(type.getClass())) {
+				interpreter = interpreters.get(key);
+				interpreterCache.put(type.getClass(), interpreter);
+				break;
+			}
+		}
 		if (interpreter == null) {
-			logger.error("Missing Interpreter for type " + identifyByClass(type));
+			logger.error("Missing Interpreter for type " + identifyByClass(type) + ":" + type.type());
+			interpreter = DEFAULT_INTERPRETER;
 		}
 		return interpreter;
 	}

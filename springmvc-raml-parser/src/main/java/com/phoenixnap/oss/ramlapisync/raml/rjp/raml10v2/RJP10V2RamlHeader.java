@@ -14,6 +14,7 @@ package com.phoenixnap.oss.ramlapisync.raml.rjp.raml10v2;
 
 import org.raml.v2.api.model.v10.datamodel.TypeDeclaration;
 
+import com.phoenixnap.oss.ramlapisync.naming.RamlTypeHelper;
 import com.phoenixnap.oss.ramlapisync.raml.RamlHeader;
 import com.phoenixnap.oss.ramlapisync.raml.RamlParamType;
 
@@ -35,7 +36,7 @@ public class RJP10V2RamlHeader extends RamlHeader {
 
     @Override
     public String getDisplayName() {
-        return header.displayName().value();
+        return RamlTypeHelper.getDisplayName(header);
     }
 
     @Override
@@ -55,7 +56,7 @@ public class RJP10V2RamlHeader extends RamlHeader {
 
     @Override
     public boolean isRequired() {
-        return header.required().booleanValue();
+        return RamlTypeHelper.isRequired(header);
     }
 
     @Override
@@ -75,12 +76,12 @@ public class RJP10V2RamlHeader extends RamlHeader {
 
     @Override
     public String getExample() {
-        return header.example().value();
+        return RamlTypeHelper.getExample(header);
     }
 
     @Override
     public String getDescription() {
-        return header.description().value();
+        return RamlTypeHelper.getDescription(header);
     }
 
 	@Override

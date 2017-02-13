@@ -64,7 +64,7 @@ public class RJP10V2RamlFormParameter extends RamlFormParameter {
 
     @Override
     public boolean isRequired() {
-        return formParameter.required().booleanValue();
+        return RamlTypeHelper.isRequired(formParameter);
     }
 
     @Override
@@ -74,7 +74,7 @@ public class RJP10V2RamlFormParameter extends RamlFormParameter {
 
     @Override
     public String getExample() {
-        return formParameter.example().value();
+        return RamlTypeHelper.getExample(formParameter);
     }
 
     @Override
@@ -84,12 +84,12 @@ public class RJP10V2RamlFormParameter extends RamlFormParameter {
 
     @Override
     public String getDescription() {
-        return formParameter.description().value();
+        return RamlTypeHelper.getDescription(formParameter);
     }
 
     @Override
     public String getDisplayName() {
-        return formParameter.displayName().value();
+        return RamlTypeHelper.getDisplayName(formParameter);
     }
 
 	@Override

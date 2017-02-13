@@ -17,6 +17,7 @@ import java.math.BigDecimal;
 import org.raml.v2.api.model.v10.datamodel.StringTypeDeclaration;
 import org.raml.v2.api.model.v10.datamodel.TypeDeclaration;
 
+import com.phoenixnap.oss.ramlapisync.naming.RamlTypeHelper;
 import com.phoenixnap.oss.ramlapisync.raml.RamlParamType;
 import com.phoenixnap.oss.ramlapisync.raml.RamlQueryParameter;
 
@@ -67,7 +68,7 @@ public class RJP10V2RamlQueryParameter extends RamlQueryParameter {
 
     @Override
     public boolean isRequired() {
-        return queryParameter.required().booleanValue();
+        return RamlTypeHelper.isRequired(queryParameter);
     }
 
     @Override
@@ -77,7 +78,7 @@ public class RJP10V2RamlQueryParameter extends RamlQueryParameter {
 
     @Override
     public String getExample() {
-        return queryParameter.example().value();
+        return RamlTypeHelper.getExample(queryParameter);
     }
 
     @Override
@@ -87,7 +88,7 @@ public class RJP10V2RamlQueryParameter extends RamlQueryParameter {
 
     @Override
     public String getDescription() {
-        return queryParameter.description().value();
+        return RamlTypeHelper.getDescription(queryParameter);
     }
 
     @Override
@@ -128,7 +129,7 @@ public class RJP10V2RamlQueryParameter extends RamlQueryParameter {
 
     @Override
     public String getDisplayName() {
-        return this.queryParameter.displayName().value();
+        return RamlTypeHelper.getDisplayName(queryParameter);
     }
 
     @Override

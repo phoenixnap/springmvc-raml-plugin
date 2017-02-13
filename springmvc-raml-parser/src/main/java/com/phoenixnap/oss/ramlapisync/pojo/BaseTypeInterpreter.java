@@ -12,30 +12,28 @@
  */
 package com.phoenixnap.oss.ramlapisync.pojo;
 
+import org.raml.v2.api.model.v10.datamodel.TypeDeclaration;
 
 /**
- * Builder pattern for POJO generation using jCodeModel. Provides basic utility methods including extension and
- * getter/setter generation
+ * Interpreter for Object types.
  * 
  * @author kurtpa
  * @since 0.10.0
  *
  */
-public class PojoGenerationConfig {
-	
-	private String pojoPackage;
-	
-	
+public abstract class BaseTypeInterpreter implements RamlTypeInterpreter {
 
-	public String getPojoPackage() {
-		return pojoPackage;
+	protected void typeCheck(TypeDeclaration type) {
+		boolean found = false;
+		for (Class<?> typeClass : getSupportedTypes()) {
+			if (typeClass.isAssignableFrom(type.getClass())) {
+				found = true;
+				break;
+			}
+		}
+		if (!found) {
+			throw new IllegalStateException("This type is not supported by this interpreter");
+		}
 	}
-
-	public PojoGenerationConfig withPojoPackage(String pojoPackage) {
-		this.pojoPackage = pojoPackage;
-		return this;
-	}
-	
-	
 
 }

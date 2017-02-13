@@ -118,7 +118,10 @@ public class RJP10V2RamlModelFactory implements RamlModelFactory {
 
     @Override
     public RamlResponse createRamlResponse(Object response) {
-        throw new UnsupportedOperationException();
+    	if(response == null) {
+            return null;
+        }
+        return new RJP10V2RamlResponse((Response)response);
     }
 
     @Override

@@ -19,6 +19,8 @@ import org.raml.v2.api.model.v10.datamodel.ObjectTypeDeclaration;
 import org.raml.v2.api.model.v10.datamodel.TypeDeclaration;
 
 import com.phoenixnap.oss.ramlapisync.generation.CodeModelHelper;
+import com.phoenixnap.oss.ramlapisync.naming.NamingHelper;
+import com.phoenixnap.oss.ramlapisync.naming.RamlTypeHelper;
 import com.sun.codemodel.JClass;
 import com.sun.codemodel.JCodeModel;
 
@@ -29,7 +31,7 @@ import com.sun.codemodel.JCodeModel;
  * @since 0.10.0
  *
  */
-public class ObjectTypeInterpreter implements RamlTypeInterpreter {
+public class ObjectTypeInterpreter extends BaseTypeInterpreter {
 
 	@Override
 	public Set<Class<? extends TypeDeclaration>> getSupportedTypes() {
@@ -43,7 +45,7 @@ public class ObjectTypeInterpreter implements RamlTypeInterpreter {
 		
 		typeCheck(type);
 		ObjectTypeDeclaration objectType = (ObjectTypeDeclaration) type;
-		String name = objectType.name();
+		String name = objectType.type();
 		//Lets check if we've already handled this class before.
 		if (builderModel != null) {
 			JClass searchedClass = CodeModelHelper.findFirstClassBySimpleName(builderModel, name);
@@ -57,31 +59,26 @@ public class ObjectTypeInterpreter implements RamlTypeInterpreter {
 			result.setCodeModel(builderModel);
 		}
 		
-		PojoBuilder builder = new PojoBuilder(builderModel, config.getPojoPackage(), objectType.name());
+		PojoBuilder builder = new PojoBuilder(builderModel, config.getPojoPackage(), name);
 		result.setBuilder(builder);
 				
 		for (TypeDeclaration property : objectType.properties()) {
 			RamlTypeInterpreter interpreterForType = PojoBuilderFactory.getInterpreterForType(property);
 			RamlInterpretationResult interpret = interpreterForType.interpret(property, builderModel, config);
-			builder.withField(property.name(), interpret.getResolvedClass().fullName(), property.description().value());
+			String childName = null;
+			if (interpret.getResolvedClass() != null) {
+				childName = interpret.getResolvedClass().fullName();
+			} else if (interpret.getBuilder() != null) {
+				childName = interpret.getBuilder().getPojo().name();
+			}
+			
+			if (childName != null) {
+				builder.withField(property.name(), NamingHelper.getParameterName(childName), RamlTypeHelper.getDescription(property));
+			}
 		}
 		
 		
 		return result;
-	}
-
-
-	private void typeCheck(TypeDeclaration type) {
-		boolean found = false;
-		for (Class<?> typeClass : getSupportedTypes()) {
-			if (typeClass.isAssignableFrom(type.getClass())) {
-				found = true;
-				break;
-			}
-		}
-		if (!found) {
-			throw new IllegalStateException("This type is not supported by this interpreter");
-		}
 	}
 
 }

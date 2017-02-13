@@ -15,6 +15,7 @@ package com.phoenixnap.oss.ramlapisync.pojo;
 import java.util.Collections;
 import java.util.Set;
 
+import org.raml.v2.api.model.v10.datamodel.NumberTypeDeclaration;
 import org.raml.v2.api.model.v10.datamodel.StringTypeDeclaration;
 import org.raml.v2.api.model.v10.datamodel.TypeDeclaration;
 
@@ -28,11 +29,11 @@ import com.sun.codemodel.JCodeModel;
  * @since 0.10.0
  *
  */
-public class StringTypeInterpreter extends BaseTypeInterpreter {
+public class NumberTypeInterpreter extends BaseTypeInterpreter {
 
 	@Override
 	public Set<Class<? extends TypeDeclaration>> getSupportedTypes() {
-		return Collections.singleton(StringTypeDeclaration.class);
+		return Collections.singleton(NumberTypeDeclaration.class);
 	}
 
 
@@ -40,8 +41,9 @@ public class StringTypeInterpreter extends BaseTypeInterpreter {
 	public RamlInterpretationResult interpret(TypeDeclaration type, JCodeModel builderModel, PojoGenerationConfig config) {
 		RamlInterpretationResult result = new RamlInterpretationResult();
 		
-		if (type instanceof StringTypeDeclaration) {
-			StringTypeDeclaration stringType = (StringTypeDeclaration) type;
+		typeCheck(type);
+		if (type instanceof NumberTypeDeclaration) {
+			NumberTypeDeclaration numberType = (NumberTypeDeclaration) type;
 			//do stringy stuff - enums and stuff.
 		}
 		

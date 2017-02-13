@@ -14,6 +14,7 @@ package com.phoenixnap.oss.ramlapisync.data;
 
 import org.jsonschema2pojo.Annotator;
 import org.jsonschema2pojo.GenerationConfig;
+import org.raml.v2.api.model.v10.datamodel.TypeDeclaration;
 
 import com.phoenixnap.oss.ramlapisync.naming.NamingHelper;
 import com.phoenixnap.oss.ramlapisync.naming.SchemaHelper;
@@ -32,9 +33,20 @@ public class ApiBodyMetadata {
 	
 	private String name;
 	private String schema;
+	private TypeDeclaration type;
 	private JCodeModel codeModel;
 	private boolean array = false;
 	
+	
+	public ApiBodyMetadata (String name, TypeDeclaration type, JCodeModel codeModel) {
+		super();
+		this.schema = null;
+		this.type = type;
+		this.name = name;
+		this.codeModel = codeModel;
+		
+		//TODO array detection. i think we can default this to false since we should already be generating lists from the type.
+	}
 	
 	public ApiBodyMetadata (String name, String schema, JCodeModel codeModel) {
 		super();
@@ -70,6 +82,11 @@ public class ApiBodyMetadata {
 		}
 	}
 	
+
+	public TypeDeclaration getType() {
+		return type;
+	}
+
 	public String getName() {
 		return name;
 	}
@@ -94,7 +111,11 @@ public class ApiBodyMetadata {
 	 * @return built JCodeModel
 	 */
 	public JCodeModel getCodeModel(String basePackage, String schemaLocation, GenerationConfig config, Annotator annotator) {
-		return SchemaHelper.buildBodyJCodeModel(schemaLocation, basePackage, name, schema, config, annotator);
+		if (type != null) {
+			return codeModel;
+		} else {
+			return SchemaHelper.buildBodyJCodeModel(schemaLocation, basePackage, name, schema, config, annotator);
+		}
 	}
 
 }

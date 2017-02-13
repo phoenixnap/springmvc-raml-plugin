@@ -12,6 +12,7 @@
  */
 package com.phoenixnap.oss.ramlapisync.raml.rjp.raml10v2;
 
+import com.phoenixnap.oss.ramlapisync.naming.RamlTypeHelper;
 import com.phoenixnap.oss.ramlapisync.raml.RamlMimeType;
 import com.phoenixnap.oss.ramlapisync.raml.RamlResponse;
 
@@ -36,6 +37,11 @@ public class RJP10V2RamlResponse implements RamlResponse {
 
     public RJP10V2RamlResponse(Response response) {
         this.response = response;
+        ramlModelFactory.transformToUnmodifiableMap(
+        		response.body(),
+        		body,
+                ramlModelFactory::createRamlMimeType,
+                r -> RamlTypeHelper.getDisplayName(r));
     }
 
     /**
@@ -53,7 +59,7 @@ public class RJP10V2RamlResponse implements RamlResponse {
 
     @Override
     public Map<String, RamlMimeType> getBody() {
-    	throw new UnsupportedOperationException();
+    	return body;
     }
 
     @Override

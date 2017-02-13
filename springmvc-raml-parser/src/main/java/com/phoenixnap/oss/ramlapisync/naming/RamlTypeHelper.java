@@ -17,7 +17,10 @@ import org.raml.v2.api.model.v10.datamodel.TypeDeclaration;
 
 import com.phoenixnap.oss.ramlapisync.data.ApiBodyMetadata;
 import com.phoenixnap.oss.ramlapisync.pojo.PojoBuilderFactory;
+import com.phoenixnap.oss.ramlapisync.pojo.PojoGenerationConfig;
+import com.phoenixnap.oss.ramlapisync.pojo.RamlInterpretationResult;
 import com.phoenixnap.oss.ramlapisync.raml.RamlRoot;
+import com.sun.codemodel.JClass;
 import com.sun.codemodel.JCodeModel;
 
 /**
@@ -57,8 +60,23 @@ public class RamlTypeHelper {
      * @return Object representing this Body
      */
 	public static ApiBodyMetadata mapTypeToPojo(JCodeModel pojoCodeModel, RamlRoot document, TypeDeclaration type, String basePackage, String name) {
-		PojoBuilderFactory factory = new PojoBuilderFactory();
-		throw new UnsupportedOperationException(); //TODO
+		PojoGenerationConfig config = new PojoGenerationConfig()
+											.withPojoPackage(basePackage);
+		RamlInterpretationResult interpret = PojoBuilderFactory.getInterpreterForType(type).interpret(type, pojoCodeModel, config);
+		
+		//here we expect that a new object is created i guess... we'd need to see how primitive arrays fit in
+		JClass pojo = null;
+		if (interpret.getBuilder() != null) {
+			 pojo = interpret.getBuilder().getPojo();
+		} else if (interpret.getResolvedClass() != null) {
+			 pojo = interpret.getResolvedClass();
+		} 
+		
+		if (pojo == null) {
+			throw new IllegalStateException("No Pojo created or resolved for type " + type.getClass().getSimpleName() + ":" + type.name());
+		}
+		
+		return new ApiBodyMetadata(pojo.name(), type, pojoCodeModel);		
 	}
 	
 	/**
@@ -72,6 +90,62 @@ public class RamlTypeHelper {
     		return true;
     	} 
 		return false;
+	}
+	
+	/**
+	 * Safely get description from a type with null checks
+	 * 
+	 * @param type
+	 * @return
+	 */
+	public static String getDescription (TypeDeclaration type) {
+		if (type == null || type.description() == null) {
+			return null;
+		} else {
+			return type.description().value();
+		}
+	}
+	
+	/**
+	 * Safely get example from a type with null checks
+	 * 
+	 * @param type
+	 * @return
+	 */
+	public static String getExample (TypeDeclaration type) {
+		if (type == null || type.example() == null) {
+			return null;
+		} else {
+			return type.example().value();
+		}
+	}
+	
+	/**
+	 * Safely get example from a type with null checks
+	 * 
+	 * @param type
+	 * @return
+	 */
+	public static String getDisplayName (TypeDeclaration type) {
+		if (type == null || type.displayName() == null) {
+			return null;
+		} else {
+			return type.displayName().value();
+		}
+	}
+	
+	/**
+	 * Safely get required from a type with null checks
+	 * 
+	 * @param type
+	 * @return
+	 */
+	public static boolean isRequired (TypeDeclaration type) {
+		if (type == null || type.required() == null) {
+			return true;
+		} else {
+			return type.required().booleanValue();
+		}
 	}
 
 

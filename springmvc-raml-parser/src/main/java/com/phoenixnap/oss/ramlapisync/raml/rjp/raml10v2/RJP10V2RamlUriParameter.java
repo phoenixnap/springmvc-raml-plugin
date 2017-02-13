@@ -14,6 +14,7 @@ package com.phoenixnap.oss.ramlapisync.raml.rjp.raml10v2;
 
 import org.raml.v2.api.model.v10.datamodel.TypeDeclaration;
 
+import com.phoenixnap.oss.ramlapisync.naming.RamlTypeHelper;
 import com.phoenixnap.oss.ramlapisync.raml.RamlParamType;
 import com.phoenixnap.oss.ramlapisync.raml.RamlUriParameter;
 
@@ -43,7 +44,7 @@ public class RJP10V2RamlUriParameter extends RamlUriParameter {
 
     @Override
     public String getDisplayName() {
-        return uriParameter.displayName().value();
+        return RamlTypeHelper.getDisplayName(uriParameter);
     }
 
     @Override
@@ -63,7 +64,7 @@ public class RJP10V2RamlUriParameter extends RamlUriParameter {
 
     @Override
     public boolean isRequired() {
-        return uriParameter.required().booleanValue();
+        return RamlTypeHelper.isRequired(uriParameter);
     }
 
     @Override
@@ -83,12 +84,12 @@ public class RJP10V2RamlUriParameter extends RamlUriParameter {
 
     @Override
     public String getExample() {
-        return uriParameter.example().value();
+        return RamlTypeHelper.getExample(uriParameter);
     }
 
     @Override
     public String getDescription() {
-        return uriParameter.description().value();
+        return RamlTypeHelper.getDescription(uriParameter);
     }
 
 	@Override
