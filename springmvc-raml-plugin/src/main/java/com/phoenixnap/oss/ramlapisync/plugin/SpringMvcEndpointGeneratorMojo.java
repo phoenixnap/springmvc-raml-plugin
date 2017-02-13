@@ -209,10 +209,11 @@ public class SpringMvcEndpointGeneratorMojo extends AbstractMojo {
 
         // Resolve schema location and add to classpath
         resolvedSchemaLocation = getSchemaLocation();
-
+        JCodeModel codeModel = new JCodeModel();
+        
         RamlRoot loadRamlFromFile = RamlParser.loadRamlFromFile(new File(resolvedRamlPath).toURI().toString());
         RamlParser par = new RamlParser(basePackage, getBasePath(loadRamlFromFile), seperateMethodsByContentType, injectHttpHeadersParameter);
-        Set<ApiResourceMetadata> controllers = par.extractControllers(loadRamlFromFile);
+        Set<ApiResourceMetadata> controllers = par.extractControllers(codeModel, loadRamlFromFile);
 
         if (StringUtils.hasText(outputRelativePath)) {
             if (!outputRelativePath.startsWith(File.separator) && !outputRelativePath.startsWith("/")) {
@@ -230,12 +231,12 @@ public class SpringMvcEndpointGeneratorMojo extends AbstractMojo {
             throw new IOException("Could not create directory:" + rootDir.getAbsolutePath());
         }
 
-        generateCode(controllers, rootDir);
-        generateUnreferencedSchemas(resolvedRamlPath, loadRamlFromFile, rootDir);
+        generateCode(codeModel, controllers, rootDir);
+        generateUnreferencedSchemas(codeModel, resolvedRamlPath, loadRamlFromFile, rootDir);
     }
 
 
-    private void generateUnreferencedSchemas(String resolvedRamlPath, RamlRoot loadRamlFromFile, File rootDir) {
+    private void generateUnreferencedSchemas(JCodeModel codeModel, String resolvedRamlPath, RamlRoot loadRamlFromFile, File rootDir) {
 
         if (this.generateUnreferencedSchemas) {
 
@@ -245,7 +246,7 @@ public class SpringMvcEndpointGeneratorMojo extends AbstractMojo {
                         this.getLog().info("Generating POJO for unreferenced schema " + schemaName);
                         ApiBodyMetadata tempBodyMetadata = SchemaHelper.mapSchemaToPojo(loadRamlFromFile, schemaName, resolvedRamlPath, schemaName, this.resolvedSchemaLocation);
                         // TODO Check if this already has been written to disk
-                        generateModelSources(tempBodyMetadata, rootDir, this.generationConfig, this.useJackson1xCompatibility == true ? new Jackson1Annotator(this.generationConfig) : null);
+                        generateModelSources(codeModel, tempBodyMetadata, rootDir, this.generationConfig, this.useJackson1xCompatibility == true ? new Jackson1Annotator(this.generationConfig) : null);
                     }
                 }
             }
@@ -253,7 +254,7 @@ public class SpringMvcEndpointGeneratorMojo extends AbstractMojo {
     }
 
 
-    private void generateCode(Set<ApiResourceMetadata> controllers, File rootDir) {
+    private void generateCode(JCodeModel codeModel, Set<ApiResourceMetadata> controllers, File rootDir) {
         for (ApiResourceMetadata met : controllers) {
             this.getLog().debug("");
             this.getLog().debug("-----------------------------------------------------------");
@@ -262,10 +263,10 @@ public class SpringMvcEndpointGeneratorMojo extends AbstractMojo {
 
             Set<ApiBodyMetadata> dependencies = met.getDependencies();
             for (ApiBodyMetadata body : dependencies) {
-                generateModelSources(body, rootDir, generationConfig, useJackson1xCompatibility == true ? new Jackson1Annotator(generationConfig) : null);
+                generateModelSources(codeModel, body, rootDir, generationConfig, useJackson1xCompatibility == true ? new Jackson1Annotator(generationConfig) : null);
             }
 
-            generateControllerSource(met, rootDir);
+            generateControllerSource(codeModel, met, rootDir);
         }
     }
 
@@ -335,14 +336,15 @@ public class SpringMvcEndpointGeneratorMojo extends AbstractMojo {
     }
 
 
-    private void generateModelSources(ApiBodyMetadata body, File rootDir, GenerationConfig config, Annotator annotator) {
+    private void generateModelSources(JCodeModel codeModel, ApiBodyMetadata body, File rootDir, GenerationConfig config, Annotator annotator) {
         try {
-            JCodeModel codeModel;
-            if (config == null && annotator == null) {
-                codeModel = body.getCodeModel();
-            }
-            else {
-                codeModel = body.getCodeModel(resolvedSchemaLocation, basePackage + NamingHelper.getDefaultModelPackage(), config, annotator);
+            if (codeModel == null) {
+	            if (config == null && annotator == null) {
+	                codeModel = body.getCodeModel();
+	            }
+	            else {
+	                codeModel = body.getCodeModel(resolvedSchemaLocation, basePackage + NamingHelper.getDefaultModelPackage(), config, annotator);
+	            }
             }
             if (codeModel != null) {
                 codeModel.build(rootDir);
@@ -396,8 +398,8 @@ public class SpringMvcEndpointGeneratorMojo extends AbstractMojo {
     }
 
 
-    private void generateControllerSource(ApiResourceMetadata met, File dir) {
-        JCodeModel codeModel = new JCodeModel();
+    private void generateControllerSource(JCodeModel codeModel, ApiResourceMetadata met, File dir) {
+        
         loadRule().apply(met, codeModel);
         try {
             codeModel.build(dir);

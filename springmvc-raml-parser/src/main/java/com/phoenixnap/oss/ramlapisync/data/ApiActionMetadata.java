@@ -12,6 +12,18 @@
  */
 package com.phoenixnap.oss.ramlapisync.data;
 
+import java.util.Collections;
+import java.util.LinkedHashMap;
+import java.util.LinkedHashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
+import java.util.Set;
+import java.util.stream.Collectors;
+
+import org.springframework.http.MediaType;
+import org.springframework.util.StringUtils;
+
 import com.phoenixnap.oss.ramlapisync.naming.NamingHelper;
 import com.phoenixnap.oss.ramlapisync.naming.RamlHelper;
 import com.phoenixnap.oss.ramlapisync.naming.RamlTypeHelper;
@@ -24,18 +36,7 @@ import com.phoenixnap.oss.ramlapisync.raml.RamlMimeType;
 import com.phoenixnap.oss.ramlapisync.raml.RamlResource;
 import com.phoenixnap.oss.ramlapisync.raml.RamlResponse;
 import com.phoenixnap.oss.ramlapisync.raml.RamlUriParameter;
-
-import org.springframework.http.MediaType;
-import org.springframework.util.StringUtils;
-
-import java.util.Collections;
-import java.util.LinkedHashMap;
-import java.util.LinkedHashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
-import java.util.Set;
-import java.util.stream.Collectors;
+import com.sun.codemodel.JCodeModel;
 
 
 /**
@@ -70,8 +71,8 @@ public class ApiActionMetadata {
 		this.action = action;
 		this.responseContentTypeFilter = responseContentTypeFilter;
 		this.injectHttpHeadersParameter = injectHttpHeadersParameter;
-		parseRequest();
-		parseResponse(responseContentTypeFilter);
+		parseRequest(parent.getBodyCodeModel());
+		parseResponse(parent.getBodyCodeModel(), responseContentTypeFilter);
 
 	}
 
@@ -123,7 +124,7 @@ public class ApiActionMetadata {
 	}
 
 
-	private void parseRequest() {
+	private void parseRequest(JCodeModel codeModel) {
 		requestParameters = action.getQueryParameters().entrySet().stream()
 				.map(param -> new ApiParameterMetadata(param.getKey(), param.getValue()))
 				.collect(Collectors.toCollection(LinkedHashSet::new));
@@ -131,11 +132,13 @@ public class ApiActionMetadata {
 				.map(param -> new ApiParameterMetadata(param.getKey(), param.getValue()))
 				.collect(Collectors.toCollection(LinkedHashSet::new));
 		if (action.getBody() != null && !action.getBody().isEmpty()) {
-			action.getBody().entrySet().forEach(this::collectBodyParams);
+			for (Entry<String, RamlMimeType> entry : action.getBody().entrySet()) {
+				collectBodyParams(codeModel, entry);
+			}
 		}
 	}
 
-	private void collectBodyParams(Entry<String, RamlMimeType> mime) {
+	private void collectBodyParams(JCodeModel codeModel, Entry<String, RamlMimeType> mime) {
 		if (mime.getKey().equals(MediaType.MULTIPART_FORM_DATA_VALUE) && ResourceParser.doesActionTypeSupportMultipartMime(actionType)) {
 			collectRequestParamsForMime(action.getBody().get(MediaType.MULTIPART_FORM_DATA_VALUE));
 		} else if (mime.getKey().equals(MediaType.APPLICATION_FORM_URLENCODED_VALUE) && ResourceParser.doesActionTypeSupportMultipartMime(actionType)) {
@@ -151,7 +154,7 @@ public class ApiActionMetadata {
 			String basePackage = parent.getBasePackage() + NamingHelper.getDefaultModelPackage();
 			String name = StringUtils.capitalize(getName()) + "Request";
 			if (type != null && type.getType() != null) {
-				requestBody = RamlTypeHelper.mapTypeToPojo(parent.getDocument(), type.getType(), basePackage, name);
+				requestBody = RamlTypeHelper.mapTypeToPojo(codeModel, parent.getDocument(), type.getType(), basePackage, name);
 			} else if (StringUtils.hasText(schema)) {
 				requestBody = SchemaHelper.mapSchemaToPojo(parent.getDocument(), schema, basePackage, name, null);
 			}
@@ -170,7 +173,7 @@ public class ApiActionMetadata {
 		}
 	}
 
-	private void parseResponse(String responseContentTypeFilter) {
+	private void parseResponse(JCodeModel codeModel, String responseContentTypeFilter) {
 		RamlResponse response = RamlHelper.getSuccessfulResponse(action);
 
 		if (response != null && response.getBody() != null && !response.getBody().isEmpty()) {
@@ -186,7 +189,7 @@ public class ApiActionMetadata {
 						String basePackage = parent.getBasePackage() + NamingHelper.getDefaultModelPackage();
 						String name = StringUtils.capitalize(getName()) + "Response";
 						if (type != null && type.getType() != null) {
-							responseBody = RamlTypeHelper.mapTypeToPojo(parent.getDocument(), type.getType(), basePackage, name);
+							responseBody = RamlTypeHelper.mapTypeToPojo(codeModel, parent.getDocument(), type.getType(), basePackage, name);
 						} else if (StringUtils.hasText(schema)) {
 							responseBody = SchemaHelper.mapSchemaToPojo(parent.getDocument(), schema, basePackage, name, null);
 						}

@@ -33,6 +33,7 @@ import com.phoenixnap.oss.ramlapisync.raml.RamlResource;
 import com.phoenixnap.oss.ramlapisync.raml.RamlResponse;
 import com.phoenixnap.oss.ramlapisync.raml.RamlRoot;
 import com.phoenixnap.oss.ramlapisync.raml.RamlUriParameter;
+import com.sun.codemodel.JCodeModel;
 
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -174,7 +175,7 @@ public class SpringMvcResourceParserTest {
     public void test_seperateContentType__Success() throws Exception {
         RamlRoot published = RamlVerifier.loadRamlFromFile("test-responsebody-multipletype.raml");
         RamlParser par = new RamlParser("com.gen.test", "/api", true, false);
-        Set<ApiResourceMetadata> controllersMetadataSet = par.extractControllers(published);
+        Set<ApiResourceMetadata> controllersMetadataSet = par.extractControllers(new JCodeModel(), published);
 
         assertEquals(1, controllersMetadataSet.size());
         assertEquals(2, controllersMetadataSet.iterator().next().getApiCalls().size());
@@ -186,7 +187,7 @@ public class SpringMvcResourceParserTest {
         
         //lets check that it switches off correctly
         par = new RamlParser("com.gen.test", "/api", false, false);
-        controllersMetadataSet = par.extractControllers(published);
+        controllersMetadataSet = par.extractControllers(new JCodeModel(), published);
         assertEquals(1, controllersMetadataSet.size());
         assertEquals(1, controllersMetadataSet.iterator().next().getApiCalls().size());
         

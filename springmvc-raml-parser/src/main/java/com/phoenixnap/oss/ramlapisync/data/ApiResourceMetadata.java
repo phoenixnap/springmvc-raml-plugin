@@ -12,15 +12,16 @@
  */
 package com.phoenixnap.oss.ramlapisync.data;
 
+import java.util.Collections;
+import java.util.LinkedHashSet;
+import java.util.Set;
+
 import com.phoenixnap.oss.ramlapisync.naming.NamingHelper;
 import com.phoenixnap.oss.ramlapisync.raml.RamlAction;
 import com.phoenixnap.oss.ramlapisync.raml.RamlActionType;
 import com.phoenixnap.oss.ramlapisync.raml.RamlResource;
 import com.phoenixnap.oss.ramlapisync.raml.RamlRoot;
-
-import java.util.Collections;
-import java.util.LinkedHashSet;
-import java.util.Set;
+import com.sun.codemodel.JCodeModel;
 
 
 /**
@@ -40,15 +41,17 @@ public class ApiResourceMetadata {
 	private String basePackage;
 	private RamlRoot document;
 	private boolean singularizeName = true;
+	private JCodeModel bodyCodeModel;
 	
 	Set<ApiActionMetadata> apiCalls = new LinkedHashSet<>();
 	
-	public ApiResourceMetadata(String controllerUrl, RamlResource resource, String basePackage, RamlRoot document) {
+	public ApiResourceMetadata(JCodeModel bodyCodeModel, String controllerUrl, RamlResource resource, String basePackage, RamlRoot document) {
 		super();
 		this.controllerUrl = controllerUrl;
 		this.resource = resource;
 		this.basePackage = basePackage;
 		this.document = document;
+		this.bodyCodeModel = bodyCodeModel;
 	} 
 	
 	
@@ -123,5 +126,10 @@ public class ApiResourceMetadata {
 
 	public void setSingularizeName(boolean singularizeName) {
 		this.singularizeName = singularizeName;		
+	}
+
+
+	public JCodeModel getBodyCodeModel() {
+		return this.bodyCodeModel;
 	}
 }

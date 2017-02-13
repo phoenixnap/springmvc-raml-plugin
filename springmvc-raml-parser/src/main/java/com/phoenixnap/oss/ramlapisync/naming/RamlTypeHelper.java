@@ -18,6 +18,7 @@ import org.raml.v2.api.model.v10.datamodel.TypeDeclaration;
 import com.phoenixnap.oss.ramlapisync.data.ApiBodyMetadata;
 import com.phoenixnap.oss.ramlapisync.pojo.PojoBuilderFactory;
 import com.phoenixnap.oss.ramlapisync.raml.RamlRoot;
+import com.sun.codemodel.JCodeModel;
 
 /**
  * Simple class containing utility methods for dealing with Raml Types
@@ -40,7 +41,9 @@ public class RamlTypeHelper {
 	 /**
      * Maps a RAML Data Type to a JCodeModel using JSONSchema2Pojo and encapsulates it along with some
      * metadata into an {@link ApiBodyMetadata} object.
-     *
+     * 
+     * @param pojoCodeModel
+     *            The code model containing the classes generated during generation
      * @param document
      *            The Raml document being parsed
      * @param type
@@ -53,7 +56,7 @@ public class RamlTypeHelper {
      *            the type
      * @return Object representing this Body
      */
-	public static ApiBodyMetadata mapTypeToPojo(RamlRoot document, TypeDeclaration type, String basePackage, String name) {
+	public static ApiBodyMetadata mapTypeToPojo(JCodeModel pojoCodeModel, RamlRoot document, TypeDeclaration type, String basePackage, String name) {
 		PojoBuilderFactory factory = new PojoBuilderFactory();
 		throw new UnsupportedOperationException(); //TODO
 	}

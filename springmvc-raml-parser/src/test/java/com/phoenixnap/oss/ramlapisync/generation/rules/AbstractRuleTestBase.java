@@ -62,7 +62,7 @@ public abstract class AbstractRuleTestBase {
     }
 
     protected void initControllerMetadata(RamlParser par) {
-        controllerMetadata = par.extractControllers(RAML).iterator().next();
+        controllerMetadata = par.extractControllers(jCodeModel, RAML).iterator().next();
     }
 
     protected ApiResourceMetadata getControllerMetadata() {

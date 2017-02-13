@@ -12,21 +12,23 @@
  */
 package com.phoenixnap.oss.ramlapisync.generation;
 
+import java.util.LinkedHashSet;
+import java.util.Map.Entry;
+import java.util.Set;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.phoenixnap.oss.ramlapisync.data.ApiResourceMetadata;
 import com.phoenixnap.oss.ramlapisync.naming.RamlHelper;
+import com.phoenixnap.oss.ramlapisync.raml.InvalidRamlResourceException;
 import com.phoenixnap.oss.ramlapisync.raml.RamlAction;
 import com.phoenixnap.oss.ramlapisync.raml.RamlActionType;
 import com.phoenixnap.oss.ramlapisync.raml.RamlModelFactoryOfFactories;
 import com.phoenixnap.oss.ramlapisync.raml.RamlResource;
 import com.phoenixnap.oss.ramlapisync.raml.RamlResponse;
 import com.phoenixnap.oss.ramlapisync.raml.RamlRoot;
-import com.phoenixnap.oss.ramlapisync.raml.InvalidRamlResourceException;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import java.util.LinkedHashSet;
-import java.util.Map.Entry;
-import java.util.Set;
+import com.sun.codemodel.JCodeModel;
 
 
 /**
@@ -84,14 +86,18 @@ public class RamlParser {
 	 * These controllers will contain the metadata required by the code generator, including name
 	 * any annotations as well as conatining methods
 	 * 
+	 * @param bodyCodeModel the code model containing body objects
 	 * @param raml The raml document to be parsed
 	 * @return A set of Controllers representing the inferred resources in the system
 	 */
-	public Set<ApiResourceMetadata> extractControllers (RamlRoot raml) {
+	public Set<ApiResourceMetadata> extractControllers (JCodeModel bodyCodeModel, RamlRoot raml) {
 		
 		Set<ApiResourceMetadata> controllers = new LinkedHashSet<>();
 		if (raml == null) {
 			return controllers;
+		}
+		if (bodyCodeModel == null) {
+			bodyCodeModel = new JCodeModel();
 		}
 
 		Set<String> names = new LinkedHashSet<>();
@@ -100,7 +106,7 @@ public class RamlParser {
 		//if we have child resources, just append the url and go down the chain until we hit the first action.
 		//if an action is found we need to 
 		for (Entry<String, RamlResource> resource : raml.getResources().entrySet()) {
-			Set<ApiResourceMetadata> resources = checkResource(startUrl, resource.getValue(), null, raml);
+			Set<ApiResourceMetadata> resources = checkResource(bodyCodeModel, startUrl, resource.getValue(), null, raml);
 			for (ApiResourceMetadata resourceMetadata : resources) {
 				if (names.contains(resourceMetadata.getResourceName())) {
 					//collision has occured, lets mark this for 2nd pass
@@ -145,18 +151,19 @@ public class RamlParser {
 	 * Recursive method to parse resources in a Raml File. It tries to go as deep as possible before creating the root Resource. Once this is done, methods and
 	 * child resources will be relative to the root resource
 	 * 
+	 * @param bodyCodeModel The code model containing body pojos
 	 * @param baseUrl The url currently being checked. Used to keep depth
 	 * @param resource The Resource in the RAML file being parsed
 	 * @param controller The root controller if created for this branch
 	 * @param document The raml Document being parse
 	 * @return A set of Controllers representing resources in this branch of the tree
 	 */
-	public Set<ApiResourceMetadata> checkResource(String baseUrl, RamlResource resource, ApiResourceMetadata controller, RamlRoot document) {
+	public Set<ApiResourceMetadata> checkResource(JCodeModel bodyCodeModel, String baseUrl, RamlResource resource, ApiResourceMetadata controller, RamlRoot document) {
 		Set<ApiResourceMetadata> controllers = new LinkedHashSet<>();
 		//append resource URL to url.
 		String url = baseUrl + resource.getRelativeUri();
 		if (controller == null && shouldCreateController(resource)) {
-			controller = new ApiResourceMetadata(url, resource, basePackage, document);
+			controller = new ApiResourceMetadata(bodyCodeModel, url, resource, basePackage, document);
 			controllers.add(controller);
 		}
 		//extract actions for this resource
@@ -181,7 +188,7 @@ public class RamlParser {
 		}
 		if (resource.getResources() != null &&  !resource.getResources().isEmpty()) {
 			for (Entry<String, RamlResource> childResource : resource.getResources().entrySet()) {
-				controllers.addAll(checkResource(url, childResource.getValue(), controller,document));
+				controllers.addAll(checkResource(bodyCodeModel, url, childResource.getValue(), controller,document));
 			}
 		}
 		return controllers;	
