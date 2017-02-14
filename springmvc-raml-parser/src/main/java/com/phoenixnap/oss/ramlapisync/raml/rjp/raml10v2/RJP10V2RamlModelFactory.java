@@ -8,10 +8,12 @@ import java.util.stream.Collectors;
 import org.raml.v2.api.RamlModelBuilder;
 import org.raml.v2.api.RamlModelResult;
 import org.raml.v2.api.model.v10.api.Api;
+import org.raml.v2.api.model.v10.api.DocumentationItem;
 import org.raml.v2.api.model.v10.bodies.Response;
 import org.raml.v2.api.model.v10.datamodel.TypeDeclaration;
 import org.raml.v2.api.model.v10.methods.Method;
 import org.raml.v2.api.model.v10.resources.Resource;
+import org.raml.v2.api.model.v10.security.SecuritySchemeRef;
 
 import com.phoenixnap.oss.ramlapisync.data.RamlFormParameter;
 import com.phoenixnap.oss.ramlapisync.raml.InvalidRamlResourceException;
@@ -29,7 +31,6 @@ import com.phoenixnap.oss.ramlapisync.raml.RamlResponse;
 import com.phoenixnap.oss.ramlapisync.raml.RamlRoot;
 import com.phoenixnap.oss.ramlapisync.raml.RamlSecurityReference;
 import com.phoenixnap.oss.ramlapisync.raml.RamlUriParameter;
-import com.phoenixnap.oss.ramlapisync.raml.rjp.raml08v1.RJP08V1RamlAction;
 
 /**
  * @author aweisser
@@ -40,7 +41,7 @@ public class RJP10V2RamlModelFactory implements RamlModelFactory {
 
     @Override
     public RamlModelEmitter createRamlModelEmitter() {
-        throw new UnsupportedOperationException();
+		return new RJP10V2RamlModelEmitter();
     }
 
     @Override
@@ -98,12 +99,12 @@ public class RJP10V2RamlModelFactory implements RamlModelFactory {
 
     @Override
     public RamlDocumentationItem createRamlDocumentationItem() {
-        throw new UnsupportedOperationException();
+		throw new UnsupportedOperationException();
     }
 
     @Override
     public RamlDocumentationItem createRamlDocumentationItem(Object documentationItem) {
-        throw new UnsupportedOperationException();
+		return new RJP10V2RamlDocumentationItem((DocumentationItem) documentationItem);
     }
 
     @Override
@@ -190,12 +191,12 @@ public class RJP10V2RamlModelFactory implements RamlModelFactory {
 
     @Override
     public List<RamlSecurityReference> createRamlSecurityReferences(List<? extends Object> securityReferences) {
-        throw new UnsupportedOperationException();
+		return securityReferences.stream().map(this::createRamlSecurityReference).collect(Collectors.toList());
     }
 
     @Override
     public RamlSecurityReference createRamlSecurityReference(Object securityReference) {
-        throw new UnsupportedOperationException();
+		return new RJP10V2RamlSecurityReference((SecuritySchemeRef) securityReference);
     }
 
     @Override

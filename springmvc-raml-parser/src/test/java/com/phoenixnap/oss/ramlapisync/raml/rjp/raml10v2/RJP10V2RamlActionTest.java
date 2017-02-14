@@ -1,14 +1,18 @@
 package com.phoenixnap.oss.ramlapisync.raml.rjp.raml10v2;
 
+import static org.hamcrest.CoreMatchers.hasItem;
+import static org.hamcrest.CoreMatchers.nullValue;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.notNullValue;
 
+import java.util.List;
 import java.util.Map;
 
 import org.junit.BeforeClass;
 import org.junit.Test;
+import org.raml.v2.api.model.v10.security.SecurityScheme;
 
 import com.phoenixnap.oss.ramlapisync.raml.InvalidRamlResourceException;
 import com.phoenixnap.oss.ramlapisync.raml.RamlAction;
@@ -17,6 +21,7 @@ import com.phoenixnap.oss.ramlapisync.raml.RamlHeader;
 import com.phoenixnap.oss.ramlapisync.raml.RamlMimeType;
 import com.phoenixnap.oss.ramlapisync.raml.RamlQueryParameter;
 import com.phoenixnap.oss.ramlapisync.raml.RamlRoot;
+import com.phoenixnap.oss.ramlapisync.raml.RamlSecurityReference;
 
 /**
  * @author Aleksandar Stojsavljevic
@@ -85,5 +90,35 @@ public class RJP10V2RamlActionTest {
     	RamlMimeType ramlMimeType = body.get("application/json");
     	assertThat(ramlMimeType.getType().getType().type(), equalTo("Person"));
     }
+
+	@Test
+	public void ramlActionShouldReflectSecurity() {
+		List<RamlSecurityReference> securedBy = ramlGetAction.getSecuredBy();
+		assertThat(securedBy.size(), equalTo(1));
+		assertThat(securedBy.get(0).getName(), is(nullValue()));
+
+		securedBy = ramlPostAction.getSecuredBy();
+		assertThat(securedBy.size(), equalTo(1));
+		assertThat(securedBy.get(0).getName(), is("oauth2"));
+
+		SecurityScheme securityScheme = ((RJP10V2RamlSecurityReference) securedBy.get(0)).getSecuritySchemeRef()
+				.securityScheme();
+
+		assertThat(securityScheme.type(), equalTo("OAuth 2.0"));
+		assertThat(securityScheme.description().value(), equalTo("OAuth 2.0 Authentication"));
+		assertThat(securityScheme.displayName().value(), equalTo("OAuth 2.0 Auth"));
+		assertThat(securityScheme.settings().accessTokenUri().value(),
+				equalTo("https://accounts.google.com/o/oauth2/token"));
+		assertThat(securityScheme.settings().authorizationUri().value(),
+				equalTo("https://accounts.google.com/o/oauth2/auth"));
+		assertThat(securityScheme.settings().authorizationGrants(), hasItem("authorization_code"));
+		assertThat(securityScheme.settings().authorizationGrants(), hasItem("client_credentials"));
+		assertThat(securityScheme.settings().authorizationGrants(), hasItem("password"));
+		assertThat(securityScheme.settings().authorizationGrants(), hasItem("implicit"));
+		assertThat(securityScheme.settings().scopes(), hasItem("openid"));
+		assertThat(securityScheme.settings().scopes(), hasItem("session"));
+		assertThat(securityScheme.settings().scopes(), hasItem("read"));
+		assertThat(securityScheme.settings().scopes(), hasItem("write"));
+	}
 
 }

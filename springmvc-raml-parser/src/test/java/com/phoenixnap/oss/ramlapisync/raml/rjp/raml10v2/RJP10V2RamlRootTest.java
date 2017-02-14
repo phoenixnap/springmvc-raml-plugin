@@ -1,20 +1,30 @@
 package com.phoenixnap.oss.ramlapisync.raml.rjp.raml10v2;
 
-import com.phoenixnap.oss.ramlapisync.raml.RamlResource;
-import com.phoenixnap.oss.ramlapisync.raml.RamlRoot;
-import com.phoenixnap.oss.ramlapisync.raml.InvalidRamlResourceException;
-import org.junit.BeforeClass;
-import org.junit.Test;
-import org.raml.model.Raml;
+import static com.phoenixnap.oss.ramlapisync.SrpMatchers.emptyMap;
+import static com.phoenixnap.oss.ramlapisync.SrpMatchers.mapWithSize;
+import static org.hamcrest.CoreMatchers.startsWith;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.anything;
+import static org.hamcrest.Matchers.emptyIterable;
+import static org.hamcrest.Matchers.equalTo;
+import static org.hamcrest.Matchers.everyItem;
+import static org.hamcrest.Matchers.hasItems;
+import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.isA;
+import static org.hamcrest.Matchers.isEmptyOrNullString;
+import static org.hamcrest.Matchers.notNullValue;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-import static com.phoenixnap.oss.ramlapisync.SrpMatchers.*;
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.*;
+import org.junit.BeforeClass;
+import org.junit.Test;
+
+import com.phoenixnap.oss.ramlapisync.raml.InvalidRamlResourceException;
+import com.phoenixnap.oss.ramlapisync.raml.RamlDocumentationItem;
+import com.phoenixnap.oss.ramlapisync.raml.RamlResource;
+import com.phoenixnap.oss.ramlapisync.raml.RamlRoot;
 
 /**
  * @author aweisser
@@ -97,5 +107,21 @@ public class RJP10V2RamlRootTest {
     public void ramlRootShouldHandleEmptyToplevelResourcesWithoutException() {
         assertThat(ramlRootEmptyValues.getResources(), is(emptyMap()));
     }
+
+	@Test
+	public void factoryShouldReflectDocumentation() {
+		List<RamlDocumentationItem> documentation = ((RJP10V2RamlRoot) ramlRoot).getDocumentation();
+
+		assertThat(((RJP10V2RamlDocumentationItem) documentation.get(0)).getDocumentationItem().title().value(),
+				equalTo("Home"));
+		assertThat(((RJP10V2RamlDocumentationItem) documentation.get(0)).getDocumentationItem().content().value(),
+				startsWith("Welcome to the _Sample API_ Documentation."));
+
+		assertThat(((RJP10V2RamlDocumentationItem) documentation.get(1)).getDocumentationItem().title().value(),
+				equalTo("Legal"));
+		assertThat(((RJP10V2RamlDocumentationItem) documentation.get(1)).getDocumentationItem().content().value(),
+				startsWith("CWIE (c) All Rights Reserved"));
+
+	}
 
 }
