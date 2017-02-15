@@ -12,11 +12,11 @@
  */
 package com.phoenixnap.oss.ramlapisync.raml.rjp.raml10v2;
 
-import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
 import org.raml.v2.api.model.v10.datamodel.ExternalTypeDeclaration;
+import org.raml.v2.api.model.v10.datamodel.ObjectTypeDeclaration;
 import org.raml.v2.api.model.v10.datamodel.TypeDeclaration;
 
 import com.phoenixnap.oss.ramlapisync.data.RamlFormParameter;
@@ -32,11 +32,9 @@ import com.phoenixnap.oss.ramlapisync.raml.RamlMimeType;
  */
 public class RJP10V2RamlMimeType implements RamlMimeType {
 
-    private static RJP10V2RamlModelFactory ramlModelFactory = new RJP10V2RamlModelFactory();
 
     private final TypeDeclaration mimeType;
 
-    private Map<String, List<RamlFormParameter>> formParameters = new LinkedHashMap<>();
 
     public RJP10V2RamlMimeType(TypeDeclaration mimeType) {
         this.mimeType = mimeType;

@@ -16,10 +16,10 @@ import java.util.Collections;
 import java.util.Set;
 
 import org.raml.v2.api.model.v10.datamodel.NumberTypeDeclaration;
-import org.raml.v2.api.model.v10.datamodel.StringTypeDeclaration;
 import org.raml.v2.api.model.v10.datamodel.TypeDeclaration;
 
 import com.phoenixnap.oss.ramlapisync.generation.CodeModelHelper;
+import com.phoenixnap.oss.ramlapisync.raml.RamlRoot;
 import com.sun.codemodel.JCodeModel;
 
 /**
@@ -38,7 +38,7 @@ public class NumberTypeInterpreter extends BaseTypeInterpreter {
 
 
 	@Override
-	public RamlInterpretationResult interpret(TypeDeclaration type, JCodeModel builderModel, PojoGenerationConfig config) {
+	public RamlInterpretationResult interpret(RamlRoot document, TypeDeclaration type, JCodeModel builderModel, PojoGenerationConfig config) {
 		RamlInterpretationResult result = new RamlInterpretationResult();
 		
 		typeCheck(type);

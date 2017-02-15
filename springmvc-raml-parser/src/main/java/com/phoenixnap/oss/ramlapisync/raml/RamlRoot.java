@@ -38,4 +38,6 @@ public interface RamlRoot extends RamlResourceRoot {
     void setMediaType(String mediaType);
 
     String getBaseUri();
+
+	Map<String, RamlDataType> getTypes();
 }

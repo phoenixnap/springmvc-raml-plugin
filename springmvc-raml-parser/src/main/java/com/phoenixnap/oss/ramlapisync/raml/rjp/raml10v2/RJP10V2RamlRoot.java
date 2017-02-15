@@ -1,9 +1,11 @@
 package com.phoenixnap.oss.ramlapisync.raml.rjp.raml10v2;
 
+import com.phoenixnap.oss.ramlapisync.raml.RamlDataType;
 import com.phoenixnap.oss.ramlapisync.raml.RamlDocumentationItem;
 import com.phoenixnap.oss.ramlapisync.raml.RamlResource;
 import com.phoenixnap.oss.ramlapisync.raml.RamlRoot;
 import com.phoenixnap.oss.ramlapisync.raml.RamlSpecNotFullySupportedException;
+
 import org.raml.v2.api.model.v10.api.Api;
 import org.raml.v2.api.model.v10.bodies.MimeType;
 import org.raml.v2.api.model.v10.datamodel.TypeDeclaration;
@@ -88,13 +90,28 @@ public class RJP10V2RamlRoot implements RamlRoot {
                 .map(this::typeDeclarationToMap)
                 .collect(Collectors.toList());
     }
+    
+    @Override
+    public Map<String, RamlDataType> getTypes() {
+        return api.types()
+                .stream()
+                .collect(Collectors.toMap(this::nameType, this::typeDeclarationToRamlDataType));
+    }
 
     private Map<String, String> typeDeclarationToMap(TypeDeclaration typeDeclaration) {
         Map<String, String> nameTypeMapping = new LinkedHashMap<>();
         nameTypeMapping.put(typeDeclaration.name(), typeDeclaration.type());
         return nameTypeMapping;
     }
-
+    
+    private String nameType(TypeDeclaration typeDeclaration) {
+    	return typeDeclaration.name();
+    }
+    
+    private RamlDataType typeDeclarationToRamlDataType(TypeDeclaration typeDeclaration) {
+    	return new RJP10V2RamlDataType(typeDeclaration);
+    }
+    
     @Override
     public void setBaseUri(String baseUri) {
         throw new UnsupportedOperationException();

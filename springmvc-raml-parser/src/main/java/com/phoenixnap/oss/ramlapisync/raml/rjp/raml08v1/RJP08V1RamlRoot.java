@@ -12,9 +12,11 @@
  */
 package com.phoenixnap.oss.ramlapisync.raml.rjp.raml08v1;
 
+import com.phoenixnap.oss.ramlapisync.raml.RamlDataType;
 import com.phoenixnap.oss.ramlapisync.raml.RamlDocumentationItem;
 import com.phoenixnap.oss.ramlapisync.raml.RamlResource;
 import com.phoenixnap.oss.ramlapisync.raml.RamlRoot;
+
 import org.raml.model.Raml;
 
 import java.util.LinkedHashMap;
@@ -118,4 +120,9 @@ public class RJP08V1RamlRoot implements RamlRoot {
     public String getBaseUri() {
         return raml.getBaseUri();
     }
+
+	@Override
+	public Map<String, RamlDataType> getTypes() {
+		throw new UnsupportedOperationException();
+	}
 }

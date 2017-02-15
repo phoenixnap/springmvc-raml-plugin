@@ -16,6 +16,7 @@ import java.util.Set;
 
 import org.raml.v2.api.model.v10.datamodel.TypeDeclaration;
 
+import com.phoenixnap.oss.ramlapisync.raml.RamlRoot;
 import com.sun.codemodel.JCodeModel;
 
 /**
@@ -32,10 +33,11 @@ public interface RamlTypeInterpreter {
 	
 	/**
 	 * Interprets
+	 * @param document 
 	 * @param type
 	 * @param sharedModel
 	 * @param config
 	 */
-	RamlInterpretationResult interpret(TypeDeclaration type, JCodeModel builderModel, PojoGenerationConfig config);
+	RamlInterpretationResult interpret(RamlRoot document, TypeDeclaration type, JCodeModel builderModel, PojoGenerationConfig config);
 
 }

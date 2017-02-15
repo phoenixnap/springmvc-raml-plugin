@@ -13,6 +13,7 @@
 package com.phoenixnap.oss.ramlapisync.pojo;
 
 import java.util.Collections;
+import java.util.Map;
 import java.util.Set;
 
 import org.raml.v2.api.model.v10.datamodel.ObjectTypeDeclaration;
@@ -20,6 +21,8 @@ import org.raml.v2.api.model.v10.datamodel.TypeDeclaration;
 
 import com.phoenixnap.oss.ramlapisync.generation.CodeModelHelper;
 import com.phoenixnap.oss.ramlapisync.naming.RamlTypeHelper;
+import com.phoenixnap.oss.ramlapisync.raml.RamlDataType;
+import com.phoenixnap.oss.ramlapisync.raml.RamlRoot;
 import com.sun.codemodel.JClass;
 import com.sun.codemodel.JCodeModel;
 
@@ -39,12 +42,16 @@ public class ObjectTypeInterpreter extends BaseTypeInterpreter {
 
 
 	@Override
-	public RamlInterpretationResult interpret(TypeDeclaration type, JCodeModel builderModel, PojoGenerationConfig config) {
+	public RamlInterpretationResult interpret(RamlRoot document, TypeDeclaration type, JCodeModel builderModel, PojoGenerationConfig config) {
 		RamlInterpretationResult result = new RamlInterpretationResult();
 		
 		typeCheck(type);
 		ObjectTypeDeclaration objectType = (ObjectTypeDeclaration) type;
 		String name = objectType.type();
+		//For top level classes that extend object, we need to take the name not the type
+		if (name.equals("object")) {
+			name = objectType.name();
+		}
 		//Lets check if we've already handled this class before.
 		if (builderModel != null) {
 			JClass searchedClass = CodeModelHelper.findFirstClassBySimpleName(builderModel, name);
@@ -52,30 +59,41 @@ public class ObjectTypeInterpreter extends BaseTypeInterpreter {
 				//we've already handled this pojo in the model, no need to re-interpret
 				result.setCodeModel(builderModel);
 				result.setResolvedClass(searchedClass);
+				return result;
 			}
 		} else {
 			builderModel = new JCodeModel();
 			result.setCodeModel(builderModel);
 		}
 		
+		Map<String, RamlDataType> types = document.getTypes();
 		PojoBuilder builder = new PojoBuilder(builderModel, config.getPojoPackage(), name);
 		result.setBuilder(builder);
-				
-		for (TypeDeclaration property : objectType.properties()) {
-			RamlTypeInterpreter interpreterForType = PojoBuilderFactory.getInterpreterForType(property);
-			RamlInterpretationResult interpret = interpreterForType.interpret(property, builderModel, config);
-			String childType = null;
-			if (interpret.getResolvedClass() != null) {
-				childType = interpret.getResolvedClass().name();
-			} else if (interpret.getBuilder() != null) {
-				childType = interpret.getBuilder().getPojo().name();
+		TypeDeclaration parent = null; 
+		//lets handle extensions first
+		if (objectType.parentTypes() != null && objectType.parentTypes().size() > 0) {
+			parent = objectType.parentTypes().get(0); //java doesnt support multiple parents take first;
+			if (parent.type() != null && !parent.type().equalsIgnoreCase(Object.class.getSimpleName())) {
+				TypeDeclaration ramlDataType = types.get(parent.type()).getType();
+				RamlInterpretationResult childResult = PojoBuilderFactory.getInterpreterForType(ramlDataType).interpret(document, ramlDataType, builderModel, config);
+				String childType = childResult.getResolvedClassOrBuiltOrObject().name();
+				builder.extendsClass(childType);
 			} else {
-				childType = "Object";
+				parent = null;
 			}
-			
+		}
+		
+		
+		
+		
+		for (TypeDeclaration property : objectType.properties()) {
+			RamlInterpretationResult childResult = PojoBuilderFactory.getInterpreterForType(property).interpret(document, property, builderModel, config);
+			String childType = childResult.getResolvedClassOrBuiltOrObject().name();
 			builder.withField(property.name(), childType, RamlTypeHelper.getDescription(property));
 		}
 		
+		//Add a constructor with all fields 
+		builder.withCompleteConstructor();
 		
 		return result;
 	}

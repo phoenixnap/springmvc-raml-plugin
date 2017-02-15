@@ -14,16 +14,19 @@ package com.phoenixnap.oss.ramlapisync.pojo;
 
 import java.io.Serializable;
 import java.text.SimpleDateFormat;
-import java.util.Collection;
 import java.util.Date;
+import java.util.Iterator;
 import java.util.LinkedHashMap;
-import java.util.LinkedHashSet;
+import java.util.Map;
 import java.util.Random;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.util.StringUtils;
 
 import com.phoenixnap.oss.ramlapisync.generation.CodeModelHelper;
 import com.phoenixnap.oss.ramlapisync.naming.NamingHelper;
+import com.sun.codemodel.JBlock;
 import com.sun.codemodel.JClass;
 import com.sun.codemodel.JClassAlreadyExistsException;
 import com.sun.codemodel.JCodeModel;
@@ -31,10 +34,11 @@ import com.sun.codemodel.JDefinedClass;
 import com.sun.codemodel.JDocComment;
 import com.sun.codemodel.JExpr;
 import com.sun.codemodel.JFieldVar;
+import com.sun.codemodel.JInvocation;
 import com.sun.codemodel.JMethod;
 import com.sun.codemodel.JMod;
 import com.sun.codemodel.JPackage;
-import com.sun.codemodel.JType;
+import com.sun.codemodel.JVar;
 
 /**
  * Builder pattern for POJO generation using jCodeModel. Provides basic utility methods including extension and
@@ -45,6 +49,8 @@ import com.sun.codemodel.JType;
  *
  */
 public class PojoBuilder {
+
+	protected static final Logger logger = LoggerFactory.getLogger(PojoBuilder.class);
 
 	private transient LinkedHashMap<String, JDefinedClass> codeModels = new LinkedHashMap<>();
 	private JCodeModel pojoModel = null;
@@ -111,17 +117,14 @@ public class PojoBuilder {
 
 		try {
 			// create the class
+			logger.debug("Creating class " + fullyQualifiedClassName);
 			this.pojo = this.pojoModel._class(fullyQualifiedClassName);
 
-			// Create default constructor
-			this.pojo.constructor(JMod.PUBLIC).javadoc().add("Creates a new " + className + ".");
+			// Always add default constructor
+			withDefaultConstructor(className);
 
-			// Implement Serializable
-			this.pojo._implements(Serializable.class);
-
-			// Add constant serializable id
-			this.pojo.field(JMod.STATIC | JMod.FINAL, Long.class, "serialVersionUID",
-					JExpr.lit(new Random(System.currentTimeMillis()).nextLong()));
+			// Handle Serialization
+			implementsSerializable();
 
 			// Add to shortcuts
 			this.codeModels.put(fullyQualifiedClassName, this.pojo);
@@ -130,6 +133,23 @@ public class PojoBuilder {
 			// this should never happen, however in this case lets throw the same error
 			throw new IllegalStateException(e);
 		}
+	}
+
+	private void implementsSerializable() {
+		// Implement Serializable
+		this.pojo._implements(Serializable.class);
+
+		// Add constant serializable id
+		this.pojo.field(JMod.STATIC | JMod.FINAL, Long.class, "serialVersionUID",
+				JExpr.lit(new Random(System.currentTimeMillis()).nextLong()));
+	}
+
+	private void withDefaultConstructor(String className) {
+		// Create default constructor
+		JMethod constructor = this.pojo.constructor(JMod.PUBLIC);
+		constructor.javadoc().add("Creates a new " + className + ".");
+		JBlock defaultConstructorBody = constructor.body();
+		defaultConstructorBody.invoke("super");
 	}
 
 	public PojoBuilder withPackage(String pojoPackage) {
@@ -150,14 +170,39 @@ public class PojoBuilder {
 		JDocComment javadoc = this.pojo.javadoc();
 		// javadoc.add
 		javadoc.add(toJavaComment(classComment));
-		javadoc.add("\n\nGenerated using springmvc-raml-plugin on " + new SimpleDateFormat("MM/dd/yyyy HH:mm:ss").format(new Date()));
+		javadoc.add("\n\nGenerated using springmvc-raml-plugin on "
+				+ new SimpleDateFormat("MM/dd/yyyy HH:mm:ss").format(new Date()));
 		return this;
+	}
+	
+	private boolean parentContainsField(JClass pojo, String name) {
+		if (pojo != null && !pojo.fullName().equals(Object.class.getName())) {
+			JClass parent = pojo._extends();
+			if (parent != null) {
+				//Our parent has a parent, lets check if it has it
+				if (parentContainsField(parent, name)) {
+					return true;
+				} else {
+					if (parent instanceof JDefinedClass) {
+						return ((JDefinedClass)parent).fields().containsKey(name);
+					}
+				}
+			}
+		}
+		
+		return false;
 	}
 
 	public PojoBuilder withField(String name, String type, String comment) {
 		pojoCreationCheck();
+		logger.debug("Adding field: " + name + " to " + this.pojo.name());
+
+		JClass resolvedType = resolveType(type);
 		
-		JType resolvedType = resolveType(type);
+		//lets ignore this if parent contains it and we will use parent's in the constructor
+		if (parentContainsField(this.pojo, name)) {
+			return this;
+		}
 
 		// Add private variable
 		JFieldVar field = this.pojo.field(JMod.PRIVATE, resolvedType, toJavaName(name));
@@ -185,7 +230,7 @@ public class PojoBuilder {
 	public JCodeModel getCodeModel() {
 		return this.pojoModel;
 	}
-	
+
 	public JClass getPojo() {
 		return this.pojo;
 	}
@@ -197,38 +242,66 @@ public class PojoBuilder {
 	 */
 	public PojoBuilder withCompleteConstructor() {
 		pojoCreationCheck();
-		
+
 		// Create default constructor
 		JMethod constructor = this.pojo.constructor(JMod.PUBLIC);
-		Collection<JFieldVar> fieldsToAdd = getFieldsToAdd(null, this.pojo);
-		for (JFieldVar field : fieldsToAdd) {
+		Map<String, JVar> superParametersToAdd = getSuperParametersToAdd(this.pojo);
+		addSuperConstructorInvocation(constructor, superParametersToAdd);
+		constructor.javadoc().add("Creates a new " + this.pojo.name() + ".");
+
+		Map<String, JVar> fieldsToAdd = getFieldsToAdd(this.pojo);
+		for (JVar field : fieldsToAdd.values()) {
 			addFieldToConstructor(field, constructor);
 		}
-		constructor.javadoc().add("Creates a new " + this.pojo.name() + ".");
 
 		return this;
 	}
-	
-	private Collection<JFieldVar> getFieldsToAdd(Collection<JFieldVar> fields, JClass pojo) {
-		Collection<JFieldVar> tFields = fields;
-		if (fields == null) {
-			tFields = new LinkedHashSet<>();
+
+	private void addSuperConstructorInvocation(JMethod constructor, Map<String, JVar> superParametersToAdd) {
+		JBlock constructorBody = constructor.body();
+		JInvocation invocation = constructorBody.invoke("super");
+		for (JVar arg : superParametersToAdd.values()) {
+			JVar param = constructor.param(arg.type(), arg.name());
+			invocation.arg(param);
 		}
-		
+
+	}
+
+	private Map<String, JVar> getSuperParametersToAdd(JClass pojo) {
+		Map<String, JVar> tFields = new LinkedHashMap<>();
 		JClass parent = pojo._extends();
 		if (!parent.name().equals(Object.class.getSimpleName())) {
-			CodeModelHelper.findFirstClassBySimpleName(this.pojoModel, parent.name());
-			tFields.addAll(getFieldsToAdd(tFields, parent));
+			parent = CodeModelHelper.findFirstClassBySimpleName(this.pojoModel, parent.name());
+			if (parent instanceof JDefinedClass) {
+				JDefinedClass jParent = (JDefinedClass) parent;
+				JMethod constructor = null;
+				Iterator<JMethod> constructors = jParent.constructors();
+				while (constructors.hasNext()) {
+					JMethod targetConstructor = constructors.next();
+					if (constructor == null || constructor.params().size() < targetConstructor.params().size()) {
+						constructor = targetConstructor;
+					}
+				}
+				for (JVar var : constructor.params()) {
+					tFields.put(var.name(), var);
+				}
+			}
 		}
-		
-		if (pojo instanceof JDefinedClass) {
-			tFields.addAll(((JDefinedClass)pojo).fields().values());
-		}
-		
-		return tFields;		
+		return tFields;
 	}
-	private void addFieldToConstructor(JFieldVar field, JMethod constructor) {
-		if (((field.mods().getValue() & (JMod.STATIC | JMod.TRANSIENT)) == 0)) { //Ignore static variables
+
+	private Map<String, JVar> getFieldsToAdd(JClass pojo) {
+		Map<String, JVar> tFields = new LinkedHashMap<>();
+
+		if (pojo instanceof JDefinedClass) {
+			tFields.putAll(((JDefinedClass) pojo).fields());
+		}
+
+		return tFields;
+	}
+
+	private void addFieldToConstructor(JVar field, JMethod constructor) {
+		if (((field.mods().getValue() & (JMod.STATIC | JMod.TRANSIENT)) == 0)) { // Ignore static variables
 			constructor.param(field.type(), field.name());
 			constructor.body().assign(JExpr._this().ref(field.name()), JExpr.ref(field.name()));
 		}
@@ -251,7 +324,7 @@ public class PojoBuilder {
 		return name;
 	}
 
-	private JType resolveType(String type) {
+	private JClass resolveType(String type) {
 		return CodeModelHelper.findFirstClassBySimpleName(pojoModel, type);
 	}
 

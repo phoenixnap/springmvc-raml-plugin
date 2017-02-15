@@ -28,6 +28,14 @@ public class RamlInterpretationResult {
 		this.resolvedClass = resolvedClass;
 	}
 	
-	
+	public JClass getResolvedClassOrBuiltOrObject() {
+		if (getResolvedClass() != null) {
+			return getResolvedClass();
+		} else if (getBuilder() != null) {
+			return getBuilder().getPojo();
+		} else {
+			return codeModel.ref(Object.class);
+		}
+	}
 
 }
