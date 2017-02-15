@@ -1,24 +1,26 @@
 package com.phoenixnap.oss.ramlapisync.raml.rjp.raml10v2;
 
-import com.phoenixnap.oss.ramlapisync.raml.RamlDataType;
-import com.phoenixnap.oss.ramlapisync.raml.RamlDocumentationItem;
-import com.phoenixnap.oss.ramlapisync.raml.RamlResource;
-import com.phoenixnap.oss.ramlapisync.raml.RamlRoot;
-import com.phoenixnap.oss.ramlapisync.raml.RamlSpecNotFullySupportedException;
-
-import org.raml.v2.api.model.v10.api.Api;
-import org.raml.v2.api.model.v10.bodies.MimeType;
-import org.raml.v2.api.model.v10.datamodel.TypeDeclaration;
-import org.raml.v2.api.model.v10.resources.Resource;
-
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+import org.raml.v2.api.model.v10.api.Api;
+import org.raml.v2.api.model.v10.bodies.MimeType;
+import org.raml.v2.api.model.v10.datamodel.TypeDeclaration;
+import org.raml.v2.api.model.v10.resources.Resource;
+
+import com.phoenixnap.oss.ramlapisync.raml.RamlDataType;
+import com.phoenixnap.oss.ramlapisync.raml.RamlDocumentationItem;
+import com.phoenixnap.oss.ramlapisync.raml.RamlResource;
+import com.phoenixnap.oss.ramlapisync.raml.RamlRoot;
+import com.phoenixnap.oss.ramlapisync.raml.RamlSpecNotFullySupportedException;
+
 /**
  * @author aweisser
+ * @author kurtpa
+ * @author aleks
  */
 public class RJP10V2RamlRoot implements RamlRoot {
 
@@ -30,6 +32,15 @@ public class RJP10V2RamlRoot implements RamlRoot {
     public RJP10V2RamlRoot(Api api) {
         this.api = api;
     }
+
+	/**
+	 * Expose internal representation only package private
+	 * 
+	 * @return the internal model
+	 */
+	Api getApi() {
+		return this.api;
+	}
 
     @Override
     public Map<String, RamlResource> getResources() {
@@ -130,6 +141,11 @@ public class RJP10V2RamlRoot implements RamlRoot {
     @Override
     public void setDocumentation(List<RamlDocumentationItem> documentationItems) {
         throw new UnsupportedOperationException();
+    }
+
+	List<RamlDocumentationItem> getDocumentation() {
+		return api.documentation().stream().map(ramlModelFactory::createRamlDocumentationItem)
+				.collect(Collectors.toList());
     }
 
     @Override

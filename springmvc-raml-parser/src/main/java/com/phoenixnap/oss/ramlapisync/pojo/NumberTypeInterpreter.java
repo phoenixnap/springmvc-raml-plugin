@@ -43,8 +43,8 @@ public class NumberTypeInterpreter extends BaseTypeInterpreter {
 		
 		typeCheck(type);
 		if (type instanceof NumberTypeDeclaration) {
-			NumberTypeDeclaration numberType = (NumberTypeDeclaration) type;
-			//do stringy stuff - enums and stuff.
+			//NumberTypeDeclaration numberType = (NumberTypeDeclaration) type;
+			//TODO stringy stuff - enums and stuff.
 		}
 		
 		result.setResolvedClass(CodeModelHelper.findFirstClassBySimpleName(builderModel, "String"));
