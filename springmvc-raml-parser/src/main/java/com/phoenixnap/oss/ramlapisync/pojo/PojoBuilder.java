@@ -86,6 +86,9 @@ public class PojoBuilder {
 
 	public PojoBuilder extendsClass(String className) {
 		pojoCreationCheck();
+		if (this.pojo.name().equals(className)) {
+			throw new IllegalStateException("A class cannot extend itself");
+		}
 		this.pojo._extends(CodeModelHelper.findFirstClassBySimpleName(pojoModel, className));
 		return this;
 	}

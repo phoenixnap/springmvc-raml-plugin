@@ -148,5 +148,13 @@ public class RamlTypeHelper {
 		}
 	}
 
+	/**
+	 * Checks if this type is the base object type "object"
+	 * @param type
+	 * @return
+	 */
+	public static boolean isBaseObject(String type) {
+		return type.equalsIgnoreCase(Object.class.getSimpleName());
+	}
 
 }
