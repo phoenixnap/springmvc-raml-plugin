@@ -1,0 +1,32 @@
+#%RAML 0.8
+title: myapi
+baseUri: api
+mediaType: application/json
+schemas:
+  - Person: !include sample_unit.json
+  - PersonArray: !include sample_units.json
+  - Manager: !include sample_unit.json
+  - ManagerArray: !include sample_units.json
+
+/persons:
+  get:
+    responses:
+      200:
+        body:
+          application/json:
+            schema: PersonArray
+/managers:
+  post:
+    body:
+      application/json:
+        schema: Manager 
+  get:
+    responses:
+      200:
+        body:
+          application/json:
+            schema: ManagerArray
+  /{managerId}:
+    post:
+    /office:
+      get:

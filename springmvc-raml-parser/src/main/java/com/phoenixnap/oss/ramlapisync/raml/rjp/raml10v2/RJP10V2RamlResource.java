@@ -1,12 +1,16 @@
 package com.phoenixnap.oss.ramlapisync.raml.rjp.raml10v2;
 
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.raml.v2.api.model.v10.datamodel.TypeDeclaration;
 import org.raml.v2.api.model.v10.methods.Method;
 import org.raml.v2.api.model.v10.resources.Resource;
 
+import com.phoenixnap.oss.ramlapisync.naming.NamingHelper;
+import com.phoenixnap.oss.ramlapisync.naming.RamlTypeHelper;
 import com.phoenixnap.oss.ramlapisync.raml.RamlAction;
 import com.phoenixnap.oss.ramlapisync.raml.RamlActionType;
 import com.phoenixnap.oss.ramlapisync.raml.RamlResource;
@@ -22,15 +26,28 @@ public class RJP10V2RamlResource implements RamlResource {
 	private static RJP10V2RamlModelFactory ramlModelFactory = new RJP10V2RamlModelFactory();
 	
     private final Resource delegate;
+    
+    private transient Map<String, RamlResource> childResourceMap;
 
     public RJP10V2RamlResource(Resource resource) {
         this.delegate = resource;
+        
+        rebuildChildren();
     }
 
-    @Override
+    private void rebuildChildren() {
+    	childResourceMap = new LinkedHashMap<String, RamlResource>();
+    	List<Resource> resources = delegate.resources();
+    	if (resources != null) {
+	    	for (Resource resource : resources) {
+	        	childResourceMap.put(resource.relativeUri().value(), new RJP10V2RamlResource(resource));	        	
+	        }
+	    }
+	}
+
+	@Override
     public Map<String, RamlResource> getResources() {
-        Object o = delegate;
-        throw new UnsupportedOperationException();
+        return childResourceMap;
     }
 
     @Override
@@ -40,7 +57,7 @@ public class RJP10V2RamlResource implements RamlResource {
 
     @Override
     public RamlResource getResource(String path) {
-        throw new UnsupportedOperationException();
+       return childResourceMap.get(path);
     }
 
     @Override
@@ -55,7 +72,11 @@ public class RJP10V2RamlResource implements RamlResource {
 
     @Override
     public String getRelativeUri() {
-        throw new UnsupportedOperationException();
+    	if (delegate.relativeUri() == null) {
+    		return null; 
+    	} else {
+    		return delegate.relativeUri().value();
+    	}
     }
 
     @Override
@@ -69,7 +90,19 @@ public class RJP10V2RamlResource implements RamlResource {
 
     @Override
     public Map<String, RamlUriParameter> getUriParameters() {
-        throw new UnsupportedOperationException();
+    	Map<String, RamlUriParameter> uriParameters = new LinkedHashMap<>();
+    	for (TypeDeclaration type : this.delegate.uriParameters()) {
+    		RJP10V2RamlUriParameter rjp10v2RamlUriParameter = new RJP10V2RamlUriParameter(type);
+    		uriParameters.put(type.name(), rjp10v2RamlUriParameter);
+    	}
+    	//RJP08 detects and adds uri parameters from url even if there isnt an explicit parameter defined.
+    	List<String> missingUriParams = NamingHelper.extractUriParams(this.getRelativeUri());
+    	for (String missingParam : missingUriParams) {
+    		if (!uriParameters.containsKey(missingParam)) {    			
+    			uriParameters.put(missingParam, new RJP10V2RamlUriParameter(RamlTypeHelper.createDefaultStringDeclaration(missingParam)));
+    		}
+    	}
+    	return uriParameters;
     }
 
     @Override
@@ -84,22 +117,30 @@ public class RJP10V2RamlResource implements RamlResource {
 
     @Override
     public String getUri() {
-        throw new UnsupportedOperationException();
+    	String outUri = delegate.relativeUri().value();
+    	Resource parentResource = delegate.parentResource();
+    	while (parentResource != null) {
+    		if (parentResource.relativeUri() != null) {
+        		outUri = parentResource.relativeUri().value() + outUri;
+        	} 
+    		parentResource = parentResource.parentResource();
+    	}
+    	return outUri;
     }
 
     @Override
     public String getDescription() {
-    	return this.delegate.description().value();
+    	return (this.delegate.description() == null) ? null : this.delegate.description().value();
     }
     
     @Override
     public String getDisplayName() {
-    	return this.delegate.displayName().value();
+    	return (this.delegate.displayName() == null) ? null : this.delegate.displayName().value();
     }
 
     @Override
     public RamlResource getParentResource() {
-        throw new UnsupportedOperationException();
+        return (this.delegate.parentResource() == null) ? null : new RJP10V2RamlResource(this.delegate.parentResource());
     }
 
     @Override
@@ -156,4 +197,6 @@ public class RJP10V2RamlResource implements RamlResource {
     Resource getResource() {
         return this.delegate;
     }
+    
+    
 }

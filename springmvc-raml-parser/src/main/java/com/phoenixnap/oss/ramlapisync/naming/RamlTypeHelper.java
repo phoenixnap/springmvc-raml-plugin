@@ -12,8 +12,19 @@
  */
 package com.phoenixnap.oss.ramlapisync.naming;
 
+import java.util.Collections;
+import java.util.List;
+
+import org.raml.v2.api.model.common.ValidationResult;
+import org.raml.v2.api.model.v10.datamodel.ExampleSpec;
 import org.raml.v2.api.model.v10.datamodel.ExternalTypeDeclaration;
+import org.raml.v2.api.model.v10.datamodel.StringTypeDeclaration;
 import org.raml.v2.api.model.v10.datamodel.TypeDeclaration;
+import org.raml.v2.api.model.v10.datamodel.XMLFacetInfo;
+import org.raml.v2.api.model.v10.declarations.AnnotationRef;
+import org.raml.v2.api.model.v10.declarations.AnnotationTarget;
+import org.raml.v2.api.model.v10.system.types.AnnotableStringType;
+import org.raml.v2.api.model.v10.system.types.MarkdownString;
 
 import com.phoenixnap.oss.ramlapisync.data.ApiBodyMetadata;
 import com.phoenixnap.oss.ramlapisync.pojo.PojoBuilderFactory;
@@ -157,4 +168,126 @@ public class RamlTypeHelper {
 		return type.equalsIgnoreCase(Object.class.getSimpleName());
 	}
 
+	/**
+	 * Creates a default string typedeclaration (experimental)
+	 * 
+	 * @param paramName
+	 * @return
+	 */
+	public static StringTypeDeclaration createDefaultStringDeclaration(String paramName) {
+    	return new StringTypeDeclaration() {
+			
+			String name = paramName;
+			
+			
+			
+			@Override
+			public List<AnnotationRef> annotations() {
+				return null;
+			}
+			
+			@Override
+			public XMLFacetInfo xml() {
+				return null;
+			}
+			
+			@Override
+			public List<ValidationResult> validate(String payload) {
+				return null;
+			}
+			
+			@Override
+			public String type() {
+				return "string";
+			}
+			
+			@Override
+			public String toXmlSchema() {
+				return null;
+			}
+			
+			@Override
+			public Boolean required() {
+				return true;
+			}
+			
+			@Override
+			public List<TypeDeclaration> parentTypes() {
+				return null;
+			}
+			
+			@Override
+			public String name() {
+				return name;
+			}
+			
+			@Override
+			public List<TypeDeclaration> facets() {
+				return Collections.emptyList();
+			}
+			
+			@Override
+			public List<ExampleSpec> examples() {
+				return Collections.emptyList();
+			}
+			
+			@Override
+			public ExampleSpec example() {
+				return null;
+			}
+			
+			@Override
+			public AnnotableStringType displayName() {
+				return new AnnotableStringType() {
+
+					@Override
+					public List<AnnotationRef> annotations() {
+						return null;
+					}
+
+					@Override
+					public String value() {
+						return name;
+					}
+					
+				};
+			}
+			
+			@Override
+			public MarkdownString description() {
+				return null;
+			}
+			
+			@Override
+			public String defaultValue() {
+				return null;
+			}
+			
+			@Override
+			public List<AnnotationTarget> allowedTargets() {
+				return Collections.emptyList();
+			}
+			
+			@Override
+			public String pattern() {
+				return null;
+			}
+			
+			@Override
+			public Integer minLength() {
+				return 0;
+			}
+			
+			@Override
+			public Integer maxLength() {
+				return Integer.MAX_VALUE;
+			}
+			
+			@Override
+			public List<String> enumValues() {
+				return null;
+			}
+		};
+    			
+    }
 }

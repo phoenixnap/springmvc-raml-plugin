@@ -123,7 +123,7 @@ public class RJP10V2RamlAction implements RamlAction {
 
     @Override
     public String getDescription() {
-        return method.description().value();
+        return (method.description() == null) ? null : method.description().value();
     }
 
     @Override
@@ -133,7 +133,7 @@ public class RJP10V2RamlAction implements RamlAction {
     
     @Override
 	public String getDisplayName() {
-		return method.displayName().value();
+		return (method.displayName() == null) ? null : method.displayName().value();
 	}
 
 	@Override

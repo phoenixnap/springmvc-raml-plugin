@@ -12,16 +12,19 @@
  */
 package com.phoenixnap.oss.ramlapisync.naming;
 
-import com.phoenixnap.oss.ramlapisync.raml.RamlAction;
-import com.phoenixnap.oss.ramlapisync.raml.RamlActionType;
-import com.phoenixnap.oss.ramlapisync.raml.RamlResource;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
 import org.jsonschema2pojo.util.NameHelper;
 import org.raml.parser.utils.Inflector;
 import org.springframework.http.MediaType;
 import org.springframework.util.StringUtils;
 
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
+import com.phoenixnap.oss.ramlapisync.raml.RamlAction;
+import com.phoenixnap.oss.ramlapisync.raml.RamlActionType;
+import com.phoenixnap.oss.ramlapisync.raml.RamlResource;
 
 /**
  * Class containing methods relating to naming converntions and string cleanup for naming
@@ -116,6 +119,28 @@ public class NamingHelper {
 		} else {
 			return false;
 		}
+	}
+	
+	/**
+	 * Extracts a list of URI Parameters from a url
+	 * 
+	 * @param url
+	 * @return
+	 */
+	public static List<String> extractUriParams(String url) {
+		List<String> outParams = new ArrayList<>();
+		if (StringUtils.hasText(url)) {
+			String[] split = StringUtils.split(url, "/");
+			for (String part : split) {
+				int indexOfStart = part.indexOf("{");
+				int indexOfEnd = part.indexOf("}");
+				if (indexOfStart != -1 && indexOfEnd != -1 && indexOfStart < indexOfEnd) {
+					outParams.add(part.substring(indexOfStart+1, indexOfEnd));
+				}
+			}
+		
+		}
+		return outParams;
 	}
 
 	/**

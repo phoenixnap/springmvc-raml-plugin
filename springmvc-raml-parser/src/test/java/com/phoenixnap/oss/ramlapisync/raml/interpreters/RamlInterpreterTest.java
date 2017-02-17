@@ -1,9 +1,9 @@
 package com.phoenixnap.oss.ramlapisync.raml.interpreters;
 
+import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.containsInAnyOrder;
 import static org.hamcrest.Matchers.instanceOf;
-import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.notNullValue;
 
 import java.io.ByteArrayOutputStream;
@@ -16,8 +16,11 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 
 import com.phoenixnap.oss.ramlapisync.data.ApiBodyMetadata;
+import com.phoenixnap.oss.ramlapisync.data.ApiResourceMetadata;
 import com.phoenixnap.oss.ramlapisync.generation.CodeModelHelper;
 import com.phoenixnap.oss.ramlapisync.generation.RamlParser;
+import com.phoenixnap.oss.ramlapisync.generation.rules.Rule;
+import com.phoenixnap.oss.ramlapisync.generation.rules.Spring4ControllerDecoratorRule;
 import com.phoenixnap.oss.ramlapisync.naming.RamlTypeHelper;
 import com.phoenixnap.oss.ramlapisync.raml.InvalidRamlResourceException;
 import com.phoenixnap.oss.ramlapisync.raml.RamlActionType;
@@ -37,7 +40,7 @@ public class RamlInterpreterTest {
 
     private static RamlRoot ramlRoot;
     
-    private static boolean VISUALISE_MODEL_TO_CONSOLE = false;
+    private static boolean VISUALISE_MODEL_TO_CONSOLE = true;
     
     protected Logger logger = Logger.getLogger(this.getClass());
     protected JCodeModel jCodeModel;
@@ -90,7 +93,19 @@ public class RamlInterpreterTest {
         assertThat(managersGetRequest.getName(), is("List<Manager>"));     
      
 		checkModel(jCodeModel);
+		checkIntegration(jCodeModel);
     }
+       
+    private void checkIntegration(JCodeModel codeModel) {
+    	RamlParser defaultRamlParser = new RamlParser("com.gen.test", "/api", false, false);
+    	Rule<JCodeModel, JDefinedClass, ApiResourceMetadata> rule = new Spring4ControllerDecoratorRule();
+    	
+        rule.apply(defaultRamlParser.extractControllers(codeModel, ramlRoot).iterator().next(), codeModel);
+       
+    }
+    
+
+    
     
     @After
     public void visualiseTest() {
