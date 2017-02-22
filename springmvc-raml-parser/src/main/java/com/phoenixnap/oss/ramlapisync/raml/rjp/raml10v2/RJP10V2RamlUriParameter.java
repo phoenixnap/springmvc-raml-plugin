@@ -44,7 +44,7 @@ public class RJP10V2RamlUriParameter extends RamlUriParameter {
 
     @Override
     public String getDisplayName() {
-        return RamlTypeHelper.getDisplayName(uriParameter);
+		return RamlTypeHelper.getDisplayName(this.uriParameter);
     }
 
     @Override
@@ -54,7 +54,7 @@ public class RJP10V2RamlUriParameter extends RamlUriParameter {
 
     @Override
     public RamlParamType getType() {
-        return ramlModelFactory.createRamlParamType(uriParameter.type());
+		return ramlModelFactory.createRamlParamType(this.uriParameter.type());
     }
 
     @Override
@@ -64,7 +64,7 @@ public class RJP10V2RamlUriParameter extends RamlUriParameter {
 
     @Override
     public boolean isRequired() {
-        return RamlTypeHelper.isRequired(uriParameter);
+		return RamlTypeHelper.isRequired(this.uriParameter);
     }
 
     @Override
@@ -84,16 +84,16 @@ public class RJP10V2RamlUriParameter extends RamlUriParameter {
 
     @Override
     public String getExample() {
-        return RamlTypeHelper.getExample(uriParameter);
+		return RamlTypeHelper.getExample(this.uriParameter);
     }
 
     @Override
     public String getDescription() {
-        return RamlTypeHelper.getDescription(uriParameter);
+		return RamlTypeHelper.getDescription(this.uriParameter);
     }
 
 	@Override
 	public String getDefaultValue() {
-		return uriParameter.defaultValue();
+		return this.uriParameter.defaultValue();
 	}
 }

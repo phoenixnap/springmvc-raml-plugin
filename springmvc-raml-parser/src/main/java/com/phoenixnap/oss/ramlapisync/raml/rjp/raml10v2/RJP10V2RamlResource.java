@@ -4,6 +4,8 @@ import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import org.raml.v2.api.model.v10.datamodel.TypeDeclaration;
 import org.raml.v2.api.model.v10.methods.Method;
@@ -72,11 +74,7 @@ public class RJP10V2RamlResource implements RamlResource {
 
     @Override
     public String getRelativeUri() {
-    	if (delegate.relativeUri() == null) {
-    		return null; 
-    	} else {
-    		return delegate.relativeUri().value();
-    	}
+		return (this.delegate.relativeUri() == null) ? null : this.delegate.relativeUri().value();
     }
 
     @Override
@@ -110,9 +108,29 @@ public class RJP10V2RamlResource implements RamlResource {
         throw new UnsupportedOperationException();
     }
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see org.raml.model.Resource#getResolvedUriParameters()
+	 * 
+	 * 
+	 * @return URI parameters defined for the current resource plus all URI
+	 * parameters defined in the resource hierarchy
+	 *
+	 */
     @Override
     public Map<String, RamlUriParameter> getResolvedUriParameters() {
-        throw new UnsupportedOperationException();
+		Map<String, RamlUriParameter> resolvedUriParameters = new HashMap<>();
+
+		RamlResource resource = this;
+		while (resource != null) {
+			resolvedUriParameters = Stream
+					.concat(resolvedUriParameters.entrySet().stream(), resource.getUriParameters().entrySet().stream())
+					.collect(Collectors.toMap(entry -> entry.getKey(), entry -> entry.getValue()));
+			resource = resource.getParentResource();
+		}
+
+		return resolvedUriParameters;
     }
 
     @Override

@@ -22,6 +22,7 @@ import com.phoenixnap.oss.ramlapisync.raml.RamlMimeType;
 import com.phoenixnap.oss.ramlapisync.raml.RamlQueryParameter;
 import com.phoenixnap.oss.ramlapisync.raml.RamlRoot;
 import com.phoenixnap.oss.ramlapisync.raml.RamlSecurityReference;
+import com.phoenixnap.oss.ramlapisync.raml.RamlUriParameter;
 
 /**
  * @author Aleksandar Stojsavljevic
@@ -30,13 +31,19 @@ import com.phoenixnap.oss.ramlapisync.raml.RamlSecurityReference;
 public class RJP10V2RamlActionTest {
 
 	private static RamlAction ramlGetAction;
-    private static RamlAction ramlPostAction;
+	private static RamlAction ramlGetPersonByIdAction;
+	private static RamlAction ramlPostAction;
+	private static RamlAction ramlGetSubresourceByIdAction;
 
     @BeforeClass
     public static void initRamlRoot() throws InvalidRamlResourceException {
     	RamlRoot ramlRoot = new RJP10V2RamlModelFactory().buildRamlRoot("raml/raml-action-test-v10.raml");
     	ramlGetAction = ramlRoot.getResource("persons").getAction(RamlActionType.GET);
     	ramlPostAction = ramlRoot.getResource("persons").getAction(RamlActionType.POST);
+		ramlGetPersonByIdAction = ramlRoot.getResource("persons").getResource("/{personId}")
+				.getAction(RamlActionType.GET);
+		ramlGetSubresourceByIdAction = ramlRoot.getResource("managers").getResource("/{managerId}")
+				.getResource("/subresources").getResource("/{subresourceId}").getAction(RamlActionType.GET);
     }
 
     @Test
@@ -63,13 +70,19 @@ public class RJP10V2RamlActionTest {
     	RamlQueryParameter testXQueryParameter = queryParameters.get("testX");
     	assertThat(testXQueryParameter.getDisplayName(), equalTo("testX"));
     	assertThat(testXQueryParameter.getType().toString(), equalTo("STRING"));
-    	assertThat(testXQueryParameter.getDefaultValue(), equalTo("def_value"));
+		assertThat(testXQueryParameter.getDefaultValue(), equalTo("defvalue"));
     	assertThat(testXQueryParameter.getMinLength().intValue(), equalTo(3));
-        assertThat(testXQueryParameter.getMaxLength().intValue(), equalTo(10));
+		assertThat(testXQueryParameter.getMaxLength().intValue(), equalTo(10));
+		assertThat(testXQueryParameter.getPattern(), equalTo("^[a-zA-Z]+$"));
         
         RamlQueryParameter testYQueryParameter = queryParameters.get("testY");
     	assertThat(testYQueryParameter.getDisplayName(), equalTo("testY"));
         assertThat(testYQueryParameter.getType().toString(), equalTo("INTEGER"));
+
+		RamlQueryParameter testZQueryParameter = queryParameters.get("testZ");
+		assertThat(testZQueryParameter.getType().toString(), equalTo("INTEGER"));
+		assertThat(testZQueryParameter.getMinimum().intValue(), equalTo(1));
+		assertThat(testZQueryParameter.getMaximum().intValue(), equalTo(10));
     }
     
     @Test
@@ -119,6 +132,31 @@ public class RJP10V2RamlActionTest {
 		assertThat(securityScheme.settings().scopes(), hasItem("session"));
 		assertThat(securityScheme.settings().scopes(), hasItem("read"));
 		assertThat(securityScheme.settings().scopes(), hasItem("write"));
+	}
+
+	@Test
+	public void ramlActionShouldReflectUriParameter() {
+		RamlUriParameter ramlUriParameter = ramlGetPersonByIdAction.getResource().getUriParameters().get("personId");
+
+		assertThat(ramlUriParameter.getDescription(), equalTo("id of a person"));
+		assertThat(ramlUriParameter.getDisplayName(), equalTo("personId"));
+		assertThat(ramlUriParameter.getType().toString(), equalTo("INTEGER"));
+	}
+
+	@Test
+	public void ramlActionShouldReflectResolvedUriParameter() {
+		Map<String, RamlUriParameter> resolvedUriParameters = ramlGetSubresourceByIdAction.getResource()
+				.getResolvedUriParameters();
+
+		RamlUriParameter managerIdUriParameter = resolvedUriParameters.get("managerId");
+		assertThat(managerIdUriParameter.getType().toString(), equalTo("INTEGER"));
+		assertThat(managerIdUriParameter.getDescription(), equalTo("id of a manager"));
+		assertThat(managerIdUriParameter.isRequired(), is(false));
+
+		RamlUriParameter subresourceIdUriParameter = resolvedUriParameters.get("subresourceId");
+		assertThat(subresourceIdUriParameter.getType().toString(), equalTo("NUMBER"));
+		assertThat(subresourceIdUriParameter.getDisplayName(), equalTo("subresourceId"));
+		assertThat(subresourceIdUriParameter.getDefaultValue(), equalTo("123"));
 	}
 
 }

@@ -14,6 +14,7 @@ package com.phoenixnap.oss.ramlapisync.raml.rjp.raml10v2;
 
 import java.math.BigDecimal;
 
+import org.raml.v2.api.model.v10.datamodel.NumberTypeDeclaration;
 import org.raml.v2.api.model.v10.datamodel.StringTypeDeclaration;
 import org.raml.v2.api.model.v10.datamodel.TypeDeclaration;
 
@@ -114,16 +115,25 @@ public class RJP10V2RamlQueryParameter extends RamlQueryParameter {
 
     @Override
     public BigDecimal getMinimum() {
+		if (queryParameter instanceof NumberTypeDeclaration) {
+			return BigDecimal.valueOf(((NumberTypeDeclaration) queryParameter).minimum());
+    	}
     	throw new UnsupportedOperationException();
     }
 
     @Override
     public BigDecimal getMaximum() {
+    	if(queryParameter instanceof NumberTypeDeclaration){
+			return BigDecimal.valueOf(((NumberTypeDeclaration) queryParameter).maximum());
+    	}
     	throw new UnsupportedOperationException();
     }
 
     @Override
     public String getPattern() {
+		if (queryParameter instanceof StringTypeDeclaration) {
+			return ((StringTypeDeclaration) queryParameter).pattern();
+		}
     	throw new UnsupportedOperationException();
     }
 

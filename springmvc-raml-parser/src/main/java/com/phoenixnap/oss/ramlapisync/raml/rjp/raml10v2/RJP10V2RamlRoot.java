@@ -82,10 +82,10 @@ public class RJP10V2RamlRoot implements RamlRoot {
         if(mediaTypes.size() >= 2) {
             throw new RamlSpecNotFullySupportedException("Sorry. Multiple default media types are not supported yet.");
         }
-        if(mediaTypes.size() == 0) {
+		if (mediaTypes.isEmpty()) {
             return null;
         }
-        return mediaTypes.stream().findFirst().get().value();
+		return mediaTypes.stream().findFirst().orElse(null).value();
     }
 
     @Override

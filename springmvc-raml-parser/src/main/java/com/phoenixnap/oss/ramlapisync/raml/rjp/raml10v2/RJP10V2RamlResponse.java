@@ -12,14 +12,14 @@
  */
 package com.phoenixnap.oss.ramlapisync.raml.rjp.raml10v2;
 
-import com.phoenixnap.oss.ramlapisync.naming.RamlTypeHelper;
-import com.phoenixnap.oss.ramlapisync.raml.RamlMimeType;
-import com.phoenixnap.oss.ramlapisync.raml.RamlResponse;
-
 import java.util.LinkedHashMap;
 import java.util.Map;
 
 import org.raml.v2.api.model.v10.bodies.Response;
+
+import com.phoenixnap.oss.ramlapisync.naming.RamlTypeHelper;
+import com.phoenixnap.oss.ramlapisync.raml.RamlMimeType;
+import com.phoenixnap.oss.ramlapisync.raml.RamlResponse;
 
 /**
  * Implementation based on the Raml 1.0 Parser
@@ -38,8 +38,7 @@ public class RJP10V2RamlResponse implements RamlResponse {
     public RJP10V2RamlResponse(Response response) {
         this.response = response;
         ramlModelFactory.transformToUnmodifiableMap(
-        		response.body(),
-        		body,
+				this.response.body(), this.body,
                 ramlModelFactory::createRamlMimeType,
                 r -> RamlTypeHelper.getDisplayName(r));
     }
@@ -49,7 +48,7 @@ public class RJP10V2RamlResponse implements RamlResponse {
      * @return the internal model
      */
     Response getResponse() {
-        return response;
+		return this.response;
     }
 
     @Override
@@ -59,7 +58,7 @@ public class RJP10V2RamlResponse implements RamlResponse {
 
     @Override
     public Map<String, RamlMimeType> getBody() {
-    	return body;
+		return this.body;
     }
 
     @Override
@@ -69,7 +68,7 @@ public class RJP10V2RamlResponse implements RamlResponse {
 
     @Override
     public boolean hasBody() {
-        return !response.body().isEmpty();
+		return !this.response.body().isEmpty();
     }
 
 
@@ -80,7 +79,7 @@ public class RJP10V2RamlResponse implements RamlResponse {
 
     @Override
     public String getDescription() {
-        return response.description().value();
+		return (this.response.description() == null) ? null : this.response.description().value();
     }
 
 
