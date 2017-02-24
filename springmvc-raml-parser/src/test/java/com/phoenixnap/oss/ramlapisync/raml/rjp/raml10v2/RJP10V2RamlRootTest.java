@@ -6,6 +6,7 @@ import static org.hamcrest.CoreMatchers.startsWith;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.anything;
 import static org.hamcrest.Matchers.emptyIterable;
+import static org.hamcrest.Matchers.endsWith;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.everyItem;
 import static org.hamcrest.Matchers.hasItems;
@@ -20,8 +21,12 @@ import java.util.stream.Collectors;
 
 import org.junit.BeforeClass;
 import org.junit.Test;
+import org.raml.v2.api.model.v10.datamodel.ArrayTypeDeclaration;
+import org.raml.v2.api.model.v10.datamodel.ObjectTypeDeclaration;
+import org.raml.v2.api.model.v10.datamodel.StringTypeDeclaration;
 
 import com.phoenixnap.oss.ramlapisync.raml.InvalidRamlResourceException;
+import com.phoenixnap.oss.ramlapisync.raml.RamlDataType;
 import com.phoenixnap.oss.ramlapisync.raml.RamlDocumentationItem;
 import com.phoenixnap.oss.ramlapisync.raml.RamlResource;
 import com.phoenixnap.oss.ramlapisync.raml.RamlRoot;
@@ -77,6 +82,34 @@ public class RJP10V2RamlRootTest {
         assertThat(managerType.keySet().iterator().next(), equalTo("Manager"));
         assertThat(managerType.values().iterator().next(), equalTo("Person"));
     }
+
+	@Test
+	public void ramlRootShouldReflectDataTypes() {
+		Map<String, RamlDataType> personType = ramlRoot.getTypes();
+
+		ObjectTypeDeclaration personDataType = (ObjectTypeDeclaration) personType.get("Person").getType();
+
+		assertThat(personDataType.displayName().value(), equalTo("Person"));
+		assertThat(personDataType.type(), equalTo("object"));
+
+		StringTypeDeclaration testXProp = (StringTypeDeclaration) personDataType.properties().get(0);
+		assertThat(testXProp.displayName().value(), equalTo("testX"));
+		assertThat(testXProp.defaultValue(), equalTo("def_value"));
+		assertThat(testXProp.minLength(), equalTo(3));
+		assertThat(testXProp.maxLength(), equalTo(10));
+
+		ArrayTypeDeclaration testY = (ArrayTypeDeclaration) personDataType.properties().get(1);
+		assertThat(testY.description().value(), equalTo("array attribute"));
+		assertThat(testY.example().value(), endsWith("[a,b]"));
+		assertThat(testY.items().type(), equalTo("string"));
+
+		ObjectTypeDeclaration managerDataType = (ObjectTypeDeclaration) personType.get("Manager").getType();
+		assertThat(managerDataType.type(), equalTo("Person"));
+
+		ArrayTypeDeclaration personsDataType = (ArrayTypeDeclaration) personType.get("Persons").getType();
+		assertThat(personsDataType.type(), equalTo("array"));
+		assertThat(personsDataType.items().type(), equalTo("Person"));
+	}
 
     @Test
     public void ramlRootShouldHandleEmptySchemasWithoutException() {
