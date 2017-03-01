@@ -15,6 +15,9 @@ package com.phoenixnap.oss.ramlapisync.raml;
 
 import org.raml.v2.api.RamlModelBuilder;
 import org.raml.v2.api.RamlModelResult;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.util.StringUtils;
 
 import com.phoenixnap.oss.ramlapisync.raml.rjp.raml08v1.RJP08V1RamlModelFactory;
 import com.phoenixnap.oss.ramlapisync.raml.rjp.raml10v2.RJP10V2RamlModelFactory;
@@ -26,6 +29,11 @@ import com.phoenixnap.oss.ramlapisync.raml.rjp.raml10v2.RJP10V2RamlModelFactory;
  * @since 0.8.1
  */
 public abstract class RamlModelFactoryOfFactories {
+	
+	/**
+	 * Class Logger
+	 */
+	protected static final Logger logger = LoggerFactory.getLogger(RamlModelFactoryOfFactories.class);
 
     /**
      * @return a RJP08V1RamlModelFactory instance.
@@ -48,16 +56,23 @@ public abstract class RamlModelFactoryOfFactories {
     }
     
     public static RamlModelFactory createRamlModelFactoryFor(String ramlURL) {
+    	return createRamlModelFactoryFor(ramlURL, null);
+    }
+    
+    public static RamlModelFactory createRamlModelFactoryFor(String ramlURL, RamlVersion ramlVersion) {
     	RamlModelResult ramlModelResult = new RamlModelBuilder().buildApi(ramlURL);
-        if (ramlModelResult.isVersion10()) {
+    	if (ramlModelResult.hasErrors()) {
+    		logger.error("Loaded RAML has validation errors: "+ StringUtils.collectionToCommaDelimitedString(ramlModelResult.getValidationResults()));
+    	}
+        if (ramlModelResult.isVersion10() 
+        		&& (ramlVersion == null || RamlVersion.V10.equals(ramlVersion))) {
         	return new RJP10V2RamlModelFactory();
         }
-        if (ramlModelResult.isVersion08()) {
+        if ((!ramlModelResult.hasErrors() && RamlVersion.V08.equals(ramlVersion)) //To keep legacy support try load using the 08 if requested specifically
+        		|| (ramlModelResult.isVersion08() && (ramlVersion == null || RamlVersion.V08.equals(ramlVersion)))) {
         	return new RJP08V1RamlModelFactory();
         }
         throw new UnsupportedRamlVersionError(RamlVersion.V08, RamlVersion.V10);
     }
-    
-    
 
 }

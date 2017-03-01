@@ -17,7 +17,6 @@ import java.util.Collections;
 import java.util.Set;
 
 import org.raml.v2.api.model.v10.datamodel.ArrayTypeDeclaration;
-import org.raml.v2.api.model.v10.datamodel.NumberTypeDeclaration;
 import org.raml.v2.api.model.v10.datamodel.TypeDeclaration;
 
 import com.phoenixnap.oss.ramlapisync.generation.CodeModelHelper;

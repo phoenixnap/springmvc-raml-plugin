@@ -82,6 +82,10 @@ public abstract class AbstractRuleTestBase {
     }
 
     protected String serializeModel() {
+    	return serializeModel(jCodeModel);
+    }
+    
+    protected String serializeModel(JCodeModel jCodeModel) {
         ByteArrayOutputStream bos = new ByteArrayOutputStream();
         try {
             jCodeModel.build(new SingleStreamCodeWriter(bos));
@@ -95,10 +99,13 @@ public abstract class AbstractRuleTestBase {
     public void printCode() {
         logger.debug(serializeModel());
     }
-
+    
     protected void verifyGeneratedCode(String name) throws Exception {
+    	verifyGeneratedCode(name, serializeModel());
+    }
+
+    protected void verifyGeneratedCode(String name, String generatedCode) throws Exception {
         String expectedCode = getTextFromFile(RESOURCE_BASE + name + ".java.txt");
-        String generatedCode = serializeModel();
 
         try {
             MatcherAssert.assertThat(name + " is not generated correctly.", generatedCode, new IsEqualIgnoringLeadingAndEndingWhiteSpaces(expectedCode));

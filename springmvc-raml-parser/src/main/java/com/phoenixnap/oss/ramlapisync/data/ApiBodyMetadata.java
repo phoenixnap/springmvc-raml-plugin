@@ -38,14 +38,14 @@ public class ApiBodyMetadata {
 	private boolean array = false;
 	
 	
-	public ApiBodyMetadata (String name, TypeDeclaration type, JCodeModel codeModel) {
+	public ApiBodyMetadata (String name, TypeDeclaration type, boolean array, JCodeModel codeModel) {
 		super();
 		this.schema = null;
 		this.type = type;
 		this.name = name;
-		this.codeModel = codeModel;
-		
-		//TODO array detection. i think we can default this to false since we should already be generating lists from the type.
+		this.codeModel = codeModel;		
+		this.array = array;
+		// array detection. i think we can default this to false since we should already be generating lists from the type. nope we need it within rules for narrowing to List
 	}
 	
 	public ApiBodyMetadata (String name, String schema, JCodeModel codeModel) {

@@ -78,6 +78,7 @@ public class RamlInterpreterTest {
         ApiBodyMetadata managersPostRequest = RamlTypeHelper.mapTypeToPojo(jCodeModel, ramlRoot, managersPostType.getType(), "com.gen.foo", "testName");
         assertThat(managersPostRequest, is(notNullValue()));        
         assertThat(managersPostRequest.getName(), is("Manager"));      
+        assertThat(managersPostRequest.isArray(), is(false)); 
         
 		checkModel(jCodeModel);
     }
@@ -90,7 +91,8 @@ public class RamlInterpreterTest {
         assertThat(managersGetType, is(notNullValue()));        
         ApiBodyMetadata managersGetRequest = RamlTypeHelper.mapTypeToPojo(jCodeModel, ramlRoot, managersGetType.getType(), "com.gen.foo", "testName");
         assertThat(managersGetRequest, is(notNullValue()));   
-        assertThat(managersGetRequest.getName(), is("List<Manager>"));     
+        assertThat(managersGetRequest.getName(), is("Manager"));
+        assertThat(managersGetRequest.isArray(), is(true)); 
      
 		checkModel(jCodeModel);
 		checkIntegration(jCodeModel);

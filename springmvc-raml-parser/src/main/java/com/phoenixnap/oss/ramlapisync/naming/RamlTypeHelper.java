@@ -16,6 +16,7 @@ import java.util.Collections;
 import java.util.List;
 
 import org.raml.v2.api.model.common.ValidationResult;
+import org.raml.v2.api.model.v10.datamodel.ArrayTypeDeclaration;
 import org.raml.v2.api.model.v10.datamodel.ExampleSpec;
 import org.raml.v2.api.model.v10.datamodel.ExternalTypeDeclaration;
 import org.raml.v2.api.model.v10.datamodel.StringTypeDeclaration;
@@ -49,7 +50,7 @@ public class RamlTypeHelper {
 	 * @return The Class in the generic portrion of the typ
 	 */
 	public static boolean isArray(TypeDeclaration param) {
-		throw new UnsupportedOperationException(); //TODO
+		return param instanceof ArrayTypeDeclaration;
 	}
 	
 	 /**
@@ -87,7 +88,15 @@ public class RamlTypeHelper {
 			throw new IllegalStateException("No Pojo created or resolved for type " + type.getClass().getSimpleName() + ":" + type.name());
 		}
 		
-		return new ApiBodyMetadata(pojo.name(), type, pojoCodeModel);		
+		boolean array = false;
+		String pojoName = pojo.name();
+		if(pojo.name().contains("List<")
+				|| pojo.name().contains("Set<")) {
+			array = true;
+			pojoName = pojo.getTypeParameters().get(0).name();
+		}
+		
+		return new ApiBodyMetadata(pojoName, type, array, pojoCodeModel);		
 	}
 	
 	/**

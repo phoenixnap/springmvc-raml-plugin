@@ -55,10 +55,6 @@ public class ApiResourceMetadata {
 	} 
 	
 	
-	public void addApiCall(RamlResource resource, RamlActionType actionType, RamlAction action) {
-		apiCalls.add(new ApiActionMetadata(this, resource, actionType, action));
-	}
-	
 	public void addApiCall(RamlResource resource, RamlActionType actionType, RamlAction action, String responseContentType, boolean injectHttpHeadersParameter) {
 		apiCalls.add(new ApiActionMetadata(this, resource, actionType, action, responseContentType, injectHttpHeadersParameter));
 	}

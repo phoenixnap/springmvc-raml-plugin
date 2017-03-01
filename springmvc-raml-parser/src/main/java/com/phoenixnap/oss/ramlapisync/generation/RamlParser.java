@@ -167,22 +167,26 @@ public class RamlParser {
 			controllers.add(controller);
 		}
 		//extract actions for this resource
-		if (resource.getActions() != null && !resource.getActions().isEmpty()) {			
-			for (Entry<RamlActionType, RamlAction> childResource : resource.getActions().entrySet()) {
-				//if we have multiple response types in the raml, this should produce different calls
-				RamlResponse response = null;
-				
-				if (childResource.getValue().getResponses() != null) {
-					response = RamlHelper.getSuccessfulResponse(childResource.getValue());
-				}
-				
-				if (seperateMethodsByContentType && response != null && response.hasBody() && response.getBody().size() > 1) {
-						for (String responseType : response.getBody().keySet()) {
-							controller.addApiCall(resource, childResource.getKey(), childResource.getValue(), responseType, injectHttpHeadersParameter);
-						}
+		if (resource.getActions() != null && !resource.getActions().isEmpty()) {	
+			for (RamlActionType actionType : RamlActionType.values()) {
+				if (resource.getActions().containsKey(actionType)) {
+					RamlAction childResource = resource.getActions().get(actionType);
 					
-				} else {
-					controller.addApiCall(resource, childResource.getKey(), childResource.getValue(), null, injectHttpHeadersParameter);
+					//if we have multiple response types in the raml, this should produce different calls
+					RamlResponse response = null;
+					
+					if (childResource.getResponses() != null) {
+						response = RamlHelper.getSuccessfulResponse(childResource);
+					}
+					
+					if (seperateMethodsByContentType && response != null && response.hasBody() && response.getBody().size() > 1) {
+							for (String responseType : response.getBody().keySet()) {
+								controller.addApiCall(resource, actionType, childResource, responseType, injectHttpHeadersParameter);
+							}
+						
+					} else {
+						controller.addApiCall(resource, actionType, childResource, null, injectHttpHeadersParameter);
+					}
 				}
 			}
 		}

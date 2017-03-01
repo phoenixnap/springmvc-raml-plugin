@@ -3,8 +3,15 @@ title: myapi
 baseUri: http://api/
 mediaType: application/json
 schemas:
-  - Person: !include sample_unit.json
-  - PersonArray: !include sample_units.json
+  - Person: !include Person.json
+  - PersonArray: |
+      {
+        "$schema": "http://json-schema.org/draft-04/schema",
+        "type" : "array",
+        "items": {
+          "$ref" : "raml/Person.json"
+        }
+      }
   - Manager: !include sample_unit.json
   - ManagerArray: !include sample_units.json
 
@@ -16,6 +23,10 @@ schemas:
         body:
           application/json:
             schema: PersonArray
+  post:
+    body:
+      application/json:
+        schema: Person 
 /managers:
   post:
     body:

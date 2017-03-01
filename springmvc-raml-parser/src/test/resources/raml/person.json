@@ -1,0 +1,17 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema",
+  "type" : "object",
+  "id" : "Person",
+  "properties" : {
+    "id" : {
+      "type" : "integer"
+    },
+    "firstname" : {
+      "type" : "string"
+    },
+    "lastname" : {
+      "type" : "string"
+    }
+  },
+  "additionalProperties" : false
+}
