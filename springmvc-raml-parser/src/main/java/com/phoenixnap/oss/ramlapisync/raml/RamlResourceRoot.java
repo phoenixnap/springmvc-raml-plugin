@@ -32,14 +32,21 @@ public interface RamlResourceRoot {
         String[] segments = path.split("/");
         RamlResourceRoot current = this;
         RamlResource resource = null;
+        boolean first = true;
         for(String segment: segments) {
             if(segment != null && !"".equals(segment)) {
-                resource = current.getResources().get("/" + segment);
+            	String segmentToCheck = segment;
+            	if ((first && path.startsWith("/")) 
+            			|| !first) {
+            		segmentToCheck = "/" + segmentToCheck; 
+            	}
+                resource = current.getResources().get(segmentToCheck);
                 if (resource == null) { //if a part of the url isnt found we need to return null since the entire part isnt found
                 	return null;
                 }
                 current = resource;
             }
+            first = false;
         }
         return resource;
     }

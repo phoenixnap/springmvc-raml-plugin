@@ -38,11 +38,11 @@ public class RJP10V2RamlActionTest {
     @BeforeClass
     public static void initRamlRoot() throws InvalidRamlResourceException {
     	RamlRoot ramlRoot = new RJP10V2RamlModelFactory().buildRamlRoot("raml/raml-action-test-v10.raml");
-    	ramlGetAction = ramlRoot.getResource("persons").getAction(RamlActionType.GET);
-    	ramlPostAction = ramlRoot.getResource("persons").getAction(RamlActionType.POST);
-		ramlGetPersonByIdAction = ramlRoot.getResource("persons").getResource("/{personId}")
+    	ramlGetAction = ramlRoot.getResource("/persons").getAction(RamlActionType.GET);
+    	ramlPostAction = ramlRoot.getResource("/persons").getAction(RamlActionType.POST);
+		ramlGetPersonByIdAction = ramlRoot.getResource("/persons").getResource("/{personId}")
 				.getAction(RamlActionType.GET);
-		ramlGetSubresourceByIdAction = ramlRoot.getResource("managers").getResource("/{managerId}")
+		ramlGetSubresourceByIdAction = ramlRoot.getResource("/managers").getResource("/{managerId}")
 				.getResource("/subresources").getResource("/{subresourceId}").getAction(RamlActionType.GET);
     }
 

@@ -130,10 +130,12 @@ public class RJP10V2RamlRootTest {
 
     @Test
     public void ramlRootShouldReflectToplevelResourceByNameIgnoringSlashes() {
-        assertThat(ramlRoot.getResource("persons"), is(notNullValue()));
+    	//Note: The following 2 assertions were removed since they were changed to maintain equivalence with the Raml08 getResource behaviour, 
+    	//which will not return these resources if no preceding slash is supplied
+        //assertThat(ramlRoot.getResource("persons"), is(notNullValue()));  
+    	//assertThat(ramlRoot.getResource("persons/"), is(notNullValue()));
         assertThat(ramlRoot.getResource("/persons"), is(notNullValue()));
         assertThat(ramlRoot.getResource("/persons/"), is(notNullValue()));
-        assertThat(ramlRoot.getResource("persons/"), is(notNullValue()));
     }
 
     @Test
