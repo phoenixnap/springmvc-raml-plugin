@@ -202,7 +202,7 @@ public class RamlParser {
 	 */
 	public static RamlRoot loadRamlFromFile(String ramlFileUrl) throws InvalidRamlResourceException {
 		try {
-			return RamlModelFactoryOfFactories.createRamlModelFactoryV08().buildRamlRoot(ramlFileUrl);
+			return RamlModelFactoryOfFactories.createRamlModelFactoryFor(ramlFileUrl).buildRamlRoot(ramlFileUrl);
 		} catch (NullPointerException npe) {
 			logger.error("File not found at " + ramlFileUrl);
 			return null;

@@ -13,6 +13,9 @@
 package com.phoenixnap.oss.ramlapisync.raml;
 
 
+import org.raml.v2.api.RamlModelBuilder;
+import org.raml.v2.api.RamlModelResult;
+
 import com.phoenixnap.oss.ramlapisync.raml.rjp.raml08v1.RJP08V1RamlModelFactory;
 import com.phoenixnap.oss.ramlapisync.raml.rjp.raml10v2.RJP10V2RamlModelFactory;
 
@@ -25,19 +28,36 @@ import com.phoenixnap.oss.ramlapisync.raml.rjp.raml10v2.RJP10V2RamlModelFactory;
 public abstract class RamlModelFactoryOfFactories {
 
     /**
-     * TODO depcricate method in favor to createRamlModelFactoryFor(RamlVersion)
      * @return a RJP08V1RamlModelFactory instance.
      */
     public static RamlModelFactory createRamlModelFactoryV08() {
         return createRamlModelFactoryFor(RamlVersion.V08);
     }
 
+    /**
+     * 
+     * @param ramlVersion
+     * @return
+     */
     public static RamlModelFactory createRamlModelFactoryFor(RamlVersion ramlVersion) {
         switch(ramlVersion) {
             case V08: return new RJP08V1RamlModelFactory();
             case V10: return new RJP10V2RamlModelFactory();
-            default: throw new UnsupportedRamlVersionError(ramlVersion, RamlVersion.V08, RamlVersion.V10);
+            default: throw new UnsupportedRamlVersionError(RamlVersion.V08, RamlVersion.V10);
         }
     }
+    
+    public static RamlModelFactory createRamlModelFactoryFor(String ramlURL) {
+    	RamlModelResult ramlModelResult = new RamlModelBuilder().buildApi(ramlURL);
+        if (ramlModelResult.isVersion10()) {
+        	return new RJP10V2RamlModelFactory();
+        }
+        if (ramlModelResult.isVersion08()) {
+        	return new RJP08V1RamlModelFactory();
+        }
+        throw new UnsupportedRamlVersionError(RamlVersion.V08, RamlVersion.V10);
+    }
+    
+    
 
 }

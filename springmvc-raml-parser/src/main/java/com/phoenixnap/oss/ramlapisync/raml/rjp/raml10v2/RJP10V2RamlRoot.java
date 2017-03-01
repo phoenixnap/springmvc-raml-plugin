@@ -1,5 +1,6 @@
 package com.phoenixnap.oss.ramlapisync.raml.rjp.raml10v2;
 
+import java.util.Collections;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -44,11 +45,15 @@ public class RJP10V2RamlRoot implements RamlRoot {
 
     @Override
     public Map<String, RamlResource> getResources() {
-        return ramlModelFactory.transformToUnmodifiableMap(
-                api.resources(),
-                resources,
-                ramlModelFactory::createRamlResource,
-                r -> r.relativeUri().value());
+    	if (api != null) {
+	        return ramlModelFactory.transformToUnmodifiableMap(
+	                api.resources(),
+	                resources,
+	                ramlModelFactory::createRamlResource,
+	                r -> r.relativeUri().value());
+    	} else {
+    		return Collections.emptyMap();
+    	}
     }
 
     @Override
