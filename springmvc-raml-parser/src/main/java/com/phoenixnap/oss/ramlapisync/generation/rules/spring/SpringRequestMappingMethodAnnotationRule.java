@@ -12,12 +12,13 @@
  */
 package com.phoenixnap.oss.ramlapisync.generation.rules.spring;
 
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+
 import com.phoenixnap.oss.ramlapisync.data.ApiActionMetadata;
 import com.phoenixnap.oss.ramlapisync.generation.rules.Rule;
 import com.sun.codemodel.JAnnotationUse;
 import com.sun.codemodel.JMethod;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
 
 /**
  * Adds a {@literal @}RequestMapping annotation at method level.

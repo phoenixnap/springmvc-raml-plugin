@@ -1,10 +1,9 @@
 package com.phoenixnap.oss.ramlapisync;
 
+import java.util.Map;
+
 import org.hamcrest.BaseMatcher;
 import org.hamcrest.Description;
-import org.hamcrest.Matcher;
-
-import java.util.Map;
 
 /**
  * @author aweisser

@@ -12,14 +12,14 @@
  */
 package com.phoenixnap.oss.ramlapisync.generation.rules.basic;
 
+import org.springframework.util.StringUtils;
+
 import com.phoenixnap.oss.ramlapisync.data.ApiActionMetadata;
 import com.phoenixnap.oss.ramlapisync.generation.CodeModelHelper.JExtMethod;
 import com.phoenixnap.oss.ramlapisync.generation.rules.Rule;
 import com.sun.codemodel.JExpr;
 import com.sun.codemodel.JInvocation;
 import com.sun.codemodel.JMethod;
-
-import org.springframework.util.StringUtils;
 
 /**
  * Generates a method body that delegates the method call to a private field.

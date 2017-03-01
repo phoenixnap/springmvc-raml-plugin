@@ -5,12 +5,12 @@ import static org.junit.Assert.assertTrue;
 
 import java.util.Set;
 
-import com.phoenixnap.oss.ramlapisync.raml.InvalidRamlResourceException;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
 import com.phoenixnap.oss.ramlapisync.data.ApiResourceMetadata;
 import com.phoenixnap.oss.ramlapisync.generation.RamlParser;
+import com.phoenixnap.oss.ramlapisync.raml.InvalidRamlResourceException;
 
 /**
  * @author kurtpa

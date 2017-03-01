@@ -12,15 +12,15 @@
  */
 package com.phoenixnap.oss.ramlapisync.generation.rules.spring;
 
+import org.springframework.http.MediaType;
+import org.springframework.util.StringUtils;
+import org.springframework.web.bind.annotation.RequestMapping;
+
 import com.phoenixnap.oss.ramlapisync.data.ApiResourceMetadata;
 import com.phoenixnap.oss.ramlapisync.generation.exception.InvalidCodeModelException;
 import com.phoenixnap.oss.ramlapisync.generation.rules.Rule;
 import com.sun.codemodel.JAnnotationUse;
 import com.sun.codemodel.JDefinedClass;
-
-import org.springframework.http.MediaType;
-import org.springframework.util.StringUtils;
-import org.springframework.web.bind.annotation.RequestMapping;
 
 /**
  * Adds a {@literal @}RequestMapping annotation at class level

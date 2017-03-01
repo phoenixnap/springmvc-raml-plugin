@@ -12,6 +12,27 @@
  */
 package test.phoenixnap.oss.plugin.naming;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
+
+import java.lang.reflect.Method;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
+import org.junit.BeforeClass;
+import org.junit.Test;
+import org.mockito.Mockito;
+import org.mockito.invocation.InvocationOnMock;
+import org.mockito.stubbing.Answer;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.http.MediaType;
+
 import com.phoenixnap.oss.ramlapisync.data.ApiActionMetadata;
 import com.phoenixnap.oss.ramlapisync.data.ApiResourceMetadata;
 import com.phoenixnap.oss.ramlapisync.data.RamlFormParameter;
@@ -35,15 +56,6 @@ import com.phoenixnap.oss.ramlapisync.raml.RamlRoot;
 import com.phoenixnap.oss.ramlapisync.raml.RamlUriParameter;
 import com.sun.codemodel.JCodeModel;
 
-import org.junit.BeforeClass;
-import org.junit.Test;
-import org.mockito.Mockito;
-import org.mockito.invocation.InvocationOnMock;
-import org.mockito.stubbing.Answer;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.http.MediaType;
-
 import test.phoenixnap.oss.plugin.naming.testclasses.BugController;
 import test.phoenixnap.oss.plugin.naming.testclasses.MultipleContentTypeTestController;
 import test.phoenixnap.oss.plugin.naming.testclasses.NoValueController;
@@ -51,18 +63,6 @@ import test.phoenixnap.oss.plugin.naming.testclasses.ShorthandTestController;
 import test.phoenixnap.oss.plugin.naming.testclasses.TestController;
 import test.phoenixnap.oss.plugin.naming.testclasses.UriPrefixIgnoredController;
 import test.phoenixnap.oss.plugin.naming.testclasses.WrappedResponseBodyTestController;
-
-import java.lang.reflect.Method;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
 
 
 /**

@@ -9,17 +9,18 @@
  */
 package com.phoenixnap.oss.ramlapisync.naming;
 
+import java.util.Map;
+import java.util.Map.Entry;
+
+import org.springframework.util.CollectionUtils;
+import org.springframework.util.StringUtils;
+
 import com.phoenixnap.oss.ramlapisync.raml.RamlAction;
 import com.phoenixnap.oss.ramlapisync.raml.RamlMimeType;
 import com.phoenixnap.oss.ramlapisync.raml.RamlResource;
 import com.phoenixnap.oss.ramlapisync.raml.RamlResourceRoot;
 import com.phoenixnap.oss.ramlapisync.raml.RamlResponse;
 import com.phoenixnap.oss.ramlapisync.raml.RamlRoot;
-import org.springframework.util.CollectionUtils;
-import org.springframework.util.StringUtils;
-
-import java.util.Map;
-import java.util.Map.Entry;
 
 /**
  * Class containing utility methods for modifying Raml models

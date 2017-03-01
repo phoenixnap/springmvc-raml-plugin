@@ -10,6 +10,15 @@
 package test.phoenixnap.oss.plugin.naming;
 
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
+
+import java.util.Collections;
+import java.util.Iterator;
+
+import org.junit.Test;
+
 import com.phoenixnap.oss.ramlapisync.generation.RamlGenerator;
 import com.phoenixnap.oss.ramlapisync.generation.RamlVerifier;
 import com.phoenixnap.oss.ramlapisync.parser.ResourceParser;
@@ -24,7 +33,7 @@ import com.phoenixnap.oss.ramlapisync.verification.checkers.ActionExistenceCheck
 import com.phoenixnap.oss.ramlapisync.verification.checkers.ActionQueryParameterChecker;
 import com.phoenixnap.oss.ramlapisync.verification.checkers.ActionResponseBodySchemaChecker;
 import com.phoenixnap.oss.ramlapisync.verification.checkers.ResourceExistenceChecker;
-import org.junit.Test;
+
 import test.phoenixnap.oss.plugin.naming.testclasses.ContentTypeTestController;
 import test.phoenixnap.oss.plugin.naming.testclasses.MultiContentTypeTestController;
 import test.phoenixnap.oss.plugin.naming.testclasses.ParamTestController;
@@ -39,13 +48,6 @@ import test.phoenixnap.oss.plugin.naming.testclasses.StyleCheckResourceDuplicate
 import test.phoenixnap.oss.plugin.naming.testclasses.ThirdVerifierTestController;
 import test.phoenixnap.oss.plugin.naming.testclasses.VerifierTestController;
 import test.phoenixnap.oss.plugin.naming.testclasses.VerifierUriParamTestController;
-
-import java.util.Collections;
-import java.util.Iterator;
-
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
 
 
 

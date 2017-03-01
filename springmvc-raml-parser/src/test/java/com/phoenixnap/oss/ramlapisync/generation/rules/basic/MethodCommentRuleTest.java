@@ -1,14 +1,18 @@
 package com.phoenixnap.oss.ramlapisync.generation.rules.basic;
 
-import com.phoenixnap.oss.ramlapisync.generation.rules.AbstractRuleTestBase;
-import com.sun.codemodel.*;
+import static org.hamcrest.Matchers.containsString;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertThat;
 
 import org.junit.Test;
 import org.springframework.http.ResponseEntity;
 
-import static org.hamcrest.Matchers.containsString;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertThat;
+import com.phoenixnap.oss.ramlapisync.generation.rules.AbstractRuleTestBase;
+import com.sun.codemodel.JClassAlreadyExistsException;
+import com.sun.codemodel.JDefinedClass;
+import com.sun.codemodel.JDocComment;
+import com.sun.codemodel.JMethod;
+import com.sun.codemodel.JMod;
 
 /**
  * @author armin.weisser

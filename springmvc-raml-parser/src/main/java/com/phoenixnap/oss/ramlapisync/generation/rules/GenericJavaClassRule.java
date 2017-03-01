@@ -16,8 +16,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-import com.phoenixnap.oss.ramlapisync.data.ApiResourceMetadata;
 import com.phoenixnap.oss.ramlapisync.data.ApiActionMetadata;
+import com.phoenixnap.oss.ramlapisync.data.ApiResourceMetadata;
 import com.phoenixnap.oss.ramlapisync.generation.CodeModelHelper;
 import com.phoenixnap.oss.ramlapisync.generation.CodeModelHelper.JExtMethod;
 import com.sun.codemodel.JAnnotationUse;

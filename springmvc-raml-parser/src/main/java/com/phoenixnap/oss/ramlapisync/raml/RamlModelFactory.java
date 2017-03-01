@@ -12,13 +12,13 @@
  */
 package com.phoenixnap.oss.ramlapisync.raml;
 
-import com.phoenixnap.oss.ramlapisync.data.RamlFormParameter;
-
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
+
+import com.phoenixnap.oss.ramlapisync.data.RamlFormParameter;
 
 /**
  * Abstract Representation of a Raml Factory

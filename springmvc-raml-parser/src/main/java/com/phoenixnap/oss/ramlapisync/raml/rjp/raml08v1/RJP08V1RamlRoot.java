@@ -12,16 +12,16 @@
  */
 package com.phoenixnap.oss.ramlapisync.raml.rjp.raml08v1;
 
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+
+import org.raml.model.Raml;
+
 import com.phoenixnap.oss.ramlapisync.raml.RamlDataType;
 import com.phoenixnap.oss.ramlapisync.raml.RamlDocumentationItem;
 import com.phoenixnap.oss.ramlapisync.raml.RamlResource;
 import com.phoenixnap.oss.ramlapisync.raml.RamlRoot;
-
-import org.raml.model.Raml;
-
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
 
 /**
  * Implementation based on the Raml 0.8 Parser

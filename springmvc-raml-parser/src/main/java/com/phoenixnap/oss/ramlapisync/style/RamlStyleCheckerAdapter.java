@@ -12,15 +12,15 @@
  */
 package com.phoenixnap.oss.ramlapisync.style;
 
+import java.util.Collections;
+import java.util.Set;
+
 import com.phoenixnap.oss.ramlapisync.raml.RamlAbstractParam;
 import com.phoenixnap.oss.ramlapisync.raml.RamlAction;
 import com.phoenixnap.oss.ramlapisync.raml.RamlActionType;
 import com.phoenixnap.oss.ramlapisync.raml.RamlResource;
 import com.phoenixnap.oss.ramlapisync.raml.RamlRoot;
 import com.phoenixnap.oss.ramlapisync.verification.IssueLocation;
-
-import java.util.Collections;
-import java.util.Set;
 
 /**
  * Adapter pattern for Raml Style Checkers.

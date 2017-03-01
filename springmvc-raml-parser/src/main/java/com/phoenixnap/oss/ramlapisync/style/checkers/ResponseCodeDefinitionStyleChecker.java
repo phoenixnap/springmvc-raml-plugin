@@ -12,21 +12,22 @@
  */
 package com.phoenixnap.oss.ramlapisync.style.checkers;
 
-import com.phoenixnap.oss.ramlapisync.raml.RamlAction;
-import com.phoenixnap.oss.ramlapisync.raml.RamlActionType;
-import com.phoenixnap.oss.ramlapisync.raml.RamlRoot;
-import com.phoenixnap.oss.ramlapisync.style.RamlStyleCheckerAdapter;
-import com.phoenixnap.oss.ramlapisync.style.StyleIssue;
-import com.phoenixnap.oss.ramlapisync.verification.IssueLocation;
+import java.util.LinkedHashSet;
+import java.util.List;
+import java.util.Set;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.util.CollectionUtils;
 import org.springframework.util.MultiValueMap;
 
-import java.util.LinkedHashSet;
-import java.util.List;
-import java.util.Set;
+import com.phoenixnap.oss.ramlapisync.raml.RamlAction;
+import com.phoenixnap.oss.ramlapisync.raml.RamlActionType;
+import com.phoenixnap.oss.ramlapisync.raml.RamlRoot;
+import com.phoenixnap.oss.ramlapisync.style.RamlStyleCheckerAdapter;
+import com.phoenixnap.oss.ramlapisync.style.StyleIssue;
+import com.phoenixnap.oss.ramlapisync.verification.IssueLocation;
 
 /**
  * 

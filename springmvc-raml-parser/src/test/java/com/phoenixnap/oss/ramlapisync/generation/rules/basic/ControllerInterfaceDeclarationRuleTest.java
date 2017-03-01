@@ -1,13 +1,17 @@
 package com.phoenixnap.oss.ramlapisync.generation.rules.basic;
 
+import static org.hamcrest.CoreMatchers.containsString;
+import static org.hamcrest.CoreMatchers.equalTo;
+import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.CoreMatchers.notNullValue;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertThat;
+
+import org.junit.Test;
+
 import com.phoenixnap.oss.ramlapisync.generation.rules.AbstractRuleTestBase;
 import com.sun.codemodel.JClass;
 import com.sun.codemodel.JPackage;
-import org.junit.Test;
-
-import static org.hamcrest.CoreMatchers.*;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertThat;
 
 /**
  * @author armin.weisser

@@ -12,8 +12,9 @@
  */
 package com.phoenixnap.oss.ramlapisync.raml.rjp.raml08v1;
 
-import com.phoenixnap.oss.ramlapisync.raml.RamlDocumentationItem;
 import org.raml.model.DocumentationItem;
+
+import com.phoenixnap.oss.ramlapisync.raml.RamlDocumentationItem;
 
 /**
  * Implementation based on the Raml 0.8 Parser

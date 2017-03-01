@@ -12,6 +12,9 @@
  */
 package com.phoenixnap.oss.ramlapisync.generation.rules.spring;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.util.StringUtils;
+
 import com.phoenixnap.oss.ramlapisync.data.ApiResourceMetadata;
 import com.phoenixnap.oss.ramlapisync.generation.exception.RuleCanNotProcessModelException;
 import com.phoenixnap.oss.ramlapisync.generation.rules.Rule;
@@ -19,8 +22,6 @@ import com.sun.codemodel.JClass;
 import com.sun.codemodel.JDefinedClass;
 import com.sun.codemodel.JFieldVar;
 import com.sun.codemodel.JMod;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.util.StringUtils;
 
 /**
  * Creates a private field declaration with a Spring {@literal @}Autowired annotation.

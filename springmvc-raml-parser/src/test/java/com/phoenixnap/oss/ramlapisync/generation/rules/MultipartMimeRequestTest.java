@@ -1,11 +1,12 @@
 package com.phoenixnap.oss.ramlapisync.generation.rules;
 
+import org.junit.BeforeClass;
+import org.junit.Test;
+
 import com.phoenixnap.oss.ramlapisync.data.ApiResourceMetadata;
 import com.phoenixnap.oss.ramlapisync.generation.RamlVerifier;
 import com.sun.codemodel.JCodeModel;
 import com.sun.codemodel.JDefinedClass;
-import org.junit.BeforeClass;
-import org.junit.Test;
 
 /**
  * Test for Multipart mime requests

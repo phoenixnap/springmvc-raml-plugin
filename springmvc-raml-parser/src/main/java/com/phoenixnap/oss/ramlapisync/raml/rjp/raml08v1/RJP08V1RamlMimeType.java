@@ -12,15 +12,15 @@
  */
 package com.phoenixnap.oss.ramlapisync.raml.rjp.raml08v1;
 
-import com.phoenixnap.oss.ramlapisync.data.RamlFormParameter;
-import com.phoenixnap.oss.ramlapisync.raml.RamlDataType;
-import com.phoenixnap.oss.ramlapisync.raml.RamlMimeType;
-
-import org.raml.model.MimeType;
-
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+
+import org.raml.model.MimeType;
+
+import com.phoenixnap.oss.ramlapisync.data.RamlFormParameter;
+import com.phoenixnap.oss.ramlapisync.raml.RamlDataType;
+import com.phoenixnap.oss.ramlapisync.raml.RamlMimeType;
 
 /**
  * Implementation based on the Raml 0.8 Parser

@@ -12,10 +12,10 @@
  */
 package com.phoenixnap.oss.ramlapisync.verification;
 
+import java.util.Set;
+
 import com.phoenixnap.oss.ramlapisync.naming.Pair;
 import com.phoenixnap.oss.ramlapisync.raml.RamlRoot;
-
-import java.util.Set;
 
 /**
  * Parent Interface for all Raml Checkers. Implement this interface and add it to the RamlVerifier to enable a check

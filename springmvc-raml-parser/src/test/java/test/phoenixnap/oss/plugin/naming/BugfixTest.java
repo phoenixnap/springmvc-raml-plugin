@@ -12,6 +12,12 @@
  */
 package test.phoenixnap.oss.plugin.naming;
 
+import static org.junit.Assert.assertEquals;
+
+import java.util.Set;
+
+import org.junit.Test;
+
 import com.phoenixnap.oss.ramlapisync.data.ApiActionMetadata;
 import com.phoenixnap.oss.ramlapisync.data.ApiParameterMetadata;
 import com.phoenixnap.oss.ramlapisync.data.ApiResourceMetadata;
@@ -19,15 +25,9 @@ import com.phoenixnap.oss.ramlapisync.generation.RamlGenerator;
 import com.phoenixnap.oss.ramlapisync.generation.RamlParser;
 import com.phoenixnap.oss.ramlapisync.parser.ResourceParser;
 import com.phoenixnap.oss.ramlapisync.parser.SpringMvcResourceParser;
-import com.phoenixnap.oss.ramlapisync.raml.RamlRoot;
 import com.phoenixnap.oss.ramlapisync.raml.InvalidRamlResourceException;
+import com.phoenixnap.oss.ramlapisync.raml.RamlRoot;
 import com.sun.codemodel.JCodeModel;
-
-import org.junit.Test;
-
-import java.util.Set;
-
-import static org.junit.Assert.assertEquals;
 
 /**
  * Unit tests for the RamlVerifier class and associated Checkers

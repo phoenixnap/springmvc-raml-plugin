@@ -12,10 +12,10 @@
  */
 package com.phoenixnap.oss.ramlapisync.raml;
 
-import com.phoenixnap.oss.ramlapisync.data.RamlFormParameter;
-
 import java.util.List;
 import java.util.Map;
+
+import com.phoenixnap.oss.ramlapisync.data.RamlFormParameter;
 
 /**
  * Abstract Representation of a Raml MimeType

@@ -12,8 +12,8 @@
  */
 package com.phoenixnap.oss.ramlapisync.generation.rules;
 
-import com.phoenixnap.oss.ramlapisync.data.ApiResourceMetadata;
 import com.phoenixnap.oss.ramlapisync.data.ApiActionMetadata;
+import com.phoenixnap.oss.ramlapisync.data.ApiResourceMetadata;
 import com.phoenixnap.oss.ramlapisync.generation.rules.spring.SpringControllerDecoratorRule;
 import com.phoenixnap.oss.ramlapisync.generation.rules.spring.SpringRestControllerAnnotationRule;
 import com.sun.codemodel.JAnnotationUse;

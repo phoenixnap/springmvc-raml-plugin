@@ -16,7 +16,6 @@ import java.util.List;
 import java.util.Map;
 
 import org.raml.v2.api.model.v10.datamodel.ExternalTypeDeclaration;
-import org.raml.v2.api.model.v10.datamodel.ObjectTypeDeclaration;
 import org.raml.v2.api.model.v10.datamodel.TypeDeclaration;
 
 import com.phoenixnap.oss.ramlapisync.data.RamlFormParameter;

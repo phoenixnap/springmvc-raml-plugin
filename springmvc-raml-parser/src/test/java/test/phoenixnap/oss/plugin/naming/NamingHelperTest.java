@@ -12,14 +12,16 @@
  */
 package test.phoenixnap.oss.plugin.naming;
 
+import static org.junit.Assert.assertEquals;
+
+import org.junit.Test;
+
 import com.phoenixnap.oss.ramlapisync.naming.NamingHelper;
 import com.phoenixnap.oss.ramlapisync.raml.RamlModelFactoryOfFactories;
 import com.phoenixnap.oss.ramlapisync.raml.RamlResource;
-import org.junit.Test;
+
 import test.phoenixnap.oss.plugin.naming.testclasses.CamelCaseTest;
 import test.phoenixnap.oss.plugin.naming.testclasses.ServicesControllerImpl;
-
-import static org.junit.Assert.assertEquals;
 
 /**
  * Unit tests for the NamingHelper class

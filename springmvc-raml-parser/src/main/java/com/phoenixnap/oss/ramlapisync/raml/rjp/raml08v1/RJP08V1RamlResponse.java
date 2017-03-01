@@ -12,12 +12,13 @@
  */
 package com.phoenixnap.oss.ramlapisync.raml.rjp.raml08v1;
 
-import com.phoenixnap.oss.ramlapisync.raml.RamlMimeType;
-import com.phoenixnap.oss.ramlapisync.raml.RamlResponse;
-import org.raml.model.Response;
-
 import java.util.LinkedHashMap;
 import java.util.Map;
+
+import org.raml.model.Response;
+
+import com.phoenixnap.oss.ramlapisync.raml.RamlMimeType;
+import com.phoenixnap.oss.ramlapisync.raml.RamlResponse;
 
 /**
  * Implementation based on the Raml 0.8 Parser

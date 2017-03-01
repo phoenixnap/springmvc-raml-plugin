@@ -14,9 +14,9 @@ package com.phoenixnap.oss.ramlapisync.javadoc;
 
 import org.springframework.util.StringUtils;
 
-import com.phoenixnap.oss.ramlapisync.naming.NamingHelper;
 import com.github.javaparser.ast.body.FieldDeclaration;
 import com.github.javaparser.ast.visitor.VoidVisitorAdapter;
+import com.phoenixnap.oss.ramlapisync.naming.NamingHelper;
 
 /**
  * Simple visitor implementation for visiting Field Declaration nodes.
