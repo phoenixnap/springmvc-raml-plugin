@@ -38,6 +38,7 @@ import com.sun.codemodel.writer.SingleStreamCodeWriter;
  */
 public abstract class AbstractRuleTestBase {
 
+	public static final boolean VISUALISE_CODE = false;
     public static final String RESOURCE_BASE = "rules/";
     public static RamlRoot RAML;
 
@@ -98,7 +99,9 @@ public abstract class AbstractRuleTestBase {
 
     @After
     public void printCode() {
-        logger.debug(serializeModel());
+    	if (VISUALISE_CODE) {
+    		logger.debug(serializeModel());
+    	}
     }
     
     protected void verifyGeneratedCode(String name) throws Exception {

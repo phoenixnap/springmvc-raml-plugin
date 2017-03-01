@@ -47,14 +47,16 @@ public abstract class AbstractEquivalenceRuleTestBase extends AbstractRuleTestBa
     
     @After
     public void printCode() {
-    	logger.debug("---------------------------------------------------------------------------------------");
-    	logger.debug("---------------------------- GENERATED WITH RJP08V1 Parser ----------------------------");
-    	logger.debug("---------------------------------------------------------------------------------------");
-    	super.printCode();
-    	logger.debug("---------------------------------------------------------------------------------------");
-    	logger.debug("---------------------------- GENERATED WITH RJP10v2 Parser ----------------------------");
-    	logger.debug("---------------------------------------------------------------------------------------");
-        logger.debug(serializeEquivalenceModel());
+    	if (VISUALISE_CODE) {
+	    	logger.debug("---------------------------------------------------------------------------------------");
+	    	logger.debug("---------------------------- GENERATED WITH RJP08V1 Parser ----------------------------");
+	    	logger.debug("---------------------------------------------------------------------------------------");
+	    	super.printCode();
+	    	logger.debug("---------------------------------------------------------------------------------------");
+	    	logger.debug("---------------------------- GENERATED WITH RJP10v2 Parser ----------------------------");
+	    	logger.debug("---------------------------------------------------------------------------------------");
+	        logger.debug(serializeEquivalenceModel());
+    	}
     }
 
     protected void initControllerMetadata(RamlParser par, RamlParser equivalencePar) {

@@ -40,7 +40,7 @@ public class RamlInterpreterTest {
 
     private static RamlRoot ramlRoot;
     
-    private static boolean VISUALISE_MODEL_TO_CONSOLE = true;
+    private static boolean VISUALISE_MODEL_TO_CONSOLE = false;
     
     protected Logger logger = Logger.getLogger(this.getClass());
     protected JCodeModel jCodeModel;
