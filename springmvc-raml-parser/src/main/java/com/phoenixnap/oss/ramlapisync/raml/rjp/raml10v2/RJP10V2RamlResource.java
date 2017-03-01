@@ -153,7 +153,16 @@ public class RJP10V2RamlResource implements RamlResource {
     
     @Override
     public String getDisplayName() {
-    	return (this.delegate.displayName() == null) ? null : this.delegate.displayName().value();
+    	if (this.delegate.displayName() == null) {
+    		return null;
+    	}
+    	//we need to check if the displayname is the relative uri and remove it since this is an inconsistency between 08 and 10. 
+    	String value = this.delegate.displayName().value();
+    	if (this.getRelativeUri().equals(value)) {
+    		return null;
+    	} else {
+    		return value;
+    	}
     }
 
     @Override
@@ -168,7 +177,12 @@ public class RJP10V2RamlResource implements RamlResource {
 
     @Override
     public String getParentUri() {
-        throw new UnsupportedOperationException();
+       RamlResource parentResource = getParentResource();
+       if (parentResource == null) {
+    	   return "";
+       } else {
+    	   return parentResource.getUri();
+       }
     }
 
     @Override

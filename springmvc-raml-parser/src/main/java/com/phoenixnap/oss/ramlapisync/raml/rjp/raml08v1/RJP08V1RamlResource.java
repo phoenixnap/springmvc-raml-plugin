@@ -197,6 +197,6 @@ public class RJP08V1RamlResource implements RamlResource {
 
 	@Override
 	public String getDisplayName() {
-		throw new UnsupportedOperationException();
+		return resource.getDisplayName();
 	}
 }

@@ -1,6 +1,6 @@
 #%RAML 0.8
 title: myapi
-baseUri: api
+baseUri: http://api/
 mediaType: application/json
 schemas:
   - Person: !include sample_unit.json
@@ -10,6 +10,7 @@ schemas:
 
 /persons:
   get:
+    displayName: getPersons
     responses:
       200:
         body:

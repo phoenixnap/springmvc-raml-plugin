@@ -9,6 +9,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 
 import org.apache.log4j.Logger;
+import org.hamcrest.core.IsNull;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -59,7 +60,7 @@ public class RamlEquivalenceTest {
 	}
     
     @Test
-    public void checkRoots() {
+    public void test_getResource() {
     	assertRootCreation();
     	
         RamlResource managers08 = raml08Root.getResource("/managers");
@@ -72,9 +73,6 @@ public class RamlEquivalenceTest {
     @Test
     public void test_getResource_Nesting() {
     	assertRootCreation();
-    	
-        RamlResource managers08 = raml08Root.getResource("/managers");
-        RamlResource managers10 = raml10Root.getResource("/managers");
         
         RamlResource managersNested08 = raml08Root.getResource("/managers/{managerId}");
         RamlResource managersNested10 = raml10Root.getResource("/managers/{managerId}");
@@ -85,7 +83,6 @@ public class RamlEquivalenceTest {
         RamlResource nonexistant08 = raml08Root.getResource("/managers/{managerId}/doesntExist/office");
         RamlResource nonexistant10 = raml10Root.getResource("/managers/{managerId}/doesntExist/office");
         
-        checkResources(managers08, managers10);
         checkResources(managersNested08, managersNested10);
         checkResources(managersNested2ndLevel08, managersNested2ndLevel10);
         assertThat(nonexistant08, equalTo(nonexistant10));
@@ -96,13 +93,24 @@ public class RamlEquivalenceTest {
 		logger.debug("Checking resources: " + resource08.getRelativeUri() + " against " + resource10.getRelativeUri());
 		assertThat(resource08.getRelativeUri(), equalTo(resource10.getRelativeUri()));
         assertThat(resource08.getUri(), equalTo(resource10.getUri()));
+        assertThat(resource08.getParentUri(), equalTo(resource10.getParentUri()));
+        
+        assertThat(resource08.getDescription(), equalTo(resource10.getDescription()));
+        assertThat(resource08.getDisplayName(), equalTo(resource10.getDisplayName()));
+        
         if (resource08.getParentResource() != null || resource10.getParentResource() != null) {
         	assertThat(resource08.getParentResource().getUri(), equalTo(resource10.getParentResource().getUri()));
         	assertThat(resource08.getParentResource().getRelativeUri(), equalTo(resource10.getParentResource().getRelativeUri()));
         }
         
+        for (RamlActionType actionType : RamlActionType.values()) {
+    		checkAction(resource08.getAction(actionType), resource10.getAction(actionType));
+    	}
+        
         checkActions(resource08.getActions(), resource10.getActions());
+
         assertThat(resource08.getUriParameters().size(), equalTo(resource10.getUriParameters().size()));
+        assertThat(resource08.getResolvedUriParameters().size(), equalTo(resource10.getResolvedUriParameters().size()));
         for (Entry<String, RamlUriParameter> resource : resource08.getUriParameters().entrySet()) {
         	String key08 = resource.getKey();
         	RamlUriParameter param08 = resource08.getUriParameters().get(key08);
@@ -136,10 +144,25 @@ public class RamlEquivalenceTest {
     		RamlActionType key08 = action.getKey();
     		RamlAction action08 = actions08.get(key08);
     		RamlAction action10 = actions10.get(key08);
-    		logger.debug("Checking actions: " + action08.getType() + " against " + action10.getType());
-    		assertThat(action08.getType(), equalTo(action10.getType()));
-    		assertThat(action08.getBody().size(), equalTo(action10.getBody().size()));
+    		checkAction(action08, action10);
     	}
+    	
+	}
+
+	private void checkAction(RamlAction action08, RamlAction action10) {
+		if (action08 == null) {
+			logger.debug("Checking actions are null");
+			assertThat(action10, IsNull.nullValue());
+		} else {
+			logger.debug("Checking actions: " + action08.getType() + " against " + action10.getType());
+			assertThat(action08.getType(), equalTo(action10.getType()));
+			assertThat(action08.getBody().size(), equalTo(action10.getBody().size()));
+			assertThat(action08.getDescription(), equalTo(action10.getDescription()));
+			assertThat(action08.getDisplayName(), equalTo(action10.getDisplayName()));
+			assertThat(action08.getHeaders().size(), equalTo(action10.getHeaders().size()));
+			assertThat(action08.getResource().getUri(), equalTo(action10.getResource().getUri()));
+		}
+		
 	}
 
 }

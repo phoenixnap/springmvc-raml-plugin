@@ -133,7 +133,18 @@ public class RJP10V2RamlAction implements RamlAction {
     
     @Override
 	public String getDisplayName() {
-		return (method.displayName() == null) ? null : method.displayName().value();
+    	if (method.displayName() == null) {
+    		return null;
+    	}
+    	String value = method.displayName().value();
+    	try {
+    		//we need to check if the displayname is the action type and remove it since this is an inconsistency between 08 and 10. 
+    		//It's also a really bad idea to call your post "post" since it adds 0 semantic value.
+    		RamlActionType.valueOf(value.toUpperCase()); 
+    		return null;
+    	} catch (IllegalArgumentException ex) {
+    		return value;
+    	}
 	}
 
 	@Override

@@ -1,6 +1,6 @@
 #%RAML 1.0
 title: myapi
-baseUri: api
+baseUri: http://api/
 mediaType: application/json
 types:
   Person:
@@ -23,6 +23,7 @@ types:
       name: string
 /persons:
   get:
+    displayName: getPersons
     responses:
       200:
         body:
