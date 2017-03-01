@@ -35,6 +35,9 @@ public interface RamlResourceRoot {
         for(String segment: segments) {
             if(segment != null && !"".equals(segment)) {
                 resource = current.getResources().get("/" + segment);
+                if (resource == null) { //if a part of the url isnt found we need to return null since the entire part isnt found
+                	return null;
+                }
                 current = resource;
             }
         }

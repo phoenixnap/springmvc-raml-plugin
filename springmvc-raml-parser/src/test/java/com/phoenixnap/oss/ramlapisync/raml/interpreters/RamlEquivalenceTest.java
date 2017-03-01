@@ -68,6 +68,29 @@ public class RamlEquivalenceTest {
         checkResources(managers08, managers10);
         
     }
+    
+    @Test
+    public void test_getResource_Nesting() {
+    	assertRootCreation();
+    	
+        RamlResource managers08 = raml08Root.getResource("/managers");
+        RamlResource managers10 = raml10Root.getResource("/managers");
+        
+        RamlResource managersNested08 = raml08Root.getResource("/managers/{managerId}");
+        RamlResource managersNested10 = raml10Root.getResource("/managers/{managerId}");
+        
+        RamlResource managersNested2ndLevel08 = raml08Root.getResource("/managers/{managerId}/office");
+        RamlResource managersNested2ndLevel10 = raml10Root.getResource("/managers/{managerId}/office");
+        
+        RamlResource nonexistant08 = raml08Root.getResource("/managers/{managerId}/doesntExist/office");
+        RamlResource nonexistant10 = raml10Root.getResource("/managers/{managerId}/doesntExist/office");
+        
+        checkResources(managers08, managers10);
+        checkResources(managersNested08, managersNested10);
+        checkResources(managersNested2ndLevel08, managersNested2ndLevel10);
+        assertThat(nonexistant08, equalTo(nonexistant10));
+        
+    }
 
 	private void checkResources(RamlResource resource08, RamlResource resource10) {
 		logger.debug("Checking resources: " + resource08.getRelativeUri() + " against " + resource10.getRelativeUri());
