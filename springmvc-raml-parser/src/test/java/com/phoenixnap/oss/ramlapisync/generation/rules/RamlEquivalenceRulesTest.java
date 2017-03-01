@@ -50,7 +50,7 @@ public class RamlEquivalenceRulesTest extends AbstractEquivalenceRuleTestBase {
 		} else {
 			int idxStart = serializeEquivalenceModel.indexOf(start,0);
 			int idxEnd = serializeEquivalenceModel.indexOf(end, idxStart);
-			return removeModelObjects(serializeEquivalenceModel.substring(idxEnd+3));
+			return removeModelObjects(serializeEquivalenceModel.substring(idxEnd+(1+LINE_END.length())));
 		}
 	}
  
