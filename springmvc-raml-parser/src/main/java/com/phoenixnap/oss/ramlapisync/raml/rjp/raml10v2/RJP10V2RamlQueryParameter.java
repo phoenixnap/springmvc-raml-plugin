@@ -144,7 +144,7 @@ public class RJP10V2RamlQueryParameter extends RamlQueryParameter {
 
     @Override
     public boolean isRepeat() {
-    	throw new UnsupportedOperationException();
+    	return RamlTypeHelper.isArray(queryParameter);
     }
 
 	@Override

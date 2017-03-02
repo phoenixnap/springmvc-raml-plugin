@@ -15,7 +15,7 @@ package com.phoenixnap.oss.ramlapisync.pojo;
 import java.util.Collections;
 import java.util.Set;
 
-import org.raml.v2.api.model.v10.datamodel.NumberTypeDeclaration;
+import org.raml.v2.api.model.v10.datamodel.BooleanTypeDeclaration;
 import org.raml.v2.api.model.v10.datamodel.TypeDeclaration;
 
 import com.phoenixnap.oss.ramlapisync.generation.CodeModelHelper;
@@ -23,45 +23,26 @@ import com.phoenixnap.oss.ramlapisync.raml.RamlRoot;
 import com.sun.codemodel.JCodeModel;
 
 /**
- * Interpreter for Object types.
+ * Interpreter for Boolean types.
  * 
  * @author kurtpa
  * @since 0.10.0
  *
  */
-public class NumberTypeInterpreter extends BaseTypeInterpreter {
+public class BooleanTypeInterpreter extends BaseTypeInterpreter {
 
 	@Override
 	public Set<Class<? extends TypeDeclaration>> getSupportedTypes() {
-		return Collections.singleton(NumberTypeDeclaration.class);
+		return Collections.singleton(BooleanTypeDeclaration.class);
 	}
 
 
 	@Override
 	public RamlInterpretationResult interpret(RamlRoot document, TypeDeclaration type, JCodeModel builderModel, PojoGenerationConfig config) {
 		RamlInterpretationResult result = new RamlInterpretationResult();
-		String resolvedType = String.class.getSimpleName();
-		typeCheck(type);
-		if (type instanceof NumberTypeDeclaration) {
-			NumberTypeDeclaration numberType = (NumberTypeDeclaration) type;
-			String format = numberType.format();
-			//TODO make this better
-			if (format.equals("int64")
-					|| format.equals("long")){
-				resolvedType = Long.class.getSimpleName();
-			} else if (format.equals("int32") 
-					|| format.equals("int")) {
-				resolvedType = Integer.class.getSimpleName();
-			} else if (format.equals("int16")
-					|| format.equals("int8")){
-				resolvedType = Short.class.getSimpleName();
-			} else if (format.equals("double")
-					|| format.equals("float")){
-				resolvedType = Double.class.getSimpleName();
-			}
-		}
 		
-		result.setResolvedClass(CodeModelHelper.findFirstClassBySimpleName(builderModel, resolvedType));
+		
+		result.setResolvedClass(CodeModelHelper.findFirstClassBySimpleName(builderModel, Boolean.class.getSimpleName()));
 		return result;
 	}
 
