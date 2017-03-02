@@ -5,6 +5,7 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.containsInAnyOrder;
 import static org.hamcrest.Matchers.instanceOf;
 import static org.hamcrest.Matchers.notNullValue;
+import static org.hamcrest.Matchers.nullValue;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -96,6 +97,16 @@ public class RamlInterpreterTest {
      
 		checkModel(jCodeModel);
 		checkIntegration(jCodeModel);
+    }
+    
+    @Test
+    public void interpretDeleteResponseBody() {
+        assertThat(ramlRoot, is(notNullValue()));
+        RamlResource managers = ramlRoot.getResource("/managers");
+        RamlDataType managersDeleteType = managers.getAction(RamlActionType.DELETE).getResponses().get("200").getBody().get("application/json").getType();
+        assertThat(managersDeleteType, is(notNullValue()));        
+        ApiBodyMetadata managersDeleteRequest = RamlTypeHelper.mapTypeToPojo(jCodeModel, ramlRoot, managersDeleteType.getType(), "com.gen.foo", "testName");
+        assertThat(managersDeleteRequest, is(nullValue()));   
     }
        
     private void checkIntegration(JCodeModel codeModel) {

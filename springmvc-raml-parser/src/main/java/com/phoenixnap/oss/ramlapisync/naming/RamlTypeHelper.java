@@ -83,9 +83,13 @@ public class RamlTypeHelper {
 		} else if (interpret.getResolvedClass() != null) {
 			 pojo = interpret.getResolvedClass();
 		} 
-		
+	
 		if (pojo == null) {
 			throw new IllegalStateException("No Pojo created or resolved for type " + type.getClass().getSimpleName() + ":" + type.name());
+		}
+		
+		if (pojo.name().equals("Void")) {
+			return null;
 		}
 		
 		boolean array = false;
