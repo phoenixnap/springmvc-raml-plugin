@@ -50,6 +50,7 @@ import com.phoenixnap.oss.ramlapisync.naming.NamingHelper;
 import com.phoenixnap.oss.ramlapisync.naming.SchemaHelper;
 import com.phoenixnap.oss.ramlapisync.raml.InvalidRamlResourceException;
 import com.phoenixnap.oss.ramlapisync.raml.RamlRoot;
+import com.phoenixnap.oss.ramlapisync.raml.rjp.raml10v2.RJP10V2RamlRoot;
 import com.sun.codemodel.JCodeModel;
 import com.sun.codemodel.JDefinedClass;
 
@@ -209,9 +210,16 @@ public class SpringMvcEndpointGeneratorMojo extends AbstractMojo {
 
         // Resolve schema location and add to classpath
         resolvedSchemaLocation = getSchemaLocation();
-        JCodeModel codeModel = new JCodeModel();
         
         RamlRoot loadRamlFromFile = RamlParser.loadRamlFromFile(new File(resolvedRamlPath).toURI().toString());
+        
+        JCodeModel codeModel = null;
+        //In the RJP10V2 we have support for a unified code model. RJP08V1 does not work well with this.
+        //TODO update RJP08V1 to support a unified view.
+        if (loadRamlFromFile instanceof RJP10V2RamlRoot) {
+        	codeModel = new JCodeModel();
+        }
+        
         RamlParser par = new RamlParser(basePackage, getBasePath(loadRamlFromFile), seperateMethodsByContentType, injectHttpHeadersParameter);
         Set<ApiResourceMetadata> controllers = par.extractControllers(codeModel, loadRamlFromFile);
 
@@ -258,7 +266,7 @@ public class SpringMvcEndpointGeneratorMojo extends AbstractMojo {
         for (ApiResourceMetadata met : controllers) {
             this.getLog().debug("");
             this.getLog().debug("-----------------------------------------------------------");
-            this.getLog().debug(met.getName());
+            this.getLog().debug("Generating Code for Controller: " + met.getName());
             this.getLog().debug("");
 
             Set<ApiBodyMetadata> dependencies = met.getDependencies();
@@ -343,6 +351,7 @@ public class SpringMvcEndpointGeneratorMojo extends AbstractMojo {
 	                codeModel = body.getCodeModel();
 	            }
 	            else {
+	            	this.getLog().debug("Generating Model object for: " + body.getName());
 	                codeModel = body.getCodeModel(resolvedSchemaLocation, basePackage + NamingHelper.getDefaultModelPackage(), config, annotator);
 	            }
             }
@@ -399,7 +408,9 @@ public class SpringMvcEndpointGeneratorMojo extends AbstractMojo {
 
 
     private void generateControllerSource(JCodeModel codeModel, ApiResourceMetadata met, File dir) {
-        
+        if (codeModel == null) {
+        	codeModel = new JCodeModel();
+        }
         loadRule().apply(met, codeModel);
         try {
             codeModel.build(dir);

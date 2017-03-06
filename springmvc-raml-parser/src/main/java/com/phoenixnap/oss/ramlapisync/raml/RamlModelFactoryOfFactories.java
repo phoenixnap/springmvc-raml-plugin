@@ -66,10 +66,12 @@ public abstract class RamlModelFactoryOfFactories {
     	}
         if (ramlModelResult.isVersion10() 
         		&& (ramlVersion == null || RamlVersion.V10.equals(ramlVersion))) {
+        	logger.info("RJP10V2RamlModelFactory Instantiated");
         	return new RJP10V2RamlModelFactory();
         }
         if ((!ramlModelResult.hasErrors() && RamlVersion.V08.equals(ramlVersion)) //To keep legacy support try load using the 08 if requested specifically
         		|| (ramlModelResult.isVersion08() && (ramlVersion == null || RamlVersion.V08.equals(ramlVersion)))) {
+        	logger.info("RJP08V1RamlModelFactory Instantiated");
         	return new RJP08V1RamlModelFactory();
         }
         throw new UnsupportedRamlVersionError(RamlVersion.V08, RamlVersion.V10);
