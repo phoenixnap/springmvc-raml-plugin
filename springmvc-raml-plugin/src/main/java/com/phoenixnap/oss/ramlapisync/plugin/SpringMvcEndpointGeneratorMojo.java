@@ -419,12 +419,10 @@ public class SpringMvcEndpointGeneratorMojo extends AbstractMojo {
         try {
             generateEndpoints();
         } catch (IOException e) {
-            ClassLoaderUtils.restoreOriginalClassLoader();
             throw new MojoExecutionException(e, "Unexpected exception while executing Spring MVC Endpoint Generation Plugin.",
                     e.toString());
         } catch (InvalidRamlResourceException e) {
-        	 ClassLoaderUtils.restoreOriginalClassLoader();
-             throw new MojoExecutionException(e, "Supplied RAML has failed validation and cannot be loaded.",
+            throw new MojoExecutionException(e, "Supplied RAML has failed validation and cannot be loaded.",
                      e.toString());
 		}
 
