@@ -58,7 +58,7 @@
 		<maven.core.version>3.3.9</maven.core.version>
 		<spring.platform.version>Athens-SR2</spring.platform.version>
 		<jackson.schema.version>2.8.6</jackson.schema.version>
-        <jsonschema2pojo.version>0.4.29</jsonschema2pojo.version>
+        <jsonschema2pojo.version>0.4.31</jsonschema2pojo.version>
 		<ramlparser.version>0.8.17</ramlparser.version>
 		<reflections.version>0.9.10</reflections.version>
 		<javaparser.version>2.4.0</javaparser.version>
