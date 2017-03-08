@@ -10,7 +10,11 @@ types:
       lastname: string
       id: 
         type: number
-        format: int64        
+        format: int64      
+  PersonList:
+      type: array
+      items: 
+        Person  
   Manager:
     type: Person
     properties:
@@ -28,6 +32,13 @@ types:
         body:
           application/json:
             type: Person[]
+/personLists:
+  get:
+    responses:
+      200:
+        body:
+          application/json:
+            type: PersonList
 /managers:
   post:
     body:

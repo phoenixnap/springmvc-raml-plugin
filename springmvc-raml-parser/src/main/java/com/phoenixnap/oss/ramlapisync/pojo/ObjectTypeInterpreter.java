@@ -50,12 +50,19 @@ public class ObjectTypeInterpreter extends BaseTypeInterpreter {
 	public RamlInterpretationResult interpret(RamlRoot document, TypeDeclaration type, JCodeModel builderModel,
 			PojoGenerationConfig config) {
 		RamlInterpretationResult result = new RamlInterpretationResult();
-
 		typeCheck(type);
+
 		ObjectTypeDeclaration objectType = (ObjectTypeDeclaration) type;
 		String name = StringUtils.capitalize(objectType.name());
 		Map<String, RamlDataType> types = document.getTypes();
 		String typeName = objectType.type();
+		
+		//When we have base arrays with type in the object they differ from Type[] notated types. I'm not sure if this should be handled in the Array or in the ObjectInterpreter...
+		if(RamlTypeHelper.isBaseObject(objectType.name()) && !RamlTypeHelper.isBaseObject(typeName)) {
+			//lets enter type and use that.
+			return interpret(document, type.parentTypes().get(0), builderModel, config);
+		}
+		
 		// For mime types we need to take the type not the name
 		try {
 			MimeType.valueOf(name);

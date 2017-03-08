@@ -20,6 +20,7 @@ import org.raml.v2.api.model.v10.datamodel.ArrayTypeDeclaration;
 import org.raml.v2.api.model.v10.datamodel.TypeDeclaration;
 
 import com.phoenixnap.oss.ramlapisync.generation.CodeModelHelper;
+import com.phoenixnap.oss.ramlapisync.naming.RamlTypeHelper;
 import com.phoenixnap.oss.ramlapisync.raml.RamlRoot;
 import com.sun.codemodel.JClass;
 import com.sun.codemodel.JCodeModel;
@@ -60,9 +61,10 @@ public class ArrayTypeInterpreter extends BaseTypeInterpreter {
 				builderModel = new JCodeModel();
 				result.setCodeModel(builderModel);
 			}
-			
+			TypeDeclaration arrayContentsType = arrayType.items();
+
 			//Lets process the array base class first
-			RamlInterpretationResult childResult = PojoBuilderFactory.getInterpreterForType(arrayType.items()).interpret(document, arrayType.items(), builderModel, config);
+			RamlInterpretationResult childResult = PojoBuilderFactory.getInterpreterForType(arrayContentsType).interpret(document, arrayContentsType, builderModel, config);
 			Class<?> container = List.class;
 			if (arrayType.uniqueItems() != null && arrayType.uniqueItems() ) {
 				container = Set.class;

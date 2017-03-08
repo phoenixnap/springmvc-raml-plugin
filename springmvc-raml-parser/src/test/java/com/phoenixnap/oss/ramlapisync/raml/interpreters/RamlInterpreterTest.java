@@ -81,7 +81,7 @@ public class RamlInterpreterTest {
         assertThat(managersPostRequest.getName(), is("Manager"));      
         assertThat(managersPostRequest.isArray(), is(false)); 
         
-		checkModel(jCodeModel);
+		checkModelWithInheritance(jCodeModel);
     }
     
     @Test
@@ -94,6 +94,36 @@ public class RamlInterpreterTest {
         assertThat(managersGetRequest, is(notNullValue()));   
         assertThat(managersGetRequest.getName(), is("Manager"));
         assertThat(managersGetRequest.isArray(), is(true)); 
+     
+		checkModelWithInheritance(jCodeModel);
+		checkIntegration(jCodeModel);
+    }
+    
+    @Test
+    public void interpretGetResponseBodyAsArray() {
+        assertThat(ramlRoot, is(notNullValue()));
+        RamlResource persons = ramlRoot.getResource("/persons");
+        RamlResource personLists = ramlRoot.getResource("/personLists");
+        
+        RamlDataType personsGetType = persons.getAction(RamlActionType.GET).getResponses().get("200").getBody().get("application/json").getType();
+        RamlDataType personListsGetType = personLists.getAction(RamlActionType.GET).getResponses().get("200").getBody().get("application/json").getType();
+        
+        assertThat(personsGetType, is(notNullValue()));
+        assertThat(personListsGetType, is(notNullValue()));  
+        
+        ApiBodyMetadata personsGetRequest = RamlTypeHelper.mapTypeToPojo(jCodeModel, ramlRoot, personsGetType.getType(), "com.gen.foo", "testName");
+        assertThat(personsGetRequest, is(notNullValue()));   
+        assertThat(personsGetRequest.getName(), is("Person"));
+        assertThat(personsGetRequest.isArray(), is(true)); 
+     
+		checkModel(jCodeModel);
+		checkIntegration(jCodeModel);
+        
+		setupModel();
+        ApiBodyMetadata personListsGetRequest = RamlTypeHelper.mapTypeToPojo(jCodeModel, ramlRoot, personListsGetType.getType(), "com.gen.foo", "testName");
+        assertThat(personListsGetRequest, is(notNullValue()));   
+        assertThat(personListsGetRequest.getName(), is("Person"));
+        assertThat(personListsGetRequest.isArray(), is(true)); 
      
 		checkModel(jCodeModel);
 		checkIntegration(jCodeModel);
@@ -127,18 +157,25 @@ public class RamlInterpreterTest {
     	}
     }
 
-	private void checkModel(JCodeModel codeModel) {
-		JClass person = CodeModelHelper.findFirstClassBySimpleName(codeModel, "Person");
+	private void checkModelWithInheritance(JCodeModel codeModel) {
+		checkModel(codeModel);
+		
 		JClass manager = CodeModelHelper.findFirstClassBySimpleName(codeModel, "Manager");
 		JClass department = CodeModelHelper.findFirstClassBySimpleName(codeModel, "Department");
 		
-		assertThat(person, instanceOf(JDefinedClass.class));
 		assertThat(manager, instanceOf(JDefinedClass.class));
 		assertThat(department, instanceOf(JDefinedClass.class));
 		
-		checkThatClassContainsAllFields(person, "id", "firstname", "lastname", "serialVersionUID");
 		checkThatClassContainsAllFields(manager, "clearanceLevel", "department", "serialVersionUID");
 		checkThatClassContainsAllFields(department, "name", "serialVersionUID");
+	}
+	
+	private void checkModel(JCodeModel codeModel) {
+		JClass person = CodeModelHelper.findFirstClassBySimpleName(codeModel, "Person");
+		
+		assertThat(person, instanceOf(JDefinedClass.class));
+		
+		checkThatClassContainsAllFields(person, "id", "firstname", "lastname", "serialVersionUID");
 	}
 	
 	private void visualiseModel(JCodeModel codeModel) {
