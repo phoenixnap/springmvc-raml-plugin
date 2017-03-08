@@ -15,8 +15,10 @@ package com.phoenixnap.oss.ramlapisync.pojo;
 import java.util.Collections;
 import java.util.Set;
 
+import org.raml.v2.api.model.v10.datamodel.IntegerTypeDeclaration;
 import org.raml.v2.api.model.v10.datamodel.NumberTypeDeclaration;
 import org.raml.v2.api.model.v10.datamodel.TypeDeclaration;
+import org.springframework.util.StringUtils;
 
 import com.phoenixnap.oss.ramlapisync.generation.CodeModelHelper;
 import com.phoenixnap.oss.ramlapisync.raml.RamlRoot;
@@ -45,19 +47,30 @@ public class NumberTypeInterpreter extends BaseTypeInterpreter {
 		if (type instanceof NumberTypeDeclaration) {
 			NumberTypeDeclaration numberType = (NumberTypeDeclaration) type;
 			String format = numberType.format();
-			//TODO make this better
-			if (format.equals("int64")
-					|| format.equals("long")){
-				resolvedType = Long.class.getSimpleName();
-			} else if (format.equals("int32") 
-					|| format.equals("int")) {
-				resolvedType = Integer.class.getSimpleName();
-			} else if (format.equals("int16")
-					|| format.equals("int8")){
-				resolvedType = Short.class.getSimpleName();
-			} else if (format.equals("double")
-					|| format.equals("float")){
-				resolvedType = Double.class.getSimpleName();
+			
+			if (!StringUtils.hasText(format)) {
+				//format not supplied. Defaulting to long if it's integer since it's safer
+				if (type instanceof IntegerTypeDeclaration) {
+					resolvedType = Long.class.getSimpleName();
+				} else {
+					resolvedType = Double.class.getSimpleName();
+				}
+				 
+			} else {
+				//TODO make this better
+				if (format.equals("int64")
+						|| format.equals("long")){
+					resolvedType = Long.class.getSimpleName();
+				} else if (format.equals("int32") 
+						|| format.equals("int")) {
+					resolvedType = Integer.class.getSimpleName();
+				} else if (format.equals("int16")
+						|| format.equals("int8")){
+					resolvedType = Short.class.getSimpleName();
+				} else if (format.equals("double")
+						|| format.equals("float")){
+					resolvedType = Double.class.getSimpleName();
+				}
 			}
 		}
 		
