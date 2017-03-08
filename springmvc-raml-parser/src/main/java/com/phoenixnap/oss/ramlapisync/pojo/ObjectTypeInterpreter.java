@@ -87,7 +87,7 @@ public class ObjectTypeInterpreter extends BaseTypeInterpreter {
 			result.setCodeModel(builderModel);
 		}
 
-		PojoBuilder builder = new PojoBuilder(builderModel, config.getPojoPackage(), name);
+		PojoBuilder builder = new PojoBuilder(config, builderModel, config.getPojoPackage(), name);
 		result.setBuilder(builder);
 		TypeDeclaration parent = null;
 		

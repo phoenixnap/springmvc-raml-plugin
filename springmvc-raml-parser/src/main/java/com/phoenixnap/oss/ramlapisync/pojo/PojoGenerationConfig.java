@@ -25,17 +25,49 @@ public class PojoGenerationConfig {
 	
 	private String pojoPackage;
 	
+	private boolean useLongIntegers = true;
+	
+	private boolean generateHashcodeEqualsToString = true;
+	
+	private boolean useCommonsLang3 = false;
+	
 	
 
 	public String getPojoPackage() {
 		return pojoPackage;
 	}
 
+	public boolean isUseLongIntegers() {
+		return useLongIntegers;
+	}
+
+	public boolean isGenerateHashcodeEqualsToString() {
+		return generateHashcodeEqualsToString;
+	}
+
+	public boolean isUseCommonsLang3() {
+		return useCommonsLang3;
+	}
+	
 	public PojoGenerationConfig withPojoPackage(String pojoPackage) {
 		this.pojoPackage = pojoPackage;
 		return this;
 	}
 	
+	public PojoGenerationConfig withLongIntegers(boolean longIntegers) {
+		this.useLongIntegers = longIntegers;
+		return this;
+	}
+	
+	public PojoGenerationConfig withCommonsLang3(boolean useCommonsLang3) {
+		this.useCommonsLang3 = useCommonsLang3;
+		return this;
+	}
+	
+	public PojoGenerationConfig withHashcodeEqualsToString(boolean generateHashcodeEqualsToString) {
+		this.generateHashcodeEqualsToString = generateHashcodeEqualsToString;
+		return this;
+	}
 	
 
 }

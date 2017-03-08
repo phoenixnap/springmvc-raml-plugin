@@ -20,6 +20,7 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Random;
 
+import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.util.StringUtils;
@@ -51,14 +52,21 @@ import com.sun.codemodel.JVar;
 public class PojoBuilder {
 
 	protected static final Logger logger = LoggerFactory.getLogger(PojoBuilder.class);
+	
+	private PojoGenerationConfig config;
 
 	private transient LinkedHashMap<String, JDefinedClass> codeModels = new LinkedHashMap<>();
 	private JCodeModel pojoModel = null;
 	private JDefinedClass pojo = null;
 	private JPackage pojoPackage = null;
+	private JInvocation hashCodeBuilderInvocation = null;
+	
+	private JInvocation equalsBuilderInvocation = null;
+	JVar otherObjectVar = null;
 
 	public PojoBuilder() {
 		// default constructor
+		this.config = new PojoGenerationConfig();
 	}
 
 	/**
@@ -68,8 +76,8 @@ public class PojoBuilder {
 	 * @param className Class to be created
 	 */
 
-	public PojoBuilder(String pojoPackage, String className) {
-		this(null, pojoPackage, className);
+	public PojoBuilder(PojoGenerationConfig config, String pojoPackage, String className) {
+		this(config, null, pojoPackage, className);
 	}
 
 	/**
@@ -79,9 +87,15 @@ public class PojoBuilder {
 	 * @param pojoPackage The Package used to create POJOs
 	 * @param className Class to be created
 	 */
-	public PojoBuilder(JCodeModel pojoModel, String pojoPackage, String className) {
+	public PojoBuilder(PojoGenerationConfig config, JCodeModel pojoModel, String pojoPackage, String className) {
+		this.config = config;
 		this.pojoModel = pojoModel;
 		withName(pojoPackage, className);
+		if (config.isGenerateHashcodeEqualsToString()) {
+			withToString();
+			withEquals();
+			withHashCode();
+		}
 	}
 
 	public PojoBuilder extendsClass(String className) {
@@ -226,6 +240,15 @@ public class PojoBuilder {
 		setter.body().assign(JExpr._this().ref(field.name()), JExpr.ref(field.name()));
 		setter.javadoc().add("Set the " + name + ".");
 		setter.javadoc().addParam(field.name()).add("the new " + field.name());
+		
+		//Add to Hashcode
+		if (hashCodeBuilderInvocation != null) {
+			hashCodeBuilderInvocation = hashCodeBuilderInvocation.invoke("append").arg(field);
+		}
+		if (equalsBuilderInvocation != null) {
+			equalsBuilderInvocation = equalsBuilderInvocation.invoke("append").arg(field).arg(otherObjectVar.ref(field.name()));
+		}
+
 
 		return this;
 	}
@@ -330,5 +353,67 @@ public class PojoBuilder {
 	private JClass resolveType(String type) {
 		return CodeModelHelper.findFirstClassBySimpleName(pojoModel, type);
 	}
+	
+    private void withToString() {
+    	pojoCreationCheck();
+    	
+        JMethod toString = this.pojo.method(JMod.PUBLIC, String.class, "toString");
+
+        Class<?> toStringBuilder = org.apache.commons.lang3.builder.ToStringBuilder.class;
+        if (!config.isUseCommonsLang3()) {
+        	toStringBuilder = org.apache.commons.lang.builder.ToStringBuilder.class;
+        }
+        
+        toString.body()._return(this.pojo.owner().ref(toStringBuilder).staticInvoke("reflectionToString").arg(JExpr._this()));
+    }
+
+    
+    //Ada
+    private void withHashCode() {
+        JMethod hashCode = this.pojo.method(JMod.PUBLIC, int.class, "hashCode");
+
+        Class<?> hashCodeBuilder = HashCodeBuilder.class;
+        if (!config.isUseCommonsLang3()) {
+        	hashCodeBuilder = org.apache.commons.lang.builder.HashCodeBuilder.class;
+        }
+        
+        hashCodeBuilderInvocation = JExpr._new(this.pojo.owner().ref(hashCodeBuilder));
+
+        if (!this.pojo._extends().name().equals(Object.class.getSimpleName())) {
+            hashCodeBuilderInvocation = hashCodeBuilderInvocation.invoke("appendSuper")
+                    .arg(JExpr._super().invoke("hashCode"));
+        }
+        
+        hashCode.body()._return(hashCodeBuilderInvocation.invoke("toHashCode"));
+    }
+
+    private void withEquals() {
+       
+        JMethod equals = this.pojo.method(JMod.PUBLIC, boolean.class, "equals");
+        JVar otherObject = equals.param(Object.class, "other");
+
+        Class<?> equalsBuilder = org.apache.commons.lang3.builder.EqualsBuilder.class;
+        if (!config.isUseCommonsLang3()) {
+        	equalsBuilder = org.apache.commons.lang.builder.EqualsBuilder.class;
+        }
+
+        JBlock body = equals.body();
+
+        body._if(otherObject.eq(JExpr._this()))._then()._return(JExpr.TRUE);
+        body._if(otherObject._instanceof(this.pojo).eq(JExpr.FALSE))._then()._return(JExpr.FALSE);
+        
+        otherObjectVar = body.decl(this.pojo, "otherObject").init(JExpr.cast(this.pojo, otherObject));
+        equalsBuilderInvocation = JExpr._new( this.pojo.owner().ref(equalsBuilder));
+
+        if (!this.pojo._extends().name().equals("Object")) {
+            equalsBuilderInvocation = equalsBuilderInvocation.invoke("appendSuper").arg(JExpr.TRUE);
+        }
+        
+        this.pojo.owner()
+        	.ref(equalsBuilder)
+        	.staticInvoke("reflectionEquals").arg(JExpr._this()).arg(otherObject);
+
+        body._return(equalsBuilderInvocation.invoke("isEquals"));
+    }
 
 }
