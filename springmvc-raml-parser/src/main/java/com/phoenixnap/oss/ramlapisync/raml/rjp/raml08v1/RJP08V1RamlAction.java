@@ -12,6 +12,12 @@
  */
 package com.phoenixnap.oss.ramlapisync.raml.rjp.raml08v1;
 
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+
+import org.raml.model.Action;
+
 import com.phoenixnap.oss.ramlapisync.raml.RamlAction;
 import com.phoenixnap.oss.ramlapisync.raml.RamlActionType;
 import com.phoenixnap.oss.ramlapisync.raml.RamlHeader;
@@ -20,11 +26,6 @@ import com.phoenixnap.oss.ramlapisync.raml.RamlQueryParameter;
 import com.phoenixnap.oss.ramlapisync.raml.RamlResource;
 import com.phoenixnap.oss.ramlapisync.raml.RamlResponse;
 import com.phoenixnap.oss.ramlapisync.raml.RamlSecurityReference;
-import org.raml.model.Action;
-
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
 
 /**
  * Implementation based on the Raml 0.8 Parser
@@ -114,7 +115,17 @@ public class RJP08V1RamlAction implements RamlAction {
     public void setDescription(String description) {
         action.setDescription(description);
     }
+    
+    @Override
+	public String getDisplayName() {
+		return action.getDisplayName();
+	}
 
+	@Override
+	public void setDisplayName(String displayName) {
+		action.setDisplayName(displayName);
+	}
+    
     @Override
     public void setResource(RamlResource resource) {
         action.setResource(ramlModelFactory.extractResource(resource));
@@ -141,4 +152,5 @@ public class RJP08V1RamlAction implements RamlAction {
         queryParameters.put(key, ramlQueryParameter);
         action.getQueryParameters().put(key, ramlModelFactory.extractQueryParameter(ramlQueryParameter));
     }
+
 }

@@ -12,21 +12,11 @@
  */
 package com.phoenixnap.oss.ramlapisync.raml.rjp.raml08v1;
 
-import com.phoenixnap.oss.ramlapisync.data.RamlFormParameter;
-import com.phoenixnap.oss.ramlapisync.raml.RamlAction;
-import com.phoenixnap.oss.ramlapisync.raml.RamlActionType;
-import com.phoenixnap.oss.ramlapisync.raml.RamlDocumentationItem;
-import com.phoenixnap.oss.ramlapisync.raml.RamlHeader;
-import com.phoenixnap.oss.ramlapisync.raml.RamlMimeType;
-import com.phoenixnap.oss.ramlapisync.raml.RamlModelEmitter;
-import com.phoenixnap.oss.ramlapisync.raml.RamlModelFactory;
-import com.phoenixnap.oss.ramlapisync.raml.RamlParamType;
-import com.phoenixnap.oss.ramlapisync.raml.RamlQueryParameter;
-import com.phoenixnap.oss.ramlapisync.raml.RamlResource;
-import com.phoenixnap.oss.ramlapisync.raml.RamlResponse;
-import com.phoenixnap.oss.ramlapisync.raml.RamlRoot;
-import com.phoenixnap.oss.ramlapisync.raml.RamlSecurityReference;
-import com.phoenixnap.oss.ramlapisync.raml.RamlUriParameter;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
+
 import org.raml.model.Action;
 import org.raml.model.ActionType;
 import org.raml.model.DocumentationItem;
@@ -42,10 +32,21 @@ import org.raml.model.parameter.QueryParameter;
 import org.raml.model.parameter.UriParameter;
 import org.raml.parser.visitor.RamlDocumentBuilder;
 
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
+import com.phoenixnap.oss.ramlapisync.data.RamlFormParameter;
+import com.phoenixnap.oss.ramlapisync.raml.RamlAction;
+import com.phoenixnap.oss.ramlapisync.raml.RamlActionType;
+import com.phoenixnap.oss.ramlapisync.raml.RamlDocumentationItem;
+import com.phoenixnap.oss.ramlapisync.raml.RamlHeader;
+import com.phoenixnap.oss.ramlapisync.raml.RamlMimeType;
+import com.phoenixnap.oss.ramlapisync.raml.RamlModelEmitter;
+import com.phoenixnap.oss.ramlapisync.raml.RamlModelFactory;
+import com.phoenixnap.oss.ramlapisync.raml.RamlParamType;
+import com.phoenixnap.oss.ramlapisync.raml.RamlQueryParameter;
+import com.phoenixnap.oss.ramlapisync.raml.RamlResource;
+import com.phoenixnap.oss.ramlapisync.raml.RamlResponse;
+import com.phoenixnap.oss.ramlapisync.raml.RamlRoot;
+import com.phoenixnap.oss.ramlapisync.raml.RamlSecurityReference;
+import com.phoenixnap.oss.ramlapisync.raml.RamlUriParameter;
 
 /**
  * Implementation based on the Raml 0.8 Parser

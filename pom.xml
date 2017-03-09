@@ -4,7 +4,7 @@
 
 	<groupId>com.phoenixnap.oss</groupId>
 	<artifactId>springmvc-raml-parent</artifactId>
-	<version>0.9.1</version>
+	<version>0.10.0</version>
 	
 	<name>Spring MVC to RAML Synchronizer</name>
 	<description>Parent pom to the SpringMVC RAML Generation/Verification Project</description>
@@ -58,11 +58,12 @@
 		<maven.core.version>3.3.9</maven.core.version>
 		<spring.platform.version>Athens-SR2</spring.platform.version>
 		<jackson.schema.version>2.8.6</jackson.schema.version>
-        <jsonschema2pojo.version>0.4.29</jsonschema2pojo.version>
+        <jsonschema2pojo.version>0.4.31</jsonschema2pojo.version>
 		<ramlparser.version>0.8.17</ramlparser.version>
 		<reflections.version>0.9.10</reflections.version>
 		<javaparser.version>2.4.0</javaparser.version>
 		<feign.client.version>1.1.6.RELEASE</feign.client.version>
+        <codemodel.version>2.6</codemodel.version>
 	</properties>
   
 	<build>
@@ -117,6 +118,12 @@
 			<scope>import</scope>
 		</dependency>
 		
+        <dependency>
+            <groupId>com.sun.codemodel</groupId>
+            <artifactId>codemodel</artifactId>
+            <version>${codemodel.version}</version>
+        </dependency>
+        
 		<dependency>
 			<groupId>com.github.javaparser</groupId>
 			<artifactId>javaparser-core</artifactId>

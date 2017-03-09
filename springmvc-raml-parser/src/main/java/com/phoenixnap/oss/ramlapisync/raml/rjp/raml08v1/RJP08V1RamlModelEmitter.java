@@ -12,9 +12,10 @@
  */
 package com.phoenixnap.oss.ramlapisync.raml.rjp.raml08v1;
 
+import org.raml.emitter.RamlEmitter;
+
 import com.phoenixnap.oss.ramlapisync.raml.RamlModelEmitter;
 import com.phoenixnap.oss.ramlapisync.raml.RamlRoot;
-import org.raml.emitter.RamlEmitter;
 
 /**
  * Implementation based on the Raml 0.8 Parser

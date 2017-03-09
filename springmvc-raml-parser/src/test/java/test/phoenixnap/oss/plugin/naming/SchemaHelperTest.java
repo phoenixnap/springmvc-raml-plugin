@@ -12,18 +12,20 @@
  */
 package test.phoenixnap.oss.plugin.naming;
 
-import com.phoenixnap.oss.ramlapisync.naming.SchemaHelper;
-import com.phoenixnap.oss.ramlapisync.raml.RamlParamType;
-import com.phoenixnap.oss.ramlapisync.raml.RamlQueryParameter;
-import org.junit.Test;
-import test.phoenixnap.oss.plugin.naming.testclasses.ThreeElementClass;
+import static org.junit.Assert.assertEquals;
 
 import java.lang.reflect.Method;
 import java.lang.reflect.Parameter;
 import java.util.Iterator;
 import java.util.Map;
 
-import static org.junit.Assert.assertEquals;
+import org.junit.Test;
+
+import com.phoenixnap.oss.ramlapisync.naming.SchemaHelper;
+import com.phoenixnap.oss.ramlapisync.raml.RamlParamType;
+import com.phoenixnap.oss.ramlapisync.raml.RamlQueryParameter;
+
+import test.phoenixnap.oss.plugin.naming.testclasses.ThreeElementClass;
 
 /**
  * Unit tests for the methods within SchemaHelper

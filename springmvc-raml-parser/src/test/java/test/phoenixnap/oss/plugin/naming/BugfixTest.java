@@ -12,6 +12,12 @@
  */
 package test.phoenixnap.oss.plugin.naming;
 
+import static org.junit.Assert.assertEquals;
+
+import java.util.Set;
+
+import org.junit.Test;
+
 import com.phoenixnap.oss.ramlapisync.data.ApiActionMetadata;
 import com.phoenixnap.oss.ramlapisync.data.ApiParameterMetadata;
 import com.phoenixnap.oss.ramlapisync.data.ApiResourceMetadata;
@@ -19,12 +25,9 @@ import com.phoenixnap.oss.ramlapisync.generation.RamlGenerator;
 import com.phoenixnap.oss.ramlapisync.generation.RamlParser;
 import com.phoenixnap.oss.ramlapisync.parser.ResourceParser;
 import com.phoenixnap.oss.ramlapisync.parser.SpringMvcResourceParser;
+import com.phoenixnap.oss.ramlapisync.raml.InvalidRamlResourceException;
 import com.phoenixnap.oss.ramlapisync.raml.RamlRoot;
-import org.junit.Test;
-
-import java.util.Set;
-
-import static org.junit.Assert.assertEquals;
+import com.sun.codemodel.JCodeModel;
 
 /**
  * Unit tests for the RamlVerifier class and associated Checkers
@@ -39,10 +42,10 @@ public class BugfixTest {
 	RamlGenerator generator = new RamlGenerator(parser);
 	
 	@Test
-	public void test_Issue15_MissingQueryParameters() {
+	public void test_Issue15_MissingQueryParameters() throws InvalidRamlResourceException {
 		RamlRoot loadRamlFromFile = RamlParser.loadRamlFromFile( "issue-15.raml" );
 		RamlParser par = new RamlParser("com.gen.test"); 
-		Set<ApiResourceMetadata> controllers = par.extractControllers(loadRamlFromFile);
+		Set<ApiResourceMetadata> controllers = par.extractControllers(new JCodeModel(), loadRamlFromFile);
 		assertEquals("Expect 1 controller", 1, controllers.size());
 		ApiResourceMetadata controller = controllers.iterator().next();
 		assertEquals("Expect 1 api call in the controller", 1, controller.getApiCalls().size());

@@ -12,28 +12,6 @@
  */
 package com.phoenixnap.oss.ramlapisync.parser;
 
-import com.phoenixnap.oss.ramlapisync.data.ApiParameterMetadata;
-import com.phoenixnap.oss.ramlapisync.javadoc.JavaDocEntry;
-import com.phoenixnap.oss.ramlapisync.javadoc.JavaDocExtractor;
-import com.phoenixnap.oss.ramlapisync.javadoc.JavaDocStore;
-import com.phoenixnap.oss.ramlapisync.naming.Pair;
-import com.phoenixnap.oss.ramlapisync.naming.SchemaHelper;
-import com.phoenixnap.oss.ramlapisync.naming.TypeHelper;
-import com.phoenixnap.oss.ramlapisync.raml.RamlAction;
-import com.phoenixnap.oss.ramlapisync.raml.RamlActionType;
-import com.phoenixnap.oss.ramlapisync.raml.RamlMimeType;
-import com.phoenixnap.oss.ramlapisync.raml.RamlModelFactory;
-import com.phoenixnap.oss.ramlapisync.raml.RamlModelFactoryOfFactories;
-import com.phoenixnap.oss.ramlapisync.raml.RamlParamType;
-import com.phoenixnap.oss.ramlapisync.raml.RamlQueryParameter;
-import com.phoenixnap.oss.ramlapisync.raml.RamlResource;
-import com.phoenixnap.oss.ramlapisync.raml.RamlResponse;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.http.ResponseEntity;
-import org.springframework.util.StringUtils;
-import org.springframework.web.context.request.async.DeferredResult;
-
 import java.io.File;
 import java.lang.reflect.Method;
 import java.lang.reflect.Parameter;
@@ -43,6 +21,29 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.regex.Pattern;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.http.ResponseEntity;
+import org.springframework.util.StringUtils;
+import org.springframework.web.context.request.async.DeferredResult;
+
+import com.phoenixnap.oss.ramlapisync.data.ApiParameterMetadata;
+import com.phoenixnap.oss.ramlapisync.javadoc.JavaDocEntry;
+import com.phoenixnap.oss.ramlapisync.javadoc.JavaDocExtractor;
+import com.phoenixnap.oss.ramlapisync.javadoc.JavaDocStore;
+import com.phoenixnap.oss.ramlapisync.naming.JavaTypeHelper;
+import com.phoenixnap.oss.ramlapisync.naming.Pair;
+import com.phoenixnap.oss.ramlapisync.naming.SchemaHelper;
+import com.phoenixnap.oss.ramlapisync.raml.RamlAction;
+import com.phoenixnap.oss.ramlapisync.raml.RamlActionType;
+import com.phoenixnap.oss.ramlapisync.raml.RamlMimeType;
+import com.phoenixnap.oss.ramlapisync.raml.RamlModelFactory;
+import com.phoenixnap.oss.ramlapisync.raml.RamlModelFactoryOfFactories;
+import com.phoenixnap.oss.ramlapisync.raml.RamlParamType;
+import com.phoenixnap.oss.ramlapisync.raml.RamlQueryParameter;
+import com.phoenixnap.oss.ramlapisync.raml.RamlResource;
+import com.phoenixnap.oss.ramlapisync.raml.RamlResponse;
 
 /**
  * Common service scanning functionality
@@ -220,7 +221,7 @@ public abstract class ResourceParser {
 	protected Pair<String, RamlMimeType> extractRequestBody(Method method, Map<String, String> parameterComments,
 			String comment, List<ApiParameterMetadata> apiParameters) {
 		String schema;
-		RamlMimeType mimeType = RamlModelFactoryOfFactories.createRamlModelFactory().createRamlMimeType();
+		RamlMimeType mimeType = RamlModelFactoryOfFactories.createRamlModelFactoryV08().createRamlMimeType();
 		if (apiParameters.size() == 1) {
 			if (parameterComments != null && parameterComments.size() == 1) {
 				comment = parameterComments.values().iterator().next();
@@ -327,7 +328,7 @@ public abstract class ResourceParser {
 	 * @return The response RAML model for this method (success only)
 	 */
 	protected RamlResponse extractResponseFromMethod(Method method, String responseComment) {
-		RamlModelFactory ramlModelFactory = RamlModelFactoryOfFactories.createRamlModelFactory();
+		RamlModelFactory ramlModelFactory = RamlModelFactoryOfFactories.createRamlModelFactoryV08();
 		RamlResponse response = ramlModelFactory.createRamlResponse();
 		String mime = extractMimeTypeFromMethod(method);
 		RamlMimeType jsonType = ramlModelFactory.createRamlMimeTypeWithMime(mime);// TODO this would be coolto annotate
@@ -335,7 +336,7 @@ public abstract class ResourceParser {
 												// they represent and chuck it in here
 		Class<?> returnType = method.getReturnType();
 		Type genericReturnType = method.getGenericReturnType();
-		Type inferGenericType = TypeHelper.inferGenericType(genericReturnType);
+		Type inferGenericType = JavaTypeHelper.inferGenericType(genericReturnType);
 		if (returnType != null && (returnType.equals(DeferredResult.class) || returnType.equals(ResponseEntity.class))) { //unwrap spring classes from response body
 			if (inferGenericType == null) {
 				inferGenericType = Object.class;
@@ -371,7 +372,7 @@ public abstract class ResourceParser {
 	 */
 	public RamlResource extractResourceInfo(Class<?> clazz) {
 		logger.info("Parsing resource: " + clazz.getSimpleName() + " ");
-		RamlResource resource = RamlModelFactoryOfFactories.createRamlModelFactory().createRamlResource();
+		RamlResource resource = RamlModelFactoryOfFactories.createRamlModelFactoryV08().createRamlResource();
 		resource.setRelativeUri("/" + getResourceName(clazz));
 		resource.setDisplayName(clazz.getSimpleName()); // TODO allow the Api annotation to specify
 														// this stuff :)

@@ -12,18 +12,6 @@
  */
 package com.phoenixnap.oss.ramlapisync.generation;
 
-import com.phoenixnap.oss.ramlapisync.data.ApiDocumentMetadata;
-import com.phoenixnap.oss.ramlapisync.naming.RamlHelper;
-import com.phoenixnap.oss.ramlapisync.parser.ResourceParser;
-import com.phoenixnap.oss.ramlapisync.raml.RamlDocumentationItem;
-import com.phoenixnap.oss.ramlapisync.raml.RamlModelEmitter;
-import com.phoenixnap.oss.ramlapisync.raml.RamlModelFactoryOfFactories;
-import com.phoenixnap.oss.ramlapisync.raml.RamlResource;
-import com.phoenixnap.oss.ramlapisync.raml.RamlRoot;
-import org.apache.commons.io.FileUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
@@ -34,6 +22,19 @@ import java.util.List;
 import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
+import org.apache.commons.io.FileUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import com.phoenixnap.oss.ramlapisync.data.ApiDocumentMetadata;
+import com.phoenixnap.oss.ramlapisync.naming.RamlHelper;
+import com.phoenixnap.oss.ramlapisync.parser.ResourceParser;
+import com.phoenixnap.oss.ramlapisync.raml.RamlDocumentationItem;
+import com.phoenixnap.oss.ramlapisync.raml.RamlModelEmitter;
+import com.phoenixnap.oss.ramlapisync.raml.RamlModelFactoryOfFactories;
+import com.phoenixnap.oss.ramlapisync.raml.RamlResource;
+import com.phoenixnap.oss.ramlapisync.raml.RamlRoot;
 
 /**
  * Class containing RAML generation driver. Methods in this class are used to orchestrate the process of extracting
@@ -109,7 +110,7 @@ public class RamlGenerator {
 
 		assertResourceParser();
 
-		RamlRoot raml = RamlModelFactoryOfFactories.createRamlModelFactory().createRamlRoot();
+		RamlRoot raml = RamlModelFactoryOfFactories.createRamlModelFactoryV08().createRamlRoot();
 		raml.setBaseUri(baseUri);
 		raml.setVersion(version);
 		raml.setTitle(title);
@@ -156,7 +157,7 @@ public class RamlGenerator {
 		List<RamlDocumentationItem> documentInfos = new ArrayList<>();
 		for (ApiDocumentMetadata documentInfo : documents) {
 			logger.info("Adding document: " + documentInfo.getDocumentTitle());
-			RamlDocumentationItem documentItem = RamlModelFactoryOfFactories.createRamlModelFactory().createRamlDocumentationItem();
+			RamlDocumentationItem documentItem = RamlModelFactoryOfFactories.createRamlModelFactoryV08().createRamlDocumentationItem();
 
 			documentItem.setContent("!include " + documentInfo.getDocumentPath());
 			documentItem.setTitle(documentInfo.getDocumentTitle());
@@ -195,7 +196,7 @@ public class RamlGenerator {
 		if (this.raml == null) {
 			return "";
 		}
-		RamlModelEmitter ramlEmitter = RamlModelFactoryOfFactories.createRamlModelFactory().createRamlModelEmitter();
+		RamlModelEmitter ramlEmitter = RamlModelFactoryOfFactories.createRamlModelFactoryV08().createRamlModelEmitter();
 		return postProcessRaml(ramlEmitter.dump(this.raml));
 	}
 

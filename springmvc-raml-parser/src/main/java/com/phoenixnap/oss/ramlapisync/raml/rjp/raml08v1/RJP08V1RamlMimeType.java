@@ -12,13 +12,15 @@
  */
 package com.phoenixnap.oss.ramlapisync.raml.rjp.raml08v1;
 
-import com.phoenixnap.oss.ramlapisync.data.RamlFormParameter;
-import com.phoenixnap.oss.ramlapisync.raml.RamlMimeType;
-import org.raml.model.MimeType;
-
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+
+import org.raml.model.MimeType;
+
+import com.phoenixnap.oss.ramlapisync.data.RamlFormParameter;
+import com.phoenixnap.oss.ramlapisync.raml.RamlDataType;
+import com.phoenixnap.oss.ramlapisync.raml.RamlMimeType;
 
 /**
  * Implementation based on the Raml 0.8 Parser
@@ -80,5 +82,15 @@ public class RJP08V1RamlMimeType implements RamlMimeType {
         }
         this.mimeType.getFormParameters().put(name, ramlModelFactory.extractFormParameters(ramlFormParameters));
     }
+
+	@Override
+	public RamlDataType getType() {
+		return null; //RAML 0.8 does not support types so this is always assumed to be empty.
+	}
+
+	@Override
+	public void setType(RamlDataType type) {
+		throw new UnsupportedOperationException();		
+	}
 
 }

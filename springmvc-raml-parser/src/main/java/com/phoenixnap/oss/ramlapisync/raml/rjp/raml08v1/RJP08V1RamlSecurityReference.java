@@ -12,8 +12,9 @@
  */
 package com.phoenixnap.oss.ramlapisync.raml.rjp.raml08v1;
 
-import com.phoenixnap.oss.ramlapisync.raml.RamlSecurityReference;
 import org.raml.model.SecurityReference;
+
+import com.phoenixnap.oss.ramlapisync.raml.RamlSecurityReference;
 
 /**
  * Implementation based on the Raml 0.8 Parser

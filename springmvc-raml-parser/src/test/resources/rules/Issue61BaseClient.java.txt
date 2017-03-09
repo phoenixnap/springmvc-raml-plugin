@@ -9,23 +9,23 @@ import org.springframework.http.ResponseEntity;
 /**
  * A collection of samples
  * (Generated with springmvc-raml-parser v.${project.version})
- *
+ * 
  */
 public interface SampleUnitClient {
 
 
     /**
+     * Retrieves  samples
+     * 
+     */
+    public ResponseEntity<List<com.gen.test.model.SampleUnit>> getSampleUnits();
+
+    /**
      * Creates a sample unit
-     *
+     * 
      * @param sampleUnit The Request Body Payload
      */
     public ResponseEntity<?> createSampleUnit(com.gen.test.model.SampleUnit sampleUnit);
-
-    /**
-     * Retrieves  samples
-     *
-     */
-    public ResponseEntity<List<com.gen.test.model.SampleUnit>> getSampleUnits();
 
 }
 -----------------------------------com.gen.test.SampleUnitClientImpl.java-----------------------------------
@@ -51,7 +51,7 @@ import org.springframework.web.util.UriComponentsBuilder;
 /**
  * A collection of samples
  * (Generated with springmvc-raml-parser v.${project.version})
- *
+ * 
  */
 @Component
 public class SampleUnitClientImpl
@@ -64,26 +64,8 @@ public class SampleUnitClientImpl
     private String baseUrl;
 
     /**
-     * Creates a sample unit
-     *
-     */
-    public ResponseEntity<?> createSampleUnit(com.gen.test.model.SampleUnit sampleUnit) {
-        HttpHeaders httpHeaders = new HttpHeaders();
-        //  Add Accepts Headers and Body Content-Type
-        ArrayList<MediaType> acceptsList = new ArrayList<MediaType>();
-        httpHeaders.setContentType(MediaType.valueOf("application/json"));
-        acceptsList.add(MediaType.valueOf("application/json"));
-        httpHeaders.setAccept(acceptsList);
-        String url = baseUrl.concat("/sample_units");
-        UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl(url);
-        UriComponents uriComponents = builder.build();
-        HttpEntity httpEntity = new HttpEntity(sampleUnit, httpHeaders);
-        return this.restTemplate.exchange(uriComponents.encode().toUri(), HttpMethod.POST, httpEntity, Object.class);
-    }
-
-    /**
      * Retrieves  samples
-     *
+     * 
      */
     public ResponseEntity<List<com.gen.test.model.SampleUnit>> getSampleUnits() {
         HttpHeaders httpHeaders = new HttpHeaders();
@@ -98,6 +80,24 @@ public class SampleUnitClientImpl
         class _P extends org.springframework.core.ParameterizedTypeReference<java.util.List<com.gen.test.model.SampleUnit>>{};
         ParameterizedTypeReference<List<com.gen.test.model.SampleUnit>> typeReference = new _P();
         return this.restTemplate.exchange(uriComponents.encode().toUri(), HttpMethod.GET, httpEntity, typeReference);
+    }
+
+    /**
+     * Creates a sample unit
+     * 
+     */
+    public ResponseEntity<?> createSampleUnit(com.gen.test.model.SampleUnit sampleUnit) {
+        HttpHeaders httpHeaders = new HttpHeaders();
+        //  Add Accepts Headers and Body Content-Type
+        ArrayList<MediaType> acceptsList = new ArrayList<MediaType>();
+        httpHeaders.setContentType(MediaType.valueOf("application/json"));
+        acceptsList.add(MediaType.valueOf("application/json"));
+        httpHeaders.setAccept(acceptsList);
+        String url = baseUrl.concat("/sample_units");
+        UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl(url);
+        UriComponents uriComponents = builder.build();
+        HttpEntity httpEntity = new HttpEntity(sampleUnit, httpHeaders);
+        return this.restTemplate.exchange(uriComponents.encode().toUri(), HttpMethod.POST, httpEntity, Object.class);
     }
 
 }

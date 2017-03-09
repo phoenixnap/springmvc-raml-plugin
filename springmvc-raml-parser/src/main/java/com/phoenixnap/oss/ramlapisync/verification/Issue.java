@@ -12,9 +12,10 @@
  */
 package com.phoenixnap.oss.ramlapisync.verification;
 
+import org.springframework.util.StringUtils;
+
 import com.phoenixnap.oss.ramlapisync.raml.RamlAction;
 import com.phoenixnap.oss.ramlapisync.raml.RamlResource;
-import org.springframework.util.StringUtils;
 
 /**
  * Data object which identifies a discrepancy between two RAML models

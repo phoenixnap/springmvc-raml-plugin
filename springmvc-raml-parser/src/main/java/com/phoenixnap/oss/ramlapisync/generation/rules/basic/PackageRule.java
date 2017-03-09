@@ -12,11 +12,12 @@
  */
 package com.phoenixnap.oss.ramlapisync.generation.rules.basic;
 
+import org.springframework.util.StringUtils;
+
 import com.phoenixnap.oss.ramlapisync.data.ApiResourceMetadata;
 import com.phoenixnap.oss.ramlapisync.generation.rules.Rule;
 import com.sun.codemodel.JCodeModel;
 import com.sun.codemodel.JPackage;
-import org.springframework.util.StringUtils;
 
 /**
  * Generates a simple package declaration based on the base package defined in ApiControllerMetadata.

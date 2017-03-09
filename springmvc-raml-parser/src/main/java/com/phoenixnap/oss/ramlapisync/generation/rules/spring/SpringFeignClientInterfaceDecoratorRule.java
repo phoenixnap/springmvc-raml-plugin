@@ -19,9 +19,9 @@ import com.phoenixnap.oss.ramlapisync.generation.rules.GenericJavaClassRule;
 import com.phoenixnap.oss.ramlapisync.generation.rules.Rule;
 import com.phoenixnap.oss.ramlapisync.generation.rules.basic.ClassCommentRule;
 import com.phoenixnap.oss.ramlapisync.generation.rules.basic.ControllerMethodSignatureRule;
-import com.phoenixnap.oss.ramlapisync.generation.rules.basic.SpringFeignClientInterfaceDeclarationRule;
 import com.phoenixnap.oss.ramlapisync.generation.rules.basic.MethodCommentRule;
 import com.phoenixnap.oss.ramlapisync.generation.rules.basic.PackageRule;
+import com.phoenixnap.oss.ramlapisync.generation.rules.basic.SpringFeignClientInterfaceDeclarationRule;
 import com.sun.codemodel.JCodeModel;
 import com.sun.codemodel.JDefinedClass;
 

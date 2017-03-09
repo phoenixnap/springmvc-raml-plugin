@@ -10,6 +10,7 @@ import org.springframework.core.ParameterizedTypeReference;
 
 import com.phoenixnap.oss.ramlapisync.data.ApiResourceMetadata;
 import com.phoenixnap.oss.ramlapisync.generation.RamlParser;
+import com.phoenixnap.oss.ramlapisync.raml.InvalidRamlResourceException;
 import com.sun.codemodel.JCodeModel;
 import com.sun.codemodel.JDefinedClass;
 
@@ -18,7 +19,7 @@ public class Issue61RulesTest extends AbstractRuleTestBase  {
    private Rule<JCodeModel, JDefinedClass, ApiResourceMetadata> rule;
 
    @BeforeClass
-   public static void initRaml() {
+   public static void initRaml() throws InvalidRamlResourceException {
       AbstractRuleTestBase.RAML = RamlParser.loadRamlFromFile("issue-61.raml");
 
       class P extends ParameterizedTypeReference<String> {

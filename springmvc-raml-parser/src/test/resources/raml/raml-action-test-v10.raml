@@ -1,0 +1,110 @@
+#%RAML 1.0
+title: myapi
+baseUri: api
+mediaType: application/json
+securitySchemes:
+  oauth2:
+    type: OAuth 2.0
+    description: OAuth 2.0 Authentication
+    displayName: OAuth 2.0 Auth
+    settings:
+      authorizationUri: https://accounts.google.com/o/oauth2/auth
+      accessTokenUri: https://accounts.google.com/o/oauth2/token
+      authorizationGrants:
+      - authorization_code
+      - client_credentials
+      - password
+      - implicit
+      scopes:
+      - openid
+      - session
+      - read
+      - write
+types:
+  Person:
+    type: object
+  Manager:
+    type: Person
+/persons:
+  displayName: Persons handling
+  get:
+    displayName: Persons
+    description: Get all persons
+    securedBy: null
+    queryParameters: 
+      testX: 
+        displayName: testX
+        type: string
+        default: defvalue
+        minLength: 3
+        maxLength: 10
+        pattern: ^[a-zA-Z]+$
+      testY: integer
+      testZ:
+        type: integer
+        minimum: 1
+        maximum: 10
+    protocols: HTTP
+    headers:
+      Accept:
+        description: Response type acceptable by client
+        required: false
+        default: application/json
+        type: string
+    responses: 
+      200:
+        description: Successful response
+        body: 
+          application/json:
+            schema: Person
+  post:
+    description: Create new person
+    securedBy: oauth2
+    body: 
+      application/json:
+        type: Person
+  /{personId}:
+    uriParameters: 
+      personId: 
+        description: id of a person
+        displayName: personId
+        type: integer
+    get:
+      description: Get specific person
+      responses: 
+        200:
+          description: Successful response
+          body: 
+            application/json:
+              schema: Person
+              properties: 
+                testZ: boolean
+/managers:
+  displayName: Managers handling
+  /{managerId}:
+    uriParameters: 
+      managerId: 
+        type: integer
+        description: id of a manager
+        required: false
+    get:
+      description: Get specific manager
+      responses: 
+        200:
+          description: Successful response
+          body: 
+            application/json:
+              schema: Manager
+    /subresources:
+      displayName: Subresources handling
+      /{subresourceId}:
+        uriParameters: 
+          subresourceId: 
+            type: number
+            displayName: subresourceId
+            default: 123
+        get:
+          description: Get specific subresource
+          responses: 
+            200:
+              description: Successful response

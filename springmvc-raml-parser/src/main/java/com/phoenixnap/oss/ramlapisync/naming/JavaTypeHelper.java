@@ -23,7 +23,7 @@ import java.lang.reflect.Type;
  * @since 0.0.1
  *
  */
-public class TypeHelper {
+public class JavaTypeHelper {
 
 	/**
 	 * Attempts to infer the type in the generic part of the declaration of the type

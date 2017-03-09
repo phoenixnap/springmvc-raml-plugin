@@ -83,7 +83,7 @@ public class SpringMvcResourceParser extends ResourceParser {
 	@Override
 	protected Pair<String, RamlMimeType> extractRequestBody(Method method, Map<String, String> parameterComments,
 															String comment, List<ApiParameterMetadata> apiParameters) {
-		RamlMimeType mimeType = RamlModelFactoryOfFactories.createRamlModelFactory().createRamlMimeType();
+		RamlMimeType mimeType = RamlModelFactoryOfFactories.createRamlModelFactoryV08().createRamlMimeType();
 		String type;
 		//Handle empty body
 		if (apiParameters != null && apiParameters.size() == 0) {
@@ -118,7 +118,7 @@ public class SpringMvcResourceParser extends ResourceParser {
 						|| (!apiParameters.get(0).isAnnotationPresent(RequestBody.class) && String.class.equals(apiParameters.get(0).getType())))) {
 			type = "application/x-www-form-urlencoded";
 			for (ApiParameterMetadata param : apiParameters) {
-				RamlFormParameter formParameter = RamlModelFactoryOfFactories.createRamlModelFactory().createRamlFormParameter();
+				RamlFormParameter formParameter = RamlModelFactoryOfFactories.createRamlModelFactoryV08().createRamlFormParameter();
 				formParameter.setDisplayName(param.getName());
 				formParameter.setExample(param.getExample());
 				RamlParamType simpleType = SchemaHelper.mapSimpleType(param.getType());
@@ -431,7 +431,7 @@ public class SpringMvcResourceParser extends ResourceParser {
 	@Override
 	protected void extractAndAppendResourceInfo(Class<?> clazz, Method method, JavaDocEntry docEntry, RamlResource parentResource) {
 
-		RamlModelFactory ramlModelFactory = RamlModelFactoryOfFactories.createRamlModelFactory();
+		RamlModelFactory ramlModelFactory = RamlModelFactoryOfFactories.createRamlModelFactoryV08();
 
 		Map<RamlActionType, String> methodActions = getHttpMethodAndName(clazz, method);
 		for (Entry<RamlActionType, String> methodAction : methodActions.entrySet()) {

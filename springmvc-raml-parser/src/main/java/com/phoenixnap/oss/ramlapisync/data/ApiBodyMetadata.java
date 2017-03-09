@@ -12,12 +12,14 @@
  */
 package com.phoenixnap.oss.ramlapisync.data;
 
+import org.jsonschema2pojo.Annotator;
+import org.jsonschema2pojo.GenerationConfig;
+import org.raml.v2.api.model.v10.datamodel.TypeDeclaration;
+
 import com.phoenixnap.oss.ramlapisync.naming.NamingHelper;
 import com.phoenixnap.oss.ramlapisync.naming.SchemaHelper;
 import com.phoenixnap.oss.ramlapisync.raml.RamlParamType;
 import com.sun.codemodel.JCodeModel;
-import org.jsonschema2pojo.Annotator;
-import org.jsonschema2pojo.GenerationConfig;
 
 /**
  * 
@@ -31,34 +33,19 @@ public class ApiBodyMetadata {
 	
 	private String name;
 	private String schema;
+	private TypeDeclaration type;
 	private JCodeModel codeModel;
 	private boolean array = false;
 	
-	public static void main (String[] args) {
-		String schema = "{"
-				+ "\"$schema\": \"http://json-schema.org/draft-04/schema\","
-				+ "\"type\" : \"object\","
-				+ "\"javaType\": \"com.pnap.pncp.rbac.rest.model.Role\","
-				+ "\"id\" : \"role\","
-				+ "\"properties\" : {"
-				+ "\"id\" : {"
-				+ "  \"type\" : \"integer\""
-				+ "},"
-				+ " \"name\" : {"
-				+ "  \"type\" : \"string\""
-				+ "},"
-				+ "\"description\" : {"
-				+ "  \"type\" : \"string\""
-				+ "},"
-				+ "\"addedOn\" : {"
-				+ "  \"type\" : \"integer\","
-				+ "  \"format\" : \"UTC_MILLISEC\""
-				+ "}"
-				+ "},"
-				+ "\"additionalProperties\" : false"
-				+ "}";
-		ApiBodyMetadata abm = new ApiBodyMetadata("blargh", schema, new JCodeModel());
-		System.out.println(abm.getName());
+	
+	public ApiBodyMetadata (String name, TypeDeclaration type, boolean array, JCodeModel codeModel) {
+		super();
+		this.schema = null;
+		this.type = type;
+		this.name = name;
+		this.codeModel = codeModel;		
+		this.array = array;
+		// array detection. i think we can default this to false since we should already be generating lists from the type. nope we need it within rules for narrowing to List
 	}
 	
 	public ApiBodyMetadata (String name, String schema, JCodeModel codeModel) {
@@ -95,6 +82,11 @@ public class ApiBodyMetadata {
 		}
 	}
 	
+
+	public TypeDeclaration getType() {
+		return type;
+	}
+
 	public String getName() {
 		return name;
 	}
@@ -119,7 +111,11 @@ public class ApiBodyMetadata {
 	 * @return built JCodeModel
 	 */
 	public JCodeModel getCodeModel(String basePackage, String schemaLocation, GenerationConfig config, Annotator annotator) {
-		return SchemaHelper.buildBodyJCodeModel(schemaLocation, basePackage, name, schema, config, annotator);
+		if (type != null) {
+			return codeModel;
+		} else {
+			return SchemaHelper.buildBodyJCodeModel(schemaLocation, basePackage, name, schema, config, annotator);
+		}
 	}
 
 }

@@ -12,11 +12,12 @@
  */
 package com.phoenixnap.oss.ramlapisync.generation.rules.spring;
 
+import org.springframework.web.bind.annotation.ResponseBody;
+
 import com.phoenixnap.oss.ramlapisync.data.ApiActionMetadata;
 import com.phoenixnap.oss.ramlapisync.generation.rules.Rule;
 import com.sun.codemodel.JAnnotationUse;
 import com.sun.codemodel.JMethod;
-import org.springframework.web.bind.annotation.ResponseBody;
 
 /**
  * Adds a @ResponseBody annotation to the method if there is response body declared in this endpoints metadata.

@@ -1,0 +1,53 @@
+#%RAML 1.0
+title: myapi
+baseUri: http://api/
+mediaType: application/json
+types:
+  Person:
+    type: object
+    properties:
+      firstname: string
+      lastname: string
+      id: 
+        type: number
+        format: int64        
+  Manager:
+    type: Person
+    properties:
+      department: Department
+      clearanceLevel:
+        enum: [ low, high ]
+  Department:
+    type: object
+    properties:
+      name: string
+/persons:
+  get:
+    displayName: getPersons
+    responses:
+      200:
+        body:
+          application/json:
+            type: Person[]
+  post:
+    body:
+      application/json:
+        type: Person 
+/managers:
+  post:
+    body:
+      application/json:
+        type: Manager 
+  get:
+    responses:
+      200:
+        body:
+          application/json:
+            type: Manager[]
+  /{managerId}:
+    post:
+    /office:
+      get:
+      /{nestedId}:
+        get:
+        post:

@@ -12,20 +12,21 @@
  */
 package com.phoenixnap.oss.ramlapisync.style.checkers;
 
+import java.util.LinkedHashSet;
+import java.util.Map.Entry;
+import java.util.Set;
+import java.util.regex.Pattern;
+
+import org.raml.parser.utils.Inflector;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.phoenixnap.oss.ramlapisync.raml.RamlActionType;
 import com.phoenixnap.oss.ramlapisync.raml.RamlResource;
 import com.phoenixnap.oss.ramlapisync.raml.RamlRoot;
 import com.phoenixnap.oss.ramlapisync.style.RamlStyleCheckerAdapter;
 import com.phoenixnap.oss.ramlapisync.style.StyleIssue;
 import com.phoenixnap.oss.ramlapisync.verification.IssueLocation;
-import org.raml.parser.utils.Inflector;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import java.util.LinkedHashSet;
-import java.util.Map.Entry;
-import java.util.Set;
-import java.util.regex.Pattern;
 
 /**
  * Style checker that ensures that collection resources are defined in the plural form

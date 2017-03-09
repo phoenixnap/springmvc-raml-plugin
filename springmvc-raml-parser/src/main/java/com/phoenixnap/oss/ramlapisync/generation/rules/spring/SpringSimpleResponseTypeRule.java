@@ -12,17 +12,18 @@
  */
 package com.phoenixnap.oss.ramlapisync.generation.rules.spring;
 
-import com.phoenixnap.oss.ramlapisync.data.ApiBodyMetadata;
+import static com.phoenixnap.oss.ramlapisync.generation.CodeModelHelper.findFirstClassBySimpleName;
+
+import java.util.List;
+
+import org.springframework.http.ResponseEntity;
+
 import com.phoenixnap.oss.ramlapisync.data.ApiActionMetadata;
+import com.phoenixnap.oss.ramlapisync.data.ApiBodyMetadata;
 import com.phoenixnap.oss.ramlapisync.generation.rules.Rule;
 import com.sun.codemodel.JClass;
 import com.sun.codemodel.JDefinedClass;
 import com.sun.codemodel.JType;
-import org.springframework.http.ResponseEntity;
-
-import java.util.List;
-
-import static com.phoenixnap.oss.ramlapisync.generation.CodeModelHelper.findFirstClassBySimpleName;
 
 /**
  * Creates a org.springframework.http.ResponseEntity as a return type for an endpoint.

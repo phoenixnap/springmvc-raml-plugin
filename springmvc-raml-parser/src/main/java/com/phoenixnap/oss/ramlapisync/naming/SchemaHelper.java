@@ -94,7 +94,7 @@ public class SchemaHelper {
      */
     public static Map<String, RamlQueryParameter> convertParameterToQueryParameter(final Parameter param,
             final String paramComment) {
-        RamlQueryParameter queryParam = RamlModelFactoryOfFactories.createRamlModelFactory().createRamlQueryParameter();
+        RamlQueryParameter queryParam = RamlModelFactoryOfFactories.createRamlModelFactoryV08().createRamlQueryParameter();
         ApiParameterMetadata parameterMetadata = new ApiParameterMetadata(param);
 
         RamlParamType type = mapSimpleType(param.getType());
@@ -173,7 +173,7 @@ public class SchemaHelper {
         }
 
         try {
-            RamlModelFactory ramlModelFactory = RamlModelFactoryOfFactories.createRamlModelFactory();
+            RamlModelFactory ramlModelFactory = RamlModelFactoryOfFactories.createRamlModelFactoryV08();
             for (Field field : param.getType().getDeclaredFields()) {
                 if (!java.lang.reflect.Modifier.isStatic(field.getModifiers())
                         && !java.lang.reflect.Modifier.isTransient(field.getModifiers())
@@ -262,7 +262,7 @@ public class SchemaHelper {
         }
         try {
             ObjectMapper m = new ObjectMapper();
-            JsonSchema jsonSchema = extractSchemaInternal(clazz, TypeHelper.inferGenericType(clazz),
+            JsonSchema jsonSchema = extractSchemaInternal(clazz, JavaTypeHelper.inferGenericType(clazz),
                     responseDescription, javaDocStore, m);
 
             return m.writerWithDefaultPrettyPrinter().writeValueAsString(jsonSchema);
@@ -310,7 +310,7 @@ public class SchemaHelper {
         }
         else if (jsonSchema instanceof ArraySchema && genericType != null) {
             ArraySchema arraySchema = (ArraySchema) jsonSchema;
-            arraySchema.setItemsSchema(extractSchemaInternal(genericType, TypeHelper.inferGenericType(genericType),
+            arraySchema.setItemsSchema(extractSchemaInternal(genericType, JavaTypeHelper.inferGenericType(genericType),
                     responseDescription, javaDocStore, m));
 
         }

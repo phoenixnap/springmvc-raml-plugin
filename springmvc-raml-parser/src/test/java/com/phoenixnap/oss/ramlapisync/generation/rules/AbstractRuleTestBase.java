@@ -1,18 +1,9 @@
 package com.phoenixnap.oss.ramlapisync.generation.rules;
 
-import com.phoenixnap.oss.ramlapisync.data.ApiActionMetadata;
-import com.phoenixnap.oss.ramlapisync.data.ApiResourceMetadata;
-import com.phoenixnap.oss.ramlapisync.generation.RamlParser;
-import com.phoenixnap.oss.ramlapisync.generation.RamlVerifier;
-import com.phoenixnap.oss.ramlapisync.raml.RamlRoot;
-import com.sun.codemodel.JCodeModel;
-import com.sun.codemodel.writer.SingleStreamCodeWriter;
-import org.apache.log4j.Logger;
-import org.hamcrest.MatcherAssert;
-import org.hamcrest.text.IsEqualIgnoringWhiteSpace;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.BeforeClass;
+import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.CoreMatchers.nullValue;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertThat;
 
 import java.io.BufferedReader;
 import java.io.ByteArrayOutputStream;
@@ -25,10 +16,21 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 
-import static org.hamcrest.CoreMatchers.is;
-import static org.hamcrest.CoreMatchers.nullValue;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertThat;
+import org.apache.log4j.Logger;
+import org.hamcrest.MatcherAssert;
+import org.hamcrest.text.IsEqualIgnoringWhiteSpace;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.BeforeClass;
+
+import com.phoenixnap.oss.ramlapisync.data.ApiActionMetadata;
+import com.phoenixnap.oss.ramlapisync.data.ApiResourceMetadata;
+import com.phoenixnap.oss.ramlapisync.generation.RamlParser;
+import com.phoenixnap.oss.ramlapisync.generation.RamlVerifier;
+import com.phoenixnap.oss.ramlapisync.raml.InvalidRamlResourceException;
+import com.phoenixnap.oss.ramlapisync.raml.RamlRoot;
+import com.sun.codemodel.JCodeModel;
+import com.sun.codemodel.writer.SingleStreamCodeWriter;
 
 /**
  * @author armin.weisser
@@ -36,6 +38,7 @@ import static org.junit.Assert.assertThat;
  */
 public abstract class AbstractRuleTestBase {
 
+	public static final boolean VISUALISE_CODE = false;
     public static final String RESOURCE_BASE = "rules/";
     public static RamlRoot RAML;
 
@@ -51,7 +54,7 @@ public abstract class AbstractRuleTestBase {
     }
 
     @BeforeClass
-    public static void initRaml() {
+    public static void initRaml() throws InvalidRamlResourceException {
         RAML = RamlVerifier.loadRamlFromFile(RESOURCE_BASE + "test-single-controller.raml");
     }
 
@@ -61,7 +64,7 @@ public abstract class AbstractRuleTestBase {
     }
 
     protected void initControllerMetadata(RamlParser par) {
-        controllerMetadata = par.extractControllers(RAML).iterator().next();
+        controllerMetadata = par.extractControllers(jCodeModel, RAML).iterator().next();
     }
 
     protected ApiResourceMetadata getControllerMetadata() {
@@ -81,6 +84,10 @@ public abstract class AbstractRuleTestBase {
     }
 
     protected String serializeModel() {
+    	return serializeModel(jCodeModel);
+    }
+    
+    protected String serializeModel(JCodeModel jCodeModel) {
         ByteArrayOutputStream bos = new ByteArrayOutputStream();
         try {
             jCodeModel.build(new SingleStreamCodeWriter(bos));
@@ -92,12 +99,17 @@ public abstract class AbstractRuleTestBase {
 
     @After
     public void printCode() {
-        logger.debug(serializeModel());
+    	if (VISUALISE_CODE) {
+    		logger.debug(serializeModel());
+    	}
+    }
+    
+    protected void verifyGeneratedCode(String name) throws Exception {
+    	verifyGeneratedCode(name, serializeModel());
     }
 
-    protected void verifyGeneratedCode(String name) throws Exception {
+    protected void verifyGeneratedCode(String name, String generatedCode) throws Exception {
         String expectedCode = getTextFromFile(RESOURCE_BASE + name + ".java.txt");
-        String generatedCode = serializeModel();
 
         try {
             MatcherAssert.assertThat(name + " is not generated correctly.", generatedCode, new IsEqualIgnoringLeadingAndEndingWhiteSpaces(expectedCode));

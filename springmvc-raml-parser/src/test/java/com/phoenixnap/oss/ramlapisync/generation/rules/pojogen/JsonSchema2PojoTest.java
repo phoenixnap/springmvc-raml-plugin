@@ -33,6 +33,8 @@ public class JsonSchema2PojoTest {
 	
 	protected Logger logger = Logger.getLogger(this.getClass());
 	
+	private static boolean VISUALISE_MODEL_TO_CONSOLE = false;
+	
 	@Before
     public void before() {
     }
@@ -103,7 +105,7 @@ public class JsonSchema2PojoTest {
         
         try {
         	 mapSchemaToPojo.getCodeModel().build(new SingleStreamCodeWriter(bos));
-        	 logger.debug(bos.toString());
+        	 printModel(bos);
         } catch (IOException e) {
             assertThat(e.getMessage(), is(nullValue()));
         }
@@ -121,11 +123,17 @@ public class JsonSchema2PojoTest {
         
         try {
         	 mapSchemaToPojo.getCodeModel().build(new SingleStreamCodeWriter(bos));
-        	 logger.debug(bos.toString());
+        	 printModel(bos);
         } catch (IOException e) {
             assertThat(e.getMessage(), is(nullValue()));
         }
     }
+
+	private void printModel(ByteArrayOutputStream bos) {
+		if (VISUALISE_MODEL_TO_CONSOLE) {
+			logger.debug(bos.toString());
+		}
+	}
 	
 	@Test
 	public void test_schemaNaming_Nested() throws Exception  {
@@ -139,7 +147,7 @@ public class JsonSchema2PojoTest {
         assertThat(mapSchemaToPojo.getName(), is("JavaName2nd"));
         try {
         	 mapSchemaToPojo.getCodeModel().build(new SingleStreamCodeWriter(bos));
-        	 logger.debug(bos.toString());
+        	 printModel(bos);
         } catch (IOException e) {
             assertThat(e.getMessage(), is(nullValue()));
         }
@@ -158,7 +166,7 @@ public class JsonSchema2PojoTest {
         assertThat(mapSchemaToPojo.getName(), is("JavaName2nd"));
         try {
         	 mapSchemaToPojo.getCodeModel().build(new SingleStreamCodeWriter(bos));
-        	 logger.debug(bos.toString());
+        	 printModel(bos);
         } catch (IOException e) {
             assertThat(e.getMessage(), is(nullValue()));
         }

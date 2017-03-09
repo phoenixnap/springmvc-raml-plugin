@@ -1,0 +1,34 @@
+#%RAML 1.0
+title: myapi
+documentation:
+  - title: Home
+    content: |
+      Welcome to the _Sample API_ Documentation.
+  - title: Legal
+    content: |
+      CWIE (c) All Rights Reserved
+baseUri: api
+mediaType: application/json
+types:
+  Person:
+    type: object
+    displayName: Person
+    properties: 
+      testX: 
+        displayName: testX
+        type: string
+        default: def_value
+        minLength: 3
+        maxLength: 10
+      testY:
+        type: array
+        items: string
+        description: array attribute
+        example: ["a", "b"]
+  Manager:
+    type: Person
+  Persons: 
+    type: array
+    items: Person
+/persons:
+/managers:

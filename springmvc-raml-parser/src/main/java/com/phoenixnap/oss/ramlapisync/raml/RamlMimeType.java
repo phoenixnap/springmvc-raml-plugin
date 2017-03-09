@@ -12,10 +12,10 @@
  */
 package com.phoenixnap.oss.ramlapisync.raml;
 
-import com.phoenixnap.oss.ramlapisync.data.RamlFormParameter;
-
 import java.util.List;
 import java.util.Map;
+
+import com.phoenixnap.oss.ramlapisync.data.RamlFormParameter;
 
 /**
  * Abstract Representation of a Raml MimeType
@@ -32,8 +32,18 @@ public interface RamlMimeType {
     void addFormParameters(String name, List<RamlFormParameter> formParameters);
 
     String getSchema();
+    
+    /**
+     * The Raml data type associated with this schema
+     * @return The RamlDataType (type:) that this mime encapsulates
+     */
+    RamlDataType getType();
+    
+    void setType(RamlDataType type);
 
     void setSchema(String schema);
 
     void setExample(String example);
+    
+    
 }

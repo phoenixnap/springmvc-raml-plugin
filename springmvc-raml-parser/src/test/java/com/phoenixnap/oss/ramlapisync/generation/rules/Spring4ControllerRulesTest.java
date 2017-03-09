@@ -1,6 +1,6 @@
 package com.phoenixnap.oss.ramlapisync.generation.rules;
 
-import static com.phoenixnap.oss.ramlapisync.generation.rules.spring.SpringControllerDecoratorRule.CALLABLE_RESPONSE_CONFIGURATION;
+import static com.phoenixnap.oss.ramlapisync.generation.rules.spring.SpringConfigurableRule.CALLABLE_RESPONSE_CONFIGURATION;
 
 import java.util.HashMap;
 import java.util.Map;

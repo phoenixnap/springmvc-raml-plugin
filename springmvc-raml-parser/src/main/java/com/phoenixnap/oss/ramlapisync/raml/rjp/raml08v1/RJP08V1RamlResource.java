@@ -12,16 +12,17 @@
  */
 package com.phoenixnap.oss.ramlapisync.raml.rjp.raml08v1;
 
-import com.phoenixnap.oss.ramlapisync.raml.RamlAction;
-import com.phoenixnap.oss.ramlapisync.raml.RamlActionType;
-import com.phoenixnap.oss.ramlapisync.raml.RamlResource;
-import com.phoenixnap.oss.ramlapisync.raml.RamlUriParameter;
+import java.util.LinkedHashMap;
+import java.util.Map;
+
 import org.raml.model.Action;
 import org.raml.model.ActionType;
 import org.raml.model.Resource;
 
-import java.util.LinkedHashMap;
-import java.util.Map;
+import com.phoenixnap.oss.ramlapisync.raml.RamlAction;
+import com.phoenixnap.oss.ramlapisync.raml.RamlActionType;
+import com.phoenixnap.oss.ramlapisync.raml.RamlResource;
+import com.phoenixnap.oss.ramlapisync.raml.RamlUriParameter;
 
 /**
  * Implementation based on the Raml 0.8 Parser
@@ -194,4 +195,9 @@ public class RJP08V1RamlResource implements RamlResource {
     public int hashCode() {
         return resource.hashCode();
     }
+
+	@Override
+	public String getDisplayName() {
+		return resource.getDisplayName();
+	}
 }

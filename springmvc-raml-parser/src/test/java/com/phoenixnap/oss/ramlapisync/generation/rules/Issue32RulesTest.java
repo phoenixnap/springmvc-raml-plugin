@@ -5,6 +5,7 @@ import org.junit.Test;
 
 import com.phoenixnap.oss.ramlapisync.data.ApiResourceMetadata;
 import com.phoenixnap.oss.ramlapisync.generation.RamlParser;
+import com.phoenixnap.oss.ramlapisync.raml.InvalidRamlResourceException;
 import com.sun.codemodel.JCodeModel;
 import com.sun.codemodel.JDefinedClass;
 
@@ -17,7 +18,7 @@ public class Issue32RulesTest extends AbstractRuleTestBase {
 	private Rule<JCodeModel, JDefinedClass, ApiResourceMetadata> rule;
 
 	@BeforeClass
-	public static void initRaml() {
+	public static void initRaml() throws InvalidRamlResourceException {
 		AbstractRuleTestBase.RAML = RamlParser.loadRamlFromFile(AbstractRuleTestBase.RESOURCE_BASE + "issue-32.raml");
 	}
 	

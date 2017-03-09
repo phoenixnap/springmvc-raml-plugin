@@ -17,6 +17,7 @@ import java.lang.reflect.Array;
 import java.lang.reflect.Parameter;
 import java.lang.reflect.Type;
 import java.util.List;
+import java.util.Set;
 
 import org.apache.commons.lang.NullArgumentException;
 import org.springframework.util.StringUtils;
@@ -25,8 +26,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import com.phoenixnap.oss.ramlapisync.annotations.Example;
+import com.phoenixnap.oss.ramlapisync.naming.JavaTypeHelper;
 import com.phoenixnap.oss.ramlapisync.naming.SchemaHelper;
-import com.phoenixnap.oss.ramlapisync.naming.TypeHelper;
 import com.phoenixnap.oss.ramlapisync.raml.RamlAbstractParam;
 import com.phoenixnap.oss.ramlapisync.raml.RamlUriParameter;
 
@@ -172,7 +173,7 @@ public class ApiParameterMetadata {
 		this.param = param;
 		if (param != null) {
 			this.type = param.getType();
-			this.genericType = TypeHelper.inferGenericType(param.getParameterizedType());
+			this.genericType = JavaTypeHelper.inferGenericType(param.getParameterizedType());
 		}
 
 		Example parameterExample = param.getAnnotation(Example.class);
@@ -272,13 +273,13 @@ public class ApiParameterMetadata {
 
 	/**
 	 * Quick check to see if this is an array type or not
-	 * @return
+	 * @return true if this is an array/list or false if it's a single object
 	 */
 	public boolean isArray() {
 		if (type == null) {
 			return false;
 		}
-		return type.isArray() || List.class.isAssignableFrom(type);
+		return type.isArray() || List.class.isAssignableFrom(type) || Set.class.isAssignableFrom(type);
 	}
 
 }

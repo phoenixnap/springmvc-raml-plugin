@@ -1,0 +1,47 @@
+#%RAML 0.8
+title: myapi
+baseUri: http://api/
+mediaType: application/json
+schemas:
+  - Person: !include Person.json
+  - PersonArray: |
+      {
+        "$schema": "http://json-schema.org/draft-04/schema",
+        "type" : "array",
+        "items": {
+          "$ref" : "raml/Person.json"
+        }
+      }
+  - Manager: !include sample_unit.json
+  - ManagerArray: !include sample_units.json
+
+/persons:
+  get:
+    displayName: getPersons
+    responses:
+      200:
+        body:
+          application/json:
+            schema: PersonArray
+  post:
+    body:
+      application/json:
+        schema: Person 
+/managers:
+  post:
+    body:
+      application/json:
+        schema: Manager 
+  get:
+    responses:
+      200:
+        body:
+          application/json:
+            schema: ManagerArray
+  /{managerId}:
+    post:
+    /office:
+      get:
+      /{nestedId}:
+        get:
+        post:

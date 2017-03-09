@@ -48,11 +48,15 @@ import com.phoenixnap.oss.ramlapisync.generation.rules.Rule;
 import com.phoenixnap.oss.ramlapisync.generation.rules.Spring4ControllerStubRule;
 import com.phoenixnap.oss.ramlapisync.naming.NamingHelper;
 import com.phoenixnap.oss.ramlapisync.naming.SchemaHelper;
+import com.phoenixnap.oss.ramlapisync.pojo.PojoGenerationConfig;
+import com.phoenixnap.oss.ramlapisync.raml.InvalidRamlResourceException;
 import com.phoenixnap.oss.ramlapisync.raml.RamlRoot;
+import com.phoenixnap.oss.ramlapisync.raml.rjp.raml10v2.RJP10V2RamlRoot;
 import com.sun.codemodel.JCodeModel;
 import com.sun.codemodel.JDefinedClass;
 
 import java.io.FileReader;
+
 import org.apache.maven.model.io.xpp3.MavenXpp3Reader;
 import org.apache.maven.model.Model;
 /**
@@ -156,7 +160,7 @@ public class SpringMvcEndpointGeneratorMojo extends AbstractMojo {
      * Configuration passed to JSONSchema2Pojo for generation of pojos.
      */
     @Parameter(required = false, readonly = true)
-    protected PojoGenerationConfig generationConfig = new PojoGenerationConfig();
+    protected JsonShema2PojoGenerationConfig generationConfig = new JsonShema2PojoGenerationConfig();
 
     /**
      * If set to true, we will generate methods with HttpHeaders as a parameter
@@ -171,7 +175,7 @@ public class SpringMvcEndpointGeneratorMojo extends AbstractMojo {
 
 
     protected void generateEndpoints()
-            throws MojoExecutionException, MojoFailureException, IOException {
+            throws MojoExecutionException, MojoFailureException, IOException, InvalidRamlResourceException {
 
      File pomFile = null;
      if(!pomPath.equals("NA")){
@@ -207,10 +211,26 @@ public class SpringMvcEndpointGeneratorMojo extends AbstractMojo {
 
         // Resolve schema location and add to classpath
         resolvedSchemaLocation = getSchemaLocation();
-
+        
         RamlRoot loadRamlFromFile = RamlParser.loadRamlFromFile(new File(resolvedRamlPath).toURI().toString());
-        RamlParser par = new RamlParser(basePackage, getBasePath(loadRamlFromFile), seperateMethodsByContentType, injectHttpHeadersParameter);
-        Set<ApiResourceMetadata> controllers = par.extractControllers(loadRamlFromFile);
+        
+        JCodeModel codeModel = null;
+        //In the RJP10V2 we have support for a unified code model. RJP08V1 does not work well with this.
+        //TODO update RJP08V1 to support a unified view.
+        boolean unifiedModel = false;
+        if (loadRamlFromFile instanceof RJP10V2RamlRoot) {
+        	codeModel = new JCodeModel();
+        	unifiedModel = true;
+        }
+        
+        //Map the jsconschema2pojo config to ours. This will need to eventually take over
+        PojoGenerationConfig config = new PojoGenerationConfig()
+        		.withPackage(basePackage, null)
+        		.withLongIntegers(generationConfig.isUseLongIntegers())
+        		.withCommonsLang3(generationConfig.isUseCommonsLang3());
+        
+        RamlParser par = new RamlParser(config, getBasePath(loadRamlFromFile), seperateMethodsByContentType, injectHttpHeadersParameter);
+        Set<ApiResourceMetadata> controllers = par.extractControllers(codeModel, loadRamlFromFile);
 
         if (StringUtils.hasText(outputRelativePath)) {
             if (!outputRelativePath.startsWith(File.separator) && !outputRelativePath.startsWith("/")) {
@@ -228,14 +248,18 @@ public class SpringMvcEndpointGeneratorMojo extends AbstractMojo {
             throw new IOException("Could not create directory:" + rootDir.getAbsolutePath());
         }
 
-        generateCode(controllers, rootDir);
-        generateUnreferencedSchemas(resolvedRamlPath, loadRamlFromFile, rootDir);
+        generateCode(codeModel, controllers, rootDir);        
+        generateUnreferencedSchemas(codeModel, resolvedRamlPath, loadRamlFromFile, rootDir);
+        
+    	if (unifiedModel) {
+    		buildCodeModelToDisk(codeModel, "Unified", rootDir);
+    	}
     }
 
 
-    private void generateUnreferencedSchemas(String resolvedRamlPath, RamlRoot loadRamlFromFile, File rootDir) {
-
+    private void generateUnreferencedSchemas(JCodeModel codeModel, String resolvedRamlPath, RamlRoot loadRamlFromFile, File rootDir) {
         if (this.generateUnreferencedSchemas) {
+        	this.getLog().debug("Generating Code for Unreferenced Schemas");
 
             if (loadRamlFromFile.getSchemas() != null && !loadRamlFromFile.getSchemas().isEmpty()) {
                 for (Map<String, String> map : loadRamlFromFile.getSchemas()) {
@@ -243,27 +267,34 @@ public class SpringMvcEndpointGeneratorMojo extends AbstractMojo {
                         this.getLog().info("Generating POJO for unreferenced schema " + schemaName);
                         ApiBodyMetadata tempBodyMetadata = SchemaHelper.mapSchemaToPojo(loadRamlFromFile, schemaName, resolvedRamlPath, schemaName, this.resolvedSchemaLocation);
                         // TODO Check if this already has been written to disk
-                        generateModelSources(tempBodyMetadata, rootDir, this.generationConfig, this.useJackson1xCompatibility == true ? new Jackson1Annotator(this.generationConfig) : null);
+                        generateModelSources(codeModel, tempBodyMetadata, rootDir, this.generationConfig, this.useJackson1xCompatibility == true ? new Jackson1Annotator(this.generationConfig) : null);
                     }
                 }
             }
         }
     }
 
-
-    private void generateCode(Set<ApiResourceMetadata> controllers, File rootDir) {
+	/**
+	 * 
+	 * @param codeModel If not null this will operated assuming a unified code model for all output
+	 * @param controllers
+	 * @param rootDir
+	 */
+    private void generateCode(JCodeModel codeModel, Set<ApiResourceMetadata> controllers, File rootDir) {
         for (ApiResourceMetadata met : controllers) {
             this.getLog().debug("");
             this.getLog().debug("-----------------------------------------------------------");
-            this.getLog().debug(met.getName());
+            this.getLog().info("Generating Code for Resource: " + met.getName());
             this.getLog().debug("");
 
-            Set<ApiBodyMetadata> dependencies = met.getDependencies();
-            for (ApiBodyMetadata body : dependencies) {
-                generateModelSources(body, rootDir, generationConfig, useJackson1xCompatibility == true ? new Jackson1Annotator(generationConfig) : null);
+            if (codeModel == null) {
+	            Set<ApiBodyMetadata> dependencies = met.getDependencies();
+	            for (ApiBodyMetadata body : dependencies) {
+	                generateModelSources(codeModel, body, rootDir, generationConfig, useJackson1xCompatibility == true ? new Jackson1Annotator(generationConfig) : null);
+	            }
             }
 
-            generateControllerSource(met, rootDir);
+            generateControllerSource(codeModel, met, rootDir);
         }
     }
 
@@ -333,22 +364,20 @@ public class SpringMvcEndpointGeneratorMojo extends AbstractMojo {
     }
 
 
-    private void generateModelSources(ApiBodyMetadata body, File rootDir, GenerationConfig config, Annotator annotator) {
-        try {
-            JCodeModel codeModel;
+    private void generateModelSources(JCodeModel codeModel, ApiBodyMetadata body, File rootDir, GenerationConfig config, Annotator annotator) {
+    	boolean build = false;
+    	if (codeModel == null) {
+    		this.getLog().info("Generating Model object for: " + body.getName());
+    		build = true;
             if (config == null && annotator == null) {
                 codeModel = body.getCodeModel();
             }
             else {
                 codeModel = body.getCodeModel(resolvedSchemaLocation, basePackage + NamingHelper.getDefaultModelPackage(), config, annotator);
             }
-            if (codeModel != null) {
-                codeModel.build(rootDir);
-            }
         }
-        catch (IOException e) {
-            e.printStackTrace();
-            this.getLog().error("Could not build code model for " + body.getName(), e);
+        if (build && codeModel != null) {
+        	buildCodeModelToDisk(codeModel, body.getName(), rootDir);
         }
     }
 
@@ -394,17 +423,28 @@ public class SpringMvcEndpointGeneratorMojo extends AbstractMojo {
     }
 
 
-    private void generateControllerSource(ApiResourceMetadata met, File dir) {
-        JCodeModel codeModel = new JCodeModel();
+    private void generateControllerSource(JCodeModel codeModel, ApiResourceMetadata met, File dir) {
+        boolean build = false;
+    	if (codeModel == null) {
+        	codeModel = new JCodeModel();
+        	build = true;
+        }
         loadRule().apply(met, codeModel);
-        try {
+        if (build) {
+        	buildCodeModelToDisk(codeModel, met.getName(), dir);
+        }
+    }
+
+
+	private void buildCodeModelToDisk(JCodeModel codeModel, String name, File dir) {
+		try {
             codeModel.build(dir);
         }
         catch (IOException e) {
             e.printStackTrace();
-            this.getLog().error("Could not build code model for " + met.getName(), e);
+            this.getLog().error("Could not build code model for " + name, e);
         }
-    }
+	}
 
 
     @Override
@@ -414,12 +454,13 @@ public class SpringMvcEndpointGeneratorMojo extends AbstractMojo {
 
         try {
             generateEndpoints();
-        }
-        catch (IOException e) {
-            ClassLoaderUtils.restoreOriginalClassLoader();
+        } catch (IOException e) {
             throw new MojoExecutionException(e, "Unexpected exception while executing Spring MVC Endpoint Generation Plugin.",
                     e.toString());
-        }
+        } catch (InvalidRamlResourceException e) {
+            throw new MojoExecutionException(e, "Supplied RAML has failed validation and cannot be loaded.",
+                     e.toString());
+		}
 
         this.getLog().info("Endpoint Generation Complete in:" + (System.currentTimeMillis() - startTime) + "ms");
     }

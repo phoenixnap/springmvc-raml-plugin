@@ -1,0 +1,10 @@
+{
+   "$schema": "http://json-schema.org/draft-04/schema",
+   "title": "Sample Collection schema",
+   "id": "Samples",
+   "type": "array",
+   "uniqueItems": true,
+   "items": {
+      "$ref": "sample_unit.json"
+   }
+}

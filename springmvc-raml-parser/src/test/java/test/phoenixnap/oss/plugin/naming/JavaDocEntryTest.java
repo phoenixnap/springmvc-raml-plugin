@@ -12,11 +12,11 @@
  */
 package test.phoenixnap.oss.plugin.naming;
 
+import static org.junit.Assert.assertEquals;
+
 import org.junit.Test;
 
 import com.phoenixnap.oss.ramlapisync.javadoc.JavaDocEntry;
-
-import static org.junit.Assert.*;
 
 /**
  * Tests for the JavaDoc Parser

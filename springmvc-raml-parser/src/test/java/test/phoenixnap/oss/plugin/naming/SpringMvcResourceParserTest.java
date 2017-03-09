@@ -12,6 +12,27 @@
  */
 package test.phoenixnap.oss.plugin.naming;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
+
+import java.lang.reflect.Method;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
+import org.junit.BeforeClass;
+import org.junit.Test;
+import org.mockito.Mockito;
+import org.mockito.invocation.InvocationOnMock;
+import org.mockito.stubbing.Answer;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.http.MediaType;
+
 import com.phoenixnap.oss.ramlapisync.data.ApiActionMetadata;
 import com.phoenixnap.oss.ramlapisync.data.ApiResourceMetadata;
 import com.phoenixnap.oss.ramlapisync.data.RamlFormParameter;
@@ -33,15 +54,7 @@ import com.phoenixnap.oss.ramlapisync.raml.RamlResource;
 import com.phoenixnap.oss.ramlapisync.raml.RamlResponse;
 import com.phoenixnap.oss.ramlapisync.raml.RamlRoot;
 import com.phoenixnap.oss.ramlapisync.raml.RamlUriParameter;
-
-import org.junit.BeforeClass;
-import org.junit.Test;
-import org.mockito.Mockito;
-import org.mockito.invocation.InvocationOnMock;
-import org.mockito.stubbing.Answer;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.http.MediaType;
+import com.sun.codemodel.JCodeModel;
 
 import test.phoenixnap.oss.plugin.naming.testclasses.BugController;
 import test.phoenixnap.oss.plugin.naming.testclasses.MultipleContentTypeTestController;
@@ -50,18 +63,6 @@ import test.phoenixnap.oss.plugin.naming.testclasses.ShorthandTestController;
 import test.phoenixnap.oss.plugin.naming.testclasses.TestController;
 import test.phoenixnap.oss.plugin.naming.testclasses.UriPrefixIgnoredController;
 import test.phoenixnap.oss.plugin.naming.testclasses.WrappedResponseBodyTestController;
-
-import java.lang.reflect.Method;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
 
 
 /**
@@ -174,7 +175,7 @@ public class SpringMvcResourceParserTest {
     public void test_seperateContentType__Success() throws Exception {
         RamlRoot published = RamlVerifier.loadRamlFromFile("test-responsebody-multipletype.raml");
         RamlParser par = new RamlParser("com.gen.test", "/api", true, false);
-        Set<ApiResourceMetadata> controllersMetadataSet = par.extractControllers(published);
+        Set<ApiResourceMetadata> controllersMetadataSet = par.extractControllers(new JCodeModel(), published);
 
         assertEquals(1, controllersMetadataSet.size());
         assertEquals(2, controllersMetadataSet.iterator().next().getApiCalls().size());
@@ -186,7 +187,7 @@ public class SpringMvcResourceParserTest {
         
         //lets check that it switches off correctly
         par = new RamlParser("com.gen.test", "/api", false, false);
-        controllersMetadataSet = par.extractControllers(published);
+        controllersMetadataSet = par.extractControllers(new JCodeModel(), published);
         assertEquals(1, controllersMetadataSet.size());
         assertEquals(1, controllersMetadataSet.iterator().next().getApiCalls().size());
         
@@ -231,7 +232,7 @@ public class SpringMvcResourceParserTest {
 	@Test
 	public void test_uriPrefixIgnored() {
 		RamlResource resourceInfo = parser.extractResourceInfo(UriPrefixIgnoredController.class);
-		RamlRoot raml = RamlModelFactoryOfFactories.createRamlModelFactory().createRamlRoot();
+		RamlRoot raml = RamlModelFactoryOfFactories.createRamlModelFactoryV08().createRamlRoot();
 		RamlHelper.mergeResources(raml, resourceInfo, true);
 		RamlHelper.removeResourceTree(raml, UriPrefixIgnoredController.IGNORED);
 

@@ -12,11 +12,11 @@
  */
 package com.phoenixnap.oss.ramlapisync.verification;
 
+import java.util.Set;
+
 import com.phoenixnap.oss.ramlapisync.naming.Pair;
 import com.phoenixnap.oss.ramlapisync.raml.RamlAction;
 import com.phoenixnap.oss.ramlapisync.raml.RamlActionType;
-
-import java.util.Set;
 
 /**
  * A visitor that will be invoked when an action is identified

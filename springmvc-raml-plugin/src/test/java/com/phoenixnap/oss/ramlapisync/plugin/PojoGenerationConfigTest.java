@@ -39,7 +39,7 @@ public class PojoGenerationConfigTest
    @Test
    public void testDefaultConfig() throws Exception {
       final SpringMvcEndpointGeneratorMojo mojo = (SpringMvcEndpointGeneratorMojo)loadMojo(DEFAULT_CONFIG, GOAL_NAME);
-      final PojoGenerationConfig generationConfig = mojo.generationConfig;
+      final JsonShema2PojoGenerationConfig generationConfig = mojo.generationConfig;
       Assert.assertNotNull(generationConfig);
       Assert.assertEquals("1.6", generationConfig.getTargetVersion());
       Assert.assertFalse(generationConfig.isUseBigDecimals());
@@ -88,7 +88,7 @@ public class PojoGenerationConfigTest
    public void testBigDecimalConfig() throws Exception {
       final SpringMvcEndpointGeneratorMojo mojo =
          (SpringMvcEndpointGeneratorMojo) configureMojo("useBigDecimals", Boolean.TRUE.toString());
-      final PojoGenerationConfig pojoGenerationConfig = mojo.generationConfig;
+      final JsonShema2PojoGenerationConfig pojoGenerationConfig = mojo.generationConfig;
       Assert.assertNotNull(pojoGenerationConfig);
       Assert.assertTrue(pojoGenerationConfig.useBigDecimals);
    }
@@ -97,7 +97,7 @@ public class PojoGenerationConfigTest
    public void testLocalDateTimeConfig() throws Exception {
       final SpringMvcEndpointGeneratorMojo mojo =
          (SpringMvcEndpointGeneratorMojo) configureMojo("dateTimeType", LocalDateTime.class.getName());
-      final PojoGenerationConfig pojoGenerationConfig = mojo.generationConfig;
+      final JsonShema2PojoGenerationConfig pojoGenerationConfig = mojo.generationConfig;
       Assert.assertNotNull(pojoGenerationConfig);
       Assert.assertEquals(LocalDateTime.class.getName(), pojoGenerationConfig.getDateTimeType());
    }
