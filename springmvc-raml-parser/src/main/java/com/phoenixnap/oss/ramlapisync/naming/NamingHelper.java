@@ -125,7 +125,7 @@ public class NamingHelper {
 	 * Extracts a list of URI Parameters from a url
 	 * 
 	 * @param url
-	 * @return
+	 * @return A list of the uri parameters in this URL
 	 */
 	public static List<String> extractUriParams(String url) {
 		List<String> outParams = new ArrayList<>();

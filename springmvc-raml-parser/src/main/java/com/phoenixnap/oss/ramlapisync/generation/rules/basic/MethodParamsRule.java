@@ -77,6 +77,7 @@ public class MethodParamsRule implements Rule<CodeModelHelper.JExtMethod, JMetho
 	 * If set to true, the rule will also add a parameter javadoc entry
 	 * 
 	 * @param addParameterJavadoc Set to true for javadocs for parameters
+	 * @param allowArrayParameters If true we will use the component type for array parameters
 	 */
 	public MethodParamsRule (boolean addParameterJavadoc, boolean allowArrayParameters) {
 		this.addParameterJavadoc = addParameterJavadoc;
@@ -119,7 +120,7 @@ public class MethodParamsRule implements Rule<CodeModelHelper.JExtMethod, JMetho
     	if (!allowArrayParameters && paramMetaData.isArray() ) {
     		type = type.getComponentType();
     	} else {
-    		
+    		//TODO should this be blank?
     	}
     	return generatableType.get().param(type, javaName);
     }

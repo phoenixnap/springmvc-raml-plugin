@@ -106,8 +106,8 @@ public class RamlTypeHelper {
 	/**
 	 * Check to determine if this is a RAML 1.0 data type or if an external format such as JSON schema is used
 	 * 
-	 * @param type
-	 * @return
+	 * @param type The RAML TypeDeclaration to check
+	 * @return True if this is an external type (ie schema or other)
 	 */
 	public static boolean isSchemaType(TypeDeclaration type) {
 		if (type != null && type instanceof ExternalTypeDeclaration) {
@@ -119,8 +119,8 @@ public class RamlTypeHelper {
 	/**
 	 * Safely get description from a type with null checks
 	 * 
-	 * @param type
-	 * @return
+	 * @param type The RAML TypeDeclaration to check
+	 * @return The description if defined or null if empty
 	 */
 	public static String getDescription (TypeDeclaration type) {
 		if (type == null || type.description() == null) {
@@ -133,8 +133,8 @@ public class RamlTypeHelper {
 	/**
 	 * Safely get example from a type with null checks
 	 * 
-	 * @param type
-	 * @return
+	 * @param type The RAML TypeDeclaration to check
+	 * @return The example if defined or null if empty
 	 */
 	public static String getExample (TypeDeclaration type) {
 		if (type == null || type.example() == null) {
@@ -145,10 +145,10 @@ public class RamlTypeHelper {
 	}
 	
 	/**
-	 * Safely get example from a type with null checks
+	 * Safely get Display name from a type with null checks
 	 * 
-	 * @param type
-	 * @return
+	 * @param type The RAML TypeDeclaration to check
+	 * @return The display name if defined or null if empty
 	 */
 	public static String getDisplayName (TypeDeclaration type) {
 		if (type == null || type.displayName() == null) {
@@ -161,8 +161,8 @@ public class RamlTypeHelper {
 	/**
 	 * Safely get required from a type with null checks
 	 * 
-	 * @param type
-	 * @return
+	 * @param type The RAML TypeDeclaration to check
+	 * @return true if this parameter is required, false if optional
 	 */
 	public static boolean isRequired (TypeDeclaration type) {
 		if (type == null || type.required() == null) {
@@ -174,8 +174,8 @@ public class RamlTypeHelper {
 
 	/**
 	 * Checks if this type is the base object type "object"
-	 * @param type
-	 * @return
+	 * @param type The RAML TypeDeclaration type to check
+	 * @return true if object
 	 */
 	public static boolean isBaseObject(String type) {
 		return type.equalsIgnoreCase(Object.class.getSimpleName());
@@ -184,8 +184,8 @@ public class RamlTypeHelper {
 	/**
 	 * Creates a default string typedeclaration (experimental)
 	 * 
-	 * @param paramName
-	 * @return
+	 * @param paramName The name of this declaration 
+	 * @return a String RAML 1 TypeDeclaration
 	 */
 	public static StringTypeDeclaration createDefaultStringDeclaration(String paramName) {
     	return new StringTypeDeclaration() {

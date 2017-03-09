@@ -72,6 +72,7 @@ public class PojoBuilder {
 	/**
 	 * Constructor
 	 * 
+	 * @param config The Configuration object which controls generation
 	 * @param pojoPackage The Package used to create POJOs
 	 * @param className Class to be created
 	 */
@@ -83,9 +84,11 @@ public class PojoBuilder {
 	/**
 	 * Constructor allowing chaining of JCodeModels
 	 * 
+	 * @param config The Configuration object which controls generation
 	 * @param pojoModel Existing Codemodel to append to
 	 * @param pojoPackage The Package used to create POJOs
 	 * @param className Class to be created
+	 * 
 	 */
 	public PojoBuilder(PojoGenerationConfig config, JCodeModel pojoModel, String pojoPackage, String className) {
 		this.config = config;
@@ -119,7 +122,7 @@ public class PojoBuilder {
 	 * 
 	 * @param pojoPackage The Package used to create POJO
 	 * @param className Class to be created
-	 * @return
+	 * @return This instance
 	 */
 	public PojoBuilder withName(String pojoPackage, String className) {
 		final String fullyQualifiedClassName = pojoPackage + "." + className;
@@ -264,7 +267,7 @@ public class PojoBuilder {
 	/**
 	 * Adds a constructor with all the fields in the POJO
 	 * 
-	 * @return
+	 * @return This builder instance
 	 */
 	public PojoBuilder withCompleteConstructor() {
 		pojoCreationCheck();

@@ -29,14 +29,21 @@ import com.sun.codemodel.JCodeModel;
  */
 public interface RamlTypeInterpreter {
 	
+	/**
+	 * The supported TypeDeclarations which this Interpreter can process
+	 * 
+	 * @return Set of TypeDeclarations
+	 */
 	Set<Class<? extends TypeDeclaration>> getSupportedTypes();
 	
 	/**
-	 * Interprets
-	 * @param document 
-	 * @param type
-	 * @param sharedModel
-	 * @param config
+	 * Interprets the type declaration and returns a RamlInterpretationResult
+	 * 
+	 * @param document The RAML document being parsed
+	 * @param type The particular node/type being interpreted
+	 * @param builderModel The JCodeModel where code is being stored
+	 * @param config Configuration relating to the generation of code
+	 * @return a {@link RamlInterpretationResult}
 	 */
 	RamlInterpretationResult interpret(RamlRoot document, TypeDeclaration type, JCodeModel builderModel, PojoGenerationConfig config);
 

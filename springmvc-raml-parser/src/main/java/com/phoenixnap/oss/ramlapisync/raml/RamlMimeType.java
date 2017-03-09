@@ -35,7 +35,7 @@ public interface RamlMimeType {
     
     /**
      * The Raml data type associated with this schema
-     * @return
+     * @return The RamlDataType (type:) that this mime encapsulates
      */
     RamlDataType getType();
     

@@ -44,8 +44,10 @@ public abstract class RamlModelFactoryOfFactories {
 
     /**
      * 
-     * @param ramlVersion
-     * @return
+     * Creates a Model factory for a specific version of raml
+     * 
+     * @param ramlVersion The Version of raml for which to create a factory
+     * @return The Factory instance for this version of RAML
      */
     public static RamlModelFactory createRamlModelFactoryFor(RamlVersion ramlVersion) {
         switch(ramlVersion) {
@@ -55,10 +57,27 @@ public abstract class RamlModelFactoryOfFactories {
         }
     }
     
+    /**
+     * 
+     * Creates a Model factory for a specific raml document based on the documents version
+     * 
+     * @param ramlURL The raml file for which to create a factory
+     * @return The Factory instance for this RAML document
+     */
     public static RamlModelFactory createRamlModelFactoryFor(String ramlURL) {
     	return createRamlModelFactoryFor(ramlURL, null);
     }
     
+    
+    /**
+     * 
+     * Creates a Model factory for a specific raml document based on the documents version
+     * if the ramlVersion is specified, the model factory will only be created if the document is compatible with this specified version
+     * 
+     * @param ramlURL The raml file for which to create a factory
+     * @param ramlVersion (nullable) The Version of raml for which to create a factory
+     * @return The Factory instance for this RAML document
+     */
     public static RamlModelFactory createRamlModelFactoryFor(String ramlURL, RamlVersion ramlVersion) {
     	RamlModelResult ramlModelResult = new RamlModelBuilder().buildApi(ramlURL);
     	if (ramlModelResult.hasErrors()) {

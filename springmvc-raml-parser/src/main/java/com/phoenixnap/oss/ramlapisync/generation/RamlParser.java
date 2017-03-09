@@ -203,6 +203,7 @@ public class RamlParser {
 	 * 
 	 * @param ramlFileUrl The path to the file, this can either be a resource on the class path (in which case the classpath: prefix should be omitted) or a file on disk (in which case the file: prefix should be included)
 	 * @return Built Raml model
+	 * @throws InvalidRamlResourceException If the Raml Provided isnt correct for the required parser
 	 */
 	public static RamlRoot loadRamlFromFile(String ramlFileUrl) throws InvalidRamlResourceException {
 		try {
