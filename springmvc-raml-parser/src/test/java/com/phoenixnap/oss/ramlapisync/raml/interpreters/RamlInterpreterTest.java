@@ -23,6 +23,7 @@ import com.phoenixnap.oss.ramlapisync.generation.RamlParser;
 import com.phoenixnap.oss.ramlapisync.generation.rules.Rule;
 import com.phoenixnap.oss.ramlapisync.generation.rules.Spring4ControllerDecoratorRule;
 import com.phoenixnap.oss.ramlapisync.naming.RamlTypeHelper;
+import com.phoenixnap.oss.ramlapisync.pojo.PojoGenerationConfig;
 import com.phoenixnap.oss.ramlapisync.raml.InvalidRamlResourceException;
 import com.phoenixnap.oss.ramlapisync.raml.RamlActionType;
 import com.phoenixnap.oss.ramlapisync.raml.RamlDataType;
@@ -46,6 +47,7 @@ public class RamlInterpreterTest {
     protected Logger logger = Logger.getLogger(this.getClass());
     protected JCodeModel jCodeModel;
 
+    PojoGenerationConfig config = new PojoGenerationConfig().withPackage("com.gen.foo", "");
     protected static RamlParser defaultRamlParser;
 
     @BeforeClass
@@ -76,7 +78,7 @@ public class RamlInterpreterTest {
         
         RamlDataType managersPostType = managers.getAction(RamlActionType.POST).getBody().get("application/json").getType();
         assertThat(managersPostType, is(notNullValue()));        
-        ApiBodyMetadata managersPostRequest = RamlTypeHelper.mapTypeToPojo(jCodeModel, ramlRoot, managersPostType.getType(), "com.gen.foo", "testName");
+        ApiBodyMetadata managersPostRequest = RamlTypeHelper.mapTypeToPojo(config, jCodeModel, ramlRoot, managersPostType.getType(), "testName");
         assertThat(managersPostRequest, is(notNullValue()));        
         assertThat(managersPostRequest.getName(), is("Manager"));      
         assertThat(managersPostRequest.isArray(), is(false)); 
@@ -90,7 +92,7 @@ public class RamlInterpreterTest {
         RamlResource managers = ramlRoot.getResource("/managers");
         RamlDataType managersGetType = managers.getAction(RamlActionType.GET).getResponses().get("200").getBody().get("application/json").getType();
         assertThat(managersGetType, is(notNullValue()));        
-        ApiBodyMetadata managersGetRequest = RamlTypeHelper.mapTypeToPojo(jCodeModel, ramlRoot, managersGetType.getType(), "com.gen.foo", "testName");
+        ApiBodyMetadata managersGetRequest = RamlTypeHelper.mapTypeToPojo(config, jCodeModel, ramlRoot, managersGetType.getType(), "testName");
         assertThat(managersGetRequest, is(notNullValue()));   
         assertThat(managersGetRequest.getName(), is("Manager"));
         assertThat(managersGetRequest.isArray(), is(true)); 
@@ -111,7 +113,7 @@ public class RamlInterpreterTest {
         assertThat(personsGetType, is(notNullValue()));
         assertThat(personListsGetType, is(notNullValue()));  
         
-        ApiBodyMetadata personsGetRequest = RamlTypeHelper.mapTypeToPojo(jCodeModel, ramlRoot, personsGetType.getType(), "com.gen.foo", "testName");
+        ApiBodyMetadata personsGetRequest = RamlTypeHelper.mapTypeToPojo(config, jCodeModel, ramlRoot, personsGetType.getType(), "testName");
         assertThat(personsGetRequest, is(notNullValue()));   
         assertThat(personsGetRequest.getName(), is("Person"));
         assertThat(personsGetRequest.isArray(), is(true)); 
@@ -120,7 +122,7 @@ public class RamlInterpreterTest {
 		checkIntegration(jCodeModel);
         
 		setupModel();
-        ApiBodyMetadata personListsGetRequest = RamlTypeHelper.mapTypeToPojo(jCodeModel, ramlRoot, personListsGetType.getType(), "com.gen.foo", "testName");
+        ApiBodyMetadata personListsGetRequest = RamlTypeHelper.mapTypeToPojo(config, jCodeModel, ramlRoot, personListsGetType.getType(), "testName");
         assertThat(personListsGetRequest, is(notNullValue()));   
         assertThat(personListsGetRequest.getName(), is("Person"));
         assertThat(personListsGetRequest.isArray(), is(true)); 
@@ -134,8 +136,9 @@ public class RamlInterpreterTest {
         assertThat(ramlRoot, is(notNullValue()));
         RamlResource managers = ramlRoot.getResource("/managers");
         RamlDataType managersDeleteType = managers.getAction(RamlActionType.DELETE).getResponses().get("200").getBody().get("application/json").getType();
-        assertThat(managersDeleteType, is(notNullValue()));        
-        ApiBodyMetadata managersDeleteRequest = RamlTypeHelper.mapTypeToPojo(jCodeModel, ramlRoot, managersDeleteType.getType(), "com.gen.foo", "testName");
+        assertThat(managersDeleteType, is(notNullValue()));     
+        
+        ApiBodyMetadata managersDeleteRequest = RamlTypeHelper.mapTypeToPojo(config, jCodeModel, ramlRoot, managersDeleteType.getType(), "testName");
         assertThat(managersDeleteRequest, is(nullValue()));   
     }
        

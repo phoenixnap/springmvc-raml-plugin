@@ -28,7 +28,7 @@ import org.raml.v2.api.model.v10.system.types.AnnotableStringType;
 import org.raml.v2.api.model.v10.system.types.MarkdownString;
 
 import com.phoenixnap.oss.ramlapisync.data.ApiBodyMetadata;
-import com.phoenixnap.oss.ramlapisync.pojo.PojoBuilderFactory;
+import com.phoenixnap.oss.ramlapisync.pojo.RamlInterpreterFactory;
 import com.phoenixnap.oss.ramlapisync.pojo.PojoGenerationConfig;
 import com.phoenixnap.oss.ramlapisync.pojo.RamlInterpretationResult;
 import com.phoenixnap.oss.ramlapisync.raml.RamlRoot;
@@ -57,24 +57,22 @@ public class RamlTypeHelper {
      * Maps a RAML Data Type to a JCodeModel using JSONSchema2Pojo and encapsulates it along with some
      * metadata into an {@link ApiBodyMetadata} object.
      * 
+     * @param config
+     *            Object containing the configuration relating to Pojo Code generation
      * @param pojoCodeModel
      *            The code model containing the classes generated during generation
      * @param document
      *            The Raml document being parsed
      * @param type
      *            The RAML type declaration
-     * @param basePackage
-     *            The base package for the classes we are generating
      * @param name
      *            The suggested name of the class based on the api call and whether it's a
      *            request/response. This will only be used if no suitable alternative is found in
      *            the type
      * @return Object representing this Body
      */
-	public static ApiBodyMetadata mapTypeToPojo(JCodeModel pojoCodeModel, RamlRoot document, TypeDeclaration type, String basePackage, String name) {
-		PojoGenerationConfig config = new PojoGenerationConfig()
-											.withPojoPackage(basePackage);
-		RamlInterpretationResult interpret = PojoBuilderFactory.getInterpreterForType(type).interpret(document, type, pojoCodeModel, config);
+	public static ApiBodyMetadata mapTypeToPojo(PojoGenerationConfig config, JCodeModel pojoCodeModel, RamlRoot document, TypeDeclaration type, String name) {
+		RamlInterpretationResult interpret = RamlInterpreterFactory.getInterpreterForType(type).interpret(document, type, pojoCodeModel, config);
 		
 		//here we expect that a new object is created i guess... we'd need to see how primitive arrays fit in
 		JClass pojo = null;

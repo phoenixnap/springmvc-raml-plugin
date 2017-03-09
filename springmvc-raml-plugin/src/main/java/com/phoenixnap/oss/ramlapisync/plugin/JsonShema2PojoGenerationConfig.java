@@ -15,7 +15,7 @@ package com.phoenixnap.oss.ramlapisync.plugin;
 import org.apache.maven.plugins.annotations.Parameter;
 import org.jsonschema2pojo.DefaultGenerationConfig;
 
-public class PojoGenerationConfig extends DefaultGenerationConfig
+public class JsonShema2PojoGenerationConfig extends DefaultGenerationConfig
 {
    /**
     * We will pass on this configuration to the jsonschema2pojo library for creation of BigDecimals instead of Floats
@@ -124,7 +124,7 @@ public class PojoGenerationConfig extends DefaultGenerationConfig
    @Parameter(required = false, readonly = true)
    protected String timeType;
 
-   public PojoGenerationConfig(){
+   public JsonShema2PojoGenerationConfig(){
    }
 
    @Override

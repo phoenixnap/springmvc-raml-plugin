@@ -48,6 +48,7 @@ import com.phoenixnap.oss.ramlapisync.generation.rules.Rule;
 import com.phoenixnap.oss.ramlapisync.generation.rules.Spring4ControllerStubRule;
 import com.phoenixnap.oss.ramlapisync.naming.NamingHelper;
 import com.phoenixnap.oss.ramlapisync.naming.SchemaHelper;
+import com.phoenixnap.oss.ramlapisync.pojo.PojoGenerationConfig;
 import com.phoenixnap.oss.ramlapisync.raml.InvalidRamlResourceException;
 import com.phoenixnap.oss.ramlapisync.raml.RamlRoot;
 import com.phoenixnap.oss.ramlapisync.raml.rjp.raml10v2.RJP10V2RamlRoot;
@@ -159,7 +160,7 @@ public class SpringMvcEndpointGeneratorMojo extends AbstractMojo {
      * Configuration passed to JSONSchema2Pojo for generation of pojos.
      */
     @Parameter(required = false, readonly = true)
-    protected PojoGenerationConfig generationConfig = new PojoGenerationConfig();
+    protected JsonShema2PojoGenerationConfig generationConfig = new JsonShema2PojoGenerationConfig();
 
     /**
      * If set to true, we will generate methods with HttpHeaders as a parameter
@@ -222,7 +223,13 @@ public class SpringMvcEndpointGeneratorMojo extends AbstractMojo {
         	unifiedModel = true;
         }
         
-        RamlParser par = new RamlParser(basePackage, getBasePath(loadRamlFromFile), seperateMethodsByContentType, injectHttpHeadersParameter);
+        //Map the jsconschema2pojo config to ours. This will need to eventually take over
+        PojoGenerationConfig config = new PojoGenerationConfig()
+        		.withPackage(basePackage, null)
+        		.withLongIntegers(generationConfig.isUseLongIntegers())
+        		.withCommonsLang3(generationConfig.isUseCommonsLang3());
+        
+        RamlParser par = new RamlParser(config, getBasePath(loadRamlFromFile), seperateMethodsByContentType, injectHttpHeadersParameter);
         Set<ApiResourceMetadata> controllers = par.extractControllers(codeModel, loadRamlFromFile);
 
         if (StringUtils.hasText(outputRelativePath)) {

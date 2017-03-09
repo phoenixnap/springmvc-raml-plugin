@@ -26,10 +26,10 @@ import org.slf4j.LoggerFactory;
  * @since 0.10.0
  *
  */
-public class PojoBuilderFactory {
+public class RamlInterpreterFactory {
 
-	protected static final Logger logger = LoggerFactory.getLogger(PojoBuilderFactory.class);
-
+	protected static final Logger logger = LoggerFactory.getLogger(RamlInterpreterFactory.class);
+	
 	static RamlTypeInterpreter DEFAULT_INTERPRETER = new StringTypeInterpreter();
 	static RamlTypeInterpreter[] SUPPORTED_INTERPRETERS = { new ObjectTypeInterpreter(), new BooleanTypeInterpreter(), new NullTypeInterpreter(), new NumberTypeInterpreter(), new ArrayTypeInterpreter(), DEFAULT_INTERPRETER };
 

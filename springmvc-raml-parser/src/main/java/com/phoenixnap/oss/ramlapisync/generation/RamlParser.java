@@ -21,6 +21,7 @@ import org.slf4j.LoggerFactory;
 
 import com.phoenixnap.oss.ramlapisync.data.ApiResourceMetadata;
 import com.phoenixnap.oss.ramlapisync.naming.RamlHelper;
+import com.phoenixnap.oss.ramlapisync.pojo.PojoGenerationConfig;
 import com.phoenixnap.oss.ramlapisync.raml.InvalidRamlResourceException;
 import com.phoenixnap.oss.ramlapisync.raml.RamlAction;
 import com.phoenixnap.oss.ramlapisync.raml.RamlActionType;
@@ -47,9 +48,9 @@ public class RamlParser {
 	protected static final Logger logger = LoggerFactory.getLogger(RamlParser.class);
 
 	/**
-	 * Base java package for generates files
+	 * Base configuration for code generation
 	 */
-	private String basePackage;
+	private PojoGenerationConfig config;
 
 	/**
 	 * The start URL that every controller should be prefixed with
@@ -66,19 +67,23 @@ public class RamlParser {
 	 */
 	protected boolean injectHttpHeadersParameter = false;
 
-	public RamlParser (String basePackage) {
-		this.basePackage = basePackage;
+	public RamlParser (PojoGenerationConfig config) {
+		this.config = config;
 	}
-
-	public RamlParser(String basePackage, String startUrl) {
-		this(basePackage);
-		this.startUrl = startUrl;
+	
+	public RamlParser (String basePackage) {
+		config = new PojoGenerationConfig().withPackage(basePackage, null);
 	}
 	
 	public RamlParser(String basePackage, String startUrl, boolean seperateMethodsByContentType, boolean injectHttpHeadersParameter) {
-		this(basePackage, startUrl);
+		this(new PojoGenerationConfig().withPackage(basePackage, null), startUrl, seperateMethodsByContentType, injectHttpHeadersParameter);
+	}
+	
+	public RamlParser(PojoGenerationConfig config, String startUrl, boolean seperateMethodsByContentType, boolean injectHttpHeadersParameter) {
+		this(config);
 		this.seperateMethodsByContentType = seperateMethodsByContentType;
 		this.injectHttpHeadersParameter = injectHttpHeadersParameter;
+		this.startUrl = startUrl;
 	}
 
 	/**
@@ -163,7 +168,7 @@ public class RamlParser {
 		//append resource URL to url.
 		String url = baseUrl + resource.getRelativeUri();
 		if (controller == null && shouldCreateController(resource)) {
-			controller = new ApiResourceMetadata(bodyCodeModel, url, resource, basePackage, document);
+			controller = new ApiResourceMetadata(config, bodyCodeModel, url, resource, document);
 			controllers.add(controller);
 		}
 		//extract actions for this resource

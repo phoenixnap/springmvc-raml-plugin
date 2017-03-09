@@ -104,13 +104,13 @@ public class ObjectTypeInterpreter extends BaseTypeInterpreter {
 		}
 		
 		if (parent != null && !(parent.name().equals(name))) { //add cyclic dependency check
-			RamlInterpretationResult childResult = PojoBuilderFactory.getInterpreterForType(parent).interpret(document, parent, builderModel, config);
+			RamlInterpretationResult childResult = RamlInterpreterFactory.getInterpreterForType(parent).interpret(document, parent, builderModel, config);
 			String childType = childResult.getResolvedClassOrBuiltOrObject().name();
 			builder.extendsClass(childType);
 		}
 
 		for (TypeDeclaration property : objectType.properties()) {
-			RamlInterpretationResult childResult = PojoBuilderFactory.getInterpreterForType(property).interpret(
+			RamlInterpretationResult childResult = RamlInterpreterFactory.getInterpreterForType(property).interpret(
 					document, property, builderModel, config);
 			String childType = childResult.getResolvedClassOrBuiltOrObject().name();
 			builder.withField(property.name(), childType, RamlTypeHelper.getDescription(property));

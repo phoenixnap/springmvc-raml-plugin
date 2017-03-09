@@ -29,6 +29,7 @@ import com.phoenixnap.oss.ramlapisync.naming.RamlHelper;
 import com.phoenixnap.oss.ramlapisync.naming.RamlTypeHelper;
 import com.phoenixnap.oss.ramlapisync.naming.SchemaHelper;
 import com.phoenixnap.oss.ramlapisync.parser.ResourceParser;
+import com.phoenixnap.oss.ramlapisync.pojo.PojoGenerationConfig;
 import com.phoenixnap.oss.ramlapisync.raml.RamlAction;
 import com.phoenixnap.oss.ramlapisync.raml.RamlActionType;
 import com.phoenixnap.oss.ramlapisync.raml.RamlDataType;
@@ -63,7 +64,7 @@ public class ApiActionMetadata {
 
 	private String responseContentTypeFilter;
 
-	public ApiActionMetadata(ApiResourceMetadata parent, RamlResource resource, RamlActionType actionType, RamlAction action, String responseContentTypeFilter, boolean injectHttpHeadersParameter) {
+	public ApiActionMetadata(PojoGenerationConfig config, ApiResourceMetadata parent, RamlResource resource, RamlActionType actionType, RamlAction action, String responseContentTypeFilter, boolean injectHttpHeadersParameter) {
 		super();
 		this.parent = parent;
 		this.resource = resource;
@@ -71,13 +72,13 @@ public class ApiActionMetadata {
 		this.action = action;
 		this.responseContentTypeFilter = responseContentTypeFilter;
 		this.injectHttpHeadersParameter = injectHttpHeadersParameter;
-		parseRequest(parent.getBodyCodeModel());
-		parseResponse(parent.getBodyCodeModel(), responseContentTypeFilter);
+		parseRequest(config, parent.getBodyCodeModel());
+		parseResponse(config, parent.getBodyCodeModel(), responseContentTypeFilter);
 
 	}
 
-	public ApiActionMetadata(ApiResourceMetadata parent, RamlResource resource, RamlActionType actionType, RamlAction action) {
-		this(parent, resource, actionType, action, null, false);
+	public ApiActionMetadata(PojoGenerationConfig config, ApiResourceMetadata parent, RamlResource resource, RamlActionType actionType, RamlAction action) {
+		this(config, parent, resource, actionType, action, null, false);
 	}
 
 	public String toString() {
@@ -124,7 +125,7 @@ public class ApiActionMetadata {
 	}
 
 
-	private void parseRequest(JCodeModel codeModel) {
+	private void parseRequest(PojoGenerationConfig config, JCodeModel codeModel) {
 		requestParameters = action.getQueryParameters().entrySet().stream()
 				.map(param -> new ApiParameterMetadata(param.getKey(), param.getValue()))
 				.collect(Collectors.toCollection(LinkedHashSet::new));
@@ -133,12 +134,12 @@ public class ApiActionMetadata {
 				.collect(Collectors.toCollection(LinkedHashSet::new));
 		if (action.getBody() != null && !action.getBody().isEmpty()) {
 			for (Entry<String, RamlMimeType> entry : action.getBody().entrySet()) {
-				collectBodyParams(codeModel, entry);
+				collectBodyParams(config, codeModel, entry);
 			}
 		}
 	}
 
-	private void collectBodyParams(JCodeModel codeModel, Entry<String, RamlMimeType> mime) {
+	private void collectBodyParams(PojoGenerationConfig config, JCodeModel codeModel, Entry<String, RamlMimeType> mime) {
 		if (mime.getKey().equals(MediaType.MULTIPART_FORM_DATA_VALUE) && ResourceParser.doesActionTypeSupportMultipartMime(actionType)) {
 			collectRequestParamsForMime(action.getBody().get(MediaType.MULTIPART_FORM_DATA_VALUE));
 		} else if (mime.getKey().equals(MediaType.APPLICATION_FORM_URLENCODED_VALUE) && ResourceParser.doesActionTypeSupportMultipartMime(actionType)) {
@@ -151,12 +152,12 @@ public class ApiActionMetadata {
 			RamlDataType type = mime.getValue().getType();
 			//prefer type if we have it.
 			ApiBodyMetadata requestBody = null;
-			String basePackage = parent.getBasePackage() + NamingHelper.getDefaultModelPackage();
+			
 			String name = StringUtils.capitalize(getName()) + "Request";
 			if (type != null && type.getType() != null) {
-				requestBody = RamlTypeHelper.mapTypeToPojo(codeModel, parent.getDocument(), type.getType(), basePackage, name);
+				requestBody = RamlTypeHelper.mapTypeToPojo(config, codeModel, parent.getDocument(), type.getType(), name);
 			} else if (StringUtils.hasText(schema)) {
-				requestBody = SchemaHelper.mapSchemaToPojo(parent.getDocument(), schema, basePackage, name, null);
+				requestBody = SchemaHelper.mapSchemaToPojo(parent.getDocument(), schema, config.getPojoPackage(), name, null);
 			}
 			if (requestBody != null) {
 				setRequestBody(requestBody, mime.getKey());
@@ -173,7 +174,7 @@ public class ApiActionMetadata {
 		}
 	}
 
-	private void parseResponse(JCodeModel codeModel, String responseContentTypeFilter) {
+	private void parseResponse(PojoGenerationConfig config, JCodeModel codeModel, String responseContentTypeFilter) {
 		RamlResponse response = RamlHelper.getSuccessfulResponse(action);
 
 		if (response != null && response.getBody() != null && !response.getBody().isEmpty()) {
@@ -186,12 +187,11 @@ public class ApiActionMetadata {
 						RamlDataType type = body.getValue().getType();
 						String schema = body.getValue().getSchema();
 						//prefer type if we have it.
-						String basePackage = parent.getBasePackage() + NamingHelper.getDefaultModelPackage();
 						String name = StringUtils.capitalize(getName()) + "Response";
 						if (type != null && type.getType() != null) {
-							responseBody = RamlTypeHelper.mapTypeToPojo(codeModel, parent.getDocument(), type.getType(), basePackage, name);
+							responseBody = RamlTypeHelper.mapTypeToPojo(config, codeModel, parent.getDocument(), type.getType(),  name);
 						} else if (StringUtils.hasText(schema)) {
-							responseBody = SchemaHelper.mapSchemaToPojo(parent.getDocument(), schema, basePackage, name, null);
+							responseBody = SchemaHelper.mapSchemaToPojo(parent.getDocument(), schema, config.getPojoPackage(), name, null);
 						}
 						
 						if (responseBody != null) {

@@ -17,6 +17,7 @@ import java.util.LinkedHashSet;
 import java.util.Set;
 
 import com.phoenixnap.oss.ramlapisync.naming.NamingHelper;
+import com.phoenixnap.oss.ramlapisync.pojo.PojoGenerationConfig;
 import com.phoenixnap.oss.ramlapisync.raml.RamlAction;
 import com.phoenixnap.oss.ramlapisync.raml.RamlActionType;
 import com.phoenixnap.oss.ramlapisync.raml.RamlResource;
@@ -38,25 +39,25 @@ public class ApiResourceMetadata {
 	
 	private String controllerUrl;
 	private transient RamlResource resource;
-	private String basePackage;
 	private RamlRoot document;
 	private boolean singularizeName = true;
 	private JCodeModel bodyCodeModel;
 	
+	private PojoGenerationConfig config;
 	Set<ApiActionMetadata> apiCalls = new LinkedHashSet<>();
 	
-	public ApiResourceMetadata(JCodeModel bodyCodeModel, String controllerUrl, RamlResource resource, String basePackage, RamlRoot document) {
+	public ApiResourceMetadata(PojoGenerationConfig config, JCodeModel bodyCodeModel, String controllerUrl, RamlResource resource, RamlRoot document) {
 		super();
 		this.controllerUrl = controllerUrl;
 		this.resource = resource;
-		this.basePackage = basePackage;
 		this.document = document;
 		this.bodyCodeModel = bodyCodeModel;
+		this.config = config;
 	} 
 	
 	
 	public void addApiCall(RamlResource resource, RamlActionType actionType, RamlAction action, String responseContentType, boolean injectHttpHeadersParameter) {
-		apiCalls.add(new ApiActionMetadata(this, resource, actionType, action, responseContentType, injectHttpHeadersParameter));
+		apiCalls.add(new ApiActionMetadata(config, this, resource, actionType, action, responseContentType, injectHttpHeadersParameter));
 	}
 	
     public Set<ApiActionMetadata> getApiCalls() {
@@ -96,7 +97,7 @@ public class ApiResourceMetadata {
     }
 
 	public String getBasePackage() {
-		return basePackage;
+		return config.getBasePackage();
 	}	
 	
 	public Set<ApiBodyMetadata> getDependencies() {

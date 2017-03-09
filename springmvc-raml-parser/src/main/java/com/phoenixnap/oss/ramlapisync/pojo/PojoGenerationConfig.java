@@ -12,6 +12,7 @@
  */
 package com.phoenixnap.oss.ramlapisync.pojo;
 
+import com.phoenixnap.oss.ramlapisync.naming.NamingHelper;
 
 /**
  * Builder pattern for POJO generation using jCodeModel. Provides basic utility methods including extension and
@@ -23,6 +24,7 @@ package com.phoenixnap.oss.ramlapisync.pojo;
  */
 public class PojoGenerationConfig {
 	
+	private String basePackage;
 	private String pojoPackage;
 	
 	private boolean useLongIntegers = true;
@@ -35,6 +37,9 @@ public class PojoGenerationConfig {
 
 	public String getPojoPackage() {
 		return pojoPackage;
+	}
+	public String getBasePackage() {
+		return basePackage;
 	}
 
 	public boolean isUseLongIntegers() {
@@ -49,8 +54,14 @@ public class PojoGenerationConfig {
 		return useCommonsLang3;
 	}
 	
-	public PojoGenerationConfig withPojoPackage(String pojoPackage) {
-		this.pojoPackage = pojoPackage;
+	public PojoGenerationConfig withPackage(String basePackage, String pojoSubPackage) {
+		this.basePackage = basePackage;
+		if (pojoSubPackage != null) {
+			this.pojoPackage = basePackage + pojoSubPackage;
+		} else {
+			this.pojoPackage = basePackage + NamingHelper.getDefaultModelPackage();
+		}
+		
 		return this;
 	}
 	
