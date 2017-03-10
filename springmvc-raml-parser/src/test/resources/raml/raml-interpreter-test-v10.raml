@@ -25,6 +25,14 @@ types:
     type: object
     properties:
       name: string
+  NestedArrayPerson:
+    type: Person
+    properties:
+      departmentList: Department[]
+  NestedNestedArrayPerson:
+    type: NestedArrayPerson
+    properties:
+      childList: Person[]
 /persons:
   get:
     responses:
@@ -55,3 +63,19 @@ types:
       200:
         body:
           application/json:
+/nestedArrayPersons:
+  get:
+    displayName: getPersons
+    responses:
+      200:
+        body:
+          application/json:
+            type: NestedArrayPerson[]
+/nestedNestedArrayPersons:
+  get:
+    displayName: getNestedPersons
+    responses:
+      200:
+        body:
+          application/json:
+            type: NestedNestedArrayPerson[]

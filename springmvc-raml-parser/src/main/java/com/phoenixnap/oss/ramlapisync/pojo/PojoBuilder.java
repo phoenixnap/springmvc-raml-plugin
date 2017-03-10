@@ -17,8 +17,10 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Random;
+import java.util.Set;
 
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.slf4j.Logger;
@@ -218,6 +220,19 @@ public class PojoBuilder {
 		logger.debug("Adding field: " + name + " to " + this.pojo.name());
 
 		JClass resolvedType = resolveType(type);
+		
+		try {
+			//If this class is a collection (List)- lets add an import
+			if (resolvedType.fullName().startsWith(List.class.getSimpleName() +"<")) {
+				resolvedType = this.pojo.owner().ref(List.class).narrow(resolvedType.getTypeParameters().get(0));
+			}
+			//If this class is a collection (Set) - lets add an import
+			if (resolvedType.fullName().startsWith(Set.class.getSimpleName() +"<")) {
+				resolvedType = this.pojo.owner().ref(Set.class).narrow(resolvedType.getTypeParameters().get(0));
+			}
+		} catch (Exception ex) {
+			//skip import
+		}
 		
 		//lets ignore this if parent contains it and we will use parent's in the constructor
 		if (parentContainsField(this.pojo, name)) {

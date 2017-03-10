@@ -5,7 +5,7 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.containsInAnyOrder;
 import static org.hamcrest.Matchers.instanceOf;
 import static org.hamcrest.Matchers.notNullValue;
-import static org.hamcrest.Matchers.nullValue;
+import static org.hamcrest.Matchers.*;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -42,7 +42,7 @@ public class RamlInterpreterTest {
 
     private static RamlRoot ramlRoot;
     
-    private static boolean VISUALISE_MODEL_TO_CONSOLE = false;
+    private static boolean VISUALISE_MODEL_TO_CONSOLE = true;
     
     protected Logger logger = Logger.getLogger(this.getClass());
     protected JCodeModel jCodeModel;
@@ -84,6 +84,44 @@ public class RamlInterpreterTest {
         assertThat(managersPostRequest.isArray(), is(false)); 
         
 		checkModelWithInheritance(jCodeModel);
+    }
+    
+    @Test
+    public void interpretNestedArrays() {
+        assertThat(ramlRoot, is(notNullValue()));
+        RamlResource nestedArrayPersons = ramlRoot.getResource("/nestedArrayPersons");
+        RamlDataType nestedArrayPersonsGetType = nestedArrayPersons.getAction(RamlActionType.GET).getResponses().get("200").getBody().get("application/json").getType();
+        assertThat(nestedArrayPersonsGetType, is(notNullValue()));        
+        ApiBodyMetadata nestedArrayPersonsGetRequest = RamlTypeHelper.mapTypeToPojo(config, jCodeModel, ramlRoot, nestedArrayPersonsGetType.getType(), "testName");
+        assertThat(nestedArrayPersonsGetRequest, is(notNullValue()));   
+        assertThat(nestedArrayPersonsGetRequest.getName(), is("NestedArrayPerson"));
+        assertThat(nestedArrayPersonsGetRequest.isArray(), is(true)); 
+        String serialiseModel = serialiseModel(jCodeModel);
+        int nestedArrayStartIdx = serialiseModel.indexOf("NestedArrayPerson.java--------");
+        int nestedArrayEndIdx = serialiseModel.indexOf(".java--------", nestedArrayStartIdx+40);
+        int importIdx = serialiseModel.indexOf("import java.util.List;", nestedArrayStartIdx);
+        assertThat(importIdx, is(greaterThan(-1)));
+        assertThat(importIdx, is(lessThan(nestedArrayEndIdx)));        
+		checkIntegration(jCodeModel);
+    }
+    
+    @Test
+    public void interpret2ndLevelNestedArrays() {
+        assertThat(ramlRoot, is(notNullValue()));
+        RamlResource nestedArrayPersons = ramlRoot.getResource("/nestedNestedArrayPersons");
+        RamlDataType nestedArrayPersonsGetType = nestedArrayPersons.getAction(RamlActionType.GET).getResponses().get("200").getBody().get("application/json").getType();
+        assertThat(nestedArrayPersonsGetType, is(notNullValue()));        
+        ApiBodyMetadata nestedArrayPersonsGetRequest = RamlTypeHelper.mapTypeToPojo(config, jCodeModel, ramlRoot, nestedArrayPersonsGetType.getType(), "testName");
+        assertThat(nestedArrayPersonsGetRequest, is(notNullValue()));   
+        assertThat(nestedArrayPersonsGetRequest.getName(), is("NestedNestedArrayPerson"));
+        assertThat(nestedArrayPersonsGetRequest.isArray(), is(true)); 
+        String serialiseModel = serialiseModel(jCodeModel);
+        int nestedArrayStartIdx = serialiseModel.indexOf("NestedNestedArrayPerson.java--------");
+        int nestedArrayEndIdx = serialiseModel.indexOf(".java--------", nestedArrayStartIdx+40);
+        int importIdx = serialiseModel.indexOf("import java.util.List;", nestedArrayStartIdx);
+        assertThat(importIdx, is(greaterThan(-1)));
+        assertThat(importIdx, is(lessThan(nestedArrayEndIdx)));        
+		checkIntegration(jCodeModel);
     }
     
     @Test
@@ -182,14 +220,21 @@ public class RamlInterpreterTest {
 	}
 	
 	private void visualiseModel(JCodeModel codeModel) {
+		System.out.println(serialiseModel(codeModel));
+	}
+	
+	private String serialiseModel(JCodeModel codeModel) {
         ByteArrayOutputStream bos = new ByteArrayOutputStream();
 		try {
 			jCodeModel.build(new SingleStreamCodeWriter(bos));
-			System.out.println(bos.toString());
+			return bos.toString();
 		} catch (IOException e) {
 			//do nothing
 		}
+		return "";
 	}
+	
+	
 
    
 }
