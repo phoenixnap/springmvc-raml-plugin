@@ -41,6 +41,7 @@ import com.sun.codemodel.JInvocation;
 import com.sun.codemodel.JMethod;
 import com.sun.codemodel.JMod;
 import com.sun.codemodel.JPackage;
+import com.sun.codemodel.JPrimitiveType;
 import com.sun.codemodel.JVar;
 
 /**
@@ -162,7 +163,7 @@ public class PojoBuilder {
 		this.pojo._implements(Serializable.class);
 
 		// Add constant serializable id
-		this.pojo.field(JMod.STATIC | JMod.FINAL, Long.class, "serialVersionUID",
+		this.pojo.field(JMod.STATIC | JMod.FINAL, this.pojoModel.LONG, "serialVersionUID",
 				JExpr.lit(new Random(System.currentTimeMillis()).nextLong()));
 	}
 

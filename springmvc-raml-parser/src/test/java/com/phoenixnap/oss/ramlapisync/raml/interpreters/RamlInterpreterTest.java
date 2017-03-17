@@ -12,6 +12,8 @@ import static org.hamcrest.Matchers.nullValue;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 
+import javax.validation.constraints.DecimalMax;
+import javax.validation.constraints.DecimalMin;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
@@ -144,7 +146,9 @@ public class RamlInterpreterTest {
 		checkIfAnnotationHasParameter(validation, Size.class, "length","max");
 		checkIfAnnotationHasParameter(validation, Size.class, "minLength","min");
 		checkIfAnnotationHasParameter(validation, Pattern.class, "pattern","regexp");
-
+		
+		checkIfAnnotationHasParameter(validation, DecimalMin.class, "id","value");
+		checkIfAnnotationHasParameter(validation, DecimalMax.class, "id","value");
     }
     
     private void checkIfAnnotationHasParameter(JDefinedClass classToCheck, Class<?> annotationClass, String field, String param) {

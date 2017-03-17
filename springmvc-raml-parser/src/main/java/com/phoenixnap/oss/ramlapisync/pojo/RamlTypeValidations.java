@@ -1,5 +1,7 @@
 package com.phoenixnap.oss.ramlapisync.pojo;
 
+import javax.validation.constraints.DecimalMax;
+import javax.validation.constraints.DecimalMin;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
@@ -35,6 +37,8 @@ public class RamlTypeValidations {
 	Integer maxLength;
 	Integer minItems;
 	Integer maxItems;
+	Double minimum;
+	Double maximum;
 	String pattern;
 	Boolean required;
 	
@@ -111,9 +115,23 @@ public class RamlTypeValidations {
                 annotation.param("max", getMaxLength());
             }
 		}
-		
+
+        if (minimum != null ) {
+        	JAnnotationUse annotation = field.annotate(DecimalMin.class); 
+            annotation.param("value", minimum);
+        }
+
+        if (maximum != null ) {
+        	 JAnnotationUse annotation = field.annotate(DecimalMax.class);
+            annotation.param("value", maximum);
+        }
 	}
-	
+
+	public RamlTypeValidations withMinMax(Double minimum, Double maximum) {
+		this.minimum = minimum;
+		this.maximum = maximum;
+		return this;
+	}
 	
 
 }

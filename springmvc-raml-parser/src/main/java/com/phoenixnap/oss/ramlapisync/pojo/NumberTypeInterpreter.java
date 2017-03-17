@@ -47,7 +47,8 @@ public class NumberTypeInterpreter extends BaseTypeInterpreter {
 		if (type instanceof NumberTypeDeclaration) {
 			NumberTypeDeclaration numberType = (NumberTypeDeclaration) type;
 			String format = numberType.format();
-			
+			RamlTypeValidations validations = result.getValidations();
+			validations.withMinMax(numberType.minimum(), numberType.maximum());
 			if (!StringUtils.hasText(format)) {
 				//format not supplied. Defaulting to long if it's integer since it's safer
 				if (type instanceof IntegerTypeDeclaration) {
