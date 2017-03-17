@@ -215,7 +215,7 @@ public class PojoBuilder {
 		return false;
 	}
 
-	public PojoBuilder withField(String name, String type, String comment) {
+	public PojoBuilder withField(String name, String type, String comment, RamlTypeValidations validations) {
 		pojoCreationCheck();
 		logger.debug("Adding field: " + name + " to " + this.pojo.name());
 
@@ -241,6 +241,10 @@ public class PojoBuilder {
 
 		// Add private variable
 		JFieldVar field = this.pojo.field(JMod.PRIVATE, resolvedType, toJavaName(name));
+		if (this.config.isGenerateJSR303Annotations() && validations != null) {
+			validations.annotateFieldJSR303(field);
+		}
+		
 		if (StringUtils.hasText(comment)) {
 			field.javadoc().add(comment);
 		}

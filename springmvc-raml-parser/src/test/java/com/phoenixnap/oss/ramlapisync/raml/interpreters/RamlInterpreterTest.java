@@ -3,13 +3,20 @@ package com.phoenixnap.oss.ramlapisync.raml.interpreters;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.containsInAnyOrder;
+import static org.hamcrest.Matchers.greaterThan;
 import static org.hamcrest.Matchers.instanceOf;
+import static org.hamcrest.Matchers.lessThan;
 import static org.hamcrest.Matchers.notNullValue;
-import static org.hamcrest.Matchers.*;
+import static org.hamcrest.Matchers.nullValue;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Pattern;
+import javax.validation.constraints.Size;
+
+import org.apache.commons.lang3.ArrayUtils;
 import org.apache.log4j.Logger;
 import org.junit.After;
 import org.junit.Before;
@@ -30,9 +37,12 @@ import com.phoenixnap.oss.ramlapisync.raml.RamlDataType;
 import com.phoenixnap.oss.ramlapisync.raml.RamlResource;
 import com.phoenixnap.oss.ramlapisync.raml.RamlRoot;
 import com.phoenixnap.oss.ramlapisync.raml.rjp.raml10v2.RJP10V2RamlModelFactory;
+import com.sun.codemodel.JAnnotationUse;
+import com.sun.codemodel.JAnnotationValue;
 import com.sun.codemodel.JClass;
 import com.sun.codemodel.JCodeModel;
 import com.sun.codemodel.JDefinedClass;
+import com.sun.codemodel.JFieldVar;
 import com.sun.codemodel.writer.SingleStreamCodeWriter;
 
 /**
@@ -84,6 +94,92 @@ public class RamlInterpreterTest {
         assertThat(managersPostRequest.isArray(), is(false)); 
         
 		checkModelWithInheritance(jCodeModel);
+    }
+    
+    @Test
+    public void checkJSR303_RequiredDefaultsToTrue() {
+    	PojoGenerationConfig jsr303Config = new PojoGenerationConfig().withPackage("com.gen.foo", "").withJSR303Annotations(true);
+        assertThat(ramlRoot, is(notNullValue()));
+        RamlResource managers = ramlRoot.getResource("/managers");
+        
+        RamlDataType managersPostType = managers.getAction(RamlActionType.POST).getBody().get("application/json").getType();
+        assertThat(managersPostType, is(notNullValue()));        
+        ApiBodyMetadata managersPostRequest = RamlTypeHelper.mapTypeToPojo(jsr303Config, jCodeModel, ramlRoot, managersPostType.getType(), "testName");
+        assertThat(managersPostRequest, is(notNullValue()));        
+        assertThat(managersPostRequest.getName(), is("Manager"));      
+        assertThat(managersPostRequest.isArray(), is(false)); 
+        
+		checkModelWithInheritance(jCodeModel); //ensure that things are still generated well
+		JDefinedClass person = (JDefinedClass) CodeModelHelper.findFirstClassBySimpleName(jCodeModel, "Person");
+		JDefinedClass manager = (JDefinedClass) CodeModelHelper.findFirstClassBySimpleName(jCodeModel, "Manager");
+		JDefinedClass department = (JDefinedClass) CodeModelHelper.findFirstClassBySimpleName(jCodeModel, "Department");
+		
+		checkIfFieldContainsAnnotation(true, manager, NotNull.class);
+		checkIfFieldContainsAnnotation(true, person, NotNull.class);
+		checkIfFieldContainsAnnotation(true, department, NotNull.class);
+		
+    }
+    
+    @Test
+    public void checkJSR303() {
+    	PojoGenerationConfig jsr303Config = new PojoGenerationConfig().withPackage("com.gen.foo", "").withJSR303Annotations(true);
+        assertThat(ramlRoot, is(notNullValue()));
+        RamlResource validations = ramlRoot.getResource("/validations");
+        
+        RamlDataType validationsGetType = validations.getAction(RamlActionType.GET).getResponses().get("200").getBody().get("application/json").getType();
+        assertThat(validationsGetType, is(notNullValue()));        
+        ApiBodyMetadata validationsGetRequest = RamlTypeHelper.mapTypeToPojo(jsr303Config, jCodeModel, ramlRoot, validationsGetType.getType(), "testName");
+        assertThat(validationsGetRequest, is(notNullValue()));        
+        assertThat(validationsGetRequest.getName(), is("Validation"));      
+        assertThat(validationsGetRequest.isArray(), is(false)); 
+        
+		JDefinedClass validation = (JDefinedClass) CodeModelHelper.findFirstClassBySimpleName(jCodeModel, "Validation");
+		
+		checkIfFieldContainsAnnotation(true, validation, NotNull.class, "lastname", "pattern", "length", "id");
+		checkIfFieldContainsAnnotation(false, validation, NotNull.class, "firstname", "minLength");
+		checkIfFieldContainsAnnotation(true, validation, Size.class, "length", "minLength");
+		checkIfFieldContainsAnnotation(true, validation, Pattern.class, "pattern");
+		
+		checkIfAnnotationHasParameter(validation, Size.class, "length","min");
+		checkIfAnnotationHasParameter(validation, Size.class, "length","max");
+		checkIfAnnotationHasParameter(validation, Size.class, "minLength","min");
+		checkIfAnnotationHasParameter(validation, Pattern.class, "pattern","regexp");
+
+    }
+    
+    private void checkIfAnnotationHasParameter(JDefinedClass classToCheck, Class<?> annotationClass, String field, String param) {
+    	JAnnotationUse annotation = getAnnotationForField(classToCheck, annotationClass, field);
+		assertThat(annotation, is(notNullValue()));  
+		JAnnotationValue annotationParam = annotation.getAnnotationMembers().get(param);
+		assertThat(annotationParam, is(notNullValue())); 
+    }
+    
+    private void checkIfFieldContainsAnnotation(boolean expected, JDefinedClass classToCheck, Class<?> annotationClass, String... fields) {
+    	for (JFieldVar field : classToCheck.fields().values()) {
+    		if( (fields == null || fields.length == 0 || ArrayUtils.contains(fields, field.name())) 
+    				&& !field.name().equals("serialVersionUID")) {
+				boolean found = false;
+				for(JAnnotationUse annotation : field.annotations()) {
+					if (annotation.getAnnotationClass().name().equals(annotationClass.getSimpleName())) {
+						found = true;
+					}
+				}
+				assertThat(found, is(expected));
+    		}
+		}
+    }
+    
+    private JAnnotationUse getAnnotationForField(JDefinedClass classToCheck, Class<?> annotationClass, String field) {
+    	for (JFieldVar fieldVar : classToCheck.fields().values()) {
+    		if( fieldVar.name().equals(field)) {
+				for(JAnnotationUse annotation : fieldVar.annotations()) {
+					if (annotation.getAnnotationClass().name().equals(annotationClass.getSimpleName())) {
+						return annotation;
+					}
+				}
+    		}
+		}
+    	return null;
     }
     
     @Test

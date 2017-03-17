@@ -227,7 +227,8 @@ public class SpringMvcEndpointGeneratorMojo extends AbstractMojo {
         PojoGenerationConfig config = new PojoGenerationConfig()
         		.withPackage(basePackage, null)
         		.withLongIntegers(generationConfig.isUseLongIntegers())
-        		.withCommonsLang3(generationConfig.isUseCommonsLang3());
+        		.withCommonsLang3(generationConfig.isUseCommonsLang3())
+        		.withJSR303Annotations(generationConfig.isIncludeJsr303Annotations());
         
         RamlParser par = new RamlParser(config, getBasePath(loadRamlFromFile), seperateMethodsByContentType, injectHttpHeadersParameter);
         Set<ApiResourceMetadata> controllers = par.extractControllers(codeModel, loadRamlFromFile);

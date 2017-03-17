@@ -39,11 +39,16 @@ public class StringTypeInterpreter extends BaseTypeInterpreter {
 
 	@Override
 	public RamlInterpretationResult interpret(RamlRoot document, TypeDeclaration type, JCodeModel builderModel, PojoGenerationConfig config) {
-		RamlInterpretationResult result = new RamlInterpretationResult();
+		RamlInterpretationResult result = new RamlInterpretationResult(type.required());
 		
 		if (type instanceof StringTypeDeclaration) {
 			StringTypeDeclaration stringType = (StringTypeDeclaration) type;
 			//do stringy stuff - enums and stuff.
+			RamlTypeValidations validations = result.getValidations();
+			validations.withPattern(stringType.pattern());
+			validations.withLenghts(stringType.minLength(), stringType.maxLength());
+			
+			//TODO Create and handle Enums here
 		}
 		
 		result.setResolvedClass(CodeModelHelper.findFirstClassBySimpleName(builderModel, "java.lang.String"));

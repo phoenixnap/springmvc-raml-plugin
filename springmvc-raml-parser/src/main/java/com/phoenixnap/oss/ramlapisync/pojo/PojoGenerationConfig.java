@@ -29,6 +29,8 @@ public class PojoGenerationConfig {
 	
 	private boolean useLongIntegers = true;
 	
+	private boolean generateJSR303Annotations = false;
+	
 	private boolean generateHashcodeEqualsToString = true;
 	
 	private boolean useCommonsLang3 = false;
@@ -54,6 +56,10 @@ public class PojoGenerationConfig {
 		return useCommonsLang3;
 	}
 	
+	public boolean isGenerateJSR303Annotations() {
+		return generateJSR303Annotations;
+	}
+	
 	public PojoGenerationConfig withPackage(String basePackage, String pojoSubPackage) {
 		this.basePackage = basePackage;
 		if (pojoSubPackage != null) {
@@ -77,6 +83,11 @@ public class PojoGenerationConfig {
 	
 	public PojoGenerationConfig withHashcodeEqualsToString(boolean generateHashcodeEqualsToString) {
 		this.generateHashcodeEqualsToString = generateHashcodeEqualsToString;
+		return this;
+	}
+	
+	public PojoGenerationConfig withJSR303Annotations(boolean generateJSR303Annotations) {
+		this.generateJSR303Annotations = generateJSR303Annotations;
 		return this;
 	}
 	

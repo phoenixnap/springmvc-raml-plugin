@@ -30,6 +30,11 @@ public class RamlInterpretationResult {
 	private PojoBuilder builder;
 	
 	/**
+	 * The object containing any validation information extracted for this node
+	 */
+	private RamlTypeValidations validations;
+	
+	/**
 	 * The Code model used to store generated code
 	 * 
 	 */
@@ -39,6 +44,14 @@ public class RamlInterpretationResult {
 	 * The class linked to in cases where generation was completed previously
 	 */
 	private JClass resolvedClass;
+	
+	public RamlInterpretationResult() {
+		this(true); //by default everything in raml is required unless specified otherwise
+	}
+	
+	public RamlInterpretationResult(Boolean required) {
+		validations = new RamlTypeValidations(required);
+	}
 	
 	public PojoBuilder getBuilder() {
 		return builder;
@@ -67,6 +80,13 @@ public class RamlInterpretationResult {
 		} else {
 			return codeModel.ref(Object.class);
 		}
+	}
+	
+	public RamlTypeValidations getValidations() {
+		return validations;
+	}
+	public void setValidations(RamlTypeValidations validations) {
+		this.validations = validations;
 	}
 
 }

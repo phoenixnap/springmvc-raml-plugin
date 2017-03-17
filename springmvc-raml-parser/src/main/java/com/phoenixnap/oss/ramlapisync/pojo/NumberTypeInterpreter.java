@@ -41,7 +41,7 @@ public class NumberTypeInterpreter extends BaseTypeInterpreter {
 
 	@Override
 	public RamlInterpretationResult interpret(RamlRoot document, TypeDeclaration type, JCodeModel builderModel, PojoGenerationConfig config) {
-		RamlInterpretationResult result = new RamlInterpretationResult();
+		RamlInterpretationResult result = new RamlInterpretationResult(type.required());
 		String resolvedType = String.class.getSimpleName();
 		typeCheck(type);
 		if (type instanceof NumberTypeDeclaration) {

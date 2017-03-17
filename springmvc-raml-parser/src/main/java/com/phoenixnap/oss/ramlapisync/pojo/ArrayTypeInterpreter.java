@@ -41,11 +41,14 @@ public class ArrayTypeInterpreter extends BaseTypeInterpreter {
 
 	@Override
 	public RamlInterpretationResult interpret(RamlRoot document, TypeDeclaration type, JCodeModel builderModel, PojoGenerationConfig config) {
-		RamlInterpretationResult result = new RamlInterpretationResult();
+		RamlInterpretationResult result = new RamlInterpretationResult(type.required());
 		
 		typeCheck(type);		
 		if (type instanceof ArrayTypeDeclaration) {
 			ArrayTypeDeclaration arrayType = (ArrayTypeDeclaration) type;
+			
+			RamlTypeValidations validations = result.getValidations();
+			validations.withItems(arrayType.minItems(), arrayType.maxItems());
 			
 			//Lets check if we've already handled this class before.
 			if (builderModel != null) {

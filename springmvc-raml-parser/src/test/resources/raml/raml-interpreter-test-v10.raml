@@ -3,6 +3,28 @@ title: myapi
 baseUri: api
 mediaType: application/json
 types:
+  Validation:
+    type: object
+    properties:
+      firstname:
+        type: string
+        required: false
+      lastname: string
+      pattern:
+        type: string
+        pattern: "[0-9|-]+"
+      length:
+        type: string
+        minLength: 1
+        maxLength: 3
+        required: true
+      minLength:
+        type: string
+        required: false
+        minLength: 5
+      id: 
+        type: number
+        format: int64 
   Person:
     type: object
     properties:
@@ -33,6 +55,13 @@ types:
     type: NestedArrayPerson
     properties:
       childList: Person[]
+/validations:
+  get:
+    responses:
+      200:
+        body:
+          application/json:
+            type: Validation
 /persons:
   get:
     responses:

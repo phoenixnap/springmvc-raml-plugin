@@ -49,7 +49,7 @@ public class ObjectTypeInterpreter extends BaseTypeInterpreter {
 	@Override
 	public RamlInterpretationResult interpret(RamlRoot document, TypeDeclaration type, JCodeModel builderModel,
 			PojoGenerationConfig config) {
-		RamlInterpretationResult result = new RamlInterpretationResult();
+		RamlInterpretationResult result = new RamlInterpretationResult(type.required());
 		typeCheck(type);
 
 		ObjectTypeDeclaration objectType = (ObjectTypeDeclaration) type;
@@ -113,7 +113,8 @@ public class ObjectTypeInterpreter extends BaseTypeInterpreter {
 			RamlInterpretationResult childResult = RamlInterpreterFactory.getInterpreterForType(property).interpret(
 					document, property, builderModel, config);
 			String childType = childResult.getResolvedClassOrBuiltOrObject().name();
-			builder.withField(property.name(), childType, RamlTypeHelper.getDescription(property));
+			builder.withField(property.name(), childType, RamlTypeHelper.getDescription(property), childResult.getValidations());
+			
 		}
 
 		// Add a constructor with all fields
