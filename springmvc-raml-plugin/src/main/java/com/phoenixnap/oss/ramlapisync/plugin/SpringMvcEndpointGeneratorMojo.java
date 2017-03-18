@@ -161,6 +161,8 @@ public class SpringMvcEndpointGeneratorMojo extends AbstractMojo {
      */
     @Parameter(required = false, readonly = true)
     protected JsonShema2PojoGenerationConfig generationConfig = new JsonShema2PojoGenerationConfig();
+    
+    protected PojoGenerationConfig typeGenerationConfig = mapGenerationConfigMapping();
 
     /**
      * If set to true, we will generate methods with HttpHeaders as a parameter
@@ -223,14 +225,10 @@ public class SpringMvcEndpointGeneratorMojo extends AbstractMojo {
         	unifiedModel = true;
         }
         
-        //Map the jsconschema2pojo config to ours. This will need to eventually take over
-        PojoGenerationConfig config = new PojoGenerationConfig()
-        		.withPackage(basePackage, null)
-        		.withLongIntegers(generationConfig.isUseLongIntegers())
-        		.withCommonsLang3(generationConfig.isUseCommonsLang3())
-        		.withJSR303Annotations(generationConfig.isIncludeJsr303Annotations());
+        //Map the jsconschema2pojo config to ours. This will need to eventually take over. update just in case previous one was set before jsonconfig was set
+        typeGenerationConfig = mapGenerationConfigMapping();
         
-        RamlParser par = new RamlParser(config, getBasePath(loadRamlFromFile), seperateMethodsByContentType, injectHttpHeadersParameter);
+        RamlParser par = new RamlParser(typeGenerationConfig, getBasePath(loadRamlFromFile), seperateMethodsByContentType, injectHttpHeadersParameter);
         Set<ApiResourceMetadata> controllers = par.extractControllers(codeModel, loadRamlFromFile);
 
         if (StringUtils.hasText(outputRelativePath)) {
@@ -464,6 +462,20 @@ public class SpringMvcEndpointGeneratorMojo extends AbstractMojo {
 		}
 
         this.getLog().info("Endpoint Generation Complete in:" + (System.currentTimeMillis() - startTime) + "ms");
+    }
+    
+    protected PojoGenerationConfig mapGenerationConfigMapping() {
+    	PojoGenerationConfig config = new PojoGenerationConfig()
+    										.withPackage(basePackage, null);
+    	
+    	if (generationConfig != null) {
+    		config
+    		.withLongIntegers(generationConfig.isUseLongIntegers())
+    		.withCommonsLang3(generationConfig.isUseCommonsLang3())
+    		.withJSR303Annotations(generationConfig.isIncludeJsr303Annotations())
+    		.withHashcodeEqualsToString((generationConfig.isIncludeHashcodeAndEquals() && generationConfig.isIncludeToString()));
+    	}
+		return config;
     }
 
 }

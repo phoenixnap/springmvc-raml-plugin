@@ -28,6 +28,8 @@ import org.junit.Assert;
 import org.junit.Rule;
 import org.junit.Test;
 
+import com.phoenixnap.oss.ramlapisync.pojo.PojoGenerationConfig;
+
 public class PojoGenerationConfigTest
 {
    private static final String GOAL_NAME = "generate-springmvc-endpoints";
@@ -56,6 +58,31 @@ public class PojoGenerationConfigTest
       Assert.assertTrue(generationConfig.isIncludeHashcodeAndEquals());
       Assert.assertTrue(generationConfig.isIncludeToString());
       Assert.assertTrue(generationConfig.isInitializeCollections());
+      
+      final PojoGenerationConfig typeGenerationConfig = mojo.typeGenerationConfig;
+      Assert.assertTrue(typeGenerationConfig.isGenerateHashcodeEqualsToString());
+      Assert.assertFalse(typeGenerationConfig.isGenerateJSR303Annotations());
+      Assert.assertFalse(typeGenerationConfig.isUseCommonsLang3());
+      Assert.assertFalse(typeGenerationConfig.isUseLongIntegers());
+      mojo.execute();
+   }
+   
+   @Test
+   public void testGenerationConfigMapping() throws Exception {
+      final SpringMvcEndpointGeneratorMojo mojo = (SpringMvcEndpointGeneratorMojo)loadMojo(DEFAULT_CONFIG, GOAL_NAME);
+      final JsonShema2PojoGenerationConfig generationConfig = mojo.generationConfig;
+      Assert.assertNotNull(generationConfig);
+      generationConfig.includeToString = false;
+      generationConfig.includeHashcodeAndEquals = false;
+      generationConfig.includeJsr303Annotations = true;
+      generationConfig.useLongIntegers = true;
+      generationConfig.useCommonsLang3 = true;
+      //re-sync configs
+      final PojoGenerationConfig typeGenerationConfig = mojo.mapGenerationConfigMapping();;
+      Assert.assertFalse(typeGenerationConfig.isGenerateHashcodeEqualsToString());
+      Assert.assertTrue(typeGenerationConfig.isGenerateJSR303Annotations());
+      Assert.assertTrue(typeGenerationConfig.isUseCommonsLang3());
+      Assert.assertTrue(typeGenerationConfig.isUseLongIntegers());
       mojo.execute();
    }
 
