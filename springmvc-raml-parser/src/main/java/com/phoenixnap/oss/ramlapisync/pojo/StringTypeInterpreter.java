@@ -48,10 +48,24 @@ public class StringTypeInterpreter extends BaseTypeInterpreter {
 			validations.withPattern(stringType.pattern());
 			validations.withLenghts(stringType.minLength(), stringType.maxLength());
 			
-			//TODO Create and handle Enums here
+			//Create and handle Enums here
+			if(stringType.enumValues() != null && !stringType.enumValues().isEmpty()) {
+				//We have an enum. we need to create it and set it
+				String enumName = stringType.type();
+				if (stringType.type().equals("string")) {
+					enumName = stringType.name();
+				}
+				EnumBuilder builder = new EnumBuilder(config, builderModel, enumName);
+				builder.withEnums(stringType.enumValues());
+				result.setBuilder(builder); 
+				result.setCodeModel(builderModel);
+			} 
+			
+		}
+		if (result.getBuilder() == null) {
+			result.setResolvedClass(CodeModelHelper.findFirstClassBySimpleName(builderModel, "java.lang.String"));
 		}
 		
-		result.setResolvedClass(CodeModelHelper.findFirstClassBySimpleName(builderModel, "java.lang.String"));
 		return result;
 	}
 

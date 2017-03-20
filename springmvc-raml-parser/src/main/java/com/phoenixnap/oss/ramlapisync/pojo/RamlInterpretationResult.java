@@ -27,7 +27,7 @@ public class RamlInterpretationResult {
 	/**
 	 * The Object responsible for any generated POJOs following this interpretation
 	 */
-	private PojoBuilder builder;
+	private AbstractBuilder builder;
 	
 	/**
 	 * The object containing any validation information extracted for this node
@@ -53,10 +53,10 @@ public class RamlInterpretationResult {
 		validations = new RamlTypeValidations(required);
 	}
 	
-	public PojoBuilder getBuilder() {
+	public AbstractBuilder getBuilder() {
 		return builder;
 	}
-	public void setBuilder(PojoBuilder builder) {
+	public void setBuilder(AbstractBuilder builder) {
 		this.builder = builder;
 	}
 	public JCodeModel getCodeModel() {

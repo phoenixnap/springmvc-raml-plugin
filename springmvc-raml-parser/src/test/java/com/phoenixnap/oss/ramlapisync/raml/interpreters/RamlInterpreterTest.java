@@ -137,7 +137,7 @@ public class RamlInterpreterTest {
         
 		JDefinedClass validation = (JDefinedClass) CodeModelHelper.findFirstClassBySimpleName(jCodeModel, "Validation");
 		
-		checkIfFieldContainsAnnotation(true, validation, NotNull.class, "lastname", "pattern", "length", "id");
+		checkIfFieldContainsAnnotation(true, validation, NotNull.class, "lastname", "pattern", "length", "id", "anEnum", "anotherEnum");
 		checkIfFieldContainsAnnotation(false, validation, NotNull.class, "firstname", "minLength");
 		checkIfFieldContainsAnnotation(true, validation, Size.class, "length", "minLength");
 		checkIfFieldContainsAnnotation(true, validation, Pattern.class, "pattern");
@@ -149,6 +149,13 @@ public class RamlInterpreterTest {
 		
 		checkIfAnnotationHasParameter(validation, DecimalMin.class, "id","value");
 		checkIfAnnotationHasParameter(validation, DecimalMax.class, "id","value");
+		
+		JFieldVar anEnum = getField(validation, "anEnum");
+		assertThat(anEnum.type().fullName(), is("com.gen.foo.AnEnum"));
+		
+		JFieldVar anotherEnum = getField(validation, "anotherEnum");
+		assertThat(anotherEnum.type().fullName(), is("com.gen.foo.EnumChecks"));
+		
     }
     
     private void checkIfAnnotationHasParameter(JDefinedClass classToCheck, Class<?> annotationClass, String field, String param) {
@@ -156,6 +163,15 @@ public class RamlInterpreterTest {
 		assertThat(annotation, is(notNullValue()));  
 		JAnnotationValue annotationParam = annotation.getAnnotationMembers().get(param);
 		assertThat(annotationParam, is(notNullValue())); 
+    }
+    
+    private JFieldVar getField(JDefinedClass classToCheck, String fieldToFind) {
+    	for (JFieldVar field : classToCheck.fields().values()) {
+    		if( fieldToFind.equals(field.name())) { 
+				return field;
+    		}
+		}
+    	return null;
     }
     
     private void checkIfFieldContainsAnnotation(boolean expected, JDefinedClass classToCheck, Class<?> annotationClass, String... fields) {

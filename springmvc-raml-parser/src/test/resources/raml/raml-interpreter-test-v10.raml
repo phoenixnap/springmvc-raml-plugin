@@ -3,6 +3,9 @@ title: myapi
 baseUri: api
 mediaType: application/json
 types:
+  EnumChecks:
+    type: string
+    enum: [one, two, three]
   Validation:
     type: object
     properties:
@@ -27,6 +30,11 @@ types:
         format: int64 
         minimum: 1
         maximum: 42.3
+      anEnum:
+        type: string
+        enum: [blue, red, green]
+      anotherEnum:
+        type: EnumChecks
   Person:
     type: object
     properties:
