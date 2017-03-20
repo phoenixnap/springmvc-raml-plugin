@@ -96,6 +96,16 @@ public class JsonSchema2PojoTest {
     }
 	
 	@Test
+    public void schemaHelper_ExtractsArray_Issue134() throws Exception {
+		URL url = Resources.getResource(path + "accounts.schema");
+		String text = Resources.toString(url, Charsets.UTF_8);
+        ApiBodyMetadata mapSchemaToPojo = SchemaHelper.mapSchemaToPojo(null, text, "com.test", "Fallback", null);
+        assertThat(mapSchemaToPojo.isArray(), is(true));
+        assertNotNull(mapSchemaToPojo);
+        
+    }
+	
+	@Test
     public void schemaHelper_ExtractsPojo_NestedUsingClasspath() throws Exception {
 		URL url = Resources.getResource(path + "A.json");
 		String text = Resources.toString(url, Charsets.UTF_8);

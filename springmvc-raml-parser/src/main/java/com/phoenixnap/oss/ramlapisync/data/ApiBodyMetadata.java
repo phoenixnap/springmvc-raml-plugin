@@ -48,13 +48,42 @@ public class ApiBodyMetadata {
 		// array detection. i think we can default this to false since we should already be generating lists from the type. nope we need it within rules for narrowing to List
 	}
 	
+	private int nestingCounter(String target, int index) {
+		int nestedLevels = 0;
+		
+		for (int i = 0; i < index; i++) {
+			if (target.charAt(i) == '{') {
+				nestedLevels++;
+			}
+			if (target.charAt(i) == '}') {
+				nestedLevels--;
+			}
+		}
+		
+		return nestedLevels;
+	}
+	
 	public ApiBodyMetadata (String name, String schema, JCodeModel codeModel) {
 		super();
 		this.schema = schema;
 		this.name = name;
 		this.codeModel = codeModel;
 		
+		boolean typeFound = false;
+		
 		int typeIdx = schema.indexOf("type");
+		
+		while (!typeFound) {
+			if (typeIdx == -1) {
+				typeFound = true;
+				break;
+			}
+			if (nestingCounter(schema, typeIdx) == 1) {
+				typeFound = true;
+			} else {
+				typeIdx = schema.indexOf("type", typeIdx+1);
+			}
+		}
 		
 		if (typeIdx != -1) {
 			int quoteIdx = schema.indexOf("\"", typeIdx + 6);

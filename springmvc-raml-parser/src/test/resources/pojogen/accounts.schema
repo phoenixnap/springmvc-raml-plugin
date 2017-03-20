@@ -1,0 +1,48 @@
+{
+	"$schema": "http://json-schema.org/draft-04/schema",	
+	"id": "accounts",
+	"definitions": {
+		"moneyAmount": {
+			"type": "object",
+			"properties": {
+				"amount": {
+					"type": "number"
+				},
+
+				"currency": {
+					"type": "string"
+				}
+			}
+		}
+	},
+	"type": "array",
+	"items": {
+		"type": "object",
+		"properties": {
+			"label": {
+				"type": "string"
+			},
+
+			"type": {
+				"type": "string",
+				"enum": ["checkings", "savings"]
+			},
+
+			"owners": {
+				"type": "array",
+				"items": {
+					"type": "string"
+				}
+			},
+
+			"iban": {
+				"type": "string",
+				"pattern": "[a-zA-Z]{2}[0-9]{2}[a-zA-Z0-9]{4}[0-9]{7}([a-zA-Z0-9]?){0,16}"
+			},
+
+			"moneyAmount": {
+				"$ref": "#/definitions/moneyAmount"
+			}
+		}					
+	}
+}
