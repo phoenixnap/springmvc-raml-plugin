@@ -11,6 +11,7 @@ import static org.hamcrest.Matchers.nullValue;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.util.Set;
 
 import javax.validation.constraints.DecimalMax;
 import javax.validation.constraints.DecimalMin;
@@ -299,8 +300,10 @@ public class RamlInterpreterTest {
     private void checkIntegration(JCodeModel codeModel) {
     	RamlParser defaultRamlParser = new RamlParser("com.gen.test", "/api", false, false);
     	Rule<JCodeModel, JDefinedClass, ApiResourceMetadata> rule = new Spring4ControllerDecoratorRule();
-    	
-        rule.apply(defaultRamlParser.extractControllers(codeModel, ramlRoot).iterator().next(), codeModel);
+    	Set<ApiResourceMetadata> extractControllers = defaultRamlParser.extractControllers(codeModel, ramlRoot);
+    	for (ApiResourceMetadata controller : extractControllers) {
+    		rule.apply(controller, codeModel);
+    	}
        
     }
     

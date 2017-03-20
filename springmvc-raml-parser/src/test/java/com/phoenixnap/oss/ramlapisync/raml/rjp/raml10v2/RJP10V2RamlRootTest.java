@@ -26,8 +26,10 @@ import org.raml.v2.api.model.v10.datamodel.ObjectTypeDeclaration;
 import org.raml.v2.api.model.v10.datamodel.StringTypeDeclaration;
 
 import com.phoenixnap.oss.ramlapisync.raml.InvalidRamlResourceException;
+import com.phoenixnap.oss.ramlapisync.raml.RamlActionType;
 import com.phoenixnap.oss.ramlapisync.raml.RamlDataType;
 import com.phoenixnap.oss.ramlapisync.raml.RamlDocumentationItem;
+import com.phoenixnap.oss.ramlapisync.raml.RamlMimeType;
 import com.phoenixnap.oss.ramlapisync.raml.RamlResource;
 import com.phoenixnap.oss.ramlapisync.raml.RamlRoot;
 
@@ -118,8 +120,8 @@ public class RJP10V2RamlRootTest {
 
     @Test
     public void ramlRootShouldReflectToplevelResources() {
-        assertThat(ramlRoot.getResources(), is(mapWithSize(2)));
-        assertThat(ramlRoot.getResources().keySet(), hasItems("/persons", "/managers"));
+        assertThat(ramlRoot.getResources(), is(mapWithSize(3)));
+        assertThat(ramlRoot.getResources().keySet(), hasItems("/persons", "/managers", "/defaultType"));
 
         Iterable<Object> topLevelItems = ramlRoot.getResources().values().stream().collect(Collectors.toList());
         assertThat(topLevelItems, everyItem(is(anything())));
@@ -136,6 +138,13 @@ public class RJP10V2RamlRootTest {
     	//assertThat(ramlRoot.getResource("persons/"), is(notNullValue()));
         assertThat(ramlRoot.getResource("/persons"), is(notNullValue()));
         assertThat(ramlRoot.getResource("/persons/"), is(notNullValue()));
+    }
+    
+    @Test
+    public void ramlRootShouldReflectBodyWhenDefaultMediaTypeSet() {
+        assertThat(ramlRoot.getResource("/defaultType"), is(notNullValue()));
+        Map<String, RamlMimeType> body = ramlRoot.getResource("/defaultType").getAction(RamlActionType.GET).getResponses().get("200").getBody();
+        assertThat(body.isEmpty(), is(false)); 
     }
 
     @Test

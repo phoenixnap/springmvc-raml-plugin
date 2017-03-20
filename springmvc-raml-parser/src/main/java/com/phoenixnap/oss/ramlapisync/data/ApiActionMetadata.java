@@ -146,7 +146,9 @@ public class ApiActionMetadata {
 			collectRequestParamsForMime(action.getBody().get(MediaType.APPLICATION_FORM_URLENCODED_VALUE));
 		}
 
-		if (ResourceParser.doesActionTypeSupportRequestBody(actionType) && mime.getKey().toLowerCase().contains("json")) {
+		if (ResourceParser.doesActionTypeSupportRequestBody(actionType) 
+				&& (mime.getKey().toLowerCase().contains("json") 
+						|| mime.getKey().toLowerCase().equals("body"))) {
 			// Continue here!
 			String schema = mime.getValue().getSchema();
 			RamlDataType type = mime.getValue().getType();
@@ -180,7 +182,8 @@ public class ApiActionMetadata {
 		if (response != null && response.getBody() != null && !response.getBody().isEmpty()) {
 			for (Entry<String, RamlMimeType> body : response.getBody().entrySet()) {
 				if (responseContentTypeFilter == null || body.getKey().equals(responseContentTypeFilter)) {
-					if (body.getKey().toLowerCase().contains("json")) { //if we have a json type we need to return an object
+					if (body.getKey().toLowerCase().contains("json") 
+							|| body.getKey().toLowerCase().equals("body")) { //if we have a json type we need to return an object
 						// Continue here!
 						ApiBodyMetadata responseBody = null;
 						
@@ -243,13 +246,22 @@ public class ApiActionMetadata {
 				if (MediaType.APPLICATION_FORM_URLENCODED_VALUE.equals(key)) {
 					continue;
 				}
+				
 				if (first) {
 					first = false;
 					out = "";
 				} else {
 					out += ",";
 				}
-				out += key;
+				if (key.equals("body")) {
+					try {
+						out += parent.getDocument().getMediaType();
+					} catch (Exception ex) {						
+						// skip						
+					}
+				} else {
+					out += key;
+				}
 			}
 			return out;
 		}
