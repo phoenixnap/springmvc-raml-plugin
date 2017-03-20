@@ -118,12 +118,12 @@ public class RamlTypeValidations {
 
         if (minimum != null ) {
         	JAnnotationUse annotation = field.annotate(DecimalMin.class); 
-            annotation.param("value", minimum);
+            annotation.param("value", String.valueOf(minimum));
         }
 
         if (maximum != null ) {
         	 JAnnotationUse annotation = field.annotate(DecimalMax.class);
-            annotation.param("value", maximum);
+            annotation.param("value", String.valueOf(maximum));
         }
 	}
 
