@@ -104,6 +104,8 @@ public class RJP10V2RamlRootTest {
 		assertThat(testY.description().value(), equalTo("array attribute"));
 		assertThat(testY.example().value(), endsWith("[a,b]"));
 		assertThat(testY.items().type(), equalTo("string"));
+		assertThat(testY.minItems(), equalTo(2));
+		assertThat(testY.maxItems(), equalTo(5));
 
 		ObjectTypeDeclaration managerDataType = (ObjectTypeDeclaration) personType.get("Manager").getType();
 		assertThat(managerDataType.type(), equalTo("Person"));

@@ -48,7 +48,7 @@ public class ArrayTypeInterpreter extends BaseTypeInterpreter {
 			ArrayTypeDeclaration arrayType = (ArrayTypeDeclaration) type;
 			
 			RamlTypeValidations validations = result.getValidations();
-			validations.withItems(arrayType.minItems(), arrayType.maxItems());
+			validations.withLenghts(arrayType.minItems(), arrayType.maxItems());
 			
 			//Lets check if we've already handled this class before.
 			if (builderModel != null) {

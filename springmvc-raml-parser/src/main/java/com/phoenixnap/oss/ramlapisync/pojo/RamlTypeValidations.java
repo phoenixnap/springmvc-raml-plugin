@@ -35,8 +35,6 @@ public class RamlTypeValidations {
 	
 	Integer minLength;
 	Integer maxLength;
-	Integer minItems;
-	Integer maxItems;
 	Double minimum;
 	Double maximum;
 	String pattern;
@@ -61,26 +59,12 @@ public class RamlTypeValidations {
 		return this;
 	}
 	
-	public RamlTypeValidations withItems(Integer minItems, Integer maxItems) {
-		this.minItems = minItems;
-		this.maxItems = maxItems;
-		return this;
-	}
-
 	public Integer getMinLength() {
 		return minLength;
 	}
 
 	public Integer getMaxLength() {
 		return maxLength;
-	}
-
-	public Integer getMinItems() {
-		return minItems;
-	}
-
-	public Integer getMaxItems() {
-		return maxItems;
 	}
 
 	public String getPattern() {
