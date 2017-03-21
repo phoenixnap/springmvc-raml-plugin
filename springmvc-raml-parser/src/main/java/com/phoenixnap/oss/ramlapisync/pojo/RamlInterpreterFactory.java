@@ -31,7 +31,9 @@ public class RamlInterpreterFactory {
 	protected static final Logger logger = LoggerFactory.getLogger(RamlInterpreterFactory.class);
 	
 	static RamlTypeInterpreter DEFAULT_INTERPRETER = new StringTypeInterpreter();
-	static RamlTypeInterpreter[] SUPPORTED_INTERPRETERS = { new ObjectTypeInterpreter(), new BooleanTypeInterpreter(), new NullTypeInterpreter(), new NumberTypeInterpreter(), new ArrayTypeInterpreter(), DEFAULT_INTERPRETER };
+	static RamlTypeInterpreter[] SUPPORTED_INTERPRETERS = { new ObjectTypeInterpreter(), new BooleanTypeInterpreter(),
+			new NullTypeInterpreter(), new NumberTypeInterpreter(), new ArrayTypeInterpreter(),
+			new AnyTypeInterpreter(), DEFAULT_INTERPRETER };
 
 	private static Map<Class<? extends TypeDeclaration>, RamlTypeInterpreter> interpreters = new LinkedHashMap<>();
 	private static Map<Class<? extends TypeDeclaration>, RamlTypeInterpreter> interpreterCache = new LinkedHashMap<>();

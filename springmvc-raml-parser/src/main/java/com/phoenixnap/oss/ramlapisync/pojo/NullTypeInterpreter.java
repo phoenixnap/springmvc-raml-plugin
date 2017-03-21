@@ -15,7 +15,6 @@ package com.phoenixnap.oss.ramlapisync.pojo;
 import java.util.LinkedHashSet;
 import java.util.Set;
 
-import org.raml.v2.api.model.v10.datamodel.AnyTypeDeclaration;
 import org.raml.v2.api.model.v10.datamodel.NullTypeDeclaration;
 import org.raml.v2.api.model.v10.datamodel.TypeDeclaration;
 
@@ -37,9 +36,8 @@ public class NullTypeInterpreter extends BaseTypeInterpreter {
 	@Override
 	public Set<Class<? extends TypeDeclaration>> getSupportedTypes() {
 		if (set == null) {
-			set = new LinkedHashSet<>(2);
+			set = new LinkedHashSet<>(1);
 			set.add(NullTypeDeclaration.class);
-			set.add(AnyTypeDeclaration.class);
 		}
 		return set;
 	}

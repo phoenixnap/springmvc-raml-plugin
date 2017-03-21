@@ -308,6 +308,23 @@ public class RamlInterpreterTest {
     }
     
 
+	@Test
+	public void checkDefaultTypeOfItemInArray() {
+
+		assertThat(ramlRoot, is(notNullValue()));
+		PojoGenerationConfig jsr303Config = new PojoGenerationConfig().withPackage("com.gen.foo", "")
+				.withJSR303Annotations(true);
+		RamlResource validations = ramlRoot.getResource("/validations");
+
+		RamlDataType validationsGetType = validations.getAction(RamlActionType.GET).getResponses().get("200").getBody()
+				.get("application/json").getType();
+		RamlTypeHelper.mapTypeToPojo(jsr303Config, jCodeModel, ramlRoot, validationsGetType.getType(), "testName");
+
+		JDefinedClass clazz = (JDefinedClass) CodeModelHelper.findFirstClassBySimpleName(jCodeModel, "Validation");
+		JFieldVar field = getField(clazz, "testDefArray");
+
+		assertThat(field.type().fullName(), is("java.util.List<Object>"));
+	}
     
     
     @After
