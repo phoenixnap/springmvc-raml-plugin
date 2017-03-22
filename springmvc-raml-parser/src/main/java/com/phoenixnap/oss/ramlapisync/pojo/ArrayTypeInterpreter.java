@@ -12,8 +12,8 @@
  */
 package com.phoenixnap.oss.ramlapisync.pojo;
 
-import java.awt.List;
 import java.util.Collections;
+import java.util.List;
 import java.util.Set;
 
 import org.raml.v2.api.model.v10.datamodel.ArrayTypeDeclaration;

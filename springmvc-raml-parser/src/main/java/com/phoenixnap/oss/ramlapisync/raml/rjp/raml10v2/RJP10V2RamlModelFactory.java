@@ -200,12 +200,22 @@ public class RJP10V2RamlModelFactory implements RamlModelFactory {
     }
 
     @Override
-    public RamlParamType createRamlParamType(Object paramType) {
-    	if(paramType == null) {
-            return RamlParamType.STRING;
-        }
-    	return RamlParamType.valueOf(((String) paramType).toUpperCase());
-    }
+	public RamlParamType createRamlParamType(Object paramType) {
+		if (paramType == null) {
+			return RamlParamType.STRING;
+		}
+
+		String param = ((String) paramType).toUpperCase();
+		switch (param) {
+			case "DATE-ONLY":
+			case "TIME-ONLY":
+			case "DATETIME-ONLY":
+			case "DATETIME":
+				return RamlParamType.DATE;
+			default:
+				return RamlParamType.valueOf(param);
+		}
+	}
 
 	Resource extractResource(RamlResource ramlResource) {
         if (ramlResource == null) {

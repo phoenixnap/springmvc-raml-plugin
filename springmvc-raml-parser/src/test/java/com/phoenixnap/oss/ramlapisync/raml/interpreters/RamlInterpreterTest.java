@@ -322,6 +322,24 @@ public class RamlInterpreterTest {
 		assertThat(field.type().fullName(), is("Object"));
 	}
 
+	@Test
+	public void checkTypeOfDates() {
+
+		JDefinedClass pojo = getResponsePOJO("/validations");
+		
+		JFieldVar field = getField(pojo, "dateO");
+		assertThat(field.type().fullName(), is("java.util.Date"));
+
+		field = getField(pojo, "timeO");
+		assertThat(field.type().fullName(), is("java.util.Date"));
+
+		field = getField(pojo, "dateTO");
+		assertThat(field.type().fullName(), is("java.util.Date"));
+
+		field = getField(pojo, "dateT");
+		assertThat(field.type().fullName(), is("java.util.Date"));
+	}
+
 	private JDefinedClass getResponsePOJO(String resource) {
 
 		assertThat(ramlRoot, is(notNullValue()));
