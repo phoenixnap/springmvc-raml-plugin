@@ -24,6 +24,7 @@ import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ValueConstants;
 
 import com.phoenixnap.oss.ramlapisync.annotations.Example;
 import com.phoenixnap.oss.ramlapisync.naming.JavaTypeHelper;
@@ -153,8 +154,12 @@ public class ApiParameterMetadata {
 
 		RequestParam requestParam = param.getAnnotation(RequestParam.class);
 		if (requestParam != null) {
-			annotatedName = requestParam.value();
-			nullable = !requestParam.required();
+			annotatedName = requestParam.name();
+			if (!StringUtils.hasText(annotatedName)) {
+				annotatedName = requestParam.value();
+			}
+			nullable = !requestParam.required() 
+					|| !ValueConstants.DEFAULT_NONE.equals(requestParam.defaultValue());
 		}
 
 		PathVariable pathVariable = param.getAnnotation(PathVariable.class);

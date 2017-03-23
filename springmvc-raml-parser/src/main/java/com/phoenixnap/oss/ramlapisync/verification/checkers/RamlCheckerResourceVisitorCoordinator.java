@@ -98,18 +98,18 @@ public class RamlCheckerResourceVisitorCoordinator implements RamlChecker {
 		} else {
 			logger.debug("Checking resources using contract as reference. Warnings only");
 			// First Check for missing in implementation
-			check(published.getResources(), implemented.getResources(), IssueLocation.SOURCE, IssueSeverity.ERROR);
+			check(published, published.getResources(), implemented.getResources(), IssueLocation.SOURCE, IssueSeverity.ERROR);
 			
 			logger.debug("Checking resources using implementation as reference. Warnings only");
 			// Now check for missing in contract
-			check(implemented.getResources(), published.getResources(), IssueLocation.CONTRACT, IssueSeverity.WARNING);
+			check(published, implemented.getResources(), published.getResources(), IssueLocation.CONTRACT, IssueSeverity.WARNING);
 		}
 		
 		return new Pair<>(warnings, errors);
 		
 	}
 
-	private void check(Map<String, RamlResource> referenceResourcesMap, Map<String, RamlResource> targetResourcesMap, IssueLocation location, IssueSeverity severity) {
+	private void check(RamlRoot referenceRoot, Map<String, RamlResource> referenceResourcesMap, Map<String, RamlResource> targetResourcesMap, IssueLocation location, IssueSeverity severity) {
 		Set<String> referenceResources = referenceResourcesMap != null ? referenceResourcesMap.keySet() : Collections.<String>emptySet() ;
 		Set<String> targetResources = targetResourcesMap != null ? targetResourcesMap.keySet() : Collections.<String>emptySet();
 		
@@ -155,7 +155,7 @@ public class RamlCheckerResourceVisitorCoordinator implements RamlChecker {
 						if (targetAction != null) {
 							logger.debug("Visiting action: "+ actionLocation);
 							for (RamlActionVisitorCheck actionCheck : actionCheckers) {
-								Pair<Set<Issue>, Set<Issue>> check = actionCheck.check(action.getKey(), action.getValue(), targetAction, location, severity);
+								Pair<Set<Issue>, Set<Issue>> check = actionCheck.check(referenceRoot, action.getKey(), action.getValue(), targetAction, location, severity);
 								if (check != null && check.getFirst() != null) {
 									warnings.addAll(check.getFirst());
 								}
@@ -170,7 +170,7 @@ public class RamlCheckerResourceVisitorCoordinator implements RamlChecker {
 				}
 				
 				//Happy Days Exact Match - recurse to check children
-				check(referenceResourcesMap.get(resource).getResources(), target.getResources(), location, severity);
+				check(referenceRoot, referenceResourcesMap.get(resource).getResources(), target.getResources(), location, severity);
 			} else {
 				logger.debug("Skipping visiting resource "+ resourceLocation + " in " + (location.equals(IssueLocation.SOURCE) ? IssueLocation.CONTRACT : IssueLocation.SOURCE));
 			}

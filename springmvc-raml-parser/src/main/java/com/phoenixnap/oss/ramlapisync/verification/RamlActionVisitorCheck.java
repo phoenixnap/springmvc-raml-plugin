@@ -17,6 +17,7 @@ import java.util.Set;
 import com.phoenixnap.oss.ramlapisync.naming.Pair;
 import com.phoenixnap.oss.ramlapisync.raml.RamlAction;
 import com.phoenixnap.oss.ramlapisync.raml.RamlActionType;
+import com.phoenixnap.oss.ramlapisync.raml.RamlRoot;
 
 /**
  * A visitor that will be invoked when an action is identified
@@ -32,6 +33,7 @@ public interface RamlActionVisitorCheck {
 	 * Checks a particular action
 	 * 
 	 * @param name The key/verb of the action
+	 * @param referenceRoot RAML root of reference API
 	 * @param reference The Action which is the source of truth from the RAML model
 	 * @param target The target Action to check against from the RAML model
 	 * @param location The location where the issue (if any) lies
@@ -39,7 +41,7 @@ public interface RamlActionVisitorCheck {
 	 * @return A pair containing a set of Warnings and Errors (as first and second respectively). This method must not return null.
 	 * 
 	 */
-	public Pair<Set<Issue>, Set<Issue>> check (RamlActionType name, RamlAction reference, RamlAction target, IssueLocation location, IssueSeverity maxSeverity);
+	public Pair<Set<Issue>, Set<Issue>> check (RamlRoot referenceRoot, RamlActionType name, RamlAction reference, RamlAction target, IssueLocation location, IssueSeverity maxSeverity);
 
 
 }

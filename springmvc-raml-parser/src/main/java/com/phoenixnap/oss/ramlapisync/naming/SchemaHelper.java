@@ -26,7 +26,10 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.TreeMap;
 
+import javax.validation.constraints.NotNull;
+
 import org.apache.commons.io.IOUtils;
+import org.apache.commons.lang3.ArrayUtils;
 import org.jsonschema2pojo.Annotator;
 import org.jsonschema2pojo.DefaultGenerationConfig;
 import org.jsonschema2pojo.GenerationConfig;
@@ -80,7 +83,7 @@ import com.sun.codemodel.JPackage;
 public class SchemaHelper {
 
     protected static final Logger logger = LoggerFactory.getLogger(SchemaHelper.class);
-
+    private static final Field [] EMPTY_FIELD_ARRAY = new Field[0];
 
 
     /**
@@ -165,7 +168,6 @@ public class SchemaHelper {
         if (param == null || param.equals(Void.class)) {
             return outParams;
         }
-        final ApiParameterMetadata parameterMetadata = new ApiParameterMetadata(param);
 
         if (mapSimpleType(param.getType()) != null) {
             throw new IllegalArgumentException(
@@ -174,7 +176,7 @@ public class SchemaHelper {
 
         try {
             RamlModelFactory ramlModelFactory = RamlModelFactoryOfFactories.createRamlModelFactoryV08();
-            for (Field field : param.getType().getDeclaredFields()) {
+            for (Field field : getAllFields(param.getType())) {
                 if (!java.lang.reflect.Modifier.isStatic(field.getModifiers())
                         && !java.lang.reflect.Modifier.isTransient(field.getModifiers())
                         && !java.lang.reflect.Modifier.isVolatile(field.getModifiers())) {
@@ -191,7 +193,7 @@ public class SchemaHelper {
                     queryParam.setDisplayName(field.getName());
                     RamlParamType simpleType = mapSimpleType(field.getType());
                     queryParam.setType(simpleType == null ? RamlParamType.STRING : simpleType);
-                    queryParam.setRequired(parameterMetadata.isNullable());
+                    queryParam.setRequired(field.isAnnotationPresent(NotNull.class));
                     queryParam.setRepeat(false); // TODO we could add validation
                                                  // info
                                                  // here - maybe hook into
@@ -208,7 +210,18 @@ public class SchemaHelper {
         }
     }
 
-
+    /**
+     * Retrieves all fields of some class, including all fields declared in its superclasses
+     * @param type Class to retrieve fields recursively. 
+     * @return All fields declared in this class and its superclasses.
+     */
+    private static Field [] getAllFields(Class<?> type) {
+    	if (type == null) {
+    		return EMPTY_FIELD_ARRAY;
+    	}
+    	return ArrayUtils.addAll(type.getDeclaredFields(), getAllFields(type.getSuperclass()));
+    }
+    
     /**
      * Uses Jackson object mappers to convert an ajaxcommandparameter annotated type into its
      * JSONSchema representation.
@@ -277,14 +290,16 @@ public class SchemaHelper {
             JavaDocStore javaDocStore, ObjectMapper m)
             throws JsonMappingException {
         SchemaFactoryWrapper visitor = new SchemaFactoryWrapper();
-        if (genericType != null) {
-            try {
-                m.acceptJsonFormatVisitor(m.constructType(genericType), visitor);
-            }
-            catch (Exception ex) {
-                logger.error("Unable to add JSON visitor for " + genericType.toString());
-            }
-        }
+//        This code breaks because it tries to insert two times the same object
+//        What is its purpose?
+//        if (genericType != null) {
+//            try {
+//                m.acceptJsonFormatVisitor(m.constructType(genericType), visitor);
+//            }
+//            catch (Exception ex) {
+//                logger.error("Unable to add JSON visitor for " + genericType.toString());
+//            }
+//        }
         try {
             m.acceptJsonFormatVisitor(m.constructType(clazz), visitor);
         }

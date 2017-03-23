@@ -30,10 +30,12 @@ import org.slf4j.LoggerFactory;
 import org.springframework.util.StringUtils;
 
 import com.phoenixnap.oss.ramlapisync.naming.Pair;
+import com.phoenixnap.oss.ramlapisync.naming.SchemaHelper;
 import com.phoenixnap.oss.ramlapisync.raml.RamlAction;
 import com.phoenixnap.oss.ramlapisync.raml.RamlActionType;
 import com.phoenixnap.oss.ramlapisync.raml.RamlMimeType;
 import com.phoenixnap.oss.ramlapisync.raml.RamlResource;
+import com.phoenixnap.oss.ramlapisync.raml.RamlRoot;
 import com.phoenixnap.oss.ramlapisync.verification.Issue;
 import com.phoenixnap.oss.ramlapisync.verification.IssueLocation;
 import com.phoenixnap.oss.ramlapisync.verification.IssueSeverity;
@@ -63,7 +65,7 @@ public class ActionResponseBodySchemaChecker implements RamlActionVisitorCheck {
 	protected static final Logger logger = LoggerFactory.getLogger(ActionResponseBodySchemaChecker.class);
 
 	@Override
-	public Pair<Set<Issue>, Set<Issue>> check(RamlActionType name, RamlAction reference, RamlAction target, IssueLocation location, IssueSeverity maxSeverity) {
+	public Pair<Set<Issue>, Set<Issue>> check(RamlRoot referenceRoot, RamlActionType name, RamlAction reference, RamlAction target, IssueLocation location, IssueSeverity maxSeverity) {
 		logger.debug("Checking action " + name);
 		Set<Issue> errors = new LinkedHashSet<>();
 		Set<Issue> warnings = new LinkedHashSet<>();
@@ -123,12 +125,12 @@ public class ActionResponseBodySchemaChecker implements RamlActionVisitorCheck {
 
 						try {
 							SchemaMapper mapper = new SchemaMapper(new RuleFactory(config, new Jackson2Annotator(config), new SchemaStore()), new SchemaGenerator());
-							mapper.generate(referenceCodeModel, "Reference", "com.response", value.getSchema());
+							String schema = SchemaHelper.resolveSchema(value.getSchema(), referenceRoot);
+							mapper.generate(referenceCodeModel, "Reference", "com.response", schema == null ? value.getSchema() : schema);
 							mapper.generate(targetCodeModel, "Target", "com.response", targetSchema);
 	
 							Map<String, JFieldVar> referenceResponseFields = referenceCodeModel._getClass("com.response.Reference").fields();
 							Map<String, JFieldVar> targetResponseClassFields = targetCodeModel._getClass("com.response.Target").fields();
-							
 							
 							for (Entry<String, JFieldVar> referenceField : referenceResponseFields.entrySet()) {
 								String fieldKey = referenceField.getKey();

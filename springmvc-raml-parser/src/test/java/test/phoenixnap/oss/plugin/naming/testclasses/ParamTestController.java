@@ -12,6 +12,8 @@
  */
 package test.phoenixnap.oss.plugin.naming.testclasses;
 
+import javax.validation.constraints.NotNull;
+
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -28,6 +30,31 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 public class ParamTestController {
 
+	public static class ModelClassParent {
+		@NotNull private String param1;
+		
+		public String getParam1() {
+			return param1;
+		}
+		
+		public void setParam1(String param1) {
+			this.param1 = param1;
+		}
+	}
+	
+	public static class ModelClass extends ModelClassParent {
+		
+		private String param2;
+		
+		public String getParam2() {
+			return param2;
+		}
+		
+		public void setParam2(String param2) {
+			this.param2 = param2;
+		}
+	}
+	
 	public void unannotatedMethod() {
 
 	}
@@ -38,8 +65,13 @@ public class ParamTestController {
 	}
 	
 	@RequestMapping(value = "/base/endpointWithURIParam/{uriParam}", method = { RequestMethod.GET})
-	public String endpointWithURIParamGet(@RequestParam(required=true) String param3, @RequestParam(required=false) String param4) {
+	public String endpointWithURIParamGet(@RequestParam(name="param3", required=true) String arg0, @RequestParam(value="param4", required=false) String arg1) {
 		return null;
 	}
 
+	@RequestMapping(value = "/base/endpointWithObjectAsParameter", method = { RequestMethod.GET})
+	public String endpointWithObjectAsParameter(@RequestParam ModelClass parameters) {
+		return null;
+	}
+	
 }

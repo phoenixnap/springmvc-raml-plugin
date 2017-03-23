@@ -13,6 +13,7 @@
 package test.phoenixnap.oss.plugin.naming;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 import java.lang.reflect.Method;
 import java.lang.reflect.Parameter;
@@ -124,6 +125,7 @@ public class SchemaHelperTest {
 		queryParameter = qpIterator.next();
 		validateQueryParameter(queryParameter, "element2", RamlParamType.INTEGER);
 		assertEquals("Expect Name as map key", queryParameter, queryParameters.get(queryParameter.getDisplayName()));
+		assertTrue("Expect Required validation", queryParameter.isRequired());
 
 		queryParameter = qpIterator.next();
 		validateQueryParameter(queryParameter, "element3", RamlParamType.STRING);

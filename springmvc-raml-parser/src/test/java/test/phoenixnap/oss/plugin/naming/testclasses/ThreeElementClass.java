@@ -12,6 +12,8 @@
  */
 package test.phoenixnap.oss.plugin.naming.testclasses;
 
+import javax.validation.constraints.NotNull;
+
 /**
  * 
  * Test Class
@@ -23,7 +25,10 @@ package test.phoenixnap.oss.plugin.naming.testclasses;
 public class ThreeElementClass {
 
 	private byte element1;
+	
+	@NotNull
 	private Integer element2;
+	
 	private String element3;
 
 	public ThreeElementClass() {

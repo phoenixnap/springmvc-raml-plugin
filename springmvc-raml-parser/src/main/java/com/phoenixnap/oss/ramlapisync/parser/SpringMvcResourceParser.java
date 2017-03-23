@@ -29,6 +29,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.core.annotation.AnnotatedElementUtils;
 import org.springframework.stereotype.Controller;
 import org.springframework.util.StringUtils;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -149,6 +150,7 @@ public class SpringMvcResourceParser extends ResourceParser {
 	/**
 	 * Check for produces annotation first. else use super implementation
 	 */
+	@Override
 	protected String extractMimeTypeFromMethod(Method method) {
 		RequestMapping requestMapping = getRequestMapping(method);
 		if (requestMapping != null) {
@@ -213,6 +215,7 @@ public class SpringMvcResourceParser extends ResourceParser {
 	/**
 	 * Check for consumes annotation first. else use super implementation
 	 */
+	@Override
 	protected String extractExpectedMimeTypeFromMethod(Method method) {
 		RequestMapping requestMapping = getRequestMapping(method);
 		if (requestMapping != null) {
@@ -305,8 +308,10 @@ public class SpringMvcResourceParser extends ResourceParser {
 		return param.isAnnotationPresent(RequestParam.class) || param.isAnnotationPresent(RequestBody.class);
 	}
 
+	@Override
 	protected boolean isQueryParameter(Parameter param) {
-		return param.isAnnotationPresent(RequestParam.class);
+		return param.isAnnotationPresent(RequestParam.class)
+				|| param.isAnnotationPresent(ModelAttribute.class);
 	}
 	
 	/**
