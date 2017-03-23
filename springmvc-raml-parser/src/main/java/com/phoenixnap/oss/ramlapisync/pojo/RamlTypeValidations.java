@@ -78,7 +78,7 @@ public class RamlTypeValidations {
 	/**
 	 * Adds validation annotations to the supplied field
 	 * 
-	 * @param field
+	 * @param field to add annotations to
 	 */
 	public void annotateFieldJSR303(JFieldVar field) {
 		if (isRequired()) {

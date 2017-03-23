@@ -61,7 +61,6 @@ public class AbstractBuilder {
 	 * 
 	 * @param config The Configuration object which controls generation
 	 * @param pojoModel Existing Codemodel to append to
-	 * @param className Class to be created
 	 * 
 	 */
 	public AbstractBuilder(PojoGenerationConfig config, JCodeModel pojoModel) {
