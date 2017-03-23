@@ -27,12 +27,22 @@ public class PojoGenerationConfig {
 	private String basePackage;
 	private String pojoPackage;
 	
+	//If set to true, Integers will be generated as longs
 	private boolean useLongIntegers = true;
+	
+	private boolean generateJSR303Annotations = false;
 	
 	private boolean generateHashcodeEqualsToString = true;
 	
 	private boolean useCommonsLang3 = false;
 	
+	//If set to true, doubles will be generated as BigDecimals
+	private boolean useBigDecimals = false;
+	
+	//If set to true, longs will be generated as BigIntegers
+	private boolean useBigIntegers = false;
+		
+		
 	
 
 	public String getPojoPackage() {
@@ -52,6 +62,17 @@ public class PojoGenerationConfig {
 
 	public boolean isUseCommonsLang3() {
 		return useCommonsLang3;
+	}
+	
+	public boolean isGenerateJSR303Annotations() {
+		return generateJSR303Annotations;
+	}
+	
+	public boolean isUseBigDecimals() {
+		return useBigDecimals;
+	}
+	public boolean isUseBigIntegers() {
+		return useBigIntegers;
 	}
 	
 	public PojoGenerationConfig withPackage(String basePackage, String pojoSubPackage) {
@@ -77,6 +98,21 @@ public class PojoGenerationConfig {
 	
 	public PojoGenerationConfig withHashcodeEqualsToString(boolean generateHashcodeEqualsToString) {
 		this.generateHashcodeEqualsToString = generateHashcodeEqualsToString;
+		return this;
+	}
+	
+	public PojoGenerationConfig withJSR303Annotations(boolean generateJSR303Annotations) {
+		this.generateJSR303Annotations = generateJSR303Annotations;
+		return this;
+	}
+	
+	public PojoGenerationConfig withBigDecimals(boolean useBigDecimals) {
+		this.useBigDecimals = useBigDecimals;
+		return this;
+	}
+	
+	public PojoGenerationConfig withBigIntegers(boolean useBigIntegers) {
+		this.useBigIntegers = useBigIntegers;
 		return this;
 	}
 	

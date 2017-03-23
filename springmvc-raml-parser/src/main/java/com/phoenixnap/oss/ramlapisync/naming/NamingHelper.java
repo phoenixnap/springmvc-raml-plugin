@@ -124,7 +124,7 @@ public class NamingHelper {
 	/**
 	 * Extracts a list of URI Parameters from a url
 	 * 
-	 * @param url
+	 * @param url String to extract parameters from
 	 * @return A list of the uri parameters in this URL
 	 */
 	public static List<String> extractUriParams(String url) {
@@ -334,7 +334,13 @@ public class NamingHelper {
 		return StringUtils.uncapitalize(cleanNameForJava(name));
 	}
 
-	private static String cleanNameForJava(String resourceName) {
+	/**
+	 * Cleans a string with characters that are not valid as a java identifier
+	 * 
+	 * @param resourceName The string to clean
+	 * @return cleaned string
+	 */
+	public static String cleanNameForJava(String resourceName) {
 		String outString = resourceName;
 		if (StringUtils.hasText(resourceName)) {
 			outString = getNameHelper().normalizeName(resourceName);

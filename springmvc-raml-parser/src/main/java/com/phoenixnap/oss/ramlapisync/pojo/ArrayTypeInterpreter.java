@@ -12,8 +12,8 @@
  */
 package com.phoenixnap.oss.ramlapisync.pojo;
 
-import java.awt.List;
 import java.util.Collections;
+import java.util.List;
 import java.util.Set;
 
 import org.raml.v2.api.model.v10.datamodel.ArrayTypeDeclaration;
@@ -41,11 +41,14 @@ public class ArrayTypeInterpreter extends BaseTypeInterpreter {
 
 	@Override
 	public RamlInterpretationResult interpret(RamlRoot document, TypeDeclaration type, JCodeModel builderModel, PojoGenerationConfig config) {
-		RamlInterpretationResult result = new RamlInterpretationResult();
+		RamlInterpretationResult result = new RamlInterpretationResult(type.required());
 		
 		typeCheck(type);		
 		if (type instanceof ArrayTypeDeclaration) {
 			ArrayTypeDeclaration arrayType = (ArrayTypeDeclaration) type;
+			
+			RamlTypeValidations validations = result.getValidations();
+			validations.withLenghts(arrayType.minItems(), arrayType.maxItems());
 			
 			//Lets check if we've already handled this class before.
 			if (builderModel != null) {
