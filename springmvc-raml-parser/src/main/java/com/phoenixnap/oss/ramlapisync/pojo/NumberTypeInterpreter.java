@@ -12,6 +12,8 @@
  */
 package com.phoenixnap.oss.ramlapisync.pojo;
 
+import java.math.BigDecimal;
+import java.math.BigInteger;
 import java.util.Collections;
 import java.util.Set;
 
@@ -73,6 +75,13 @@ public class NumberTypeInterpreter extends BaseTypeInterpreter {
 					resolvedType = Double.class.getSimpleName();
 				}
 			}
+		}
+		
+		if (resolvedType.equals(Double.class.getSimpleName()) && config.isUseBigDecimals()) {
+			resolvedType = BigDecimal.class.getName();
+		}
+		if (resolvedType.equals(Long.class.getSimpleName()) && config.isUseBigIntegers()) {
+			resolvedType = BigInteger.class.getName();
 		}
 		
 		result.setResolvedClass(CodeModelHelper.findFirstClassBySimpleName(builderModel, resolvedType));

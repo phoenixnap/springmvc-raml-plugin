@@ -3,6 +3,15 @@ title: myapi
 baseUri: api
 mediaType: application/json
 types:
+  BigStuff:
+    type: object
+    properties:
+      theDecimal:
+        type: number
+        format: double
+      theInteger:
+        type: number
+        format: int64
   EnumChecks:
     type: string
     enum: [one, two, three]
@@ -72,6 +81,13 @@ types:
     type: NestedArrayPerson
     properties:
       childList: Person[]
+/bigStuff:
+  get:
+    responses:
+      200:
+        body:
+          application/json:
+            type: BigStuff
 /validations:
   get:
     responses:

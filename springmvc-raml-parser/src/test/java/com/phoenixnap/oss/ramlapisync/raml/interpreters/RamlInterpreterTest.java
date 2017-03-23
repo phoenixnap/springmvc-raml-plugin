@@ -11,6 +11,8 @@ import static org.hamcrest.Matchers.nullValue;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.math.BigDecimal;
+import java.math.BigInteger;
 import java.util.Set;
 
 import javax.validation.constraints.DecimalMax;
@@ -320,6 +322,32 @@ public class RamlInterpreterTest {
 
 		JFieldVar field = getField(getResponsePOJO("/validations"), "fileObject");
 		assertThat(field.type().fullName(), is("Object"));
+	}
+	
+	@Test
+	public void checkBigDecimals() {
+		PojoGenerationConfig jsr303Config = new PojoGenerationConfig().withPackage("com.gen.foo", "").withBigDecimals(true);
+        assertThat(ramlRoot, is(notNullValue())); 
+        RamlResource bigStuff = ramlRoot.getResource("/bigStuff");
+        
+        RamlDataType getType = bigStuff.getAction(RamlActionType.GET).getResponses().get("200").getBody().get("application/json").getType();
+        assertThat(getType, is(notNullValue()));        
+        ApiBodyMetadata validationsGetRequest = RamlTypeHelper.mapTypeToPojo(jsr303Config, jCodeModel, ramlRoot, getType.getType(), "testName");
+        JFieldVar field = getField((JDefinedClass) CodeModelHelper.findFirstClassBySimpleName(validationsGetRequest.getCodeModel(), "BigStuff"), "theDecimal");
+        assertThat(field.type().fullName(), is(BigDecimal.class.getName()));
+	}
+	
+	@Test
+	public void checkBigInteger() {
+		PojoGenerationConfig jsr303Config = new PojoGenerationConfig().withPackage("com.gen.foo", "").withBigIntegers(true);
+        assertThat(ramlRoot, is(notNullValue())); 
+        RamlResource bigStuff = ramlRoot.getResource("/bigStuff");
+        
+        RamlDataType getType = bigStuff.getAction(RamlActionType.GET).getResponses().get("200").getBody().get("application/json").getType();
+        assertThat(getType, is(notNullValue()));        
+        ApiBodyMetadata validationsGetRequest = RamlTypeHelper.mapTypeToPojo(jsr303Config, jCodeModel, ramlRoot, getType.getType(), "testName");
+        JFieldVar field = getField((JDefinedClass) CodeModelHelper.findFirstClassBySimpleName(validationsGetRequest.getCodeModel(), "BigStuff"), "theInteger");
+        assertThat(field.type().fullName(), is(BigInteger.class.getName()));
 	}
 
 	@Test

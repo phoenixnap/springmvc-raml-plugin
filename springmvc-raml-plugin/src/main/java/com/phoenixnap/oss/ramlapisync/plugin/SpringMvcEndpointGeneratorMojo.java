@@ -472,6 +472,8 @@ public class SpringMvcEndpointGeneratorMojo extends AbstractMojo {
     		config
     		.withLongIntegers(generationConfig.isUseLongIntegers())
     		.withCommonsLang3(generationConfig.isUseCommonsLang3())
+    		.withBigDecimals(generationConfig.isUseBigDecimals())
+    		.withBigIntegers(generationConfig.isUseBigIntegers())
     		.withJSR303Annotations(generationConfig.isIncludeJsr303Annotations())
     		.withHashcodeEqualsToString((generationConfig.isIncludeHashcodeAndEquals() && generationConfig.isIncludeToString()));
     	}
