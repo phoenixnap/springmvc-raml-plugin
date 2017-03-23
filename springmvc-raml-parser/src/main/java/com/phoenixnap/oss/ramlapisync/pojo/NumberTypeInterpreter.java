@@ -12,6 +12,8 @@
  */
 package com.phoenixnap.oss.ramlapisync.pojo;
 
+import java.math.BigDecimal;
+import java.math.BigInteger;
 import java.util.Collections;
 import java.util.Set;
 
@@ -41,13 +43,14 @@ public class NumberTypeInterpreter extends BaseTypeInterpreter {
 
 	@Override
 	public RamlInterpretationResult interpret(RamlRoot document, TypeDeclaration type, JCodeModel builderModel, PojoGenerationConfig config) {
-		RamlInterpretationResult result = new RamlInterpretationResult();
+		RamlInterpretationResult result = new RamlInterpretationResult(type.required());
 		String resolvedType = String.class.getSimpleName();
 		typeCheck(type);
 		if (type instanceof NumberTypeDeclaration) {
 			NumberTypeDeclaration numberType = (NumberTypeDeclaration) type;
 			String format = numberType.format();
-			
+			RamlTypeValidations validations = result.getValidations();
+			validations.withMinMax(numberType.minimum(), numberType.maximum());
 			if (!StringUtils.hasText(format)) {
 				//format not supplied. Defaulting to long if it's integer since it's safer
 				if (type instanceof IntegerTypeDeclaration) {
@@ -72,6 +75,13 @@ public class NumberTypeInterpreter extends BaseTypeInterpreter {
 					resolvedType = Double.class.getSimpleName();
 				}
 			}
+		}
+		
+		if (resolvedType.equals(Double.class.getSimpleName()) && config.isUseBigDecimals()) {
+			resolvedType = BigDecimal.class.getName();
+		}
+		if (resolvedType.equals(Long.class.getSimpleName()) && config.isUseBigIntegers()) {
+			resolvedType = BigInteger.class.getName();
 		}
 		
 		result.setResolvedClass(CodeModelHelper.findFirstClassBySimpleName(builderModel, resolvedType));

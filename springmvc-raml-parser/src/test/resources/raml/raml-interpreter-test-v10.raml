@@ -3,6 +3,54 @@ title: myapi
 baseUri: api
 mediaType: application/json
 types:
+  BigStuff:
+    type: object
+    properties:
+      theDecimal:
+        type: number
+        format: double
+      theInteger:
+        type: number
+        format: int64
+  EnumChecks:
+    type: string
+    enum: [one, two, three]
+  Validation:
+    type: object
+    properties:
+      firstname:
+        type: string
+        required: false
+      lastname: string
+      pattern:
+        type: string
+        pattern: "[0-9|-]+"
+      length:
+        type: string
+        minLength: 1
+        maxLength: 3
+        required: true
+      minLength:
+        type: string
+        required: false
+        minLength: 5
+      id: 
+        type: number
+        format: int64 
+        minimum: 1
+        maximum: 42.3
+      anEnum:
+        type: string
+        enum: [blue, red, green]
+      anotherEnum:
+        type: EnumChecks
+      testDefArray:
+        type: array # we'll not define items' type here
+      fileObject: file
+      dateO: date-only
+      timeO: time-only
+      dateTO: datetime-only
+      dateT: datetime
   Person:
     type: object
     properties:
@@ -33,6 +81,20 @@ types:
     type: NestedArrayPerson
     properties:
       childList: Person[]
+/bigStuff:
+  get:
+    responses:
+      200:
+        body:
+          application/json:
+            type: BigStuff
+/validations:
+  get:
+    responses:
+      200:
+        body:
+          application/json:
+            type: Validation
 /persons:
   get:
     responses:

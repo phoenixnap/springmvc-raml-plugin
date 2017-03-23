@@ -12,14 +12,10 @@
  */
 package com.phoenixnap.oss.ramlapisync.pojo;
 
-import java.io.Serializable;
-import java.text.SimpleDateFormat;
-import java.util.Date;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Random;
 import java.util.Set;
 
 import org.apache.commons.lang3.builder.HashCodeBuilder;
@@ -34,13 +30,11 @@ import com.sun.codemodel.JClass;
 import com.sun.codemodel.JClassAlreadyExistsException;
 import com.sun.codemodel.JCodeModel;
 import com.sun.codemodel.JDefinedClass;
-import com.sun.codemodel.JDocComment;
 import com.sun.codemodel.JExpr;
 import com.sun.codemodel.JFieldVar;
 import com.sun.codemodel.JInvocation;
 import com.sun.codemodel.JMethod;
 import com.sun.codemodel.JMod;
-import com.sun.codemodel.JPackage;
 import com.sun.codemodel.JVar;
 
 /**
@@ -51,36 +45,16 @@ import com.sun.codemodel.JVar;
  * @since 0.10.0
  *
  */
-public class PojoBuilder {
-
+public class PojoBuilder extends AbstractBuilder {
+	
 	protected static final Logger logger = LoggerFactory.getLogger(PojoBuilder.class);
 	
-	private PojoGenerationConfig config;
-
-	private transient LinkedHashMap<String, JDefinedClass> codeModels = new LinkedHashMap<>();
-	private JCodeModel pojoModel = null;
-	private JDefinedClass pojo = null;
-	private JPackage pojoPackage = null;
 	private JInvocation hashCodeBuilderInvocation = null;
-	
 	private JInvocation equalsBuilderInvocation = null;
 	JVar otherObjectVar = null;
 
 	public PojoBuilder() {
-		// default constructor
-		this.config = new PojoGenerationConfig();
-	}
-
-	/**
-	 * Constructor
-	 * 
-	 * @param config The Configuration object which controls generation
-	 * @param pojoPackage The Package used to create POJOs
-	 * @param className Class to be created
-	 */
-
-	public PojoBuilder(PojoGenerationConfig config, String pojoPackage, String className) {
-		this(config, null, pojoPackage, className);
+		super();
 	}
 
 	/**
@@ -88,14 +62,12 @@ public class PojoBuilder {
 	 * 
 	 * @param config The Configuration object which controls generation
 	 * @param pojoModel Existing Codemodel to append to
-	 * @param pojoPackage The Package used to create POJOs
 	 * @param className Class to be created
 	 * 
 	 */
-	public PojoBuilder(PojoGenerationConfig config, JCodeModel pojoModel, String pojoPackage, String className) {
-		this.config = config;
-		this.pojoModel = pojoModel;
-		withName(pojoPackage, className);
+	public PojoBuilder(PojoGenerationConfig config, JCodeModel pojoModel, String className) {
+		super(config, pojoModel);
+		withName(config.getPojoPackage(), className);
 		if (config.isGenerateHashcodeEqualsToString()) {
 			withToString();
 			withEquals();
@@ -127,11 +99,16 @@ public class PojoBuilder {
 	 * @return This instance
 	 */
 	public PojoBuilder withName(String pojoPackage, String className) {
+		if(!NamingHelper.isValidJavaClassName(className)) {
+			className = NamingHelper.cleanNameForJava(className);
+		}
+
 		final String fullyQualifiedClassName = pojoPackage + "." + className;
 		// Initiate package if necessary
 		if (this.pojoPackage == null) {
 			withPackage(pojoPackage);
 		}
+		
 		// Builders should only have 1 active pojo under their responsibility
 		if (this.pojo != null) {
 			throw new IllegalStateException("Class already created");
@@ -157,15 +134,6 @@ public class PojoBuilder {
 		}
 	}
 
-	private void implementsSerializable() {
-		// Implement Serializable
-		this.pojo._implements(Serializable.class);
-
-		// Add constant serializable id
-		this.pojo.field(JMod.STATIC | JMod.FINAL, Long.class, "serialVersionUID",
-				JExpr.lit(new Random(System.currentTimeMillis()).nextLong()));
-	}
-
 	private void withDefaultConstructor(String className) {
 		// Create default constructor
 		JMethod constructor = this.pojo.constructor(JMod.PUBLIC);
@@ -174,29 +142,6 @@ public class PojoBuilder {
 		defaultConstructorBody.invoke("super");
 	}
 
-	public PojoBuilder withPackage(String pojoPackage) {
-		if (this.pojoPackage != null) {
-			throw new IllegalStateException("Pojo Package already created");
-		}
-		if (this.pojoModel == null) {
-			this.pojoModel = new JCodeModel();
-		}
-
-		this.pojoPackage = this.pojoModel._package(pojoPackage);
-
-		return this;
-	}
-
-	public PojoBuilder withClassComment(String classComment) {
-		pojoCreationCheck();
-		JDocComment javadoc = this.pojo.javadoc();
-		// javadoc.add
-		javadoc.add(toJavaComment(classComment));
-		javadoc.add("\n\nGenerated using springmvc-raml-plugin on "
-				+ new SimpleDateFormat("MM/dd/yyyy HH:mm:ss").format(new Date()));
-		return this;
-	}
-	
 	private boolean parentContainsField(JClass pojo, String name) {
 		if (pojo != null && !pojo.fullName().equals(Object.class.getName())) {
 			JClass parent = pojo._extends();
@@ -215,7 +160,7 @@ public class PojoBuilder {
 		return false;
 	}
 
-	public PojoBuilder withField(String name, String type, String comment) {
+	public PojoBuilder withField(String name, String type, String comment, RamlTypeValidations validations) {
 		pojoCreationCheck();
 		logger.debug("Adding field: " + name + " to " + this.pojo.name());
 
@@ -241,6 +186,10 @@ public class PojoBuilder {
 
 		// Add private variable
 		JFieldVar field = this.pojo.field(JMod.PRIVATE, resolvedType, toJavaName(name));
+		if (this.config.isGenerateJSR303Annotations() && validations != null) {
+			validations.annotateFieldJSR303(field);
+		}
+		
 		if (StringUtils.hasText(comment)) {
 			field.javadoc().add(comment);
 		}
@@ -269,14 +218,6 @@ public class PojoBuilder {
 
 
 		return this;
-	}
-
-	public JCodeModel getCodeModel() {
-		return this.pojoModel;
-	}
-
-	public JClass getPojo() {
-		return this.pojo;
 	}
 
 	/**
@@ -351,26 +292,6 @@ public class PojoBuilder {
 		}
 	}
 
-	/**
-	 * Convenience method to check if the pojo has been created before applying any operators to it
-	 */
-	private void pojoCreationCheck() {
-		if (this.pojo == null) {
-			throw new IllegalStateException("Class not created");
-		}
-	}
-
-	private String toJavaComment(String comment) {
-		return comment;
-	}
-
-	private String toJavaName(String name) {
-		return name;
-	}
-
-	private JClass resolveType(String type) {
-		return CodeModelHelper.findFirstClassBySimpleName(pojoModel, type);
-	}
 	
     private void withToString() {
     	pojoCreationCheck();
@@ -384,7 +305,6 @@ public class PojoBuilder {
         
         toString.body()._return(this.pojo.owner().ref(toStringBuilder).staticInvoke("reflectionToString").arg(JExpr._this()));
     }
-
     
     //Ada
     private void withHashCode() {

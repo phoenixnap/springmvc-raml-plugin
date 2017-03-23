@@ -334,7 +334,13 @@ public class NamingHelper {
 		return StringUtils.uncapitalize(cleanNameForJava(name));
 	}
 
-	private static String cleanNameForJava(String resourceName) {
+	/**
+	 * Cleans a string with characters that are not valid as a java identifier
+	 * 
+	 * @param resourceName The string to clean
+	 * @return cleaned string
+	 */
+	public static String cleanNameForJava(String resourceName) {
 		String outString = resourceName;
 		if (StringUtils.hasText(resourceName)) {
 			outString = getNameHelper().normalizeName(resourceName);
