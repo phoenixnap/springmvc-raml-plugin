@@ -371,22 +371,59 @@ public class SchemaHelper {
      *            The Type to map
      * @return The Java Class which maps to this Simple RAML ParamType or string if one is not found
      */
-    public static Class<?> mapSimpleType(RamlParamType param) {
+    public static Class<?> mapSimpleType(RamlParamType param, String format) {
 
         switch (param) {
             case BOOLEAN:
                 return Boolean.class;
             case DATE:
                 return Date.class;
-            case INTEGER:
-                return Long.class;
-            case NUMBER:
-                return BigDecimal.class;
+            case INTEGER: 	{
+				            	Class<?> fromFormat = mapNumberFromFormat(format);
+				            	if (fromFormat == Double.class) {
+				            		throw new IllegalStateException();
+				            	}
+				            	if (fromFormat == null) {
+				            		return Long.class; //retained for backward compatibility
+				            	} else { 
+				            		return fromFormat;
+				            	}
+			}
+            case NUMBER:	{
+				            	Class<?> fromFormat = mapNumberFromFormat(format);
+				            	if (fromFormat == null) {
+				            		return BigDecimal.class; //retained for backward compatibility
+				            	} else { 
+				            		return fromFormat;
+				            	}
+            }
             case FILE:
                 return MultipartFile.class;
             default:
                 return String.class;
         }
+        
+			
+    }
+    
+    private static Class<?> mapNumberFromFormat(String format) {
+    	if (format == null) {
+    		return null;
+    	}
+    	if (format.equals("int64")
+				|| format.equals("long")){
+			return Long.class;
+		} else if (format.equals("int32") 
+				|| format.equals("int")) {
+			return Integer.class;
+		} else if (format.equals("int16")
+				|| format.equals("int8")){
+			return Short.class;
+		} else if (format.equals("double")
+				|| format.equals("float")){
+			return Double.class;
+		} 
+    	return null;
     }
 
 

@@ -151,4 +151,14 @@ public class RJP10V2RamlQueryParameter extends RamlQueryParameter {
 	public String getDefaultValue() {
 		return this.queryParameter.defaultValue();
 	}
+	
+	@Override
+	public void setType(String type) {
+		throw new UnsupportedOperationException();		
+	}
+
+	@Override
+	public String getFormat() {
+		return RamlTypeHelper.getFormat(this.queryParameter);
+	}
 }

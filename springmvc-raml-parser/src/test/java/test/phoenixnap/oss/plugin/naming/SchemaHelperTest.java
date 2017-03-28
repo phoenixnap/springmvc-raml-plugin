@@ -14,13 +14,17 @@ package test.phoenixnap.oss.plugin.naming;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
 import java.lang.reflect.Method;
 import java.lang.reflect.Parameter;
+import java.math.BigDecimal;
+import java.util.Date;
 import java.util.Iterator;
 import java.util.Map;
 
 import org.junit.Test;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.phoenixnap.oss.ramlapisync.naming.SchemaHelper;
 import com.phoenixnap.oss.ramlapisync.raml.RamlParamType;
@@ -142,6 +146,46 @@ public class SchemaHelperTest {
 		assertEquals("Expect Correct Type for element: " + name, expectedType, queryParameter.getType());
 		assertEquals("Expect Name", name, queryParameter.getDisplayName());
 
+	}
+	
+	@Test
+	public void test_mapSimpleType() {
+		assertEquals(Boolean.class, SchemaHelper.mapSimpleType(RamlParamType.BOOLEAN, null));
+		assertEquals(Boolean.class, SchemaHelper.mapSimpleType(RamlParamType.BOOLEAN, "anything"));
+		
+		assertEquals(Date.class, SchemaHelper.mapSimpleType(RamlParamType.DATE, null));
+		assertEquals(Date.class, SchemaHelper.mapSimpleType(RamlParamType.DATE, "anything"));
+		
+		assertEquals(MultipartFile.class, SchemaHelper.mapSimpleType(RamlParamType.FILE, null));
+		assertEquals(MultipartFile.class, SchemaHelper.mapSimpleType(RamlParamType.FILE, "anything"));
+		
+		assertEquals(Long.class, SchemaHelper.mapSimpleType(RamlParamType.INTEGER, null));
+		assertEquals(Long.class, SchemaHelper.mapSimpleType(RamlParamType.INTEGER, "unknown"));
+		assertEquals(Long.class, SchemaHelper.mapSimpleType(RamlParamType.INTEGER, "int64"));
+		assertEquals(Long.class, SchemaHelper.mapSimpleType(RamlParamType.INTEGER, "long"));
+		assertEquals(Integer.class, SchemaHelper.mapSimpleType(RamlParamType.INTEGER, "int32"));
+		assertEquals(Integer.class, SchemaHelper.mapSimpleType(RamlParamType.INTEGER, "int"));
+		assertEquals(Short.class, SchemaHelper.mapSimpleType(RamlParamType.INTEGER, "int8"));
+		assertEquals(Short.class, SchemaHelper.mapSimpleType(RamlParamType.INTEGER, "int16"));
+		try {
+			SchemaHelper.mapSimpleType(RamlParamType.INTEGER, "double");
+			SchemaHelper.mapSimpleType(RamlParamType.INTEGER, "float");
+			fail();
+		} catch (IllegalStateException ex) {
+			//ok!
+		}
+				
+		assertEquals(BigDecimal.class, SchemaHelper.mapSimpleType(RamlParamType.NUMBER, null));
+		assertEquals(BigDecimal.class, SchemaHelper.mapSimpleType(RamlParamType.NUMBER, "unknown"));
+		assertEquals(Long.class, SchemaHelper.mapSimpleType(RamlParamType.NUMBER, "int64"));
+		assertEquals(Long.class, SchemaHelper.mapSimpleType(RamlParamType.NUMBER, "long"));
+		assertEquals(Integer.class, SchemaHelper.mapSimpleType(RamlParamType.NUMBER, "int32"));
+		assertEquals(Integer.class, SchemaHelper.mapSimpleType(RamlParamType.NUMBER, "int"));
+		assertEquals(Short.class, SchemaHelper.mapSimpleType(RamlParamType.NUMBER, "int8"));
+		assertEquals(Short.class, SchemaHelper.mapSimpleType(RamlParamType.NUMBER, "int16"));
+		assertEquals(Double.class, SchemaHelper.mapSimpleType(RamlParamType.NUMBER, "double"));
+		assertEquals(Double.class, SchemaHelper.mapSimpleType(RamlParamType.NUMBER, "float"));
+		
 	}
 
 }

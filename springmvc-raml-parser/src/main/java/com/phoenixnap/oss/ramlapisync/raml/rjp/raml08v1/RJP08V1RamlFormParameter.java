@@ -106,4 +106,14 @@ public class RJP08V1RamlFormParameter extends RamlFormParameter {
 	public boolean isRepeat() {
 		return formParameter.isRepeat();
 	}
+
+	@Override
+	public void setType(String type) {
+		throw new UnsupportedOperationException();		
+	}
+
+	@Override
+	public String getFormat() {
+		return null;
+	}
 }

@@ -63,6 +63,11 @@ public class ApiParameterMetadata {
 	 * The Java Type of the parameter
 	 */
 	private Class<?> type;
+	
+	/**
+	 * A format narrowing the allowed data for this parameter
+	 */
+	private String format;
 
 	/**
 	 * If the type contains generics, this is the type of the generic as defined in the code.
@@ -124,7 +129,8 @@ public class ApiParameterMetadata {
 		this.name = name;
 		this.param = null; //we wont have this.
 		
-		this.type = SchemaHelper.mapSimpleType(param.getType());
+		this.format = param.getFormat();
+		this.type = SchemaHelper.mapSimpleType(param.getType(), this.format);
 		
 		//If it's a repeatable parameter simply convert to an array of type
 		if(param.isRepeat()) {

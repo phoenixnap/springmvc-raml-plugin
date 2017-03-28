@@ -127,6 +127,8 @@ public class MethodParamsRule implements Rule<CodeModelHelper.JExtMethod, JMetho
 
     protected JVar paramObjects(ApiActionMetadata endpointMetadata, CodeModelHelper.JExtMethod generatableType) {
         String requestBodyName = endpointMetadata.getRequestBody().getName();
+        boolean array = endpointMetadata.getRequestBody().isArray();
+        
         List<JCodeModel> codeModels = new ArrayList<>();
         if (endpointMetadata.getRequestBody().getCodeModel()!=null){
             codeModels.add(endpointMetadata.getRequestBody().getCodeModel());
@@ -137,6 +139,10 @@ public class MethodParamsRule implements Rule<CodeModelHelper.JExtMethod, JMetho
         }
                 
         JClass requestBodyType = findFirstClassBySimpleName(codeModels.toArray(new JCodeModel[codeModels.size()]), requestBodyName);
+        if (allowArrayParameters && array) {
+            JClass arrayType = generatableType.owner().ref(List.class);
+            requestBodyType = arrayType.narrow(requestBodyType);
+        } 
         if (addParameterJavadoc) {
         	generatableType.get().javadoc().addParam(uncapitalize(requestBodyName) + " The Request Body Payload");
         }
