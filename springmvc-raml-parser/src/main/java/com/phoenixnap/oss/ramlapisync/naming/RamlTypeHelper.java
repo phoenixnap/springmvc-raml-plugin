@@ -17,8 +17,10 @@ import java.util.List;
 
 import org.raml.v2.api.model.common.ValidationResult;
 import org.raml.v2.api.model.v10.datamodel.ArrayTypeDeclaration;
+import org.raml.v2.api.model.v10.datamodel.DateTimeTypeDeclaration;
 import org.raml.v2.api.model.v10.datamodel.ExampleSpec;
 import org.raml.v2.api.model.v10.datamodel.ExternalTypeDeclaration;
+import org.raml.v2.api.model.v10.datamodel.NumberTypeDeclaration;
 import org.raml.v2.api.model.v10.datamodel.StringTypeDeclaration;
 import org.raml.v2.api.model.v10.datamodel.TypeDeclaration;
 import org.raml.v2.api.model.v10.datamodel.XMLFacetInfo;
@@ -28,9 +30,9 @@ import org.raml.v2.api.model.v10.system.types.AnnotableStringType;
 import org.raml.v2.api.model.v10.system.types.MarkdownString;
 
 import com.phoenixnap.oss.ramlapisync.data.ApiBodyMetadata;
-import com.phoenixnap.oss.ramlapisync.pojo.RamlInterpreterFactory;
 import com.phoenixnap.oss.ramlapisync.pojo.PojoGenerationConfig;
 import com.phoenixnap.oss.ramlapisync.pojo.RamlInterpretationResult;
+import com.phoenixnap.oss.ramlapisync.pojo.RamlInterpreterFactory;
 import com.phoenixnap.oss.ramlapisync.raml.RamlRoot;
 import com.sun.codemodel.JClass;
 import com.sun.codemodel.JCodeModel;
@@ -43,6 +45,25 @@ import com.sun.codemodel.JCodeModel;
  *
  */
 public class RamlTypeHelper {
+	
+	/**
+	 * IF it has a format defined, this will return it
+	 * @param param The parameter to inspect
+	 * @return Format, if defined
+	 */
+	public static String getFormat(TypeDeclaration param) {
+		if (param == null) {
+			return null;
+		}
+		if (param instanceof NumberTypeDeclaration) {
+			return ((NumberTypeDeclaration)param).format();
+		}
+		if (param instanceof DateTimeTypeDeclaration) {
+			return ((DateTimeTypeDeclaration)param).format();
+		}		
+		
+		return null;
+	}
 
 	/**
 	 * Attempts to infer the type in the generic part of the declaration of the type

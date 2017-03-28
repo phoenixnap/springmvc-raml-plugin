@@ -106,4 +106,14 @@ public class RJP10V2RamlFormParameter extends RamlFormParameter {
 	public void setRepeat(boolean repeat) {
 		throw new UnsupportedOperationException();
 	}
+	
+	@Override
+	public void setType(String type) {
+		throw new UnsupportedOperationException();		
+	}
+
+	@Override
+	public String getFormat() {
+		return RamlTypeHelper.getFormat(this.formParameter);
+	}
 }

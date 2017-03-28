@@ -23,6 +23,8 @@ import org.raml.v2.api.model.v10.datamodel.TypeDeclaration;
 import org.springframework.util.StringUtils;
 
 import com.phoenixnap.oss.ramlapisync.generation.CodeModelHelper;
+import com.phoenixnap.oss.ramlapisync.naming.SchemaHelper;
+import com.phoenixnap.oss.ramlapisync.raml.RamlParamType;
 import com.phoenixnap.oss.ramlapisync.raml.RamlRoot;
 import com.sun.codemodel.JCodeModel;
 
@@ -51,6 +53,8 @@ public class NumberTypeInterpreter extends BaseTypeInterpreter {
 			String format = numberType.format();
 			RamlTypeValidations validations = result.getValidations();
 			validations.withMinMax(numberType.minimum(), numberType.maximum());
+			resolvedType = SchemaHelper.mapSimpleType(RamlParamType.NUMBER, format).getSimpleName();
+			
 			if (!StringUtils.hasText(format)) {
 				//format not supplied. Defaulting to long if it's integer since it's safer
 				if (type instanceof IntegerTypeDeclaration) {
@@ -60,21 +64,23 @@ public class NumberTypeInterpreter extends BaseTypeInterpreter {
 				}
 				 
 			} else {
-				//TODO make this better
-				if (format.equals("int64")
-						|| format.equals("long")){
-					resolvedType = Long.class.getSimpleName();
-				} else if (format.equals("int32") 
-						|| format.equals("int")) {
-					resolvedType = Integer.class.getSimpleName();
-				} else if (format.equals("int16")
-						|| format.equals("int8")){
-					resolvedType = Short.class.getSimpleName();
-				} else if (format.equals("double")
-						|| format.equals("float")){
-					resolvedType = Double.class.getSimpleName();
-				}
+				resolvedType = SchemaHelper.mapSimpleType(RamlParamType.NUMBER, format).getSimpleName();
 			}
+//				//TODO make this better
+//				if (format.equals("int64")
+//						|| format.equals("long")){
+//					resolvedType = Long.class.getSimpleName();
+//				} else if (format.equals("int32") 
+//						|| format.equals("int")) {
+//					resolvedType = Integer.class.getSimpleName();
+//				} else if (format.equals("int16")
+//						|| format.equals("int8")){
+//					resolvedType = Short.class.getSimpleName();
+//				} else if (format.equals("double")
+//						|| format.equals("float")){
+//					resolvedType = Double.class.getSimpleName();
+//				}
+//			}
 		}
 		
 		if (resolvedType.equals(Double.class.getSimpleName()) && config.isUseBigDecimals()) {

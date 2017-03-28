@@ -96,4 +96,14 @@ public class RJP10V2RamlUriParameter extends RamlUriParameter {
 	public String getDefaultValue() {
 		return this.uriParameter.defaultValue();
 	}
+	
+	@Override
+	public void setType(String type) {
+		throw new UnsupportedOperationException();		
+	}
+
+	@Override
+	public String getFormat() {
+		return RamlTypeHelper.getFormat(this.uriParameter);
+	}
 }

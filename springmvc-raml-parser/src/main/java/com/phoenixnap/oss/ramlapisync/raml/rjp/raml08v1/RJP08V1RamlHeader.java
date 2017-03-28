@@ -88,4 +88,14 @@ public class RJP08V1RamlHeader extends RamlHeader {
 	public String getDefaultValue() {
 		return header.getDefaultValue();
 	}
+	
+	@Override
+	public void setType(String type) {
+		throw new UnsupportedOperationException();		
+	}
+
+	@Override
+	public String getFormat() {
+		return null;
+	}
 }

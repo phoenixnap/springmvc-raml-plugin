@@ -23,6 +23,8 @@ public abstract class RamlAbstractParam { //extends AbstractParam {
 
     public abstract void setType(RamlParamType paramType);
 
+    public abstract void setType(String type);
+
     public abstract void setRequired(boolean required);
 
     public abstract void setExample(String example);
@@ -32,6 +34,8 @@ public abstract class RamlAbstractParam { //extends AbstractParam {
     public abstract boolean isRequired();
 
     public abstract RamlParamType getType();
+    
+    public abstract String getFormat();
 
     public abstract String getExample();
 
@@ -51,4 +55,6 @@ public abstract class RamlAbstractParam { //extends AbstractParam {
 	public boolean isRepeat () {
 		return false;
 	}
+	
+	
 }
