@@ -76,18 +76,19 @@ public class EnumBuilder extends AbstractBuilder {
 			// create the class
 			logger.debug("Creating Enum " + fullyQualifiedClassName);
 			this.pojo = this.pojoModel._class(fullyQualifiedClassName, ClassType.ENUM);
-
+			
 			// Handle Serialization
 			// Do enums need to be serializable?
 			//implementsSerializable(); 
-
-			// Add to shortcuts
-			this.codeModels.put(fullyQualifiedClassName, this.pojo);
-			return this;
 		} catch (JClassAlreadyExistsException e) {
-			// this should never happen, however in this case lets throw the same error
-			throw new IllegalStateException(e);
+			// class already exists - reuse it!
+			logger.debug("Enum {} already exists. Reusing it!", fullyQualifiedClassName);
+			this.pojo = this.pojoModel._getClass(fullyQualifiedClassName);
 		}
+
+		// Add to shortcuts
+		this.codeModels.put(fullyQualifiedClassName, this.pojo);
+		return this;
 	}
 
 

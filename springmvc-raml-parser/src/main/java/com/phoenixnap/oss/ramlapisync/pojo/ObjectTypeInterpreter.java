@@ -75,8 +75,8 @@ public class ObjectTypeInterpreter extends BaseTypeInterpreter {
 		}
 		// Lets check if we've already handled this class before.
 		if (builderModel != null) {
-			JClass searchedClass = CodeModelHelper.findFirstClassBySimpleName(builderModel, name);
-			if (!searchedClass.getClass().getSimpleName().contains("JDirectClass")) { // WTF can't we use this dude pff
+			JClass searchedClass = builderModel._getClass(config.getPojoPackage() + "." + name);
+			if (searchedClass != null) {
 				// we've already handled this pojo in the model, no need to re-interpret
 				result.setCodeModel(builderModel);
 				result.setResolvedClass(searchedClass);
