@@ -182,6 +182,15 @@ public class JsonSchema2PojoTest {
         }
 		
 	}
+	
+	@Test
+    public void schemaHelper_ExtractsArray_Plural() throws Exception {
+        URL url = Resources.getResource(path + "addresses.schema");
+        String text = Resources.toString(url, Charsets.UTF_8);
+        ApiBodyMetadata mapSchemaToPojo = SchemaHelper.mapSchemaToPojo(null, text, "com.test", "Fallback", null);
+        assertThat(mapSchemaToPojo.isArray(), is(true));
+        assertThat(mapSchemaToPojo.getName(), is("Address"));
+    }
     
 
 }

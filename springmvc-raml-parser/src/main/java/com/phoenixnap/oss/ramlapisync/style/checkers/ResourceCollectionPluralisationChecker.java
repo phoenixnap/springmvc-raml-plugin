@@ -21,6 +21,7 @@ import org.raml.parser.utils.Inflector;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.phoenixnap.oss.ramlapisync.naming.NamingHelper;
 import com.phoenixnap.oss.ramlapisync.raml.RamlActionType;
 import com.phoenixnap.oss.ramlapisync.raml.RamlResource;
 import com.phoenixnap.oss.ramlapisync.raml.RamlRoot;
@@ -75,7 +76,7 @@ public class ResourceCollectionPluralisationChecker extends RamlStyleCheckerAdap
 			}
 			if (hasIdSubresource && hasVerb) {
 				logger.debug("Collection Resource identified: " + name);
-				if (Inflector.singularize(name).equals(name) && !Inflector.pluralize(name).equals(name)) {
+				if (NamingHelper.singularize(name).equals(name) && !Inflector.pluralize(name).equals(name)) {
 					issues.add(new StyleIssue(location, DESCRIPTION , resource, null));
 				}
 				break;

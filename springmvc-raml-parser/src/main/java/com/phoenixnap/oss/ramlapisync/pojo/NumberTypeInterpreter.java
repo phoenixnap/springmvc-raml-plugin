@@ -66,21 +66,6 @@ public class NumberTypeInterpreter extends BaseTypeInterpreter {
 			} else {
 				resolvedType = SchemaHelper.mapSimpleType(RamlParamType.NUMBER, format).getSimpleName();
 			}
-//				//TODO make this better
-//				if (format.equals("int64")
-//						|| format.equals("long")){
-//					resolvedType = Long.class.getSimpleName();
-//				} else if (format.equals("int32") 
-//						|| format.equals("int")) {
-//					resolvedType = Integer.class.getSimpleName();
-//				} else if (format.equals("int16")
-//						|| format.equals("int8")){
-//					resolvedType = Short.class.getSimpleName();
-//				} else if (format.equals("double")
-//						|| format.equals("float")){
-//					resolvedType = Double.class.getSimpleName();
-//				}
-//			}
 		}
 		
 		if (resolvedType.equals(Double.class.getSimpleName()) && config.isUseBigDecimals()) {

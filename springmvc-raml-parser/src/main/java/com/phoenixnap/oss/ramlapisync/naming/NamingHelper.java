@@ -18,7 +18,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.jsonschema2pojo.util.NameHelper;
-import org.raml.parser.utils.Inflector;
+import org.raml.v2.internal.utils.Inflector;
 import org.springframework.http.MediaType;
 import org.springframework.util.StringUtils;
 
@@ -315,13 +315,28 @@ public class NamingHelper {
 		if (StringUtils.hasText(resource)) {
 				String resourceName = StringUtils.capitalize(resource);
 				if (singularize) {
-					resourceName = Inflector.singularize(resourceName);
+					resourceName = singularize(resourceName);
 				} 
 				resourceName = cleanNameForJava(resourceName);
 				return resourceName;
 		}
     	
     	return null;
+	}
+	
+	/**
+	 * Singularises a string. uses underlying raml parser system
+	 * 
+	 * @param target
+	 * @return
+	 */
+	public static String singularize(String target) {
+		//TODO we should add this as an issue in the RamlBase project and provide a pull request
+		String result = Inflector.singularize(target);
+		if ((target.endsWith("ss")) && (result.equals(target.substring(0, target.length()-1)))) {
+			result = target;
+		}
+		return result;
 	}
 
 	/**
@@ -394,7 +409,7 @@ public class NamingHelper {
     				//peek
     				if (index > 0 && index == splitUrl.length-1) {
     					String peek = splitUrl[index-1].toLowerCase();
-    					if (segment.toLowerCase().contains(Inflector.singularize(peek))) {
+    					if (segment.toLowerCase().contains(NamingHelper.singularize(peek))) {
     						//this is probably the Id
     						name = name + "ById";
     					} else {
@@ -407,7 +422,7 @@ public class NamingHelper {
     				segment = cleanNameForJava(segment);
     				if (singularizeNext) { //consume singularisation
     					if (!segment.endsWith("details")) {
-    						name = Inflector.singularize(StringUtils.capitalize(segment)) + name;
+    						name = NamingHelper.singularize(StringUtils.capitalize(segment)) + name;
     					} else {
     						name = StringUtils.capitalize(segment) + name;
     					}
@@ -427,12 +442,12 @@ public class NamingHelper {
     		//Add the http verb into the mix
     		boolean collection = false;
     		String tail = splitUrl[splitUrl.length-1];
-    		if (!Inflector.singularize(tail).equals(tail) && !tail.endsWith("details")) {
+    		if (!NamingHelper.singularize(tail).equals(tail) && !tail.endsWith("details")) {
     			collection = true;
     		} 
     		String prefix = convertActionTypeToIntent(actionType, collection);
     		if (collection && RamlActionType.POST.equals(actionType)) {
-    			name = Inflector.singularize(name);
+    			name = NamingHelper.singularize(name);
     		}
     		
     		return prefix + name;
