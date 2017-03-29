@@ -102,7 +102,7 @@ public class RJP10V2RamlQueryParameter extends RamlQueryParameter {
     	if(queryParameter instanceof StringTypeDeclaration){
     		return ((StringTypeDeclaration) queryParameter).minLength();
     	}
-        throw new UnsupportedOperationException();
+    	return null;
     }
 
     @Override
@@ -110,7 +110,7 @@ public class RJP10V2RamlQueryParameter extends RamlQueryParameter {
     	if(queryParameter instanceof StringTypeDeclaration){
     		return ((StringTypeDeclaration) queryParameter).maxLength();
     	}
-        throw new UnsupportedOperationException();
+       return null;
     }
 
     @Override
@@ -118,7 +118,7 @@ public class RJP10V2RamlQueryParameter extends RamlQueryParameter {
 		if (queryParameter instanceof NumberTypeDeclaration) {
 			return BigDecimal.valueOf(((NumberTypeDeclaration) queryParameter).minimum());
     	}
-    	throw new UnsupportedOperationException();
+		return null;
     }
 
     @Override
@@ -126,7 +126,7 @@ public class RJP10V2RamlQueryParameter extends RamlQueryParameter {
     	if(queryParameter instanceof NumberTypeDeclaration){
 			return BigDecimal.valueOf(((NumberTypeDeclaration) queryParameter).maximum());
     	}
-    	throw new UnsupportedOperationException();
+    	return null;
     }
 
     @Override
@@ -134,7 +134,7 @@ public class RJP10V2RamlQueryParameter extends RamlQueryParameter {
 		if (queryParameter instanceof StringTypeDeclaration) {
 			return ((StringTypeDeclaration) queryParameter).pattern();
 		}
-    	throw new UnsupportedOperationException();
+		return null;
     }
 
     @Override

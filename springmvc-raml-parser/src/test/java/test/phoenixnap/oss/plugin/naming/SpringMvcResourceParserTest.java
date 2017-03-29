@@ -37,7 +37,7 @@ import com.phoenixnap.oss.ramlapisync.data.ApiActionMetadata;
 import com.phoenixnap.oss.ramlapisync.data.ApiResourceMetadata;
 import com.phoenixnap.oss.ramlapisync.data.RamlFormParameter;
 import com.phoenixnap.oss.ramlapisync.generation.RamlParser;
-import com.phoenixnap.oss.ramlapisync.generation.RamlVerifier;
+import com.phoenixnap.oss.ramlapisync.generation.rules.RamlLoader;
 import com.phoenixnap.oss.ramlapisync.javadoc.JavaDocEntry;
 import com.phoenixnap.oss.ramlapisync.javadoc.JavaDocExtractor;
 import com.phoenixnap.oss.ramlapisync.javadoc.JavaDocStore;
@@ -173,7 +173,7 @@ public class SpringMvcResourceParserTest {
 
     @Test
     public void test_seperateContentType__Success() throws Exception {
-        RamlRoot published = RamlVerifier.loadRamlFromFile("test-responsebody-multipletype.raml");
+        RamlRoot published = RamlLoader.loadRamlFromFile("test-responsebody-multipletype.raml");
         RamlParser par = new RamlParser("com.gen.test", "/api", true, false);
         Set<ApiResourceMetadata> controllersMetadataSet = par.extractControllers(new JCodeModel(), published);
 

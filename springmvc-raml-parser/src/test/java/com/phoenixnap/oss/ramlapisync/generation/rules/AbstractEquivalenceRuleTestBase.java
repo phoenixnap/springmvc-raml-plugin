@@ -30,8 +30,8 @@ public abstract class AbstractEquivalenceRuleTestBase extends AbstractRuleTestBa
 
     public static void initRamlModels(String raml) throws InvalidRamlResourceException {
     	String raml_10 = raml.replaceAll("-v08.raml", "-v10.raml");
-    	RAML = RamlParser.loadRamlFromFile(raml);
-    	RAML_10 = RamlParser.loadRamlFromFile(raml_10);
+    	RAML = RamlLoader.loadRamlFromFile(raml);
+    	RAML_10 = RamlLoader.loadRamlFromFile(raml_10);
     }
 
     @Before

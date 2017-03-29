@@ -4,7 +4,7 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 
 import com.phoenixnap.oss.ramlapisync.data.ApiResourceMetadata;
-import com.phoenixnap.oss.ramlapisync.generation.RamlVerifier;
+import com.phoenixnap.oss.ramlapisync.raml.InvalidRamlResourceException;
 import com.sun.codemodel.JCodeModel;
 import com.sun.codemodel.JDefinedClass;
 
@@ -20,8 +20,8 @@ public class MultipartMimeRequestTest  extends AbstractRuleTestBase {
     private Rule<JCodeModel, JDefinedClass, ApiResourceMetadata> rule;
 
     @BeforeClass
-    public static void initRaml() {
-        AbstractRuleTestBase.RAML = RamlVerifier.loadRamlFromFile("test-multipart-mime-request.raml");
+    public static void initRaml() throws InvalidRamlResourceException  {
+        AbstractRuleTestBase.RAML = RamlLoader.loadRamlFromFile("test-multipart-mime-request.raml");
     }
 
     @Test

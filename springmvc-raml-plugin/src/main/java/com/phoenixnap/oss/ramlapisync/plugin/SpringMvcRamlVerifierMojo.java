@@ -14,8 +14,10 @@ package com.phoenixnap.oss.ramlapisync.plugin;
 
 import com.phoenixnap.oss.ramlapisync.generation.RamlGenerator;
 import com.phoenixnap.oss.ramlapisync.generation.RamlVerifier;
+import com.phoenixnap.oss.ramlapisync.generation.rules.RamlLoader;
 import com.phoenixnap.oss.ramlapisync.parser.ResourceParser;
 import com.phoenixnap.oss.ramlapisync.parser.SpringMvcResourceParser;
+import com.phoenixnap.oss.ramlapisync.raml.InvalidRamlResourceException;
 import com.phoenixnap.oss.ramlapisync.raml.RamlRoot;
 import com.phoenixnap.oss.ramlapisync.style.RamlStyleChecker;
 import com.phoenixnap.oss.ramlapisync.style.checkers.ActionSecurityResponseChecker;
@@ -188,7 +190,7 @@ public class SpringMvcRamlVerifierMojo extends CommonApiSyncMojo {
 		return new Class[] { Controller.class, RestController.class };
 	}
 
-	protected void verifyRaml() throws MojoExecutionException, MojoFailureException, IOException {
+	protected void verifyRaml() throws MojoExecutionException, MojoFailureException, IOException, InvalidRamlResourceException  {
 
 		super.prepareRaml();
 
@@ -275,7 +277,10 @@ public class SpringMvcRamlVerifierMojo extends CommonApiSyncMojo {
 			}
 		}
 		
-		RamlVerifier verifier = new RamlVerifier(RamlVerifier.loadRamlFromFile(ramlToVerifyPath), implementedRaml, checkers, actionCheckers, resourceCheckers, styleCheckers, StringUtils.hasText(uriPrefixToIgnore) ? uriPrefixToIgnore : null);
+		
+		RamlRoot loadRamlFromFile = RamlLoader.loadRamlFromFile(ramlToVerifyPath);
+		
+		RamlVerifier verifier = new RamlVerifier(loadRamlFromFile, implementedRaml, checkers, actionCheckers, resourceCheckers, styleCheckers, StringUtils.hasText(uriPrefixToIgnore) ? uriPrefixToIgnore : null);
 		if (verifier.hasWarnings() && logWarnings) {
 				for (Issue issue : verifier.getWarnings()) {
 					this.getLog().warn(issue.toString());
@@ -312,7 +317,11 @@ public class SpringMvcRamlVerifierMojo extends CommonApiSyncMojo {
 				ClassLoaderUtils.restoreOriginalClassLoader();
 				throw new MojoExecutionException(e, "Unexpected exception while executing Raml Sync Plugin.",
 						e.toString());
+			} catch (InvalidRamlResourceException e) {
+	            throw new MojoExecutionException(e, "Supplied RAML has failed validation and cannot be loaded.",
+	                     e.toString());
 			}
+
 		}
 		this.getLog().info("Raml Verification Complete in:" + (System.currentTimeMillis() - startTime) + "ms");
 	}

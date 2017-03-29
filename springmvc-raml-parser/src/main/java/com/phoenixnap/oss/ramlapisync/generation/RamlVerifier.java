@@ -24,9 +24,7 @@ import org.springframework.util.StringUtils;
 
 import com.phoenixnap.oss.ramlapisync.naming.Pair;
 import com.phoenixnap.oss.ramlapisync.naming.RamlHelper;
-import com.phoenixnap.oss.ramlapisync.raml.RamlModelFactoryOfFactories;
 import com.phoenixnap.oss.ramlapisync.raml.RamlRoot;
-import com.phoenixnap.oss.ramlapisync.raml.RamlVersion;
 import com.phoenixnap.oss.ramlapisync.style.RamlStyleCheckVisitorCoordinator;
 import com.phoenixnap.oss.ramlapisync.style.RamlStyleChecker;
 import com.phoenixnap.oss.ramlapisync.verification.Issue;
@@ -161,21 +159,6 @@ public class RamlVerifier {
 		}
 	}
 	
-	/**
-	 * Loads a RAML document from a file. 
-	 * 
-	 * @param ramlFileUrl The path to the file, this can either be a resource on the class path (in which case the classpath: prefix should be omitted) or a file on disk (in which case the file: prefix should be included)
-	 * @return Built Raml model
-	 */
-	public static RamlRoot loadRamlFromFile(String ramlFileUrl) {
-		try {			
-			return RamlModelFactoryOfFactories.createRamlModelFactoryFor(ramlFileUrl, RamlVersion.V08).createRamlRoot(ramlFileUrl);
-		} catch (NullPointerException npe) {
-			logger.error("File not found at " + ramlFileUrl);
-			return null;
-		}
-	}
-
 	/**
 	 * Retrieve the Errors identified
 	 * 

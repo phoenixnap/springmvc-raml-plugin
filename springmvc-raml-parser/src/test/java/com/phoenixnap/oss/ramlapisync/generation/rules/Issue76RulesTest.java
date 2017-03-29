@@ -9,7 +9,6 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 
 import com.phoenixnap.oss.ramlapisync.data.ApiResourceMetadata;
-import com.phoenixnap.oss.ramlapisync.generation.RamlParser;
 import com.phoenixnap.oss.ramlapisync.raml.InvalidRamlResourceException;
 
 /**
@@ -20,7 +19,7 @@ public class Issue76RulesTest extends AbstractRuleTestBase {
 
 	@BeforeClass
 	public static void initRaml() throws InvalidRamlResourceException {
-		AbstractRuleTestBase.RAML = RamlParser.loadRamlFromFile(AbstractRuleTestBase.RESOURCE_BASE + "issue-76.raml");
+		AbstractRuleTestBase.RAML = RamlLoader.loadRamlFromFile(AbstractRuleTestBase.RESOURCE_BASE + "issue-76.raml");
 	}
 	
 	@Test

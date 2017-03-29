@@ -7,7 +7,6 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 
 import com.phoenixnap.oss.ramlapisync.data.ApiResourceMetadata;
-import com.phoenixnap.oss.ramlapisync.generation.RamlParser;
 import com.phoenixnap.oss.ramlapisync.generation.rules.spring.SpringConfigurableRule;
 import com.phoenixnap.oss.ramlapisync.raml.InvalidRamlResourceException;
 import com.sun.codemodel.JCodeModel;
@@ -23,7 +22,7 @@ public class Issue117RulesTest extends AbstractRuleTestBase {
 
 	@BeforeClass
 	public static void initRaml() throws InvalidRamlResourceException  {
-		AbstractRuleTestBase.RAML = RamlParser.loadRamlFromFile(AbstractRuleTestBase.RESOURCE_BASE + "issue-117.raml");
+		AbstractRuleTestBase.RAML = RamlLoader.loadRamlFromFile(AbstractRuleTestBase.RESOURCE_BASE + "issue-117.raml");
 	}
 	
 	@Test

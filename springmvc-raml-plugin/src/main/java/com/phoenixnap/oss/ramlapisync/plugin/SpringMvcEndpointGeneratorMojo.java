@@ -44,6 +44,7 @@ import com.phoenixnap.oss.ramlapisync.data.ApiBodyMetadata;
 import com.phoenixnap.oss.ramlapisync.data.ApiResourceMetadata;
 import com.phoenixnap.oss.ramlapisync.generation.RamlParser;
 import com.phoenixnap.oss.ramlapisync.generation.rules.ConfigurableRule;
+import com.phoenixnap.oss.ramlapisync.generation.rules.RamlLoader;
 import com.phoenixnap.oss.ramlapisync.generation.rules.Rule;
 import com.phoenixnap.oss.ramlapisync.generation.rules.Spring4ControllerStubRule;
 import com.phoenixnap.oss.ramlapisync.naming.NamingHelper;
@@ -214,7 +215,7 @@ public class SpringMvcEndpointGeneratorMojo extends AbstractMojo {
         // Resolve schema location and add to classpath
         resolvedSchemaLocation = getSchemaLocation();
         
-        RamlRoot loadRamlFromFile = RamlParser.loadRamlFromFile(new File(resolvedRamlPath).toURI().toString());
+        RamlRoot loadRamlFromFile = RamlLoader.loadRamlFromFile(new File(resolvedRamlPath).toURI().toString());
         
         JCodeModel codeModel = null;
         //In the RJP10V2 we have support for a unified code model. RJP08V1 does not work well with this.

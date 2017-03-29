@@ -3,7 +3,6 @@ package com.phoenixnap.oss.ramlapisync.generation.rules;
 import org.junit.Test;
 
 import com.phoenixnap.oss.ramlapisync.data.ApiResourceMetadata;
-import com.phoenixnap.oss.ramlapisync.generation.RamlParser;
 import com.phoenixnap.oss.ramlapisync.generation.rules.spring.SpringFeignClientInterfaceDecoratorRule;
 import com.sun.codemodel.JCodeModel;
 import com.sun.codemodel.JDefinedClass;
@@ -19,7 +18,7 @@ public class SpringFeignClientRulesTest extends AbstractRuleTestBase {
     @Test
 	public void applySpringFeignClient_shouldCreate_validCode() throws Exception {
 
-		AbstractRuleTestBase.RAML = RamlParser.loadRamlFromFile("test-feign-client.raml");
+		AbstractRuleTestBase.RAML = RamlLoader.loadRamlFromFile("test-feign-client.raml");
 
 		rule = new SpringFeignClientInterfaceDecoratorRule();
 		rule.apply(getControllerMetadata(), jCodeModel);
@@ -29,7 +28,7 @@ public class SpringFeignClientRulesTest extends AbstractRuleTestBase {
 	@Test
 	public void applySpringFeignClient_shouldCreate_defaultVaules() throws Exception {
 
-		AbstractRuleTestBase.RAML = RamlParser.loadRamlFromFile("test-default-values.raml");
+		AbstractRuleTestBase.RAML = RamlLoader.loadRamlFromFile("test-default-values.raml");
 
         rule = new SpringFeignClientInterfaceDecoratorRule();
         rule.apply(getControllerMetadata(), jCodeModel);

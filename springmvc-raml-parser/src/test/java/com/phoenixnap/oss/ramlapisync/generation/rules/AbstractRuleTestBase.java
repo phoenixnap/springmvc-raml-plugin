@@ -26,7 +26,6 @@ import org.junit.BeforeClass;
 import com.phoenixnap.oss.ramlapisync.data.ApiActionMetadata;
 import com.phoenixnap.oss.ramlapisync.data.ApiResourceMetadata;
 import com.phoenixnap.oss.ramlapisync.generation.RamlParser;
-import com.phoenixnap.oss.ramlapisync.generation.RamlVerifier;
 import com.phoenixnap.oss.ramlapisync.raml.InvalidRamlResourceException;
 import com.phoenixnap.oss.ramlapisync.raml.RamlRoot;
 import com.sun.codemodel.JCodeModel;
@@ -55,7 +54,7 @@ public abstract class AbstractRuleTestBase {
 
     @BeforeClass
     public static void initRaml() throws InvalidRamlResourceException {
-        RAML = RamlVerifier.loadRamlFromFile(RESOURCE_BASE + "test-single-controller.raml");
+        RAML = RamlLoader.loadRamlFromFile(RESOURCE_BASE + "test-single-controller.raml");
     }
 
     @Before
