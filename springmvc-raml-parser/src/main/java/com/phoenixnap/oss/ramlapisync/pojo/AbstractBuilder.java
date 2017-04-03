@@ -143,6 +143,15 @@ public class AbstractBuilder {
 	}
 
 	protected JClass resolveType(String type) {
+		//first try exact match
+		JDefinedClass jDefinedClass = pojoModel._getClass(type);
+		if (jDefinedClass != null) {
+			return jDefinedClass;
+		}
+		if (type.contains(".")) {
+			int lastIndexOf = type.lastIndexOf(".");
+			type.substring(lastIndexOf+1);
+		}
 		return CodeModelHelper.findFirstClassBySimpleName(pojoModel, type);
 	}
 	

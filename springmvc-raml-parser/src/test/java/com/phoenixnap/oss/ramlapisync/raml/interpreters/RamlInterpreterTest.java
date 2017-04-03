@@ -244,6 +244,25 @@ public class RamlInterpreterTest {
     }
     
     @Test
+    public void interpretGetResponseBodyInheritanceModel() {
+        assertThat(ramlRoot, is(notNullValue()));
+        RamlResource songs = ramlRoot.getResource("/songs");
+        RamlDataType songsGetType = songs.getAction(RamlActionType.GET).getResponses().get("200").getBody().get("application/json").getType();
+        assertThat(songsGetType, is(notNullValue()));        
+        ApiBodyMetadata songsGetRequest = RamlTypeHelper.mapTypeToPojo( config, jCodeModel, ramlRoot, songsGetType.getType(), "testName");
+        assertThat(songsGetRequest, is(notNullValue()));   
+        
+        assertThat(songsGetRequest.isArray(), is(false)); 
+     
+        JDefinedClass responsePOJO = getResponsePOJO("/songs", "Song");
+        assertThat(responsePOJO.name(), is("Song"));
+        JFieldVar jFieldVar = responsePOJO.fields().get("fee");
+        assertThat(jFieldVar.type().name(), is("FeeCategory")); 
+        assertThat(jFieldVar.type().getClass().getName(), is(JDefinedClass.class.getName()));
+		checkIntegration(jCodeModel);
+    }
+    
+    @Test
     public void interpretGetResponseBody() {
         assertThat(ramlRoot, is(notNullValue()));
         RamlResource managers = ramlRoot.getResource("/managers");
@@ -313,14 +332,14 @@ public class RamlInterpreterTest {
 	@Test
 	public void checkDefaultTypeOfItemInArray() {
 
-		JFieldVar field = getField(getResponsePOJO("/validations"), "testDefArray");
+		JFieldVar field = getField(getResponsePOJO("/validations", "Validation"), "testDefArray");
 		assertThat(field.type().fullName(), is("java.util.List<Object>"));
 	}
 
 	@Test
 	public void checkTypeOfFile() {
 
-		JFieldVar field = getField(getResponsePOJO("/validations"), "fileObject");
+		JFieldVar field = getField(getResponsePOJO("/validations", "Validation"), "fileObject");
 		assertThat(field.type().fullName(), is("Object"));
 	}
 	
@@ -353,7 +372,7 @@ public class RamlInterpreterTest {
 	@Test
 	public void checkTypeOfDates() {
 
-		JDefinedClass pojo = getResponsePOJO("/validations");
+		JDefinedClass pojo = getResponsePOJO("/validations", "Validation");
 		
 		JFieldVar field = getField(pojo, "dateO");
 		assertThat(field.type().fullName(), is("java.util.Date"));
@@ -368,7 +387,7 @@ public class RamlInterpreterTest {
 		assertThat(field.type().fullName(), is("java.util.Date"));
 	}
 
-	private JDefinedClass getResponsePOJO(String resource) {
+	private JDefinedClass getResponsePOJO(String resource, String pojoName) {
 
 		assertThat(ramlRoot, is(notNullValue()));
 		PojoGenerationConfig jsr303Config = new PojoGenerationConfig().withPackage("com.gen.foo", "")
@@ -379,7 +398,7 @@ public class RamlInterpreterTest {
 				.get("application/json").getType();
 		RamlTypeHelper.mapTypeToPojo(jsr303Config, jCodeModel, ramlRoot, validationsGetType.getType(), "testName");
 
-		return (JDefinedClass) CodeModelHelper.findFirstClassBySimpleName(jCodeModel, "Validation");
+		return (JDefinedClass) CodeModelHelper.findFirstClassBySimpleName(jCodeModel, pojoName);
 	}
     
     

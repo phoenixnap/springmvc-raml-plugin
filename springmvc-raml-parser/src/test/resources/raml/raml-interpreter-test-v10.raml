@@ -1,8 +1,25 @@
 #%RAML 1.0
 title: myapi
 baseUri: api
-mediaType: application/json
+mediaType: application/json 
 types:
+  FeeParent:
+    type : object
+    properties: 
+      abc: string
+  FeeCategory:
+    type : FeeParent
+    properties: 
+      efg: string
+  Song:
+    type: object
+    properties: 
+      songId: string
+      songTitle: string
+      artist: string
+      fee:
+        type: FeeCategory
+        required: false
   BigStuff:
     type: object
     properties:
@@ -81,6 +98,14 @@ types:
     type: NestedArrayPerson
     properties:
       childList: Person[]
+/songs:
+  get:
+    displayName: getPersons
+    responses:
+      200:
+        body:
+          application/json:
+            type: Song
 /bigStuff:
   get:
     responses:

@@ -110,33 +110,34 @@ public class EnumBuilder extends AbstractBuilder {
 	
 	public EnumBuilder withValueField(Class<?> type) {
 		pojoCreationCheck();
-		
-		//Create Field
-		valueField = this.pojo.field(JMod.PRIVATE | JMod.FINAL, type, "value");
-		
-		//Create private Constructor
-        JMethod constructor =  this.pojo.constructor(JMod.PRIVATE);
-        JVar valueParam = constructor.param(type, "value");
-        constructor.body().assign(JExpr._this().ref(valueField), valueParam);
-        
-        //add values to map
-        JClass lookupType = this.pojo.owner().ref(Map.class).narrow(valueField.type().boxify(), this.pojo);
-        lookupMap = this.pojo.field(JMod.PRIVATE | JMod.STATIC | JMod.FINAL, lookupType, "VALUE_CACHE");
-
-        JClass lookupImplType = this.pojo.owner().ref(HashMap.class).narrow(valueField.type().boxify(), this.pojo);
-        lookupMap.init(JExpr._new(lookupImplType));
-
-        JForEach forEach = this.pojo.init().forEach(this.pojo, "c", JExpr.invoke("values"));
-        JInvocation put = forEach.body().invoke(lookupMap, "put");
-        put.arg(forEach.var().ref("value"));
-        put.arg(forEach.var());
-        
-        //Add method to retrieve value
-        JMethod fromValue = this.pojo.method(JMod.PUBLIC, valueField.type(), "value");
-        fromValue.body()._return(JExpr._this().ref(valueField));
-        
-        addFromValueMethod();
-        addToStringMethod();
+		if (!this.pojo.fields().containsKey("value")) {
+			//Create Field
+			valueField = this.pojo.field(JMod.PRIVATE | JMod.FINAL, type, "value");
+			
+			//Create private Constructor
+	        JMethod constructor =  this.pojo.constructor(JMod.PRIVATE);
+	        JVar valueParam = constructor.param(type, "value");
+	        constructor.body().assign(JExpr._this().ref(valueField), valueParam);
+	        
+	        //add values to map
+	        JClass lookupType = this.pojo.owner().ref(Map.class).narrow(valueField.type().boxify(), this.pojo);
+	        lookupMap = this.pojo.field(JMod.PRIVATE | JMod.STATIC | JMod.FINAL, lookupType, "VALUE_CACHE");
+	
+	        JClass lookupImplType = this.pojo.owner().ref(HashMap.class).narrow(valueField.type().boxify(), this.pojo);
+	        lookupMap.init(JExpr._new(lookupImplType));
+	
+	        JForEach forEach = this.pojo.init().forEach(this.pojo, "c", JExpr.invoke("values"));
+	        JInvocation put = forEach.body().invoke(lookupMap, "put");
+	        put.arg(forEach.var().ref("value"));
+	        put.arg(forEach.var());
+	        
+	        //Add method to retrieve value
+	        JMethod fromValue = this.pojo.method(JMod.PUBLIC, valueField.type(), "value");
+	        fromValue.body()._return(JExpr._this().ref(valueField));
+	        
+	        addFromValueMethod();
+	        addToStringMethod();
+		}
         return this;
 	}
 	
@@ -162,10 +163,7 @@ public class EnumBuilder extends AbstractBuilder {
 
 	public <T> EnumBuilder withEnum(T name, Class<T> type) {
 		pojoCreationCheck();
-		if (valueField == null) {
-			withValueField(type);
-		}
-		
+		withValueField(type);
 		String cleaned = name.toString().replaceAll(NameHelper.ILLEGAL_CHARACTER_REGEX, "_").toUpperCase();
 		logger.debug("Adding field: " + name + " to " + this.pojo.name());
 		if (StringUtils.hasText(cleaned)) {

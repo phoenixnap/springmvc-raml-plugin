@@ -43,8 +43,9 @@ public interface RamlTypeInterpreter {
 	 * @param type The particular node/type being interpreted
 	 * @param builderModel The JCodeModel where code is being stored
 	 * @param config Configuration relating to the generation of code
+	 * @param property When parsing properties inside a type this should be flagged to true
 	 * @return a {@link RamlInterpretationResult}
 	 */
-	RamlInterpretationResult interpret(RamlRoot document, TypeDeclaration type, JCodeModel builderModel, PojoGenerationConfig config);
+	RamlInterpretationResult interpret(RamlRoot document, TypeDeclaration type, JCodeModel builderModel, PojoGenerationConfig config, boolean property);
 
 }

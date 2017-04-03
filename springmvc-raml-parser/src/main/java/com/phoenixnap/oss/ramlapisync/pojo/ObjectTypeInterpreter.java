@@ -47,7 +47,7 @@ public class ObjectTypeInterpreter extends BaseTypeInterpreter {
 
 	@Override
 	public RamlInterpretationResult interpret(RamlRoot document, TypeDeclaration type, JCodeModel builderModel,
-			PojoGenerationConfig config) {
+			PojoGenerationConfig config, boolean property) {
 		RamlInterpretationResult result = new RamlInterpretationResult(type.required());
 		typeCheck(type);
 
@@ -59,7 +59,13 @@ public class ObjectTypeInterpreter extends BaseTypeInterpreter {
 		//When we have base arrays with type in the object they differ from Type[] notated types. I'm not sure if this should be handled in the Array or in the ObjectInterpreter...
 		if(RamlTypeHelper.isBaseObject(objectType.name()) && !RamlTypeHelper.isBaseObject(typeName)) {
 			//lets enter type and use that.
-			return interpret(document, type.parentTypes().get(0), builderModel, config);
+			return interpret(document, type.parentTypes().get(0), builderModel, config, property);
+		}
+		
+		//When we have base objects we need to use them as type not blindly create them
+		if(!RamlTypeHelper.isBaseObject(objectType.name()) && !RamlTypeHelper.isBaseObject(typeName) && property) {
+			name = typeName;
+			typeName = types.get(name).getType().type();
 		}
 		
 		// For mime types we need to take the type not the name
@@ -103,16 +109,16 @@ public class ObjectTypeInterpreter extends BaseTypeInterpreter {
 		}
 		
 		if (parent != null && !(parent.name().equals(name))) { //add cyclic dependency check
-			RamlInterpretationResult childResult = RamlInterpreterFactory.getInterpreterForType(parent).interpret(document, parent, builderModel, config);
+			RamlInterpretationResult childResult = RamlInterpreterFactory.getInterpreterForType(parent).interpret(document, parent, builderModel, config, false);
 			String childType = childResult.getResolvedClassOrBuiltOrObject().name();
 			builder.extendsClass(childType);
 		}
 
-		for (TypeDeclaration property : objectType.properties()) {
-			RamlInterpretationResult childResult = RamlInterpreterFactory.getInterpreterForType(property).interpret(
-					document, property, builderModel, config);
+		for (TypeDeclaration objectProperty : objectType.properties()) {
+			RamlInterpretationResult childResult = RamlInterpreterFactory.getInterpreterForType(objectProperty).interpret(
+					document, objectProperty, builderModel, config, true);
 			String childType = childResult.getResolvedClassOrBuiltOrObject().fullName();
-			builder.withField(property.name(), childType, RamlTypeHelper.getDescription(property), childResult.getValidations());
+			builder.withField(objectProperty.name(), childType, RamlTypeHelper.getDescription(objectProperty), childResult.getValidations());
 			
 		}
 
