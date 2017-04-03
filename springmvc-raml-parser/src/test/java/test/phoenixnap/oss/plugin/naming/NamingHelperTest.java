@@ -110,6 +110,7 @@ public class NamingHelperTest {
 	@Test
 	public void test_enumNaming_Success() {
 		assertEquals("SOMETHING_WORDY", NamingHelper.cleanNameForJavaEnum("somethingWordy"));
+		assertEquals("SOMETHING_WORDY", NamingHelper.cleanNameForJavaEnum("SomethingWordy"));
 		assertEquals("SOMETHING_WORDY", NamingHelper.cleanNameForJavaEnum("something Wordy"));
 		assertEquals("SOMETHING_WORDY", NamingHelper.cleanNameForJavaEnum("SOMETHING WORDY"));
 		assertEquals("SOMETHING_WORDY", NamingHelper.cleanNameForJavaEnum("something wordy"));
