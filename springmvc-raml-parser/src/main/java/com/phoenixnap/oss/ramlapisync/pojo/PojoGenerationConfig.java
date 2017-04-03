@@ -12,6 +12,8 @@
  */
 package com.phoenixnap.oss.ramlapisync.pojo;
 
+import org.jsonschema2pojo.GenerationConfig;
+
 import com.phoenixnap.oss.ramlapisync.naming.NamingHelper;
 
 /**
@@ -114,6 +116,21 @@ public class PojoGenerationConfig {
 	public PojoGenerationConfig withBigIntegers(boolean useBigIntegers) {
 		this.useBigIntegers = useBigIntegers;
 		return this;
+	}
+	
+	/**
+	 * Applies a JSONSchema2Pojo config to this config
+	 * 
+	 * @param generationConfig the config from which values will be pulled
+	 */
+	public void apply(GenerationConfig generationConfig) {
+		this
+		.withLongIntegers(generationConfig.isUseLongIntegers())
+		.withCommonsLang3(generationConfig.isUseCommonsLang3())
+		.withBigDecimals(generationConfig.isUseBigDecimals())
+		.withBigIntegers(generationConfig.isUseBigIntegers())
+		.withJSR303Annotations(generationConfig.isIncludeJsr303Annotations())
+		.withHashcodeEqualsToString((generationConfig.isIncludeHashcodeAndEquals() && generationConfig.isIncludeToString()));
 	}
 	
 

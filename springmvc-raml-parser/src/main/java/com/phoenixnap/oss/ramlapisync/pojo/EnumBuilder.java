@@ -12,16 +12,29 @@
  */
 package com.phoenixnap.oss.ramlapisync.pojo;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
+import org.jsonschema2pojo.util.NameHelper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.util.StringUtils;
 
 import com.phoenixnap.oss.ramlapisync.naming.NamingHelper;
 import com.sun.codemodel.ClassType;
+import com.sun.codemodel.JClass;
 import com.sun.codemodel.JClassAlreadyExistsException;
 import com.sun.codemodel.JCodeModel;
+import com.sun.codemodel.JEnumConstant;
+import com.sun.codemodel.JExpr;
+import com.sun.codemodel.JExpression;
+import com.sun.codemodel.JFieldVar;
+import com.sun.codemodel.JForEach;
+import com.sun.codemodel.JInvocation;
+import com.sun.codemodel.JMethod;
+import com.sun.codemodel.JMod;
+import com.sun.codemodel.JVar;
 
 /**
  * Builder pattern for Enum generation using jCodeModel. 
@@ -33,6 +46,10 @@ import com.sun.codemodel.JCodeModel;
 public class EnumBuilder extends AbstractBuilder {
 
 	protected static final Logger logger = LoggerFactory.getLogger(EnumBuilder.class);
+	
+	private JFieldVar valueField = null;
+	
+	private JFieldVar lookupMap = null;
 
 	public EnumBuilder() {
 		super();
@@ -90,23 +107,94 @@ public class EnumBuilder extends AbstractBuilder {
 		this.codeModels.put(fullyQualifiedClassName, this.pojo);
 		return this;
 	}
-
-
-	public EnumBuilder withEnum(String name) {
+	
+	public EnumBuilder withValueField(Class<?> type) {
 		pojoCreationCheck();
-		name = NamingHelper.cleanNameForJava(name);
+		
+		//Create Field
+		valueField = this.pojo.field(JMod.PRIVATE | JMod.FINAL, type, "value");
+		
+		//Create private Constructor
+        JMethod constructor =  this.pojo.constructor(JMod.PRIVATE);
+        JVar valueParam = constructor.param(type, "value");
+        constructor.body().assign(JExpr._this().ref(valueField), valueParam);
+        
+        //add values to map
+        JClass lookupType = this.pojo.owner().ref(Map.class).narrow(valueField.type().boxify(), this.pojo);
+        lookupMap = this.pojo.field(JMod.PRIVATE | JMod.STATIC | JMod.FINAL, lookupType, "VALUE_CACHE");
+
+        JClass lookupImplType = this.pojo.owner().ref(HashMap.class).narrow(valueField.type().boxify(), this.pojo);
+        lookupMap.init(JExpr._new(lookupImplType));
+
+        JForEach forEach = this.pojo.init().forEach(this.pojo, "c", JExpr.invoke("values"));
+        JInvocation put = forEach.body().invoke(lookupMap, "put");
+        put.arg(forEach.var().ref("value"));
+        put.arg(forEach.var());
+        
+        //Add method to retrieve value
+        JMethod fromValue = this.pojo.method(JMod.PUBLIC, valueField.type(), "value");
+        fromValue.body()._return(JExpr._this().ref(valueField));
+        
+        addFromValueMethod();
+        addToStringMethod();
+        return this;
+	}
+	
+	
+	private void addFromValueMethod() {
+        JMethod fromValue = this.pojo.method(JMod.PUBLIC | JMod.STATIC, this.pojo, "fromValue");
+        JVar valueParam = fromValue.param(valueField.type(), "value");
+
+        fromValue.body()._return(lookupMap.invoke("get").arg(valueParam));
+    }
+	
+	private void addToStringMethod() {
+		JMethod toString = this.pojo.method(JMod.PUBLIC, String.class, "toString");
+		toString.annotate(Override.class);
+		
+	    JExpression toReturn = JExpr._this().ref(valueField);
+	    if (!valueField.type().fullName().equals(String.class.getName())) {
+	    	toReturn = toReturn.invoke("toString");
+	    }
+	    toString.body()._return(toReturn);	
+	    
+	}
+
+	public <T> EnumBuilder withEnum(T name, Class<T> type) {
+		pojoCreationCheck();
+		if (valueField == null) {
+			withValueField(type);
+		}
+		
+		String cleaned = name.toString().replaceAll(NameHelper.ILLEGAL_CHARACTER_REGEX, "_").toUpperCase();
 		logger.debug("Adding field: " + name + " to " + this.pojo.name());
-		if (StringUtils.hasText(name)) {
-			this.pojo.enumConstant(name);
+		if (StringUtils.hasText(cleaned)) {
+			JEnumConstant enumConstant = this.pojo.enumConstant(cleaned);
+			if (type.equals(Integer.class)) {
+				enumConstant.arg(JExpr.lit((Integer)name));
+			} else if (type.equals(Boolean.class)) {
+				enumConstant.arg(JExpr.lit((Boolean)name));
+			} else if (type.equals(Double.class)) {
+				enumConstant.arg(JExpr.lit((Double)name));
+			} else if (type.equals(Float.class)) {
+				enumConstant.arg(JExpr.lit((Float)name));
+			} else if (type.equals(Long.class)) {
+				enumConstant.arg(JExpr.lit((Long)name));
+			} else {
+				enumConstant.arg(JExpr.lit(name.toString()));
+			}
+            
 		}
 		return this;
 	}
 	
-	public EnumBuilder withEnums(List<String> names) {
+	public <T> EnumBuilder withEnums(List<? extends T> names, Class<T> type) {
 		pojoCreationCheck();
+		//
+		
 		if (names != null && !names.isEmpty()) {
-			for(String name : names) {
-				withEnum(name);
+			for(T name : names) {
+				withEnum(name, type);
 			}
 		}
 		return this;

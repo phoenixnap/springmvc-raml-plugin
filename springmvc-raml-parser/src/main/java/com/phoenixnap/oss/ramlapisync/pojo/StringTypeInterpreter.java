@@ -56,7 +56,7 @@ public class StringTypeInterpreter extends BaseTypeInterpreter {
 					enumName = stringType.name();
 				}
 				EnumBuilder builder = new EnumBuilder(config, builderModel, enumName);
-				builder.withEnums(stringType.enumValues());
+				builder.withEnums(stringType.enumValues(), String.class);
 				result.setBuilder(builder); 
 				result.setCodeModel(builderModel);
 			} 

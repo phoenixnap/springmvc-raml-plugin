@@ -23,7 +23,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.util.MimeType;
 import org.springframework.util.StringUtils;
 
-import com.phoenixnap.oss.ramlapisync.generation.CodeModelHelper;
 import com.phoenixnap.oss.ramlapisync.naming.RamlTypeHelper;
 import com.phoenixnap.oss.ramlapisync.raml.RamlDataType;
 import com.phoenixnap.oss.ramlapisync.raml.RamlRoot;
