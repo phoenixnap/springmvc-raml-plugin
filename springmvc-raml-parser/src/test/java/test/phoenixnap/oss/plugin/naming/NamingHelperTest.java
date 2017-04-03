@@ -106,5 +106,18 @@ public class NamingHelperTest {
 		assertEquals("Should deal extract versions", "_StuffAsJson", NamingHelper.convertContentTypeToQualifier("application/stuff+json"));
 		
 	}
+	
+	@Test
+	public void test_enumNaming_Success() {
+		assertEquals("SOMETHING_WORDY", NamingHelper.cleanNameForJavaEnum("somethingWordy"));
+		assertEquals("SOMETHING_WORDY", NamingHelper.cleanNameForJavaEnum("something Wordy"));
+		assertEquals("SOMETHING_WORDY", NamingHelper.cleanNameForJavaEnum("SOMETHING WORDY"));
+		assertEquals("SOMETHING_WORDY", NamingHelper.cleanNameForJavaEnum("something wordy"));
+		assertEquals("SOMETHING_WORDY", NamingHelper.cleanNameForJavaEnum("some@#%(@%thing wordy"));
+		assertEquals("AB_CDEF", NamingHelper.cleanNameForJavaEnum("ABCdef"));
+		assertEquals("ABC", NamingHelper.cleanNameForJavaEnum("ABC"));
+		assertEquals("A_B_CD", NamingHelper.cleanNameForJavaEnum("a b CD"));
+		assertEquals("A_B_CD", NamingHelper.cleanNameForJavaEnum("a b cD"));
+	}
 
 }

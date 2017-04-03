@@ -29,6 +29,7 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
+import org.raml.v2.internal.utils.Inflector;
 
 import com.phoenixnap.oss.ramlapisync.data.ApiBodyMetadata;
 import com.phoenixnap.oss.ramlapisync.data.ApiResourceMetadata;
@@ -337,7 +338,6 @@ public class RamlInterpreterTest {
 
 	@Test
 	public void checkDefaultTypeOfItemInArray() {
-
 		JFieldVar field = getField(getResponsePOJO("/validations", "Validation"), "testDefArray");
 		assertThat(field.type().fullName(), is("java.util.List<Object>"));
 	}
