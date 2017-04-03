@@ -17,10 +17,14 @@ import java.io.InputStream;
 import java.util.Iterator;
 import java.util.Properties;
 
+import org.apache.commons.io.output.StringBuilderWriter;
+
 import com.phoenixnap.oss.ramlapisync.generation.exception.InvalidCodeModelException;
 import com.sun.codemodel.JClass;
 import com.sun.codemodel.JCodeModel;
+import com.sun.codemodel.JDeclaration;
 import com.sun.codemodel.JDefinedClass;
+import com.sun.codemodel.JFormatter;
 import com.sun.codemodel.JMethod;
 import com.sun.codemodel.JPackage;
 import com.sun.codemodel.JType;
@@ -33,6 +37,18 @@ import com.sun.codemodel.JType;
  * @since 0.4.1
  */
 public abstract class CodeModelHelper {
+	
+	/**
+	 * Returns the string equivalent of the code model element
+	 * @param type The element to stringify
+	 * @return the element as a string (generated code)
+	 */
+	public static String getElementAsString(JDeclaration type) {
+		StringBuilder builder = new StringBuilder();
+		JFormatter jFormatter = new JFormatter(new StringBuilderWriter(builder));
+		type.declare(jFormatter);
+		return builder.toString();
+	}
 	
 	/**
      *	Searches inside a JCodeModel for a class with a specified name ignoring package

@@ -21,6 +21,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.util.StringUtils;
 
+import com.phoenixnap.oss.ramlapisync.generation.CodeModelHelper;
 import com.phoenixnap.oss.ramlapisync.naming.NamingHelper;
 import com.sun.codemodel.ClassType;
 import com.sun.codemodel.JClass;
@@ -50,6 +51,8 @@ public class EnumBuilder extends AbstractBuilder {
 	private JFieldVar valueField = null;
 	
 	private JFieldVar lookupMap = null;
+	
+	private transient Map<String, Boolean> ENUM_CACHE = new HashMap<>();
 
 	public EnumBuilder() {
 		super();
@@ -163,27 +166,42 @@ public class EnumBuilder extends AbstractBuilder {
 
 	public <T> EnumBuilder withEnum(T name, Class<T> type) {
 		pojoCreationCheck();
-		withValueField(type);
 		String cleaned = name.toString().replaceAll(NameHelper.ILLEGAL_CHARACTER_REGEX, "_").toUpperCase();
-		logger.debug("Adding field: " + name + " to " + this.pojo.name());
-		if (StringUtils.hasText(cleaned)) {
-			JEnumConstant enumConstant = this.pojo.enumConstant(cleaned);
-			if (type.equals(Integer.class)) {
-				enumConstant.arg(JExpr.lit((Integer)name));
-			} else if (type.equals(Boolean.class)) {
-				enumConstant.arg(JExpr.lit((Boolean)name));
-			} else if (type.equals(Double.class)) {
-				enumConstant.arg(JExpr.lit((Double)name));
-			} else if (type.equals(Float.class)) {
-				enumConstant.arg(JExpr.lit((Float)name));
-			} else if (type.equals(Long.class)) {
-				enumConstant.arg(JExpr.lit((Long)name));
-			} else {
-				enumConstant.arg(JExpr.lit(name.toString()));
+		if (!doesEnumContainField(cleaned)) {
+			withValueField(type);
+			ENUM_CACHE.put(cleaned, true);
+			logger.debug("Adding field: " + name + " to " + this.pojo.name());
+			if (StringUtils.hasText(cleaned)) {
+				JEnumConstant enumConstant = this.pojo.enumConstant(cleaned);
+				if (type.equals(Integer.class)) {
+					enumConstant.arg(JExpr.lit((Integer)name));
+				} else if (type.equals(Boolean.class)) {
+					enumConstant.arg(JExpr.lit((Boolean)name));
+				} else if (type.equals(Double.class)) {
+					enumConstant.arg(JExpr.lit((Double)name));
+				} else if (type.equals(Float.class)) {
+					enumConstant.arg(JExpr.lit((Float)name));
+				} else if (type.equals(Long.class)) {
+					enumConstant.arg(JExpr.lit((Long)name));
+				} else {
+					enumConstant.arg(JExpr.lit(name.toString()));
+				}
 			}
-            
 		}
 		return this;
+	}
+	
+	private boolean doesEnumContainField(String name) {
+		if (ENUM_CACHE.containsKey(name)) {
+			return true;
+		} else {
+			String elementAsString = CodeModelHelper.getElementAsString(this.pojo);
+			boolean contains = elementAsString.contains(name);
+			if (contains) {
+				ENUM_CACHE.put(name, true);
+			}
+			return contains;
+		}
 	}
 	
 	public <T> EnumBuilder withEnums(List<? extends T> names, Class<T> type) {

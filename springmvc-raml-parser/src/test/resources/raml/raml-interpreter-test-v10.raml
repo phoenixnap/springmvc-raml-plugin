@@ -20,6 +20,9 @@ types:
       fee:
         type: FeeCategory
         required: false
+      otherFee:
+        type: FeeCategory
+        required: false
   BigStuff:
     type: object
     properties:
@@ -29,6 +32,8 @@ types:
       theInteger:
         type: number
         format: int64
+      anotherEnum:
+        type: EnumChecks
   EnumChecks:
     type: string
     enum: [one, two, three, value_with_underscore, "value with space"]
@@ -60,6 +65,8 @@ types:
         type: string
         enum: [blue, red, green]
       anotherEnum:
+        type: EnumChecks
+      anotherEnumAgain:
         type: EnumChecks
       testDefArray:
         type: array # we'll not define items' type here

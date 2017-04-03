@@ -3,9 +3,11 @@ package com.phoenixnap.oss.ramlapisync.raml.interpreters;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.containsInAnyOrder;
+import static org.hamcrest.Matchers.containsString;
 import static org.hamcrest.Matchers.greaterThan;
 import static org.hamcrest.Matchers.instanceOf;
 import static org.hamcrest.Matchers.lessThan;
+import static org.hamcrest.Matchers.not;
 import static org.hamcrest.Matchers.notNullValue;
 import static org.hamcrest.Matchers.nullValue;
 
@@ -154,10 +156,14 @@ public class RamlInterpreterTest {
 		checkIfAnnotationHasParameter(validation, DecimalMax.class, "id","value");
 		
 		JFieldVar anEnum = getField(validation, "anEnum");
-		assertThat(anEnum.type().fullName(), is("com.gen.foo.AnEnum"));
+		assertThat(anEnum.type().fullName(), is("com.gen.foo.AnEnum")); 
 		
 		JFieldVar anotherEnum = getField(validation, "anotherEnum");
 		assertThat(anotherEnum.type().fullName(), is("com.gen.foo.EnumChecks"));
+		
+		JDefinedClass enumChecks = (JDefinedClass) CodeModelHelper.findFirstClassBySimpleName(jCodeModel, "EnumChecks");
+		String elementAsString = CodeModelHelper.getElementAsString(enumChecks);
+		assertThat(elementAsString, not(containsString("(\"value_with_underscore\", \"value_with_underscore\")"))); 
 		
     }
     
