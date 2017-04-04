@@ -166,7 +166,7 @@ public class EnumBuilder extends AbstractBuilder {
 
 	public <T> EnumBuilder withEnum(T name, Class<T> type) {
 		pojoCreationCheck();
-		String cleaned = name.toString().replaceAll(NameHelper.ILLEGAL_CHARACTER_REGEX, "_").toUpperCase();
+		String cleaned = NamingHelper.cleanNameForJavaEnum(name.toString());
 		if (!doesEnumContainField(cleaned)) {
 			withValueField(type);
 			ENUM_CACHE.put(cleaned, true);
