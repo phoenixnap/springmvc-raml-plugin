@@ -44,6 +44,7 @@ import com.phoenixnap.oss.ramlapisync.javadoc.JavaDocStore;
 import com.phoenixnap.oss.ramlapisync.naming.RamlHelper;
 import com.phoenixnap.oss.ramlapisync.parser.FileSearcher;
 import com.phoenixnap.oss.ramlapisync.parser.SpringMvcResourceParser;
+import com.phoenixnap.oss.ramlapisync.pojo.PojoGenerationConfig;
 import com.phoenixnap.oss.ramlapisync.raml.RamlAction;
 import com.phoenixnap.oss.ramlapisync.raml.RamlActionType;
 import com.phoenixnap.oss.ramlapisync.raml.RamlMimeType;
@@ -196,6 +197,36 @@ public class SpringMvcResourceParserTest {
 		assertFalse(apiCallIterator.next().getName().contains("As"));
 		
 
+    }
+    
+    @Test
+    public void test_controllerName_resourceDepth__Success() throws Exception {
+        RamlRoot published = RamlLoader.loadRamlFromFile("test-controller-naming.raml");
+        PojoGenerationConfig pojoGenerationConfig = new PojoGenerationConfig().withPackage("com.gen.test", null);
+        
+        RamlParser par = new RamlParser(pojoGenerationConfig, "/api", true, false, 1);
+        Set<ApiResourceMetadata> controllersMetadataSet = par.extractControllers(new JCodeModel(), published);
+
+        ApiResourceMetadata controller = controllersMetadataSet.iterator().next();
+        assertEquals("Thing", controller.getName());
+        
+        par = new RamlParser(pojoGenerationConfig, "/api", true, false, 2);
+        controllersMetadataSet = par.extractControllers(new JCodeModel(), published);
+
+        controller = controllersMetadataSet.iterator().next();
+        assertEquals("ServiceThing", controller.getName());
+        
+        par = new RamlParser(pojoGenerationConfig, "/api", true, false, 3);
+        controllersMetadataSet = par.extractControllers(new JCodeModel(), published);
+
+        controller = controllersMetadataSet.iterator().next();
+        assertEquals("BaseServiceThing", controller.getName());
+        
+        par = new RamlParser(pojoGenerationConfig, "/api", true, false, -1);
+        controllersMetadataSet = par.extractControllers(new JCodeModel(), published);
+
+        controller = controllersMetadataSet.iterator().next();
+        assertEquals("BaseServiceThing", controller.getName());
     }
 
 

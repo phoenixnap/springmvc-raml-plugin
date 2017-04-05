@@ -50,7 +50,7 @@ public class ResourceClassDeclarationRule implements Rule<JPackage,JDefinedClass
 
     @Override
     public JDefinedClass apply(ApiResourceMetadata controllerMetadata, JPackage generatableType) {
-        String resourceClassName = controllerMetadata.getResourceName() + classNameSuffix;
+        String resourceClassName = controllerMetadata.getName() + classNameSuffix;
         JDefinedClass definedClass;
         try {
             definedClass = generatableType._class(resourceClassName);

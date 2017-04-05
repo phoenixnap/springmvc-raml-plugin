@@ -35,24 +35,24 @@ import com.sun.codemodel.JCodeModel;
  */	
 public class ApiResourceMetadata {
 	
-	public static final String CONTROLLER_SUFFIX = "Controller";
-	
 	private String controllerUrl;
 	private transient RamlResource resource;
 	private RamlRoot document;
 	private boolean singularizeName = true;
 	private JCodeModel bodyCodeModel;
+	private int resourceDepthInClassNames;
 	
 	private PojoGenerationConfig config;
 	Set<ApiActionMetadata> apiCalls = new LinkedHashSet<>();
 	
-	public ApiResourceMetadata(PojoGenerationConfig config, JCodeModel bodyCodeModel, String controllerUrl, RamlResource resource, RamlRoot document) {
+	public ApiResourceMetadata(PojoGenerationConfig config, JCodeModel bodyCodeModel, String controllerUrl, RamlResource resource, RamlRoot document, int resourceDepthInClassNames) {
 		super();
 		this.controllerUrl = controllerUrl;
 		this.resource = resource;
 		this.document = document;
 		this.bodyCodeModel = bodyCodeModel;
 		this.config = config;
+		this.resourceDepthInClassNames = resourceDepthInClassNames;
 	} 
 	
 	
@@ -65,12 +65,11 @@ public class ApiResourceMetadata {
 	}
     
     public String getName() {
-    	String name = NamingHelper.getResourceName(resource, singularizeName);
-    	if (name != null) {
-    		return name + CONTROLLER_SUFFIX;
-    	}
-    	return CONTROLLER_SUFFIX;
-    	    	
+    	if(this.resourceDepthInClassNames != 1){
+			return NamingHelper.getAllResourcesNames(resource, singularizeName, this.resourceDepthInClassNames);
+		} else {
+			return NamingHelper.getResourceName(resource, singularizeName);
+		}
     }
 
 

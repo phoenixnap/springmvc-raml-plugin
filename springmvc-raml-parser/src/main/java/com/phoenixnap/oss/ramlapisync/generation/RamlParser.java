@@ -44,6 +44,8 @@ public class RamlParser {
 	 * Class Logger
 	 */
 	protected static final Logger logger = LoggerFactory.getLogger(RamlParser.class);
+	
+	protected static final int DEFAULT_RESOURCE_DEPTH = 1;
 
 	/**
 	 * Base configuration for code generation
@@ -65,6 +67,13 @@ public class RamlParser {
 	 */
 	protected boolean injectHttpHeadersParameter = false;
 
+	/**
+	 * How many levels of uri will be included in generated class names. Default
+	 * is 1 which means that only current resource will be in included in
+	 * controller/decorator names.
+	 */
+	protected int resourceDepthInClassNames = DEFAULT_RESOURCE_DEPTH;
+
 	public RamlParser (PojoGenerationConfig config) {
 		this.config = config;
 	}
@@ -74,14 +83,15 @@ public class RamlParser {
 	}
 	
 	public RamlParser(String basePackage, String startUrl, boolean seperateMethodsByContentType, boolean injectHttpHeadersParameter) {
-		this(new PojoGenerationConfig().withPackage(basePackage, null), startUrl, seperateMethodsByContentType, injectHttpHeadersParameter);
+		this(new PojoGenerationConfig().withPackage(basePackage, null), startUrl, seperateMethodsByContentType, injectHttpHeadersParameter, DEFAULT_RESOURCE_DEPTH);
 	}
 	
-	public RamlParser(PojoGenerationConfig config, String startUrl, boolean seperateMethodsByContentType, boolean injectHttpHeadersParameter) {
+	public RamlParser(PojoGenerationConfig config, String startUrl, boolean seperateMethodsByContentType, boolean injectHttpHeadersParameter, int resourceDepthInClassNames) {
 		this(config);
 		this.seperateMethodsByContentType = seperateMethodsByContentType;
 		this.injectHttpHeadersParameter = injectHttpHeadersParameter;
 		this.startUrl = startUrl;
+		this.resourceDepthInClassNames = resourceDepthInClassNames;
 	}
 
 	/**
@@ -166,7 +176,7 @@ public class RamlParser {
 		//append resource URL to url.
 		String url = baseUrl + resource.getRelativeUri();
 		if (controller == null && shouldCreateController(resource)) {
-			controller = new ApiResourceMetadata(config, bodyCodeModel, url, resource, document);
+			controller = new ApiResourceMetadata(config, bodyCodeModel, url, resource, document, this.resourceDepthInClassNames);
 			controllers.add(controller);
 		}
 		//extract actions for this resource

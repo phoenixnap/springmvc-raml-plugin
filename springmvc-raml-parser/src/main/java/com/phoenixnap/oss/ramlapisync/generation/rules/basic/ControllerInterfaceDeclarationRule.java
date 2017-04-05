@@ -38,9 +38,11 @@ import com.sun.codemodel.JPackage;
  */
 public class ControllerInterfaceDeclarationRule implements Rule<JPackage,JDefinedClass, ApiResourceMetadata> {
 
+	public static final String CONTROLLER_SUFFIX = "Controller";
+	
     @Override
     public JDefinedClass apply(ApiResourceMetadata controllerMetadata, JPackage generatableType) {
-        String controllerClassName = controllerMetadata.getName();
+        String controllerClassName = controllerMetadata.getName() + CONTROLLER_SUFFIX;
         JDefinedClass definedClass;
         try {
             definedClass = generatableType._interface(controllerClassName);

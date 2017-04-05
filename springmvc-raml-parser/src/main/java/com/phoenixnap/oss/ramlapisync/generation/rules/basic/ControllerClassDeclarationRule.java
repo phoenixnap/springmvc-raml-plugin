@@ -40,7 +40,7 @@ public class ControllerClassDeclarationRule extends ResourceClassDeclarationRule
     }
 
     public ControllerClassDeclarationRule(String classNameSuffix) {
-        super(ApiResourceMetadata.CONTROLLER_SUFFIX + classNameSuffix);
+        super(ControllerInterfaceDeclarationRule.CONTROLLER_SUFFIX + classNameSuffix);
     }
 
 }

@@ -305,6 +305,35 @@ public class NamingHelper {
 	}
 	
 	/**
+	 * Attempts to infer the name of a resource from a resources's full URL.
+	 * 
+	 * @param ramlResource The raml resource being parsed
+	 * @param singularize Indicates if the resource name should be singularized or not
+	 * @param resourceDepthInClassNames The depth of uri to be included in a name 
+	 * @return
+	 */
+	public static String getAllResourcesNames(RamlResource ramlResource, boolean singularize, int resourceDepthInClassNames) {
+		
+		String url = ramlResource.getUri();
+		StringBuilder stringBuilder = new StringBuilder();
+		if (StringUtils.hasText(url)) {
+			String[] resources = url.split("/");
+			int lengthCounter = 0;
+			for(int i = resources.length - 1; i >= 0; --i){
+				if (StringUtils.hasText(resources[i])) {
+					stringBuilder.insert(0, getResourceName(resources[i], singularize));
+					++lengthCounter;
+				}
+				if(resourceDepthInClassNames > 0 && lengthCounter >= resourceDepthInClassNames){
+					break;
+				}
+			}
+		}
+		
+		return stringBuilder.toString();
+	}
+	
+	/**
 	 * Attempts to infer the name of a resource from a resources's relative URL
 	 * 
 	 * @param resource The Url representation of this object
