@@ -118,7 +118,7 @@ public class ObjectTypeInterpreter extends BaseTypeInterpreter {
 			RamlInterpretationResult childResult = RamlInterpreterFactory.getInterpreterForType(objectProperty).interpret(
 					document, objectProperty, builderModel, config, true);
 			String childType = childResult.getResolvedClassOrBuiltOrObject().fullName();
-			builder.withField(objectProperty.name(), childType, RamlTypeHelper.getDescription(objectProperty), childResult.getValidations());
+			builder.withField(objectProperty.name(), childType, RamlTypeHelper.getDescription(objectProperty), childResult.getValidations(), objectProperty.defaultValue());
 			
 		}
 

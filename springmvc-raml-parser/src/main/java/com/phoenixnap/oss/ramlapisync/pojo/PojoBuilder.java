@@ -12,10 +12,12 @@
  */
 package com.phoenixnap.oss.ramlapisync.pojo;
 
+import java.math.BigDecimal;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Random;
 import java.util.Set;
 
 import org.apache.commons.lang3.builder.HashCodeBuilder;
@@ -31,6 +33,7 @@ import com.sun.codemodel.JClassAlreadyExistsException;
 import com.sun.codemodel.JCodeModel;
 import com.sun.codemodel.JDefinedClass;
 import com.sun.codemodel.JExpr;
+import com.sun.codemodel.JExpression;
 import com.sun.codemodel.JFieldVar;
 import com.sun.codemodel.JInvocation;
 import com.sun.codemodel.JMethod;
@@ -161,7 +164,7 @@ public class PojoBuilder extends AbstractBuilder {
 		return false;
 	}
 
-	public PojoBuilder withField(String name, String type, String comment, RamlTypeValidations validations) {
+	public PojoBuilder withField(String name, String type, String comment, RamlTypeValidations validations, String defaultValue) {
 		pojoCreationCheck();
 		logger.debug("Adding field: " + name + " to " + this.pojo.name());
 
@@ -184,9 +187,29 @@ public class PojoBuilder extends AbstractBuilder {
 		if (parentContainsField(this.pojo, name)) {
 			return this;
 		}
+		
+		JExpression jExpression = null;
+		if (StringUtils.hasText(defaultValue)) {
+			if (resolvedType.name().equals(Integer.class.getSimpleName())) {
+				jExpression = JExpr.lit(Integer.valueOf(defaultValue));
+			} else if (resolvedType.name().equals(Boolean.class.getSimpleName())) {
+				jExpression = JExpr.lit(Boolean.valueOf(defaultValue));
+			} else if (resolvedType.name().equals(Double.class.getSimpleName())) {
+				jExpression = JExpr.lit(Double.valueOf(defaultValue));
+			} else if (resolvedType.name().equals(Float.class.getSimpleName())) {
+				jExpression = JExpr.lit(Float.valueOf(defaultValue));
+			} else if (resolvedType.name().equals(Long.class.getSimpleName())) {
+				jExpression = JExpr.lit(Long.valueOf(defaultValue));
+			} else if (resolvedType.name().equals(BigDecimal.class.getSimpleName())) {
+				jExpression = JExpr.direct("new BigDecimal(\"" + defaultValue + "\")");
+			} else if (resolvedType.name().equals(String.class.getSimpleName())) {
+				jExpression = JExpr.lit(defaultValue);
+			}
+		}
+		
 
 		// Add private variable
-		JFieldVar field = this.pojo.field(JMod.PRIVATE, resolvedType, toJavaName(name));
+		JFieldVar field = this.pojo.field(JMod.PRIVATE, resolvedType, toJavaName(name), jExpression);
 		if (this.config.isGenerateJSR303Annotations() && validations != null) {
 			validations.annotateFieldJSR303(field);
 		}
