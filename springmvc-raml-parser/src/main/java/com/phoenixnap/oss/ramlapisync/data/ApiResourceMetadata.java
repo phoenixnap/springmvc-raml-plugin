@@ -66,7 +66,7 @@ public class ApiResourceMetadata {
     
     public String getName() {
     	if(this.resourceDepthInClassNames != 1){
-			return NamingHelper.getAllResourcesNames(resource, singularizeName, this.resourceDepthInClassNames);
+			return NamingHelper.getAllResourcesNames(controllerUrl, singularizeName, this.resourceDepthInClassNames);
 		} else {
 			return NamingHelper.getResourceName(resource, singularizeName);
 		}

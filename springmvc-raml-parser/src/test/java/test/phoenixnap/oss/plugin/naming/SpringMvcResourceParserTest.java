@@ -226,7 +226,7 @@ public class SpringMvcResourceParserTest {
         controllersMetadataSet = par.extractControllers(new JCodeModel(), published);
 
         controller = controllersMetadataSet.iterator().next();
-        assertEquals("BaseServiceThing", controller.getName());
+        assertEquals("ApiBaseServiceThing", controller.getName());
     }
 
 
