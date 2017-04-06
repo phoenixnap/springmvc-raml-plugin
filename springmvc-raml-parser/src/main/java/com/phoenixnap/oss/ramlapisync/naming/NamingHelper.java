@@ -307,14 +307,13 @@ public class NamingHelper {
 	/**
 	 * Attempts to infer the name of a resource from a resources's full URL.
 	 * 
-	 * @param ramlResource The raml resource being parsed
+	 * @param url The URL of the raml resource being parsed
 	 * @param singularize Indicates if the resource name should be singularized or not
 	 * @param resourceDepthInClassNames The depth of uri to be included in a name 
 	 * @return
 	 */
-	public static String getAllResourcesNames(RamlResource ramlResource, boolean singularize, int resourceDepthInClassNames) {
-		
-		String url = ramlResource.getUri();
+	public static String getAllResourcesNames(String url, boolean singularize, int resourceDepthInClassNames) {
+
 		StringBuilder stringBuilder = new StringBuilder();
 		if (StringUtils.hasText(url)) {
 			String[] resources = url.split("/");
