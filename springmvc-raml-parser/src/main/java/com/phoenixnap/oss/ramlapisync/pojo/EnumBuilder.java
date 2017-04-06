@@ -167,7 +167,7 @@ public class EnumBuilder extends AbstractBuilder {
 	public <T> EnumBuilder withEnum(T name, Class<T> type) {
 		pojoCreationCheck();
 		String cleaned = NamingHelper.cleanNameForJavaEnum(name.toString());
-		if (!doesEnumContainField(cleaned)) {
+		if (!doesEnumContainField(type, cleaned)) {
 			withValueField(type);
 			ENUM_CACHE.put(cleaned, true);
 			logger.debug("Adding field: " + name + " to " + this.pojo.name());
@@ -191,12 +191,16 @@ public class EnumBuilder extends AbstractBuilder {
 		return this;
 	}
 	
-	private boolean doesEnumContainField(String name) {
+	private boolean doesEnumContainField(Class type, String name) {
 		if (ENUM_CACHE.containsKey(name)) {
 			return true;
 		} else {
 			String elementAsString = CodeModelHelper.getElementAsString(this.pojo);
-			boolean contains = elementAsString.contains(name);
+			String toCheck = name + "(";
+			if(type.equals(String.class)){
+				toCheck += "\"";
+			}
+			boolean contains = elementAsString.contains(toCheck);
 			if (contains) {
 				ENUM_CACHE.put(name, true);
 			}
