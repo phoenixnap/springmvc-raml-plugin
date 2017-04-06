@@ -132,11 +132,14 @@ public class NamingHelperTest {
 		assertEquals("SOMETHING_WORDY", NamingHelper.cleanNameForJavaEnum("something Wordy"));
 		assertEquals("SOMETHING_WORDY", NamingHelper.cleanNameForJavaEnum("SOMETHING WORDY"));
 		assertEquals("SOMETHING_WORDY", NamingHelper.cleanNameForJavaEnum("something wordy"));
-		assertEquals("SOMETHING_WORDY", NamingHelper.cleanNameForJavaEnum("some@#%(@%thing wordy"));
+		assertEquals("SOME_THING_WORDY", NamingHelper.cleanNameForJavaEnum("some@#%(@%thing wordy"));
 		assertEquals("AB_CDEF", NamingHelper.cleanNameForJavaEnum("ABCdef"));
 		assertEquals("ABC", NamingHelper.cleanNameForJavaEnum("ABC"));
 		assertEquals("A_B_CD", NamingHelper.cleanNameForJavaEnum("a b CD"));
-		assertEquals("A_B_CD", NamingHelper.cleanNameForJavaEnum("a b cD"));
+		assertEquals("A_B_C_D", NamingHelper.cleanNameForJavaEnum("a b cD"));
+		
+		assertEquals("S_WORD", NamingHelper.cleanNameForJavaEnum("sWORD"));
+		assertEquals("S_WORD", NamingHelper.cleanNameForJavaEnum("sWord"));
 	}
 
 }

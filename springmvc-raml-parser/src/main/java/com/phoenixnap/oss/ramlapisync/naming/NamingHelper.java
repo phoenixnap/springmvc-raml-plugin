@@ -12,7 +12,15 @@
  */
 package com.phoenixnap.oss.ramlapisync.naming;
 
+import static java.util.Arrays.asList;
+import static org.apache.commons.lang3.StringUtils.containsOnly;
+import static org.apache.commons.lang3.StringUtils.isEmpty;
+import static org.apache.commons.lang3.StringUtils.join;
+import static org.apache.commons.lang3.StringUtils.splitByCharacterTypeCamelCase;
+import static org.apache.commons.lang3.StringUtils.upperCase;
+
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -40,6 +48,8 @@ public class NamingHelper {
 	
 	private static final Pattern CONTENT_TYPE_VERSION = Pattern.compile(
 			"[^v]*(v[\\d\\.]*).*", Pattern.CASE_INSENSITIVE);
+	
+	private static final String ILLEGAL_CHARACTER_REGEX = "[^0-9a-zA-Z_$]";
 	
 	private static NameHelper cachedNameHelper;
 	
@@ -397,39 +407,31 @@ public class NamingHelper {
 	/**
 	 * Cleans a string with characters that are not valid as a java identifier enum
 	 * 
-	 * @param resourceName The string to clean
+	 * @param enumConstant The string to clean
 	 * @return cleaned string
 	 */
 	public static String cleanNameForJavaEnum(String enumConstant) {
-		if (StringUtils.hasText(enumConstant)) {
-			String outString = Inflector.upperunderscorecase(enumConstant);
-			//If the second character is an underscore kill it
-			if (outString.charAt(1) == '_' && enumConstant.charAt(1) != '_') {
-				outString = outString.charAt(0) + outString.substring(2);
-			}
-			
-			//If the penultimate character is an underscore kill it
-			if (outString.length() > 2 
-					&& enumConstant.length() > 2 
-					&& outString.charAt(outString.length()-2) == '_' 
-					&& enumConstant.charAt(enumConstant.length()-2) != '_') {
-				outString = outString.substring(0, outString.length()-2) + outString.charAt(outString.length()-1);
-			}
-
-			//lets remove any underscores that are only seperating one char
-			outString = outString.replaceAll("([_]{1})([^_]{1})([_]{1})", "$1$2");
-			
-			
-			//Lets remove all spaces that have an underscore on either side
-			// ASD _ASDA -> ASD_ASDA
-			outString = outString.replaceAll("([^_]{0,1})\\s([_]{1})", "$1$2");
-			outString = outString.replaceAll("([_]{1})\\s([^_]{0,1})", "$1$2");
-			outString = outString.replaceAll(" ", "_");
-			outString = outString.replaceAll(NameHelper.ILLEGAL_CHARACTER_REGEX, "");
-			
-			return outString;
+		if (!StringUtils.hasText(enumConstant)) {
+			return enumConstant;
 		}
-		return enumConstant;
+		
+		List<String> nameGroups = new ArrayList<>(asList(splitByCharacterTypeCamelCase(enumConstant)));
+
+        Iterator<String> iter = nameGroups.iterator();
+        while(iter.hasNext()){
+        	if (containsOnly(iter.next().replaceAll(ILLEGAL_CHARACTER_REGEX, "_"), "_")) {
+                iter.remove();
+            }
+        }
+
+        String enumName = upperCase(join(nameGroups, "_"));
+        if (isEmpty(enumName)) {
+            enumName = "_DEFAULT_";
+        } else if (Character.isDigit(enumName.charAt(0))) {
+            enumName = "_" + enumName;
+        }
+
+        return enumName;
 	}
 	
 
