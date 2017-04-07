@@ -27,6 +27,7 @@ import org.springframework.util.StringUtils;
 
 import com.phoenixnap.oss.ramlapisync.generation.CodeModelHelper;
 import com.phoenixnap.oss.ramlapisync.naming.NamingHelper;
+import com.sun.codemodel.ClassType;
 import com.sun.codemodel.JBlock;
 import com.sun.codemodel.JClass;
 import com.sun.codemodel.JClassAlreadyExistsException;
@@ -204,6 +205,9 @@ public class PojoBuilder extends AbstractBuilder {
 				jExpression = JExpr.direct("new BigDecimal(\"" + defaultValue + "\")");
 			} else if (resolvedType.name().equals(String.class.getSimpleName())) {
 				jExpression = JExpr.lit(defaultValue);
+			} else if (type.contains(".") && resolvedType instanceof JDefinedClass
+					&& ((JDefinedClass) resolvedType).getClassType().equals(ClassType.ENUM)) {
+				jExpression = JExpr.direct(resolvedType.name() + "." + NamingHelper.cleanNameForJavaEnum(defaultValue));
 			}
 		}
 		
