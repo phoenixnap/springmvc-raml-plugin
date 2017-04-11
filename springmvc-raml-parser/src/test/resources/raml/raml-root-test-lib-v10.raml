@@ -1,0 +1,18 @@
+#%RAML 1.0 Library
+
+types: 
+  Song: 
+    type: object
+    displayName: Song
+    properties: 
+      title:
+        type: string
+        example: Smells Like Teen Spirit
+        minLength: 5
+        maxLength: 999
+      artist: string
+      album?: string
+      year: 
+        type: integer
+        required: false
+        example: 1991

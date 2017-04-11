@@ -24,6 +24,7 @@ import org.junit.Test;
 import org.raml.v2.api.model.v10.datamodel.ArrayTypeDeclaration;
 import org.raml.v2.api.model.v10.datamodel.ObjectTypeDeclaration;
 import org.raml.v2.api.model.v10.datamodel.StringTypeDeclaration;
+import org.raml.v2.api.model.v10.datamodel.IntegerTypeDeclaration;
 
 import com.phoenixnap.oss.ramlapisync.raml.InvalidRamlResourceException;
 import com.phoenixnap.oss.ramlapisync.raml.RamlActionType;
@@ -113,6 +114,35 @@ public class RJP10V2RamlRootTest {
 		ArrayTypeDeclaration personsDataType = (ArrayTypeDeclaration) personType.get("Persons").getType();
 		assertThat(personsDataType.type(), equalTo("array"));
 		assertThat(personsDataType.items().type(), equalTo("Person"));
+	}
+	
+	@Test
+	public void ramlRootShouldReflectDataTypesFromLibraries() {
+		Map<String, RamlDataType> personType = ramlRoot.getTypes();
+
+		ObjectTypeDeclaration personDataType = (ObjectTypeDeclaration) personType.get("Song").getType();
+
+		assertThat(personDataType.displayName().value(), equalTo("Song"));
+		assertThat(personDataType.type(), equalTo("object"));
+
+		StringTypeDeclaration title = (StringTypeDeclaration) personDataType.properties().get(0);
+		assertThat(title.displayName().value(), equalTo("title"));
+		assertThat(title.example().value(), equalTo("Smells Like Teen Spirit"));
+		assertThat(title.minLength(), equalTo(5));
+		assertThat(title.maxLength(), equalTo(999));
+
+		StringTypeDeclaration artist = (StringTypeDeclaration) personDataType.properties().get(1);
+		assertThat(artist.name(), equalTo("artist"));
+		assertThat(artist.required(), equalTo(true));
+		
+		StringTypeDeclaration album = (StringTypeDeclaration) personDataType.properties().get(2);
+		assertThat(album.name(), equalTo("album"));
+		assertThat(album.required(), equalTo(false));
+
+		IntegerTypeDeclaration year = (IntegerTypeDeclaration) personDataType.properties().get(3);
+		assertThat(year.name(), equalTo("year"));
+		assertThat(year.example().value(), equalTo("1991"));
+		assertThat(year.required(), equalTo(false));
 	}
 
     @Test

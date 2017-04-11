@@ -9,6 +9,8 @@ documentation:
       CWIE (c) All Rights Reserved
 baseUri: api
 mediaType: application/json
+uses: 
+  TestLib: raml-root-test-lib-v10.raml
 types:
   Person:
     type: object
@@ -40,3 +42,9 @@ types:
       200:
         body:
           type: Manager
+/songs:
+  get:
+    responses: 
+      200:
+        body: 
+          type: TestLib.Song[]

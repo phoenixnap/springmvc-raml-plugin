@@ -8,6 +8,7 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 import org.raml.v2.api.model.v10.api.Api;
+import org.raml.v2.api.model.v10.api.Library;
 import org.raml.v2.api.model.v10.bodies.MimeType;
 import org.raml.v2.api.model.v10.datamodel.TypeDeclaration;
 import org.raml.v2.api.model.v10.resources.Resource;
@@ -109,11 +110,18 @@ public class RJP10V2RamlRoot implements RamlRoot {
     
     @Override
     public Map<String, RamlDataType> getTypes() {
-        return api.types()
-                .stream()
-                .collect(Collectors.toMap(this::nameType, this::typeDeclarationToRamlDataType));
-    }
+		Map<String, RamlDataType> types = api.types().stream()
+				.collect(Collectors.toMap(this::nameType, this::typeDeclarationToRamlDataType));
 
+		Map<String, RamlDataType> libTypes =  api.uses().stream()
+				.flatMap(x -> x.types().stream())
+				.collect(Collectors.toMap(this::nameType, this::typeDeclarationToRamlDataType));
+
+		types.putAll(libTypes);
+
+		return types;
+    }
+    
     private Map<String, String> typeDeclarationToMap(TypeDeclaration typeDeclaration) {
         Map<String, String> nameTypeMapping = new LinkedHashMap<>();
         nameTypeMapping.put(typeDeclaration.name(), typeDeclaration.type());
@@ -161,5 +169,10 @@ public class RJP10V2RamlRoot implements RamlRoot {
     @Override
     public String getBaseUri() {
         return this.api.baseUri() != null ? this.api.baseUri().value() : "";
+    }
+    
+    
+    public List<Library> getLibs(){
+    	return this.api.uses();
     }
 }
