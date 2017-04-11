@@ -13,6 +13,7 @@
 package com.phoenixnap.oss.ramlapisync.pojo;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -39,6 +40,7 @@ import com.sun.codemodel.JFieldVar;
 import com.sun.codemodel.JInvocation;
 import com.sun.codemodel.JMethod;
 import com.sun.codemodel.JMod;
+import com.sun.codemodel.JType;
 import com.sun.codemodel.JVar;
 
 /**
@@ -209,6 +211,9 @@ public class PojoBuilder extends AbstractBuilder {
 					&& ((JDefinedClass) resolvedType).getClassType().equals(ClassType.ENUM)) {
 				jExpression = JExpr.direct(resolvedType.name() + "." + NamingHelper.cleanNameForJavaEnum(defaultValue));
 			}
+		} else if(resolvedType.fullName().startsWith(List.class.getSimpleName() +"<")){
+			JClass narrowedListClass = this.pojoModel.ref(ArrayList.class).narrow(resolvedType.getTypeParameters().get(0));
+			jExpression = JExpr._new(narrowedListClass);
 		}
 		
 

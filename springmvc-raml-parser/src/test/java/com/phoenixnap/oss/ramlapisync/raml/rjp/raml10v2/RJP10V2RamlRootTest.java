@@ -152,8 +152,8 @@ public class RJP10V2RamlRootTest {
 
     @Test
     public void ramlRootShouldReflectToplevelResources() {
-        assertThat(ramlRoot.getResources(), is(mapWithSize(3)));
-        assertThat(ramlRoot.getResources().keySet(), hasItems("/persons", "/managers", "/defaultType"));
+        assertThat(ramlRoot.getResources(), is(mapWithSize(4)));
+        assertThat(ramlRoot.getResources().keySet(), hasItems("/persons", "/managers", "/defaultType", "/songs"));
 
         Iterable<Object> topLevelItems = ramlRoot.getResources().values().stream().collect(Collectors.toList());
         assertThat(topLevelItems, everyItem(is(anything())));
