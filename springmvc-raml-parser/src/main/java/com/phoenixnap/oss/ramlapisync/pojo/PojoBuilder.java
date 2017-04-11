@@ -175,11 +175,11 @@ public class PojoBuilder extends AbstractBuilder {
 		
 		try {
 			//If this class is a collection (List)- lets add an import
-			if (resolvedType.fullName().startsWith(List.class.getSimpleName() +"<")) {
+			if (resolvedType.fullName().startsWith(List.class.getName() +"<")) {
 				resolvedType = this.pojo.owner().ref(List.class).narrow(resolvedType.getTypeParameters().get(0));
 			}
 			//If this class is a collection (Set) - lets add an import
-			if (resolvedType.fullName().startsWith(Set.class.getSimpleName() +"<")) {
+			if (resolvedType.fullName().startsWith(Set.class.getName() +"<")) {
 				resolvedType = this.pojo.owner().ref(Set.class).narrow(resolvedType.getTypeParameters().get(0));
 			}
 		} catch (Exception ex) {
@@ -211,7 +211,7 @@ public class PojoBuilder extends AbstractBuilder {
 					&& ((JDefinedClass) resolvedType).getClassType().equals(ClassType.ENUM)) {
 				jExpression = JExpr.direct(resolvedType.name() + "." + NamingHelper.cleanNameForJavaEnum(defaultValue));
 			}
-		} else if(resolvedType.fullName().startsWith(List.class.getSimpleName() +"<")){
+		} else if(resolvedType.fullName().startsWith(List.class.getName() +"<")){
 			JClass narrowedListClass = this.pojoModel.ref(ArrayList.class).narrow(resolvedType.getTypeParameters().get(0));
 			jExpression = JExpr._new(narrowedListClass);
 		}
