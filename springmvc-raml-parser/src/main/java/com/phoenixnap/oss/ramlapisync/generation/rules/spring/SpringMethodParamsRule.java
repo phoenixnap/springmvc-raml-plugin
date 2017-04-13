@@ -13,6 +13,7 @@
 package com.phoenixnap.oss.ramlapisync.generation.rules.spring;
 
 import javax.validation.Valid;
+import javax.validation.constraints.Pattern;
 
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -82,6 +83,10 @@ public class SpringMethodParamsRule extends MethodParamsRule {
         JAnnotationUse jAnnotationUse;
         if (paramMetaData.getRamlParam() != null && paramMetaData.getRamlParam() instanceof RamlUriParameter) {
             jVar.annotate(PathVariable.class);
+            if (paramMetaData.getRamlParam().getPattern() != null) {
+               jAnnotationUse = jVar.annotate(Pattern.class);
+               jAnnotationUse.param("regexp", paramMetaData.getRamlParam().getPattern());
+            }
             return jVar;
         } else if (paramMetaData.getRamlParam() != null && paramMetaData.getRamlParam() instanceof RamlHeader) {
             jAnnotationUse = jVar.annotate(RequestHeader.class);
@@ -95,6 +100,11 @@ public class SpringMethodParamsRule extends MethodParamsRule {
 				// Supplying a default value implicitly sets required to false.
 				jAnnotationUse.param("required", false);
 			}
+
+			if (paramMetaData.getRamlParam().getPattern() != null) {
+               jAnnotationUse = jVar.annotate(Pattern.class);
+               jAnnotationUse.param("value", paramMetaData.getRamlParam().getPattern());
+         }
 
             return jVar;
         } else {
@@ -115,6 +125,11 @@ public class SpringMethodParamsRule extends MethodParamsRule {
 				// Supplying a default value implicitly sets required to false.
 				jAnnotationUse.param("required", false);
 			}
+
+           if (paramMetaData.getRamlParam().getPattern() != null) {
+              jAnnotationUse = jVar.annotate(Pattern.class);
+              jAnnotationUse.param("regexp", paramMetaData.getRamlParam().getPattern());
+           }
 
             return jVar;
         }

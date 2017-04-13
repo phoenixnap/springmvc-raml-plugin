@@ -86,6 +86,7 @@ public abstract class SpringControllerDecoratorRule extends SpringConfigurableRu
                 .setClassCommentRule(new ClassCommentRule())
                 .addClassAnnotationRule(getControllerAnnotationRule())
                 .addClassAnnotationRule(new SpringRequestMappingClassAnnotationRule())
+                .addClassAnnotationRule(new SpringValidatedClassAnnotationRule())
                 .setClassRule(new ControllerClassDeclarationRule("Decorator"))
                 .setImplementsExtendsRule(new ImplementsControllerInterfaceRule(generatedInterface))
                 .addFieldDeclarationRule(new SpringDelegateFieldDeclerationRule(delegateFieldName))

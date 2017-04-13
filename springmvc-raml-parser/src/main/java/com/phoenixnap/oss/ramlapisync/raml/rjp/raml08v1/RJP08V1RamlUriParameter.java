@@ -96,6 +96,11 @@ public class RJP08V1RamlUriParameter extends RamlUriParameter {
 	public String getDefaultValue() {
 		return uriParameter.getDefaultValue();
 	}
+
+	@Override
+   public String getPattern() {
+        return uriParameter.getPattern();
+   }
 	
 	@Override
 	public void setType(String type) {

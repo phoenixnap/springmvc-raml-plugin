@@ -1,0 +1,19 @@
+#%RAML 0.8
+title: myapi
+baseUri: /
+version: 1
+
+/base:
+  /endpoint/{id}:
+    uriParameters:
+      id:
+        pattern: ^.{1,255}$
+    get:
+      queryParameters:
+        param1:
+          required: true
+          pattern: ^.{1,255}$
+      headers:
+        X-My-Header:
+          type: string
+          pattern: ^.{1,255}$

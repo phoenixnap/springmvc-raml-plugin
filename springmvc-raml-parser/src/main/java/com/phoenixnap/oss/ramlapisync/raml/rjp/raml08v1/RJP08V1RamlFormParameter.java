@@ -98,6 +98,11 @@ public class RJP08V1RamlFormParameter extends RamlFormParameter {
 	}
 
 	@Override
+   public String getPattern() {
+       return formParameter.getPattern();
+   }
+
+	@Override
 	public void setRepeat(boolean repeat) {
 		formParameter.setRepeat(repeat);
 	}
