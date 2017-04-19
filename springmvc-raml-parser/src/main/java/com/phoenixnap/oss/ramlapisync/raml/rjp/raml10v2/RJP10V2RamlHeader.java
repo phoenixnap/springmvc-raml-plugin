@@ -12,6 +12,7 @@
  */
 package com.phoenixnap.oss.ramlapisync.raml.rjp.raml10v2;
 
+import org.raml.v2.api.model.v10.datamodel.StringTypeDeclaration;
 import org.raml.v2.api.model.v10.datamodel.TypeDeclaration;
 
 import com.phoenixnap.oss.ramlapisync.naming.RamlTypeHelper;
@@ -88,6 +89,14 @@ public class RJP10V2RamlHeader extends RamlHeader {
 	public String getDefaultValue() {
 		return header.defaultValue();
 	}
+
+	@Override
+   public String getPattern() {
+      if (header instanceof StringTypeDeclaration) {
+         return ((StringTypeDeclaration) header).pattern();
+      }
+      return null;
+   }
 	
 	@Override
 	public void setType(String type) {

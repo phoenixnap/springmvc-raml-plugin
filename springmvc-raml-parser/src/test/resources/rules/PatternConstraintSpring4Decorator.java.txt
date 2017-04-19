@@ -1,0 +1,72 @@
+-----------------------------------com.gen.test.BaseController.java-----------------------------------
+
+package com.gen.test;
+
+import org.springframework.http.ResponseEntity;
+
+
+/**
+ * No description
+ * (Generated with springmvc-raml-parser v.${project.version})
+ * 
+ */
+public interface BaseController {
+
+
+    /**
+     * No description
+     * 
+     */
+    public ResponseEntity<?> getEndpointById(String id, String param1, String xMyHeader);
+
+}
+-----------------------------------com.gen.test.BaseControllerDecorator.java-----------------------------------
+
+package com.gen.test;
+
+import javax.validation.constraints.Pattern;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestHeader;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
+
+
+/**
+ * No description
+ * (Generated with springmvc-raml-parser v.${project.version})
+ * 
+ */
+@RestController
+@RequestMapping("/api/base")
+@Validated
+public class BaseControllerDecorator
+    implements BaseController
+{
+
+    @Autowired
+    private BaseController baseControllerDelegate;
+
+    /**
+     * No description
+     * 
+     */
+    @RequestMapping(value = "/endpoint/{id}", method = RequestMethod.GET)
+    public ResponseEntity<?> getEndpointById(
+        @PathVariable
+        @Pattern(regexp = "^.{1,255}$")
+        String id,
+        @RequestParam
+        @Pattern(regexp = "^.{1,255}$")
+        String param1,
+        @RequestHeader(name = "X-My-Header", required = false)
+        @Pattern("^.{1,255}$")
+        String xMyHeader) {
+        return this.baseControllerDelegate.getEndpointById(id, param1, xMyHeader);
+    }
+
+}

@@ -61,6 +61,7 @@ public abstract class SpringControllerStubRule extends SpringConfigurableRule {
                 .setClassCommentRule(new ClassCommentRule())
                 .addClassAnnotationRule(getControllerAnnotationRule())
                 .addClassAnnotationRule(new SpringRequestMappingClassAnnotationRule())
+                .addClassAnnotationRule(new SpringValidatedClassAnnotationRule())
                 .setClassRule(new ControllerClassDeclarationRule())
                 .setMethodCommentRule(new MethodCommentRule())
                 .addMethodAnnotationRule(new SpringRequestMappingMethodAnnotationRule())

@@ -88,6 +88,11 @@ public class RJP08V1RamlHeader extends RamlHeader {
 	public String getDefaultValue() {
 		return header.getDefaultValue();
 	}
+
+	@Override
+   public String getPattern() {
+       return header.getPattern();
+   }
 	
 	@Override
 	public void setType(String type) {

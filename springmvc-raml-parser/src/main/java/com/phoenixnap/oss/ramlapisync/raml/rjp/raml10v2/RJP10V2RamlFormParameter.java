@@ -12,6 +12,7 @@
  */
 package com.phoenixnap.oss.ramlapisync.raml.rjp.raml10v2;
 
+import org.raml.v2.api.model.v10.datamodel.StringTypeDeclaration;
 import org.raml.v2.api.model.v10.datamodel.TypeDeclaration;
 
 import com.phoenixnap.oss.ramlapisync.data.RamlFormParameter;
@@ -96,6 +97,14 @@ public class RJP10V2RamlFormParameter extends RamlFormParameter {
 	public String getDefaultValue() {
 		return formParameter.defaultValue();
 	}
+
+   @Override
+   public String getPattern() {
+      if (formParameter instanceof StringTypeDeclaration) {
+         return ((StringTypeDeclaration) formParameter).pattern();
+      }
+      return null;
+   }
 
 	@Override
 	public boolean isRepeat() {

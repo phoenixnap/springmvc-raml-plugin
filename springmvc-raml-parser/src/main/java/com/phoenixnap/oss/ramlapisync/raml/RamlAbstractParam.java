@@ -46,6 +46,8 @@ public abstract class RamlAbstractParam { //extends AbstractParam {
     public abstract String getDisplayName();
 
 	public abstract String getDefaultValue();
+
+	public abstract String getPattern();
 	
 	/**
 	 * Convenience method for easier processing. Non supporting parameters are assumed to be single.
