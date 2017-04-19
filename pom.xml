@@ -4,7 +4,7 @@
 
 	<groupId>com.phoenixnap.oss</groupId>
 	<artifactId>springmvc-raml-parent</artifactId>
-	<version>0.10.3</version>
+	<version>0.10.4</version>
 	
 	<name>Spring MVC to RAML Synchronizer</name>
 	<description>Parent pom to the SpringMVC RAML Generation/Verification Project</description>
