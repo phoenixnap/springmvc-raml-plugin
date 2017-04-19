@@ -64,7 +64,7 @@ public class BaseControllerDecorator
         @Pattern(regexp = "^.{1,255}$")
         String param1,
         @RequestHeader(name = "X-My-Header", required = false)
-        @Pattern("^.{1,255}$")
+        @Pattern(regexp = "^.{1,255}$")
         String xMyHeader) {
         return this.baseControllerDelegate.getEndpointById(id, param1, xMyHeader);
     }
