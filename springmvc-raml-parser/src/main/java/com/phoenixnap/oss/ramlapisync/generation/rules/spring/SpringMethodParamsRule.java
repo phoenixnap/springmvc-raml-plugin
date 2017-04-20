@@ -103,7 +103,7 @@ public class SpringMethodParamsRule extends MethodParamsRule {
 
 			if (paramMetaData.getRamlParam().getPattern() != null) {
                jAnnotationUse = jVar.annotate(Pattern.class);
-               jAnnotationUse.param("value", paramMetaData.getRamlParam().getPattern());
+               jAnnotationUse.param("regexp", paramMetaData.getRamlParam().getPattern());
          }
 
             return jVar;
