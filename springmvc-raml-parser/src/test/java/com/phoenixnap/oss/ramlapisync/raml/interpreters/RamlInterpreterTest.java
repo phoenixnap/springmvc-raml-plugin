@@ -165,8 +165,10 @@ public class RamlInterpreterTest {
 		JDefinedClass enumChecks = (JDefinedClass) CodeModelHelper.findFirstClassBySimpleName(jCodeModel, "EnumChecks");
 		String elementAsString = CodeModelHelper.getElementAsString(enumChecks);
 		assertThat(elementAsString, not(containsString("(\"value_with_underscore\", \"value_with_underscore\")"))); 
-		
+		assertThat(elementAsString, containsString("FEE(\"fee\")")); 
+		assertThat(elementAsString, containsString("TESTFEE(\"testfee\")")); 
     }
+    
     
     private void checkIfAnnotationHasParameter(JDefinedClass classToCheck, Class<?> annotationClass, String field, String param) {
     	JAnnotationUse annotation = getAnnotationForField(classToCheck, annotationClass, field);

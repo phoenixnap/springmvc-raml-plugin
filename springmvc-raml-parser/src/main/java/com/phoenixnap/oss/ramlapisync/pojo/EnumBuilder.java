@@ -12,6 +12,7 @@
  */
 package com.phoenixnap.oss.ramlapisync.pojo;
 
+import java.lang.reflect.Field;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -195,12 +196,23 @@ public class EnumBuilder extends AbstractBuilder {
 		if (ENUM_CACHE.containsKey(name)) {
 			return true;
 		} else {
-			String elementAsString = CodeModelHelper.getElementAsString(this.pojo);
-			String toCheck = name + "(";
-			if(type.equals(String.class)){
-				toCheck += "\"";
+			
+			boolean contains = false;
+			try {
+				Field field = this.pojo.getClass().getDeclaredField("enumConstantsByName");
+				field.setAccessible(true);
+				Map value = (Map) field.get(this.pojo);
+				contains = value.containsKey(name);
+			} catch (Exception e) {
+				// if above code fails for any reason - do it 'old' way
+				String elementAsString = CodeModelHelper.getElementAsString(this.pojo);
+				String toCheck = name + "(";
+				if(type.equals(String.class)){
+					toCheck += "\"";
+				}
+				contains = elementAsString.contains(toCheck);
 			}
-			boolean contains = elementAsString.contains(toCheck);
+			
 			if (contains) {
 				ENUM_CACHE.put(name, true);
 			}
