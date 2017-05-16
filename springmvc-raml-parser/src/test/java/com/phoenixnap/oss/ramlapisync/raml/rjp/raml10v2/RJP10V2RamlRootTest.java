@@ -118,9 +118,9 @@ public class RJP10V2RamlRootTest {
 	
 	@Test
 	public void ramlRootShouldReflectDataTypesFromLibraries() {
-		Map<String, RamlDataType> personType = ramlRoot.getTypes();
+		Map<String, RamlDataType> dataTypes = ramlRoot.getTypes();
 
-		ObjectTypeDeclaration personDataType = (ObjectTypeDeclaration) personType.get("Song").getType();
+		ObjectTypeDeclaration personDataType = (ObjectTypeDeclaration) dataTypes.get("Song").getType();
 
 		assertThat(personDataType.displayName().value(), equalTo("Song"));
 		assertThat(personDataType.type(), equalTo("object"));
@@ -135,11 +135,41 @@ public class RJP10V2RamlRootTest {
 		assertThat(artist.name(), equalTo("artist"));
 		assertThat(artist.required(), equalTo(true));
 		
-		StringTypeDeclaration album = (StringTypeDeclaration) personDataType.properties().get(2);
+		ObjectTypeDeclaration album = (ObjectTypeDeclaration) personDataType.properties().get(2);
 		assertThat(album.name(), equalTo("album"));
 		assertThat(album.required(), equalTo(false));
 
 		IntegerTypeDeclaration year = (IntegerTypeDeclaration) personDataType.properties().get(3);
+		assertThat(year.name(), equalTo("year"));
+		assertThat(year.example().value(), equalTo("1991"));
+		assertThat(year.required(), equalTo(false));
+	}
+	
+	@Test
+	public void ramlRootShouldReflectDataTypesFromAllLibraries() {
+		Map<String, RamlDataType> dataTypes = ramlRoot.getTypes();
+
+		// this data type is defined in library that is referenced in another library (and not in a root raml)
+		ObjectTypeDeclaration albumDataType = (ObjectTypeDeclaration) dataTypes.get("Album").getType();
+
+		assertThat(albumDataType.displayName().value(), equalTo("Album"));
+		assertThat(albumDataType.type(), equalTo("object"));
+
+		StringTypeDeclaration title = (StringTypeDeclaration) albumDataType.properties().get(0);
+		assertThat(title.displayName().value(), equalTo("title"));
+		assertThat(title.example().value(), equalTo("Nevermind"));
+		assertThat(title.minLength(), equalTo(1));
+		assertThat(title.maxLength(), equalTo(999));
+
+		StringTypeDeclaration artist = (StringTypeDeclaration) albumDataType.properties().get(1);
+		assertThat(artist.name(), equalTo("artist"));
+		assertThat(artist.required(), equalTo(true));
+		
+		StringTypeDeclaration studio = (StringTypeDeclaration) albumDataType.properties().get(2);
+		assertThat(studio.name(), equalTo("studio"));
+		assertThat(studio.required(), equalTo(false));
+
+		IntegerTypeDeclaration year = (IntegerTypeDeclaration) albumDataType.properties().get(3);
 		assertThat(year.name(), equalTo("year"));
 		assertThat(year.example().value(), equalTo("1991"));
 		assertThat(year.required(), equalTo(false));

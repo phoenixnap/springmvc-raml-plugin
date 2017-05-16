@@ -116,8 +116,15 @@ public class RJP10V2RamlRoot implements RamlRoot {
 		Map<String, RamlDataType> libTypes =  api.uses().stream()
 				.flatMap(x -> x.types().stream())
 				.collect(Collectors.toMap(this::nameType, this::typeDeclarationToRamlDataType));
-
+		
 		types.putAll(libTypes);
+
+		Map<String, RamlDataType> libOfLibTypes = api.uses().stream()
+				.flatMap(x -> x.uses().stream())
+				.flatMap(x -> x.types().stream())
+				.collect(Collectors.toMap(this::nameType, this::typeDeclarationToRamlDataType));
+
+		types.putAll(libOfLibTypes);
 
 		return types;
     }
