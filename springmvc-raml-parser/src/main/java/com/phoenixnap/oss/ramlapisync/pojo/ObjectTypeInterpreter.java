@@ -65,6 +65,9 @@ public class ObjectTypeInterpreter extends BaseTypeInterpreter {
 		//When we have base objects we need to use them as type not blindly create them
 		if(!RamlTypeHelper.isBaseObject(objectType.name()) && !RamlTypeHelper.isBaseObject(typeName) && property) {
 			name = typeName;
+			if(types.get(name) == null){
+				throw new IllegalStateException("Data type " + name + " can't be found!");
+			}
 			typeName = types.get(name).getType().type();
 		}
 		
