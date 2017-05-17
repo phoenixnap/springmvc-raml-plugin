@@ -119,10 +119,12 @@ public class RJP10V2RamlRoot implements RamlRoot {
 		
 		types.putAll(libTypes);
 
+		// When searching for all libraries that other libraries use it's possible to pull in same library multiple times.
+		// In order to avoid IllegalStateException we'll add basic mergeFunction.
 		Map<String, RamlDataType> libOfLibTypes = api.uses().stream()
 				.flatMap(x -> x.uses().stream())
 				.flatMap(x -> x.types().stream())
-				.collect(Collectors.toMap(this::nameType, this::typeDeclarationToRamlDataType));
+				.collect(Collectors.toMap(this::nameType, this::typeDeclarationToRamlDataType, (x, y) -> x));
 
 		types.putAll(libOfLibTypes);
 
