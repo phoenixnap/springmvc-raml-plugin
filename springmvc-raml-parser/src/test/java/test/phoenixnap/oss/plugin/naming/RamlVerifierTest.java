@@ -14,11 +14,6 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
-import java.util.Collections;
-import java.util.Iterator;
-
-import org.junit.Test;
-
 import com.phoenixnap.oss.ramlapisync.generation.RamlGenerator;
 import com.phoenixnap.oss.ramlapisync.generation.RamlVerifier;
 import com.phoenixnap.oss.ramlapisync.generation.rules.RamlLoader;
@@ -35,7 +30,7 @@ import com.phoenixnap.oss.ramlapisync.verification.checkers.ActionExistenceCheck
 import com.phoenixnap.oss.ramlapisync.verification.checkers.ActionQueryParameterChecker;
 import com.phoenixnap.oss.ramlapisync.verification.checkers.ActionResponseBodySchemaChecker;
 import com.phoenixnap.oss.ramlapisync.verification.checkers.ResourceExistenceChecker;
-
+import org.junit.Test;
 import test.phoenixnap.oss.plugin.naming.testclasses.ContentTypeTestController;
 import test.phoenixnap.oss.plugin.naming.testclasses.MultiContentTypeTestController;
 import test.phoenixnap.oss.plugin.naming.testclasses.ParamTestController;
@@ -50,6 +45,9 @@ import test.phoenixnap.oss.plugin.naming.testclasses.StyleCheckResourceDuplicate
 import test.phoenixnap.oss.plugin.naming.testclasses.ThirdVerifierTestController;
 import test.phoenixnap.oss.plugin.naming.testclasses.VerifierTestController;
 import test.phoenixnap.oss.plugin.naming.testclasses.VerifierUriParamTestController;
+
+import java.util.Collections;
+import java.util.Iterator;
 
 
 
@@ -262,7 +260,7 @@ public class RamlVerifierTest {
 		RamlVerifier verifier = new RamlVerifier(published, computed, Collections.emptyList(), Collections.singletonList(new ActionQueryParameterChecker()), null);
 		assertTrue("Check that there are errors", verifier.hasErrors());
 		assertTrue("Check that there are warnings", verifier.hasWarnings());
-		assertEquals("Check that implementation should have 2 errors", 3, verifier.getErrors().size());
+		assertEquals("Check that implementation should have 3 errors", 3, verifier.getErrors().size());
 		assertEquals("Check that implementation should have 1 warning", 1, verifier.getWarnings().size());
 		TestHelper.verifyIssuesUnordered(verifier.getErrors(), new Issue[] {
 				new Issue(IssueSeverity.ERROR, IssueLocation.SOURCE, IssueType.MISSING, ActionQueryParameterChecker.QUERY_PARAMETER_MISSING, "param5 : POST /base/endpointWithURIParam/{uriParam}"),
