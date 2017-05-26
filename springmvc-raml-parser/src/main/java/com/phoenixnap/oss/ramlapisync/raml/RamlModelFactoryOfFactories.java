@@ -13,14 +13,16 @@
 package com.phoenixnap.oss.ramlapisync.raml;
 
 
+import com.phoenixnap.oss.ramlapisync.raml.rjp.raml08v1.RJP08V1RamlModelFactory;
+import com.phoenixnap.oss.ramlapisync.raml.rjp.raml10v2.RJP10V2RamlModelFactory;
 import org.raml.v2.api.RamlModelBuilder;
 import org.raml.v2.api.RamlModelResult;
+import org.raml.v2.api.model.common.ValidationResult;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.util.StringUtils;
 
-import com.phoenixnap.oss.ramlapisync.raml.rjp.raml08v1.RJP08V1RamlModelFactory;
-import com.phoenixnap.oss.ramlapisync.raml.rjp.raml10v2.RJP10V2RamlModelFactory;
+import java.util.List;
 
 /**
  * Factory for creating different instances of RamlModelFactory.
@@ -93,7 +95,37 @@ public abstract class RamlModelFactoryOfFactories {
         	logger.info("RJP08V1RamlModelFactory Instantiated");
         	return new RJP08V1RamlModelFactory();
         }
-        throw new UnsupportedRamlVersionError(RamlVersion.V08, RamlVersion.V10);
+
+        if (containsUnsupportedVersionError(ramlModelResult.getValidationResults()) || !isSupportedRamlVersionCombination(ramlVersion, ramlModelResult)) {
+            throw new UnsupportedRamlVersionError(RamlVersion.V08, RamlVersion.V10);
+        }
+
+        throw new InvalidRamlError(ramlURL, ramlModelResult.getValidationResults());
+    }
+
+    private static boolean containsUnsupportedVersionError(List<ValidationResult> validationResults) {
+        if (validationResults != null) {
+            for (ValidationResult result : validationResults) {
+                if (result.getMessage() != null && result.getMessage().contains("Unsupported version")) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
+    private static boolean isSupportedRamlVersionCombination(RamlVersion ramlVersion, RamlModelResult ramlModelResult) {
+        if (ramlVersion != null) {
+            if (RamlVersion.V08.equals(ramlVersion) && ramlModelResult.isVersion08()) {
+                return true;
+            }
+            if (RamlVersion.V10.equals(ramlVersion) && ramlModelResult.isVersion10()) {
+                return true;
+            }
+            return false;
+        } else {
+            return true; // add unsupported ramlModelResult.isVersionXX() here and return false
+        }
     }
 
 }
