@@ -6,9 +6,11 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertThat;
 
 import java.io.BufferedReader;
+import java.io.BufferedWriter;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.StringReader;
+import java.io.StringWriter;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
@@ -39,6 +41,7 @@ public abstract class AbstractRuleTestBase {
 
 	public static final boolean VISUALISE_CODE = false;
     public static final String RESOURCE_BASE = "rules/";
+    public static final String LINE_END = System.getProperty("line.separator");
     public static RamlRoot RAML;
 
     protected Logger logger = Logger.getLogger(this.getClass());
@@ -148,6 +151,21 @@ public abstract class AbstractRuleTestBase {
             }
             return result;
         }
-
     }
+    
+    protected String removeSerialVersionUID(String serializedModel) throws IOException {
+
+		BufferedReader bufReader = new BufferedReader(new StringReader(serializedModel));
+		StringWriter stringWriter = new StringWriter();
+		BufferedWriter bufWriter = new BufferedWriter(stringWriter);
+		String line = null;
+		while ((line = bufReader.readLine()) != null) {
+			if (!line.contains("serialVersionUID = ")) {
+				bufWriter.write(line + LINE_END);
+			}
+		}
+		bufWriter.flush();
+		bufWriter.close();
+		return stringWriter.toString();
+	}
 }

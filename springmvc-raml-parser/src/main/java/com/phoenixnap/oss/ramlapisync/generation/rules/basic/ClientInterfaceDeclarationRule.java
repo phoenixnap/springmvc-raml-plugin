@@ -42,7 +42,7 @@ public class ClientInterfaceDeclarationRule implements Rule<JPackage,JDefinedCla
 	
     @Override
     public JDefinedClass apply(ApiResourceMetadata controllerMetadata, JPackage generatableType) {
-        String clientClassName = controllerMetadata.getResourceName() + CLIENT_SUFFIX;
+        String clientClassName = controllerMetadata.getName() + CLIENT_SUFFIX;
         JDefinedClass definedClass;
         try {
             definedClass = generatableType._interface(clientClassName);

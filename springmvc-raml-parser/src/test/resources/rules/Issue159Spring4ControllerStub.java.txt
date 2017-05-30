@@ -1,0 +1,220 @@
+-----------------------------------com.gen.test.model.Manager.java-----------------------------------
+
+package com.gen.test.model;
+
+import java.io.Serializable;
+import org.apache.commons.lang.builder.EqualsBuilder;
+import org.apache.commons.lang.builder.HashCodeBuilder;
+import org.apache.commons.lang.builder.ToStringBuilder;
+
+public class Manager implements Serializable
+{
+
+    private String firstName;
+    private String lastName;
+    private String departman;
+
+    /**
+     * Creates a new Manager.
+     * 
+     */
+    public Manager() {
+        super();
+    }
+
+    /**
+     * Creates a new Manager.
+     * 
+     */
+    public Manager(String firstName, String lastName, String departman) {
+        super();
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.departman = departman;
+    }
+
+    public String toString() {
+        return ToStringBuilder.reflectionToString(this);
+    }
+
+    public boolean equals(Object other) {
+        if (other == this) {
+            return true;
+        }
+        if ((other instanceof Manager) == false) {
+            return false;
+        }
+        Manager otherObject = ((Manager) other);
+        return new EqualsBuilder().isEquals();
+    }
+
+    public int hashCode() {
+        return new HashCodeBuilder().toHashCode();
+    }
+
+    /**
+     * Returns the firstName.
+     * 
+     * @return
+     *     firstName
+     */
+    public String getFirstName() {
+        return firstName;
+    }
+
+    /**
+     * Set the firstName.
+     * 
+     * @param firstName
+     *     the new firstName
+     */
+    public void setFirstName(String firstName) {
+        this.firstName = firstName;
+    }
+
+    /**
+     * Returns the lastName.
+     * 
+     * @return
+     *     lastName
+     */
+    public String getLastName() {
+        return lastName;
+    }
+
+    /**
+     * Set the lastName.
+     * 
+     * @param lastName
+     *     the new lastName
+     */
+    public void setLastName(String lastName) {
+        this.lastName = lastName;
+    }
+
+    /**
+     * Returns the departman.
+     * 
+     * @return
+     *     departman
+     */
+    public String getDepartman() {
+        return departman;
+    }
+
+    /**
+     * Set the departman.
+     * 
+     * @param departman
+     *     the new departman
+     */
+    public void setDepartman(String departman) {
+        this.departman = departman;
+    }
+
+}
+-----------------------------------com.gen.test.PersonManagerClient.java-----------------------------------
+
+package com.gen.test;
+
+import java.util.List;
+import com.gen.test.model.Manager;
+import org.springframework.http.ResponseEntity;
+
+
+/**
+ * No description
+ * (Generated with springmvc-raml-parser v.${project.version})
+ * 
+ */
+public interface PersonManagerClient {
+
+
+    /**
+     * No description
+     * 
+     */
+    public ResponseEntity<List<Manager>> getPersonsManagers();
+
+    /**
+     * No description
+     * 
+     * @param manager The Request Body Payload
+     */
+    public ResponseEntity<Manager> createPersonsManager(Manager manager);
+
+}
+-----------------------------------com.gen.test.PersonManagerClientImpl.java-----------------------------------
+
+package com.gen.test;
+
+import java.util.ArrayList;
+import java.util.List;
+import com.gen.test.model.Manager;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.ParameterizedTypeReference;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpMethod;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Component;
+import org.springframework.web.client.RestTemplate;
+import org.springframework.web.util.UriComponents;
+import org.springframework.web.util.UriComponentsBuilder;
+
+
+/**
+ * No description
+ * (Generated with springmvc-raml-parser v.${project.version})
+ * 
+ */
+@Component
+public class PersonManagerClientImpl
+    implements PersonManagerClient
+{
+
+    @Autowired
+    private RestTemplate restTemplate;
+    @Value("${client.url}")
+    private String baseUrl;
+
+    /**
+     * No description
+     * 
+     */
+    public ResponseEntity<List<Manager>> getPersonsManagers() {
+        HttpHeaders httpHeaders = new HttpHeaders();
+        //  Add Accepts Headers and Body Content-Type
+        ArrayList<MediaType> acceptsList = new ArrayList<MediaType>();
+        acceptsList.add(MediaType.valueOf("application/json"));
+        httpHeaders.setAccept(acceptsList);
+        String url = baseUrl.concat("/organization/persons/managers");
+        UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl(url);
+        UriComponents uriComponents = builder.build();
+        HttpEntity httpEntity = new HttpEntity(httpHeaders);
+        class _P extends org.springframework.core.ParameterizedTypeReference<java.util.List<com.gen.test.model.Manager>>{};
+        ParameterizedTypeReference<List<Manager>> typeReference = new _P();
+        return this.restTemplate.exchange(uriComponents.encode().toUri(), HttpMethod.GET, httpEntity, typeReference);
+    }
+
+    /**
+     * No description
+     * 
+     */
+    public ResponseEntity<Manager> createPersonsManager(Manager manager) {
+        HttpHeaders httpHeaders = new HttpHeaders();
+        //  Add Accepts Headers and Body Content-Type
+        ArrayList<MediaType> acceptsList = new ArrayList<MediaType>();
+        httpHeaders.setContentType(MediaType.valueOf("application/json"));
+        acceptsList.add(MediaType.valueOf("application/json"));
+        httpHeaders.setAccept(acceptsList);
+        String url = baseUrl.concat("/organization/persons/managers");
+        UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl(url);
+        UriComponents uriComponents = builder.build();
+        HttpEntity httpEntity = new HttpEntity(manager, httpHeaders);
+        return this.restTemplate.exchange(uriComponents.encode().toUri(), HttpMethod.POST, httpEntity, Manager.class);
+    }
+
+}
