@@ -12,27 +12,6 @@
  */
 package test.phoenixnap.oss.plugin.naming;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
-
-import java.lang.reflect.Method;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-
-import org.junit.BeforeClass;
-import org.junit.Test;
-import org.mockito.Mockito;
-import org.mockito.invocation.InvocationOnMock;
-import org.mockito.stubbing.Answer;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.http.MediaType;
-
 import com.phoenixnap.oss.ramlapisync.data.ApiActionMetadata;
 import com.phoenixnap.oss.ramlapisync.data.ApiResourceMetadata;
 import com.phoenixnap.oss.ramlapisync.data.RamlFormParameter;
@@ -56,7 +35,19 @@ import com.phoenixnap.oss.ramlapisync.raml.RamlResponse;
 import com.phoenixnap.oss.ramlapisync.raml.RamlRoot;
 import com.phoenixnap.oss.ramlapisync.raml.RamlUriParameter;
 import com.sun.codemodel.JCodeModel;
-
+import java.lang.reflect.Method;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import org.junit.BeforeClass;
+import org.junit.Test;
+import org.mockito.Mockito;
+import org.mockito.invocation.InvocationOnMock;
+import org.mockito.stubbing.Answer;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.http.MediaType;
 import test.phoenixnap.oss.plugin.naming.testclasses.BugController;
 import test.phoenixnap.oss.plugin.naming.testclasses.MultipleContentTypeTestController;
 import test.phoenixnap.oss.plugin.naming.testclasses.NoValueController;
@@ -64,6 +55,12 @@ import test.phoenixnap.oss.plugin.naming.testclasses.ShorthandTestController;
 import test.phoenixnap.oss.plugin.naming.testclasses.TestController;
 import test.phoenixnap.oss.plugin.naming.testclasses.UriPrefixIgnoredController;
 import test.phoenixnap.oss.plugin.naming.testclasses.WrappedResponseBodyTestController;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
 
 
 /**
@@ -79,6 +76,7 @@ public class SpringMvcResourceParserTest {
 
 	private static SpringMvcResourceParser parser;
 	private static RamlResource baseResourceTestController;
+	private static String jsonSchemaType = null;
 
 	public static final String VERSION = "0.0.1";
 	public static final String DEFAULT_MEDIA_TYPE = MediaType.APPLICATION_JSON_VALUE;
@@ -136,12 +134,12 @@ public class SpringMvcResourceParserTest {
 		Mockito.when(mockJavaDocEntry.getReturnTypeComment()).thenReturn(RETURN_JAVADOC);
 		parser.setJavaDocs(mockJavaDocExtractor);
 
-		baseResourceTestController = parser.extractResourceInfo(TestController.class);
+		baseResourceTestController = parser.extractResourceInfo(TestController.class, jsonSchemaType);
 	}
 	
 	@Test
 	public void test_wrappedResponseBody__Success() {
-		RamlResource resourceInfo = parser.extractResourceInfo(WrappedResponseBodyTestController.class);
+		RamlResource resourceInfo = parser.extractResourceInfo(WrappedResponseBodyTestController.class, jsonSchemaType);
 
 		RamlResource testResource = resourceInfo.getResource("/base").getResource("/endpointWithResponseType");
 		String testClassId = "urn:jsonschema:test:phoenixnap:oss:plugin:naming:testclasses:ThreeElementClass";
@@ -246,7 +244,7 @@ public class SpringMvcResourceParserTest {
 	
 	@Test
 	public void test_multipleContentType() {
-		RamlResource resourceInfo = parser.extractResourceInfo(MultipleContentTypeTestController.class);
+		RamlResource resourceInfo = parser.extractResourceInfo(MultipleContentTypeTestController.class, jsonSchemaType);
 
 		RamlResource testResource = resourceInfo.getResource("/base").getResource("/endpoint");
 		assertEquals("Assert resources size", 2, testResource.getActions().size());
@@ -262,7 +260,7 @@ public class SpringMvcResourceParserTest {
 	
 	@Test
 	public void test_uriPrefixIgnored() {
-		RamlResource resourceInfo = parser.extractResourceInfo(UriPrefixIgnoredController.class);
+		RamlResource resourceInfo = parser.extractResourceInfo(UriPrefixIgnoredController.class, jsonSchemaType);
 		RamlRoot raml = RamlModelFactoryOfFactories.createRamlModelFactoryV08().createRamlRoot();
 		RamlHelper.mergeResources(raml, resourceInfo, true);
 		RamlHelper.removeResourceTree(raml, UriPrefixIgnoredController.IGNORED);
@@ -298,7 +296,7 @@ public class SpringMvcResourceParserTest {
 	
 	@Test
 	public void test_simpleGetAndPostShorthand() {
-		RamlResource parsed = parser.extractResourceInfo(ShorthandTestController.class);
+		RamlResource parsed = parser.extractResourceInfo(ShorthandTestController.class, jsonSchemaType);
 		RamlResource testResource = parsed.getResource("/base").getResource("/simpleMethod");
 		assertEquals("Assert resources size", 2, testResource.getActions().size());
 		RamlAction getAction = testResource.getActions().get(RamlActionType.GET);
@@ -546,15 +544,28 @@ public class SpringMvcResourceParserTest {
 	
 	@Test
 	public void test_bug1_IndexOutOfBounds_PostWithNoBody() { 
-		RamlResource resourceInfo = parser.extractResourceInfo(BugController.class);
+		RamlResource resourceInfo = parser.extractResourceInfo(BugController.class, jsonSchemaType);
 		RamlResource testResource = resourceInfo.getResource("/forgotStuff").getResource("/{somethingID}").getResource("/resendStuff");
 		assertNotNull(testResource);
 	}
 
 	@Test
 	public void test_bug_noValueOnMethod() {
-		RamlResource resourceInfo = parser.extractResourceInfo(NoValueController.class);
+		RamlResource resourceInfo = parser.extractResourceInfo(NoValueController.class, jsonSchemaType);
 		assertEquals(0, resourceInfo.getResource("/base").getResources().size());
 		assertNotNull(resourceInfo);
+	}
+
+	@Test
+	public void testRamlSchemaIncluded() {
+		String jsonSchema = "http://json-schema.org/schema";
+		baseResourceTestController = parser.extractResourceInfo(TestController.class, jsonSchema);
+		RamlResource testResource = baseResourceTestController.getResource("/base").getResource("/oneParameter");
+		RamlAction getAction = testResource.getActions().get(RamlActionType.GET);
+		RamlAction postAction = testResource.getActions().get(RamlActionType.POST);
+		assertNotNull(getAction);
+		assertNotNull(postAction);
+		assertTrue(getAction.getResponses().get("200").getBody().get("application/json").getSchema().contains(jsonSchema));
+		assertTrue(postAction.getResponses().get("200").getBody().get("application/json").getSchema().contains(jsonSchema));
 	}
 }

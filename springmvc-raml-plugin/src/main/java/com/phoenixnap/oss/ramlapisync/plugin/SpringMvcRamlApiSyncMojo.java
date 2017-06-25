@@ -79,6 +79,12 @@ public class SpringMvcRamlApiSyncMojo extends CommonApiSyncMojo {
 	@Parameter(required = false, readonly = true, defaultValue = "false")
 	protected Boolean restrictOnMediaType;
 
+    /**
+     * JSON schema used for validation
+     */
+    @Parameter(required = false, property = "jsonSchema")
+    private String jsonSchemaType;
+
 	@SuppressWarnings("unchecked")
 	@Override
 	protected Class<? extends Annotation>[] getSupportedClassAnnotations() {
@@ -107,7 +113,7 @@ public class SpringMvcRamlApiSyncMojo extends CommonApiSyncMojo {
 		RamlGenerator ramlGenerator = new RamlGenerator(scanner);
 		// Process the classes selected and build Raml model
 		ramlGenerator
-				.generateRamlForClasses(project.getArtifactId(), version, restBasePath, classArray, this.documents);
+				.generateRamlForClasses(project.getArtifactId(), version, restBasePath, jsonSchemaType, classArray, this.documents);
 		
 		//Add a global media type
 		if (includeGlobalMediaType) {

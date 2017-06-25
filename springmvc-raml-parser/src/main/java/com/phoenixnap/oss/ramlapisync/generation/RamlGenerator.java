@@ -106,7 +106,7 @@ public class RamlGenerator {
 	 * @return This object for chaining
 	 */
 	public RamlGenerator generateRamlForClasses(String title, String version, String baseUri,
-			Class<?>[] classesToGenerate, Set<ApiDocumentMetadata> documents) {
+												String jsonSchemaType, Class<?>[] classesToGenerate, Set<ApiDocumentMetadata> documents) {
 
 		assertResourceParser();
 
@@ -122,7 +122,7 @@ public class RamlGenerator {
 		logger.info("Generating Raml for " + title + " v" + version + " from " + classesToGenerate.length
 				+ " annotated classes");
 		Arrays.asList(classesToGenerate).forEach(item -> {
-			RamlResource resource = scanner.extractResourceInfo(item);
+			RamlResource resource = scanner.extractResourceInfo(item, jsonSchemaType);
 			if (resource.getRelativeUri().equals("/")) { // root should never be added directly
 					for (RamlResource cResource : resource.getResources().values()) {
 						RamlHelper.mergeResources(raml, cResource, true);

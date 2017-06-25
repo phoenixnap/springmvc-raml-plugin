@@ -237,7 +237,12 @@ public class RamlTypeHelper {
 			public String toXmlSchema() {
 				return null;
 			}
-			
+
+			@Override
+			public String toJsonSchema() {
+				return null;
+			}
+
 			@Override
 			public Boolean required() {
 				return true;

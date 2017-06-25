@@ -220,10 +220,12 @@ public class SchemaHelper {
      *            The javadoc description supplied if available
      * @param javaDocStore
      *            The Entire java doc store available
+     * @param jsonSchemaType
+     *            Json Schema validation
      * @return A string containing the Json Schema
      */
     public static String convertClassToJsonSchema(ApiParameterMetadata clazz, String responseDescription,
-            JavaDocStore javaDocStore) {
+                                                  JavaDocStore javaDocStore, String jsonSchemaType) {
         if (clazz == null || clazz.equals(Void.class)) {
             return "{}";
         }
@@ -234,7 +236,9 @@ public class SchemaHelper {
 
             JsonSchema jsonSchema = extractSchemaInternal(clazz.getType(), clazz.getGenericType(), responseDescription,
                     javaDocStore, m);
-
+            if (!StringUtils.isEmpty(jsonSchemaType)) {
+                jsonSchema.set$schema(jsonSchemaType);
+            }
             return m.writerWithDefaultPrettyPrinter().writeValueAsString(jsonSchema);
         }
         catch (Exception e) {
@@ -254,9 +258,11 @@ public class SchemaHelper {
      *            The description to be embedded in the response
      * @param javaDocStore
      *            Associated JavaDoc for this class that can be embedded in the schema
-     * @return Json Schema representing the class in string format
+     * @param jsonSchemaType
+     *            Json Schema validation
+     * @return Json Schema Json Schema representing the class in string format
      */
-    public static String convertClassToJsonSchema(Type clazz, String responseDescription, JavaDocStore javaDocStore) {
+    public static String convertClassToJsonSchema(Type clazz, String responseDescription, JavaDocStore javaDocStore, String jsonSchemaType) {
         if (clazz == null || clazz.equals(Void.class)) {
             return "{}";
         }
@@ -264,7 +270,9 @@ public class SchemaHelper {
             ObjectMapper m = new ObjectMapper();
             JsonSchema jsonSchema = extractSchemaInternal(clazz, JavaTypeHelper.inferGenericType(clazz),
                     responseDescription, javaDocStore, m);
-
+            if (!StringUtils.isEmpty(jsonSchemaType)) {
+                jsonSchema.set$schema(jsonSchemaType);
+            }
             return m.writerWithDefaultPrettyPrinter().writeValueAsString(jsonSchema);
         }
         catch (Exception e) {
@@ -370,7 +378,7 @@ public class SchemaHelper {
 				            	}
 				            	if (fromFormat == null) {
 				            		return Long.class; //retained for backward compatibility
-				            	} else { 
+				            	} else {
 				            		return fromFormat;
 				            	}
 			}
@@ -378,7 +386,7 @@ public class SchemaHelper {
 				            	Class<?> fromFormat = mapNumberFromFormat(format);
 				            	if (fromFormat == null) {
 				            		return BigDecimal.class; //retained for backward compatibility
-				            	} else { 
+				            	} else {
 				            		return fromFormat;
 				            	}
             }
@@ -387,10 +395,10 @@ public class SchemaHelper {
             default:
                 return String.class;
         }
-        
-			
+
+
     }
-    
+
     private static Class<?> mapNumberFromFormat(String format) {
     	if (format == null) {
     		return null;
@@ -398,7 +406,7 @@ public class SchemaHelper {
     	if (format.equals("int64")
 				|| format.equals("long")){
 			return Long.class;
-		} else if (format.equals("int32") 
+		} else if (format.equals("int32")
 				|| format.equals("int")) {
 			return Integer.class;
 		} else if (format.equals("int16")
@@ -407,7 +415,7 @@ public class SchemaHelper {
 		} else if (format.equals("double")
 				|| format.equals("float")){
 			return Double.class;
-		} 
+		}
     	return null;
     }
 
@@ -428,7 +436,7 @@ public class SchemaHelper {
      */
     public static String extractNameFromSchema(String schema, String schemaName, String fallbackName) {
         String resolvedName = null;
-        if (schema != null) { 
+        if (schema != null) {
         	//if we have an array type we need to recurse into it
         	int startIdx = 0;
         	String type =  extractTopItem("type", schema, startIdx);
@@ -462,7 +470,7 @@ public class SchemaHelper {
         			javaType = javaType.substring(dotIdx+1);
         		}
         		resolvedName = javaType;
-        		
+
         	} else {
         		String id =  extractTopItem("id", schema, startIdx);
         		if (StringUtils.hasText(id)) {
@@ -475,9 +483,9 @@ public class SchemaHelper {
                              id = id.substring(JSON_SCHEMA_IDENT.length());
                          }
                      }
-                     
+
                      resolvedName = StringUtils.capitalize(id);
-                     
+
             	}
         		 if (!NamingHelper.isValidJavaClassName(resolvedName)) {
         	            if (NamingHelper.isValidJavaClassName(schemaName)) {
@@ -488,15 +496,15 @@ public class SchemaHelper {
         	            }
         	        }
         	}
-        } 
-       
+        }
+
         return resolvedName;
     }
 
 
     /**
-     * Extracts the value of a specified parameter in a schema 
-     * 
+     * Extracts the value of a specified parameter in a schema
+     *
      * @param searchString element to search for
      * @param schema Schema as a string
      * @return the value or null if not found

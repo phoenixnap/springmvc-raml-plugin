@@ -83,11 +83,11 @@ public abstract class ResourceParser {
 	 * @param clazz
 	 * @return
 	 */
-	private void getMethodsFromService(Class<?> clazz, JavaDocStore javaDoc, RamlResource parentResource) {
+	private void getMethodsFromService(Class<?> clazz, JavaDocStore javaDoc, RamlResource parentResource, String jsonSchemaType) {
 		try {
 			for (Method method : clazz.getMethods()) {
 				if (!IGNORE_METHOD_REGEX.matcher(method.getName()).matches() && shouldAddMethodToApi(method)) {
-					extractAndAppendResourceInfo(clazz, method, javaDoc.getJavaDoc(method), parentResource);
+					extractAndAppendResourceInfo(clazz, method, javaDoc.getJavaDoc(method), parentResource, jsonSchemaType);
 				}
 			}
 		} catch (NoClassDefFoundError nEx) {
@@ -191,7 +191,7 @@ public abstract class ResourceParser {
 	 * @return A map of supported mime types for the request
 	 */
 	protected Map<String, RamlMimeType> extractRequestBodyFromMethod(RamlActionType apiAction, Method method,
-			Map<String, String> parameterComments) {
+			Map<String, String> parameterComments, String jsonSchemaType) {
 
 		if (!(doesActionTypeSupportRequestBody(apiAction)) || method.getParameterCount() == 0) {
 			return Collections.emptyMap();
@@ -203,7 +203,8 @@ public abstract class ResourceParser {
 			//We only have url params it seems
 			return Collections.emptyMap();
 		}
-		Pair<String, RamlMimeType> schemaAndMime = extractRequestBody(method, parameterComments, comment, apiParameters);
+		Pair<String, RamlMimeType> schemaAndMime = extractRequestBody(method, parameterComments, comment, apiParameters
+                , jsonSchemaType);
 
 		return Collections.singletonMap(schemaAndMime.getFirst(), schemaAndMime.getSecond());
 	}
@@ -219,7 +220,7 @@ public abstract class ResourceParser {
 	 * @return The Request Body as a schema and the associated mime type
 	 */
 	protected Pair<String, RamlMimeType> extractRequestBody(Method method, Map<String, String> parameterComments,
-			String comment, List<ApiParameterMetadata> apiParameters) {
+			String comment, List<ApiParameterMetadata> apiParameters, String jsonSchemaType) {
 		String schema;
 		RamlMimeType mimeType = RamlModelFactoryOfFactories.createRamlModelFactoryV08().createRamlMimeType();
 		if (apiParameters.size() == 1) {
@@ -228,7 +229,7 @@ public abstract class ResourceParser {
 			}
 			ApiParameterMetadata ajaxParameter = apiParameters.get(0);
 			schema = SchemaHelper.convertClassToJsonSchema(ajaxParameter, comment,
-					javaDocs.getJavaDoc(ajaxParameter.getType()));
+					javaDocs.getJavaDoc(ajaxParameter.getType()), jsonSchemaType);
 			if (StringUtils.hasText(ajaxParameter.getExample())) {
 				mimeType.setExample(ajaxParameter.getExample());
 			}
@@ -248,7 +249,8 @@ public abstract class ResourceParser {
 						comment = parameterComments.get(param.getJavaName());
 					}
 				}
-				schema += SchemaHelper.convertClassToJsonSchema(param, comment, javaDocs.getJavaDoc(param.getType()));
+				schema += SchemaHelper.convertClassToJsonSchema(param, comment, javaDocs.getJavaDoc(param.getType()),
+                        jsonSchemaType);
 			}
 
 			schema += "}\n}";
@@ -289,8 +291,10 @@ public abstract class ResourceParser {
 	 * @param method The Java method to introspect
 	 * @param docEntry The associated JavaDoc (may be null)
 	 * @param parentResource The Resource which contains this method
+     * @param jsonSchemaType JSON schema validation
 	 */
-	protected abstract void extractAndAppendResourceInfo(Class<?> clazz, Method method, JavaDocEntry docEntry, RamlResource parentResource);
+	protected abstract void extractAndAppendResourceInfo(Class<?> clazz, Method method, JavaDocEntry docEntry, RamlResource parentResource,
+                                                         String jsonSchemaType);
 
 	/**
 	 * Checks is this api call is made directly on a resource without a trailing command in the URL. eg: POST on
@@ -327,7 +331,7 @@ public abstract class ResourceParser {
 	 * @param responseComment The JavaDoc (if any) for this response
 	 * @return The response RAML model for this method (success only)
 	 */
-	protected RamlResponse extractResponseFromMethod(Method method, String responseComment) {
+	protected RamlResponse extractResponseFromMethod(Method method, String responseComment, String jsonSchemaType) {
 		RamlModelFactory ramlModelFactory = RamlModelFactoryOfFactories.createRamlModelFactoryV08();
 		RamlResponse response = ramlModelFactory.createRamlResponse();
 		String mime = extractMimeTypeFromMethod(method);
@@ -348,8 +352,8 @@ public abstract class ResourceParser {
 			genericReturnType = inferGenericType;
 		}
 
-		jsonType.setSchema(SchemaHelper.convertClassToJsonSchema(genericReturnType, responseComment,
-				javaDocs.getJavaDoc(returnType)));
+		jsonType.setSchema(SchemaHelper.convertClassToJsonSchema(genericReturnType, responseComment, javaDocs.getJavaDoc(returnType),
+				jsonSchemaType));
 
 		LinkedHashMap<String, RamlMimeType> body = new LinkedHashMap<>();
 		body.put(mime, jsonType);
@@ -370,7 +374,7 @@ public abstract class ResourceParser {
 	 * @param clazz The Class to be inspected
 	 * @return The RAML Resource model for this class
 	 */
-	public RamlResource extractResourceInfo(Class<?> clazz) {
+	public RamlResource extractResourceInfo(Class<?> clazz, String jsonSchemaType) {
 		logger.info("Parsing resource: " + clazz.getSimpleName() + " ");
 		RamlResource resource = RamlModelFactoryOfFactories.createRamlModelFactoryV08().createRamlResource();
 		resource.setRelativeUri("/" + getResourceName(clazz));
@@ -384,7 +388,7 @@ public abstract class ResourceParser {
 
 		
 		//Append stuff to the parent resource
-		getMethodsFromService(clazz, javaDoc, resource);
+		getMethodsFromService(clazz, javaDoc, resource, jsonSchemaType);
 		
 
 		return resource;

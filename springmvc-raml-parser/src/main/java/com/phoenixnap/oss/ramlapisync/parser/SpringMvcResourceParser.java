@@ -82,7 +82,7 @@ public class SpringMvcResourceParser extends ResourceParser {
 
 	@Override
 	protected Pair<String, RamlMimeType> extractRequestBody(Method method, Map<String, String> parameterComments,
-															String comment, List<ApiParameterMetadata> apiParameters) {
+															String comment, List<ApiParameterMetadata> apiParameters, String jsonSchemaType) {
 		RamlMimeType mimeType = RamlModelFactoryOfFactories.createRamlModelFactoryV08().createRamlMimeType();
 		String type;
 		//Handle empty body
@@ -142,7 +142,7 @@ public class SpringMvcResourceParser extends ResourceParser {
 			return new Pair<>(type, mimeType);
 		} else {
 			
-			return super.extractRequestBody(method, parameterComments, comment, apiParameters);
+			return super.extractRequestBody(method, parameterComments, comment, apiParameters, jsonSchemaType);
 		}
 	}
 
@@ -429,7 +429,7 @@ public class SpringMvcResourceParser extends ResourceParser {
 	}
 
 	@Override
-	protected void extractAndAppendResourceInfo(Class<?> clazz, Method method, JavaDocEntry docEntry, RamlResource parentResource) {
+	protected void extractAndAppendResourceInfo(Class<?> clazz, Method method, JavaDocEntry docEntry, RamlResource parentResource, String jsonSchemaType) {
 
 		RamlModelFactory ramlModelFactory = RamlModelFactoryOfFactories.createRamlModelFactoryV08();
 
@@ -446,7 +446,7 @@ public class SpringMvcResourceParser extends ResourceParser {
 			logger.info("Added call: " + apiName + " " +apiAction  + " from method: " + method.getName()  );
 
 			String responseComment = docEntry == null ? null : docEntry.getReturnTypeComment();
-			RamlResponse response = extractResponseFromMethod(method, responseComment);
+			RamlResponse response = extractResponseFromMethod(method, responseComment, jsonSchemaType);
 			Map<String, String> parameterComments = (docEntry == null ? Collections.emptyMap() : docEntry
 					.getParameterComments());
 			// Lets extract any query parameters (for Verbs that don't support bodies) and insert them in the Action
@@ -455,7 +455,7 @@ public class SpringMvcResourceParser extends ResourceParser {
 
 			// Lets extract any request data that should go in the request body as json and insert it in the action
 			// model
-			action.setBody(extractRequestBodyFromMethod(apiAction, method, parameterComments));
+			action.setBody(extractRequestBodyFromMethod(apiAction, method, parameterComments, jsonSchemaType));
 			// Add any headers we need for the method
 			addHeadersForMethod(action, apiAction, method);
 

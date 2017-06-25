@@ -183,6 +183,12 @@ public class SpringMvcRamlVerifierMojo extends CommonApiSyncMojo {
 	 */
 	@Parameter(required = false, readonly = true, defaultValue = "true")
 	protected Boolean logErrors;
+
+	/**
+	 * JSON schema used for validation
+	 */
+	@Parameter(required = false, property = "jsonSchema")
+	private String jsonSchemaType;
 	
 	@SuppressWarnings("unchecked")
 	@Override
@@ -216,7 +222,7 @@ public class SpringMvcRamlVerifierMojo extends CommonApiSyncMojo {
 			ResourceParser scanner = new SpringMvcResourceParser(targetPath, version, ResourceParser.CATCH_ALL_MEDIA_TYPE, false);
 			RamlGenerator ramlGenerator = new RamlGenerator(scanner);
 			// Process the classes selected and build Raml model
-			ramlGenerator.generateRamlForClasses(project.getArtifactId(), version, "/", classArray, this.documents);
+			ramlGenerator.generateRamlForClasses(project.getArtifactId(), version, "/", jsonSchemaType, classArray, this.documents);
 			implementedRaml = ramlGenerator.getRaml();
 			
 
