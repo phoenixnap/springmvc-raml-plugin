@@ -5,7 +5,7 @@
   	<parent>
 		<groupId>com.phoenixnap.oss</groupId>
 		<artifactId>springmvc-raml-parent</artifactId>
-		<version>0.10.5</version>
+		<version>0.10.6</version>
 	</parent>
 	
 	<artifactId>springmvc-raml-parser</artifactId>
@@ -84,7 +84,7 @@
 		<dependency>
 			<groupId>org.raml</groupId>
 			<artifactId>raml-parser-2</artifactId>
-			<version>LATEST</version>
+			<version>1.0.9</version>
 		</dependency>
 		<dependency>
 			<groupId>org.reflections</groupId>
