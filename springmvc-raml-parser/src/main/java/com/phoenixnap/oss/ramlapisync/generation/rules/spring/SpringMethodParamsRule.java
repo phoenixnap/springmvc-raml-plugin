@@ -15,6 +15,7 @@ package com.phoenixnap.oss.ramlapisync.generation.rules.spring;
 import javax.validation.Valid;
 import javax.validation.constraints.Pattern;
 
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -26,7 +27,9 @@ import com.phoenixnap.oss.ramlapisync.data.ApiParameterMetadata;
 import com.phoenixnap.oss.ramlapisync.generation.CodeModelHelper;
 import com.phoenixnap.oss.ramlapisync.generation.rules.basic.MethodParamsRule;
 import com.phoenixnap.oss.ramlapisync.raml.RamlHeader;
+import com.phoenixnap.oss.ramlapisync.raml.RamlParamType;
 import com.phoenixnap.oss.ramlapisync.raml.RamlUriParameter;
+import com.phoenixnap.oss.ramlapisync.raml.rjp.raml10v2.RJP10V2RamlQueryParameter;
 import com.sun.codemodel.JAnnotationUse;
 import com.sun.codemodel.JVar;
 
@@ -67,8 +70,8 @@ import com.sun.codemodel.JVar;
  */
 public class SpringMethodParamsRule extends MethodParamsRule {
 	
+	static final String PATTERN_DATETIME = "yyyy-MM-dd'T'HH:mm:ss";
 	
-
     public SpringMethodParamsRule() {
 		super();
 	}
@@ -131,10 +134,43 @@ public class SpringMethodParamsRule extends MethodParamsRule {
               jAnnotationUse.param("regexp", paramMetaData.getRamlParam().getPattern());
            }
 
-            return jVar;
-        }
+			if (paramMetaData.getRamlParam().getType() == RamlParamType.DATE
+					&& paramMetaData.getRamlParam() instanceof RJP10V2RamlQueryParameter) {
 
-    }
+				RJP10V2RamlQueryParameter queryParameter = (RJP10V2RamlQueryParameter) paramMetaData.getRamlParam();
+				if (StringUtils.hasText(queryParameter.getRawType())) {
+					jAnnotationUse = jVar.annotate(DateTimeFormat.class);
+					String param = queryParameter.getRawType().toUpperCase();
+					switch (param) {
+						case "DATE-ONLY":
+							// example: 2013-09-29
+							jAnnotationUse.param("pattern", "yyyy-MM-dd");
+							break;
+						case "TIME-ONLY":
+							// example: 19:46:19
+							jAnnotationUse.param("pattern", "HH:mm:ss");
+							break;
+						case "DATETIME-ONLY":
+							// example: 2013-09-29T19:46:19
+							jAnnotationUse.param("pattern", PATTERN_DATETIME);
+							break;
+						case "DATETIME":
+							if ("rfc2616".equalsIgnoreCase(queryParameter.getFormat())) {
+								// example: Tue, 15 Nov 1994 12:45:26 GMT
+								jAnnotationUse.param("pattern", "EEE, dd MMM yyyy HH:mm:ss z");
+							} else {
+								jAnnotationUse.param("pattern", PATTERN_DATETIME);
+							}
+							break;
+						default:
+							jAnnotationUse.param("pattern", PATTERN_DATETIME);
+					}
+				}
+			}
+
+			return jVar;
+		}
+	}
 
     @Override
     protected JVar paramObjects(ApiActionMetadata endpointMetadata, CodeModelHelper.JExtMethod generatableType) {

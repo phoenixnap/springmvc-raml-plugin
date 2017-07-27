@@ -77,6 +77,10 @@ public class RJP10V2RamlQueryParameter extends RamlQueryParameter {
         return ramlModelFactory.createRamlParamType(queryParameter.type());
     }
 
+	public String getRawType() {
+		return queryParameter.type();
+	}
+
     @Override
     public String getExample() {
         return RamlTypeHelper.getExample(queryParameter);
