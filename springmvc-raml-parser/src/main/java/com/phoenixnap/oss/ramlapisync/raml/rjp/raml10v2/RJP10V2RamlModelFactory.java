@@ -200,6 +200,7 @@ public class RJP10V2RamlModelFactory implements RamlModelFactory {
     }
 
     @Override
+	// TODO Alex - can we have better recognition?
 	public RamlParamType createRamlParamType(Object paramType) {
 		if (paramType == null) {
 			return RamlParamType.STRING;
@@ -207,13 +208,24 @@ public class RJP10V2RamlModelFactory implements RamlModelFactory {
 
 		String param = ((String) paramType).toUpperCase();
 		switch (param) {
+			case "DATE":
 			case "DATE-ONLY":
 			case "TIME-ONLY":
 			case "DATETIME-ONLY":
 			case "DATETIME":
 				return RamlParamType.DATE;
+			case "STRING":
+				return RamlParamType.STRING;
+			case "NUMBER":
+				return RamlParamType.NUMBER;
+			case "INTEGER":
+				return RamlParamType.INTEGER;
+			case "FILE":
+				return RamlParamType.FILE;
+			case "BOOLEAN":
+				return RamlParamType.BOOLEAN;
 			default:
-				return RamlParamType.valueOf(param);
+				return RamlParamType.DATA_TYPE;
 		}
 	}
 

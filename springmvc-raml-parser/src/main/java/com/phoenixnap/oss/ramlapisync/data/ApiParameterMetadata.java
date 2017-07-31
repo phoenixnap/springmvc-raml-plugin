@@ -20,6 +20,8 @@ import java.util.List;
 import java.util.Set;
 
 import org.apache.commons.lang.NullArgumentException;
+import org.jsonschema2pojo.Annotator;
+import org.jsonschema2pojo.GenerationConfig;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -29,7 +31,11 @@ import com.phoenixnap.oss.ramlapisync.annotations.Example;
 import com.phoenixnap.oss.ramlapisync.naming.JavaTypeHelper;
 import com.phoenixnap.oss.ramlapisync.naming.SchemaHelper;
 import com.phoenixnap.oss.ramlapisync.raml.RamlAbstractParam;
+import com.phoenixnap.oss.ramlapisync.raml.RamlDataType;
+import com.phoenixnap.oss.ramlapisync.raml.RamlParamType;
 import com.phoenixnap.oss.ramlapisync.raml.RamlUriParameter;
+import com.phoenixnap.oss.ramlapisync.raml.rjp.raml10v2.RJP10V2RamlQueryParameter;
+import com.sun.codemodel.JCodeModel;
 
 /**
  * Data object containing information kept at runtime for Api Call Parameters. This class is used by the RAML generator
@@ -88,6 +94,11 @@ public class ApiParameterMetadata {
 	 */
 	private String example;
 
+	// TODO Alex check if we need all of these attributes
+	private RamlDataType typeDeclaration;
+	private JCodeModel codeModel;
+	private String rawType;
+	
 	/**
 	 * Simple method to prefer a string (which usually is specified by annotation)
 	 * @param preferredOption The first choice for the parameter name
@@ -108,7 +119,8 @@ public class ApiParameterMetadata {
 	 * @param name	The name of this parameter if different in annotation
 	 * @param param Java Parameter representation
 	 */
-	public ApiParameterMetadata(String name, RamlAbstractParam param) {
+	// FIXME Alex - Can we have better JCodeModel handling?
+	public ApiParameterMetadata(String name, RamlAbstractParam param, JCodeModel codeModel) {
 		super();
 
 		if (param == null) {
@@ -131,6 +143,10 @@ public class ApiParameterMetadata {
 		this.format = param.getFormat();
 		this.type = SchemaHelper.mapSimpleType(param.getType(), this.format);
 		
+		if (param instanceof RJP10V2RamlQueryParameter) {
+			this.rawType = ((RJP10V2RamlQueryParameter) param).getRawType();
+		}
+
 		//If it's a repeatable parameter simply convert to an array of type
 		if(param.isRepeat()) {
 			this.type = Array.newInstance(this.type, 0).getClass();
@@ -140,6 +156,14 @@ public class ApiParameterMetadata {
 
 		this.example = StringUtils.hasText(param.getExample()) ? param.getExample() : null;
 		this.setRamlParam(param);
+		
+		if(param instanceof RJP10V2RamlQueryParameter){
+			if(((RJP10V2RamlQueryParameter)param).getType() == RamlParamType.DATA_TYPE){
+				this.typeDeclaration = ((RJP10V2RamlQueryParameter)param).getRamlDataType();
+				this.codeModel = codeModel;
+			}
+		}
+		
 	}
 
 	/**
@@ -286,6 +310,29 @@ public class ApiParameterMetadata {
 			return false;
 		}
 		return type.isArray() || List.class.isAssignableFrom(type) || Set.class.isAssignableFrom(type);
+	}
+
+	/**
+	 * @return the typeDeclaration
+	 */
+	public RamlDataType getTypeDeclaration() {
+		return typeDeclaration;
+	}
+	
+	public JCodeModel getCodeModel() {
+		return codeModel;
+	}
+	
+	public String getRawType() {
+		return this.rawType;
+	}
+	
+	public JCodeModel getCodeModel(String basePackage, String schemaLocation, GenerationConfig config, Annotator annotator) {
+		if (type != null) {
+			return codeModel;
+		} else {
+			return SchemaHelper.buildBodyJCodeModel(schemaLocation, basePackage, name, null, config, annotator);
+		}
 	}
 
 }

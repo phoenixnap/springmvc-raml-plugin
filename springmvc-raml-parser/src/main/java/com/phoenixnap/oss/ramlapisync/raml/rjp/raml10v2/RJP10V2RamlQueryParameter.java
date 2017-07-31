@@ -19,6 +19,7 @@ import org.raml.v2.api.model.v10.datamodel.StringTypeDeclaration;
 import org.raml.v2.api.model.v10.datamodel.TypeDeclaration;
 
 import com.phoenixnap.oss.ramlapisync.naming.RamlTypeHelper;
+import com.phoenixnap.oss.ramlapisync.raml.RamlDataType;
 import com.phoenixnap.oss.ramlapisync.raml.RamlParamType;
 import com.phoenixnap.oss.ramlapisync.raml.RamlQueryParameter;
 
@@ -164,5 +165,9 @@ public class RJP10V2RamlQueryParameter extends RamlQueryParameter {
 	@Override
 	public String getFormat() {
 		return RamlTypeHelper.getFormat(this.queryParameter);
+	}
+	
+	public RamlDataType getRamlDataType() {
+   		return new RJP10V2RamlDataType(this.queryParameter);
 	}
 }
