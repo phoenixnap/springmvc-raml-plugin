@@ -169,16 +169,18 @@
 	</dependencies>	
   </dependencyManagement>
 
-	<distributionManagement>
-		 <snapshotRepository>
-			 <id>ossrh</id>
-			 <url>https://oss.sonatype.org/content/repositories/snapshots</url>
-		 </snapshotRepository>
-		 <repository>
-			 <id>ossrh</id>
-			 <url>https://oss.sonatype.org/service/local/staging/deploy/maven2/</url>
-		 </repository>
-	</distributionManagement>
+    <distributionManagement>
+        <repository>
+            <id>aws-release</id>
+            <name>Viu maven release repository</name>
+            <url>s3://viu-api-artifacts/m2/releases</url>
+        </repository>
+        <snapshotRepository>
+            <id>aws-snapshot</id>
+            <name>Viu maven snapshot repository</name>
+            <url>s3://viu-api-artifacts/m2/snapshots</url>
+        </snapshotRepository>
+    </distributionManagement>
 
 </project>
 
