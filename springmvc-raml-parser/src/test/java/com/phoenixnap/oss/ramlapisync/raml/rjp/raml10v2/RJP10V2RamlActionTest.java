@@ -79,10 +79,13 @@ public class RJP10V2RamlActionTest {
     	assertThat(testYQueryParameter.getDisplayName(), equalTo("testY"));
         assertThat(testYQueryParameter.getType().toString(), equalTo("INTEGER"));
 
-		RamlQueryParameter testZQueryParameter = queryParameters.get("testZ");
-		assertThat(testZQueryParameter.getType().toString(), equalTo("INTEGER"));
-		assertThat(testZQueryParameter.getMinimum().intValue(), equalTo(1));
-		assertThat(testZQueryParameter.getMaximum().intValue(), equalTo(10));
+        assertThat(testYQueryParameter.getMaximum(), is(nullValue()));
+        assertThat(testYQueryParameter.getMinimum(), is(nullValue()));
+
+        RamlQueryParameter testZQueryParameter = queryParameters.get("testZ");
+        assertThat(testZQueryParameter.getType().toString(), equalTo("INTEGER"));
+        assertThat(testZQueryParameter.getMinimum().intValue(), equalTo(1));
+        assertThat(testZQueryParameter.getMaximum().intValue(), equalTo(10));
     }
     
     @Test

@@ -1,0 +1,31 @@
+#%RAML 1.0
+title: My API With Types
+mediaType: application/json
+baseUri: /api
+
+types:
+  Phone:
+    type: object
+    properties:
+      manufacturer:
+        type: string
+      numberOfSIMCards:
+        type: number
+  Notebook:
+    type: object
+    properties:
+      manufacturer:
+        type: string
+      numberOfUSBPorts:
+        type: number
+  Device:
+    type: Phone | Notebook
+
+/devices:
+  description: "Api for devices"
+  /{id}:
+    get:
+      responses:
+        200:
+          body:
+            type: Device

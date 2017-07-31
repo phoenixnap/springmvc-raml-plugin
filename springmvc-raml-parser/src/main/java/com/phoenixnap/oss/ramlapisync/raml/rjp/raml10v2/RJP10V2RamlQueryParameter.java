@@ -120,16 +120,22 @@ public class RJP10V2RamlQueryParameter extends RamlQueryParameter {
 
     @Override
     public BigDecimal getMinimum() {
-		if (queryParameter instanceof NumberTypeDeclaration) {
-			return BigDecimal.valueOf(((NumberTypeDeclaration) queryParameter).minimum());
-    	}
-		return null;
+        if (queryParameter instanceof NumberTypeDeclaration) {
+            Double minimum = ((NumberTypeDeclaration) queryParameter).minimum();
+            if (minimum != null) {
+                return BigDecimal.valueOf(minimum);
+            }
+        }
+        return null;
     }
 
     @Override
     public BigDecimal getMaximum() {
     	if(queryParameter instanceof NumberTypeDeclaration){
-			return BigDecimal.valueOf(((NumberTypeDeclaration) queryParameter).maximum());
+            Double maximum = ((NumberTypeDeclaration) queryParameter).maximum();
+            if (maximum != null) {
+                return BigDecimal.valueOf(maximum);
+            }
     	}
     	return null;
     }
