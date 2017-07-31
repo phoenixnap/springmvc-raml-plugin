@@ -200,7 +200,6 @@ public class RJP10V2RamlModelFactory implements RamlModelFactory {
     }
 
     @Override
-	// TODO Alex - can we have better recognition?
 	public RamlParamType createRamlParamType(Object paramType) {
 		if (paramType == null) {
 			return RamlParamType.STRING;

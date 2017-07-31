@@ -26,7 +26,9 @@ import com.phoenixnap.oss.ramlapisync.data.ApiParameterMetadata;
 import com.phoenixnap.oss.ramlapisync.generation.CodeModelHelper;
 import com.phoenixnap.oss.ramlapisync.generation.rules.Rule;
 import com.phoenixnap.oss.ramlapisync.naming.NamingHelper;
+import com.phoenixnap.oss.ramlapisync.raml.RamlAbstractParam;
 import com.phoenixnap.oss.ramlapisync.raml.RamlParamType;
+import com.phoenixnap.oss.ramlapisync.raml.rjp.raml10v2.RJP10V2RamlQueryParameter;
 import com.sun.codemodel.JClass;
 import com.sun.codemodel.JCodeModel;
 import com.sun.codemodel.JMethod;
@@ -124,8 +126,11 @@ public class MethodParamsRule implements Rule<CodeModelHelper.JExtMethod, JMetho
     		//TODO should this be blank?
     	}
     	
-		if (paramMetaData.getRamlParam().getType() == RamlParamType.DATA_TYPE) {
-			JClass jc = findFirstClassBySimpleName(paramMetaData.getCodeModel(), paramMetaData.getRawType());
+		// data types as query parameters
+		RamlAbstractParam ramlParam = paramMetaData.getRamlParam();
+		if (ramlParam.getType() == RamlParamType.DATA_TYPE && ramlParam instanceof RJP10V2RamlQueryParameter) {
+			JClass jc = findFirstClassBySimpleName(paramMetaData.getCodeModel(),
+					((RJP10V2RamlQueryParameter) ramlParam).getRawType());
 			return generatableType.get().param(jc, paramMetaData.getName());
 		}
 
