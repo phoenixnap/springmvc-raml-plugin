@@ -30,6 +30,7 @@ import com.phoenixnap.oss.ramlapisync.naming.JavaTypeHelper;
 import com.phoenixnap.oss.ramlapisync.naming.SchemaHelper;
 import com.phoenixnap.oss.ramlapisync.raml.RamlAbstractParam;
 import com.phoenixnap.oss.ramlapisync.raml.RamlUriParameter;
+import com.sun.codemodel.JCodeModel;
 
 /**
  * Data object containing information kept at runtime for Api Call Parameters. This class is used by the RAML generator
@@ -88,6 +89,8 @@ public class ApiParameterMetadata {
 	 */
 	private String example;
 
+	private JCodeModel codeModel;
+	
 	/**
 	 * Simple method to prefer a string (which usually is specified by annotation)
 	 * @param preferredOption The first choice for the parameter name
@@ -108,7 +111,7 @@ public class ApiParameterMetadata {
 	 * @param name	The name of this parameter if different in annotation
 	 * @param param Java Parameter representation
 	 */
-	public ApiParameterMetadata(String name, RamlAbstractParam param) {
+	public ApiParameterMetadata(String name, RamlAbstractParam param, JCodeModel codeModel) {
 		super();
 
 		if (param == null) {
@@ -140,6 +143,7 @@ public class ApiParameterMetadata {
 
 		this.example = StringUtils.hasText(param.getExample()) ? param.getExample() : null;
 		this.setRamlParam(param);
+		this.codeModel = codeModel;
 	}
 
 	/**
@@ -288,4 +292,7 @@ public class ApiParameterMetadata {
 		return type.isArray() || List.class.isAssignableFrom(type) || Set.class.isAssignableFrom(type);
 	}
 
+	public JCodeModel getCodeModel() {
+		return codeModel;
+	}
 }

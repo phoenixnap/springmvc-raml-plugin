@@ -34,9 +34,11 @@ import com.phoenixnap.oss.ramlapisync.raml.RamlAction;
 import com.phoenixnap.oss.ramlapisync.raml.RamlActionType;
 import com.phoenixnap.oss.ramlapisync.raml.RamlDataType;
 import com.phoenixnap.oss.ramlapisync.raml.RamlMimeType;
+import com.phoenixnap.oss.ramlapisync.raml.RamlQueryParameter;
 import com.phoenixnap.oss.ramlapisync.raml.RamlResource;
 import com.phoenixnap.oss.ramlapisync.raml.RamlResponse;
 import com.phoenixnap.oss.ramlapisync.raml.RamlUriParameter;
+import com.phoenixnap.oss.ramlapisync.raml.rjp.raml10v2.RJP10V2RamlQueryParameter;
 import com.sun.codemodel.JCodeModel;
 
 
@@ -58,7 +60,7 @@ public class ApiActionMetadata {
 	ApiBodyMetadata requestBody = null;
 	Map<String, ApiBodyMetadata> responseBody = new LinkedHashMap<>();
 	Set<ApiParameterMetadata> pathVariables = null;
-	Set<ApiParameterMetadata> requestParameters = null;
+	Set<ApiParameterMetadata> requestParameters = new LinkedHashSet<>();
 	Set<ApiParameterMetadata> requestHeaders = null;
 	boolean injectHttpHeadersParameter = false;
 
@@ -81,6 +83,7 @@ public class ApiActionMetadata {
 		this(config, parent, resource, actionType, action, null, false);
 	}
 
+	@Override
 	public String toString() {
 		return "Method " + getName() + "  Verb [" + actionType + "] Url [" + getUrl() + "] \nConsumes ["
 				+ getConsumes() + "] Produces [" + getProduces() + "] with Schema [" + null + "] \nPath Vars ["
@@ -100,7 +103,7 @@ public class ApiActionMetadata {
 
 		do {
 			for (Entry<String, RamlUriParameter> param : targetResource.getUriParameters().entrySet()) {
-				pathVariables.add(new ApiParameterMetadata(param.getKey(), param.getValue()));
+				pathVariables.add(new ApiParameterMetadata(param.getKey(), param.getValue(), null));
 			}
 			targetResource = targetResource.getParentResource();
 		} while (targetResource != null);
@@ -126,17 +129,33 @@ public class ApiActionMetadata {
 
 
 	private void parseRequest(PojoGenerationConfig config, JCodeModel codeModel) {
-		requestParameters = action.getQueryParameters().entrySet().stream()
-				.map(param -> new ApiParameterMetadata(param.getKey(), param.getValue()))
-				.collect(Collectors.toCollection(LinkedHashSet::new));
+
+		if (action.getQueryParameters() != null && !action.getQueryParameters().isEmpty()) {
+			for (Entry<String, RamlQueryParameter> entry : action.getQueryParameters().entrySet()) {
+				collectQueryParams(config, codeModel, entry);
+			}
+		}
 		requestHeaders = action.getHeaders().entrySet().stream()
-				.map(param -> new ApiParameterMetadata(param.getKey(), param.getValue()))
+				.map(param -> new ApiParameterMetadata(param.getKey(), param.getValue(), codeModel))
 				.collect(Collectors.toCollection(LinkedHashSet::new));
 		if (action.getBody() != null && !action.getBody().isEmpty()) {
 			for (Entry<String, RamlMimeType> entry : action.getBody().entrySet()) {
 				collectBodyParams(config, codeModel, entry);
 			}
 		}
+	}
+
+	private void collectQueryParams(PojoGenerationConfig config, JCodeModel codeModel,
+			Entry<String, RamlQueryParameter> queryParameter) {
+
+		if (queryParameter.getValue() instanceof RJP10V2RamlQueryParameter) {
+
+			RamlDataType type = ((RJP10V2RamlQueryParameter) queryParameter.getValue()).getRamlDataType();
+			if (type != null) {
+				RamlTypeHelper.mapTypeToPojo(config, codeModel, parent.getDocument(), type.getType(), null);
+			}
+		}
+		requestParameters.add(new ApiParameterMetadata(queryParameter.getKey(), queryParameter.getValue(), codeModel));
 	}
 
 	private void collectBodyParams(PojoGenerationConfig config, JCodeModel codeModel, Entry<String, RamlMimeType> mime) {
@@ -171,7 +190,7 @@ public class ApiActionMetadata {
 		if(requestBody == null) return;
 		for (Entry<String, List<RamlFormParameter>> params : requestBody.getFormParameters().entrySet()) {
 			for (RamlFormParameter param : params.getValue()) {
-				requestParameters.add(new ApiParameterMetadata(params.getKey(), param));
+				requestParameters.add(new ApiParameterMetadata(params.getKey(), param, null));
 			}
 		}
 	}
