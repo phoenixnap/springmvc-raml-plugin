@@ -65,6 +65,7 @@ public class ControllerMethodSignatureRule implements Rule<JDefinedClass, JMetho
     public JMethod apply(ApiActionMetadata endpointMetadata, JDefinedClass generatableType) {
         JType responseType = responseTypeRule.apply(endpointMetadata, generatableType);
         JMethod jMethod = generatableType.method(JMod.PUBLIC, responseType, endpointMetadata.getName());
+        jMethod._throws(Exception.class);
         jMethod = paramsRule.apply(endpointMetadata, ext(jMethod, generatableType.owner()));
         return jMethod;
     }
