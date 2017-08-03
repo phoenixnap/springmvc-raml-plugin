@@ -64,7 +64,10 @@ public class UnionTypeInterpreter extends BaseTypeInterpreter {
 
         TypeDeclaration parent = null;
 
-        if (!RamlTypeHelper.isBaseObject(typeName)) {
+        if(typeName.contains("|")){
+            return null;
+        }
+        if (!RamlTypeHelper.isBaseObject(typeName) && !typeName.contains("|")) {
             parent = types.get(typeName).getType();
         } else if (objectType.parentTypes() != null && objectType.parentTypes().size() > 0) {
             TypeDeclaration tempParent = objectType.parentTypes().get(0); // java doesnt support multiple parents take first;
@@ -123,9 +126,11 @@ public class UnionTypeInterpreter extends BaseTypeInterpreter {
                             document, objectProperty, builderModel, config, true);
 
             String childType = childResult.getResolvedClassOrBuiltOrObject().fullName();
-            builder.withField(objectProperty.name(), childType,
-                    RamlTypeHelper.getDescription(objectProperty),
-                    childResult.getValidations(), objectProperty.defaultValue());
+            if(!builder.pojo.fields().containsKey(objectProperty.name())){
+                builder.withField(objectProperty.name(), childType,
+                        RamlTypeHelper.getDescription(objectProperty),
+                        childResult.getValidations(), objectProperty.defaultValue());
+            }
         }
         // Add a constructor with all fields
         builder.withCompleteConstructor();

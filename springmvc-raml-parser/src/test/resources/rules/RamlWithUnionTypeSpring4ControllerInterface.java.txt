@@ -276,13 +276,107 @@ public class Phone implements Serializable
     }
 
 }
+-----------------------------------com.gen.test.model.PhoneNotebook.java-----------------------------------
+
+package com.gen.test.model;
+
+import java.io.Serializable;
+import org.apache.commons.lang.builder.EqualsBuilder;
+import org.apache.commons.lang.builder.HashCodeBuilder;
+import org.apache.commons.lang.builder.ToStringBuilder;
+
+public class PhoneNotebook implements Serializable
+{
+    private com.gen.test.model.Phone Phone;
+    private com.gen.test.model.Notebook Notebook;
+
+    /**
+     * Creates a new PhoneNotebook.
+     *
+     */
+    public PhoneNotebook() {
+        super();
+    }
+
+    /**
+     * Creates a new PhoneNotebook.
+     *
+     */
+    public PhoneNotebook(com.gen.test.model.Phone Phone, com.gen.test.model.Notebook Notebook) {
+        super();
+        this.Phone = Phone;
+        this.Notebook = Notebook;
+    }
+
+    public String toString() {
+        return ToStringBuilder.reflectionToString(this);
+    }
+
+    public boolean equals(Object other) {
+        if (other == this) {
+            return true;
+        }
+        if ((other instanceof PhoneNotebook) == false) {
+            return false;
+        }
+        PhoneNotebook otherObject = ((PhoneNotebook) other);
+        return new EqualsBuilder().isEquals();
+    }
+
+    public int hashCode() {
+        return new HashCodeBuilder().toHashCode();
+    }
+
+    /**
+     * Returns the Phone.
+     *
+     * @return
+     *     Phone
+     */
+    public com.gen.test.model.Phone getPhone() {
+        return Phone;
+    }
+
+    /**
+     * Set the Phone.
+     *
+     * @param Phone
+     *     the new Phone
+     */
+    public void setPhone(com.gen.test.model.Phone Phone) {
+        this.Phone = Phone;
+    }
+
+    /**
+     * Returns the Notebook.
+     *
+     * @return
+     *     Notebook
+     */
+    public com.gen.test.model.Notebook getNotebook() {
+        return Notebook;
+    }
+
+    /**
+     * Set the Notebook.
+     *
+     * @param Notebook
+     *     the new Notebook
+     */
+    public void setNotebook(com.gen.test.model.Notebook Notebook) {
+        this.Notebook = Notebook;
+    }
+}
 -----------------------------------com.gen.test.ApiDeviceController.java-----------------------------------
 
 package com.gen.test;
 
+import javax.validation.Valid;
 import com.gen.test.model.Device;
+import com.gen.test.model.PhoneNotebook;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
@@ -290,7 +384,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 /**
  * Api for devices
- * (Generated with springmvc-raml-parser v.${project.version})
+ * (Generated with springmvc-raml-parser v.0.10.6)
  *
  */
 @RestController
@@ -302,9 +396,37 @@ public interface ApiDeviceController {
      * No description
      *
      */
+    @RequestMapping(value = "", method = RequestMethod.POST)
+    public ResponseEntity<String> createDevice(
+        @Valid
+        @RequestBody
+        PhoneNotebook phoneNotebook)
+        throws Exception
+    ;
+
+    /**
+     * No description
+     *
+     */
     @RequestMapping(value = "/{id}", method = RequestMethod.GET)
     public ResponseEntity<Device> getDeviceById(
         @PathVariable
-        String id);
+        java.lang.String id)
+        throws Exception
+    ;
+
+    /**
+     * No description
+     *
+     */
+    @RequestMapping(value = "/{id}", method = RequestMethod.POST)
+    public ResponseEntity<Device> updateDeviceById(
+        @PathVariable
+        java.lang.String id,
+        @Valid
+        @RequestBody
+        Device device)
+        throws Exception
+    ;
 
 }

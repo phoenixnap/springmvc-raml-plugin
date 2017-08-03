@@ -23,8 +23,21 @@ types:
 
 /devices:
   description: "Api for devices"
+  post:
+    body:
+      type: Phone | Notebook
+    responses:
+      200:
+        body:
+          type: string
   /{id}:
     get:
+      responses:
+        200:
+          body:
+            type: Device
+    post:
+      body: Device
       responses:
         200:
           body:
