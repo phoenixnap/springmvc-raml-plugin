@@ -89,6 +89,12 @@ public class JsonShema2PojoGenerationConfig extends DefaultGenerationConfig
    protected Boolean includeHashcodeAndEquals = Boolean.TRUE;
 
    /**
+    * We will pass on this configuration to the jsonschema2pojo library for making the POJO <code>Serializable</code>
+    */
+   @Parameter(required = false, readonly = true, defaultValue = "true")
+   protected Boolean makeSerializable = Boolean.TRUE;
+
+   /**
     * We will pass on this configuration to the jsonschema2pojo library for generation of <code>toString</code> method
     */
    @Parameter(required = false, readonly = true, defaultValue = "true")
@@ -233,6 +239,15 @@ public class JsonShema2PojoGenerationConfig extends DefaultGenerationConfig
          return includeHashcodeAndEquals;
       }
       return super.isIncludeHashcodeAndEquals();
+   }
+
+   @Override
+   public boolean isSerializable()
+   {
+      if (makeSerializable != null) {
+         return makeSerializable;
+      }
+      return super.isSerializable();
    }
 
    @Override

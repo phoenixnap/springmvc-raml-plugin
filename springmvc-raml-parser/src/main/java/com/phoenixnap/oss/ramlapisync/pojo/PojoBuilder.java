@@ -126,7 +126,9 @@ public class PojoBuilder extends AbstractBuilder {
 			withDefaultConstructor(className);
 
 			// Handle Serialization
-			implementsSerializable();
+			if(config.isMakeSerializale()) {
+				implementsSerializable();
+			}
 
 			// Add to shortcuts
 			this.codeModels.put(fullyQualifiedClassName, this.pojo);
