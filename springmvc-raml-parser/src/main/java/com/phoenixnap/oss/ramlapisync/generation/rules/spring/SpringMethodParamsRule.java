@@ -76,8 +76,8 @@ public class SpringMethodParamsRule extends MethodParamsRule {
 		super();
 	}
 
-	public SpringMethodParamsRule(boolean addParameterJavadoc, boolean allowArrayParameters) {
-		super(addParameterJavadoc, allowArrayParameters);
+	public SpringMethodParamsRule(boolean addParameterJavadoc, boolean allowArrayParameters, boolean allowUnionTypeParameters) {
+		super(addParameterJavadoc, allowArrayParameters, allowUnionTypeParameters);
 	}
 
 	@Override

@@ -71,9 +71,10 @@ public class MethodParamsRule implements Rule<CodeModelHelper.JExtMethod, JMetho
 
 	boolean addParameterJavadoc = false;
 	boolean allowArrayParameters = true;
-	
+	boolean allowUnionParameters = false;
+
 	public MethodParamsRule () {
-		this(false, true);
+		this(false, true, false);
 	}
 	
 	/**
@@ -85,8 +86,15 @@ public class MethodParamsRule implements Rule<CodeModelHelper.JExtMethod, JMetho
 	public MethodParamsRule (boolean addParameterJavadoc, boolean allowArrayParameters) {
 		this.addParameterJavadoc = addParameterJavadoc;
 		this.allowArrayParameters = allowArrayParameters;
+		this.allowUnionParameters = false;
 	}
 	
+	public MethodParamsRule (boolean addParameterJavadoc, boolean allowArrayParameters, boolean allowUnionParameters) {
+		this.addParameterJavadoc = addParameterJavadoc;
+		this.allowArrayParameters = allowArrayParameters;
+		this.allowUnionParameters = allowUnionParameters;
+	}
+
     @Override
     public JMethod apply(ApiActionMetadata endpointMetadata, CodeModelHelper.JExtMethod generatableType) {
 
@@ -140,6 +148,7 @@ public class MethodParamsRule implements Rule<CodeModelHelper.JExtMethod, JMetho
     protected JVar paramObjects(ApiActionMetadata endpointMetadata, CodeModelHelper.JExtMethod generatableType) {
         String requestBodyName = endpointMetadata.getRequestBody().getName();
         boolean array = endpointMetadata.getRequestBody().isArray();
+        boolean unionType = endpointMetadata.getRequestBody().getType().type().contains("|");
         
         List<JCodeModel> codeModels = new ArrayList<>();
         if (endpointMetadata.getRequestBody().getCodeModel()!=null){
@@ -154,7 +163,9 @@ public class MethodParamsRule implements Rule<CodeModelHelper.JExtMethod, JMetho
         if (allowArrayParameters && array) {
             JClass arrayType = generatableType.owner().ref(List.class);
             requestBodyType = arrayType.narrow(requestBodyType);
-        } 
+        } else if (!allowUnionParameters && unionType){
+            requestBodyType = generatableType.owner().ref(String.class);
+        }
         if (addParameterJavadoc) {
         	generatableType.get().javadoc().addParam(uncapitalize(requestBodyName) + " The Request Body Payload");
         }

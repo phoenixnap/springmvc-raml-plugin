@@ -36,12 +36,15 @@ public abstract class SpringConfigurableRule implements ConfigurableRule<JCodeMo
  	public static final String PARAMETER_JAVADOC_CONFIGURATION = "addParameterJavadoc";
  			
  	public static final String ARRAY_PARAMETER_CONFIGURATION = "allowArrayParameters";
- 	
+
+ 	public static final String UNION_TYPE_PARAMETER_CONFIGURATION = "allowUnionTypeParameters";
+
  	
 
     private boolean callableResponse = false;
     private boolean addParameterJavadoc = false;
     private boolean allowArrayParameters = true;
+    private boolean allowUnionTypeParameters = false;
 
    
     
@@ -56,6 +59,9 @@ public abstract class SpringConfigurableRule implements ConfigurableRule<JCodeMo
             }
             if(configuration.containsKey(ARRAY_PARAMETER_CONFIGURATION)) {
             	setAllowArrayParameters(BooleanUtils.toBoolean(configuration.get(ARRAY_PARAMETER_CONFIGURATION)));
+            }
+            if(configuration.containsKey(UNION_TYPE_PARAMETER_CONFIGURATION)) {
+            	setAllowUnionTypeParameters(BooleanUtils.toBoolean(configuration.get(UNION_TYPE_PARAMETER_CONFIGURATION)));
             }
         }
     }
@@ -72,10 +78,18 @@ public abstract class SpringConfigurableRule implements ConfigurableRule<JCodeMo
 		return allowArrayParameters;
 	}
 
+	public boolean isAllowUnionTypeParameters() {
+		return allowUnionTypeParameters;
+	}
+
 	public void setAllowArrayParameters(boolean allowArrayParameters) {
 		this.allowArrayParameters = allowArrayParameters;
 	}
 	
+	public void setAllowUnionTypeParameters(boolean allowUnionTypeParameters) {
+		this.allowUnionTypeParameters = allowUnionTypeParameters;
+	}
+
 	public boolean isCallableResponse() {
 		return callableResponse;
 	}

@@ -76,7 +76,7 @@ public abstract class SpringControllerDecoratorRule extends SpringConfigurableRu
                 .setMethodCommentRule(new MethodCommentRule())
                 .setMethodSignatureRule(new ControllerMethodSignatureRule(
                         isCallableResponse() ? new SpringCallableResponseEntityRule() :  new SpringResponseEntityRule(),
-                        new MethodParamsRule(isAddParameterJavadoc(), isAllowArrayParameters())))
+                        new MethodParamsRule(isAddParameterJavadoc(), isAllowArrayParameters(), isAllowUnionTypeParameters())))
                 .apply(metadata, generatableType);
 
         String delegateFieldName = StringUtils.uncapitalize(generatedInterface.name()+"Delegate");
@@ -95,13 +95,13 @@ public abstract class SpringControllerDecoratorRule extends SpringConfigurableRu
                 .addMethodAnnotationRule(getResponseBodyAnnotationRule())
                 .setMethodSignatureRule(new ControllerMethodSignatureRule(
                         isCallableResponse() ? new SpringCallableResponseEntityRule() :  new SpringResponseEntityRule(),
-                        new SpringMethodParamsRule(isAddParameterJavadoc(), isAllowArrayParameters())))
+                        new SpringMethodParamsRule(isAddParameterJavadoc(), isAllowArrayParameters(), isAllowUnionTypeParameters())))
                 .setMethodBodyRule(new DelegatingMethodBodyRule(delegateFieldName));
 
         return delegateGenerator.apply(metadata, generatableType);
     }
-    
+
     protected abstract Rule<JDefinedClass, JAnnotationUse, ApiResourceMetadata> getControllerAnnotationRule();
-    
+
     protected abstract Rule<JMethod, JAnnotationUse, ApiActionMetadata> getResponseBodyAnnotationRule();
 }
