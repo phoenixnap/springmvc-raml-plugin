@@ -43,9 +43,8 @@ public class PojoGenerationConfig {
 	
 	//If set to true, longs will be generated as BigIntegers
 	private boolean useBigIntegers = false;
-		
-		
-	
+
+	private boolean makeSerializale = true;
 
 	public String getPojoPackage() {
 		return pojoPackage;
@@ -56,6 +55,10 @@ public class PojoGenerationConfig {
 
 	public boolean isUseLongIntegers() {
 		return useLongIntegers;
+	}
+
+	public boolean isMakeSerializale(){
+		return makeSerializale;
 	}
 
 	public boolean isGenerateHashcodeEqualsToString() {
@@ -103,6 +106,11 @@ public class PojoGenerationConfig {
 		return this;
 	}
 	
+	public PojoGenerationConfig withMakeSerializable(boolean makePOJOSerializable) {
+		this.makeSerializale = makePOJOSerializable;
+		return this;
+	}
+
 	public PojoGenerationConfig withJSR303Annotations(boolean generateJSR303Annotations) {
 		this.generateJSR303Annotations = generateJSR303Annotations;
 		return this;
@@ -130,7 +138,8 @@ public class PojoGenerationConfig {
 		.withBigDecimals(generationConfig.isUseBigDecimals())
 		.withBigIntegers(generationConfig.isUseBigIntegers())
 		.withJSR303Annotations(generationConfig.isIncludeJsr303Annotations())
-		.withHashcodeEqualsToString((generationConfig.isIncludeHashcodeAndEquals() && generationConfig.isIncludeToString()));
+		.withHashcodeEqualsToString((generationConfig.isIncludeHashcodeAndEquals() && generationConfig.isIncludeToString()))
+		.withMakeSerializable(generationConfig.isSerializable());
 	}
 	
 
