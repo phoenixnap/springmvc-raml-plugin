@@ -19,5 +19,6 @@ package com.phoenixnap.oss.ramlapisync.raml;
  * @since 0.8.1
  */
 public enum RamlParamType {
-	STRING, NUMBER, INTEGER, DATE, FILE, BOOLEAN, DATA_TYPE;
+	STRING, NUMBER, INTEGER, DATE, FILE, BOOLEAN, DATA_TYPE, ARRAY
+	;
 }

@@ -223,6 +223,8 @@ public class RJP10V2RamlModelFactory implements RamlModelFactory {
 				return RamlParamType.FILE;
 			case "BOOLEAN":
 				return RamlParamType.BOOLEAN;
+			case "ARRAY":
+				return RamlParamType.ARRAY;
 			default:
 				return RamlParamType.DATA_TYPE;
 		}
