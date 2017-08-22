@@ -1,0 +1,19 @@
+#%RAML 1.0
+title: Error Example
+baseUri: /
+types:
+  EventCreate:
+    type: object
+    displayName: Event Creation Data Type
+    properties:
+      eventName:
+        type: string
+        description: "The Name of the event"
+      eventPayload:
+        type: object
+        description: "The event payload"
+/events:
+  post:
+    body:
+      application/json:
+        type: EventCreate

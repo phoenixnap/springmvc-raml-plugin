@@ -18,7 +18,6 @@ import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Random;
 import java.util.Set;
 
 import org.apache.commons.lang3.builder.HashCodeBuilder;
@@ -40,7 +39,6 @@ import com.sun.codemodel.JFieldVar;
 import com.sun.codemodel.JInvocation;
 import com.sun.codemodel.JMethod;
 import com.sun.codemodel.JMod;
-import com.sun.codemodel.JType;
 import com.sun.codemodel.JVar;
 
 /**
@@ -254,22 +252,36 @@ public class PojoBuilder extends AbstractBuilder {
 	}
 
 	/**
-	 * Adds a constructor with all the fields in the POJO
+	 * Adds a constructor with all the fields in the POJO. If no fields are
+	 * present it will not create an empty constructor because default
+	 * constructor (without fields) is already present.
 	 * 
 	 * @return This builder instance
 	 */
 	public PojoBuilder withCompleteConstructor() {
 		pojoCreationCheck();
 
-		// Create default constructor
-		JMethod constructor = this.pojo.constructor(JMod.PUBLIC);
-		Map<String, JVar> superParametersToAdd = getSuperParametersToAdd(this.pojo);
-		addSuperConstructorInvocation(constructor, superParametersToAdd);
-		constructor.javadoc().add("Creates a new " + this.pojo.name() + ".");
-
+		// first we need to check if there are any fields to add to constructor
+		// because default constructor (without fields) is already present
+		boolean hasFieldsToAdd = false;
 		Map<String, JVar> fieldsToAdd = getFieldsToAdd(this.pojo);
 		for (JVar field : fieldsToAdd.values()) {
-			addFieldToConstructor(field, constructor);
+			if (((field.mods().getValue() & (JMod.STATIC | JMod.TRANSIENT)) == 0)) {
+				hasFieldsToAdd = true;
+				break;
+			}
+		}
+
+		if (hasFieldsToAdd) {
+			// Create complete constructor
+			JMethod constructor = this.pojo.constructor(JMod.PUBLIC);
+			Map<String, JVar> superParametersToAdd = getSuperParametersToAdd(this.pojo);
+			addSuperConstructorInvocation(constructor, superParametersToAdd);
+			constructor.javadoc().add("Creates a new " + this.pojo.name() + ".");
+
+			for (JVar field : fieldsToAdd.values()) {
+				addFieldToConstructor(field, constructor);
+			}
 		}
 
 		return this;
