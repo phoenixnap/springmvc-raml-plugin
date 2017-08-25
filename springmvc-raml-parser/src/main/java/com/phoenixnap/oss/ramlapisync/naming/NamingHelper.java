@@ -320,15 +320,16 @@ public class NamingHelper {
 	 * @param url The URL of the raml resource being parsed
 	 * @param singularize Indicates if the resource name should be singularized or not
 	 * @param resourceDepthInClassNames The depth of uri to be included in a name 
+	 * @param resourceTopLevelInClassNames The top level of URI to be included in a name
 	 * @return
 	 */
-	public static String getAllResourcesNames(String url, boolean singularize, int resourceDepthInClassNames) {
+	public static String getAllResourcesNames(String url, boolean singularize, int resourceDepthInClassNames, int resourceTopLevelInClassNames) {
 
 		StringBuilder stringBuilder = new StringBuilder();
 		if (StringUtils.hasText(url)) {
 			String[] resources = url.split("/");
 			int lengthCounter = 0;
-			for(int i = resources.length - 1; i >= 0; --i){
+			for(int i = resources.length - 1; i >= resourceTopLevelInClassNames + 1; --i){
 				if (StringUtils.hasText(resources[i])) {
 					stringBuilder.insert(0, getResourceName(resources[i], singularize));
 					++lengthCounter;

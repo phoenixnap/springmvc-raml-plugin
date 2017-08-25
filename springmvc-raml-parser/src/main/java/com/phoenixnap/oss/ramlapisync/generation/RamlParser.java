@@ -47,6 +47,8 @@ public class RamlParser {
 	
 	protected static final int DEFAULT_RESOURCE_DEPTH = 1;
 
+	protected static final int DEFAULT_RESOURCE_TOP_LEVEL = 0;
+
 	/**
 	 * Base configuration for code generation
 	 */
@@ -73,6 +75,12 @@ public class RamlParser {
 	 * controller/decorator names.
 	 */
 	protected int resourceDepthInClassNames = DEFAULT_RESOURCE_DEPTH;
+	
+	/**
+	 * Top level of URI included in generated class names. Default is 0 which means
+	 * that all resources will be in included in controller/decorator names.
+	 */
+	protected int resourceTopLevelInClassNames = DEFAULT_RESOURCE_TOP_LEVEL;
 
 	public RamlParser (PojoGenerationConfig config) {
 		this.config = config;
@@ -83,15 +91,16 @@ public class RamlParser {
 	}
 	
 	public RamlParser(String basePackage, String startUrl, boolean seperateMethodsByContentType, boolean injectHttpHeadersParameter) {
-		this(new PojoGenerationConfig().withPackage(basePackage, null), startUrl, seperateMethodsByContentType, injectHttpHeadersParameter, DEFAULT_RESOURCE_DEPTH);
+		this(new PojoGenerationConfig().withPackage(basePackage, null), startUrl, seperateMethodsByContentType, injectHttpHeadersParameter, DEFAULT_RESOURCE_DEPTH, DEFAULT_RESOURCE_TOP_LEVEL);
 	}
 	
-	public RamlParser(PojoGenerationConfig config, String startUrl, boolean seperateMethodsByContentType, boolean injectHttpHeadersParameter, int resourceDepthInClassNames) {
+	public RamlParser(PojoGenerationConfig config, String startUrl, boolean seperateMethodsByContentType, boolean injectHttpHeadersParameter, int resourceDepthInClassNames, int resourceTopLevelInClassNames) {
 		this(config);
 		this.seperateMethodsByContentType = seperateMethodsByContentType;
 		this.injectHttpHeadersParameter = injectHttpHeadersParameter;
 		this.startUrl = startUrl;
 		this.resourceDepthInClassNames = resourceDepthInClassNames;
+		this.resourceTopLevelInClassNames = resourceTopLevelInClassNames;
 	}
 
 	/**
@@ -176,7 +185,7 @@ public class RamlParser {
 		//append resource URL to url.
 		String url = baseUrl + resource.getRelativeUri();
 		if (controller == null && shouldCreateController(resource)) {
-			controller = new ApiResourceMetadata(config, bodyCodeModel, url, resource, document, this.resourceDepthInClassNames);
+			controller = new ApiResourceMetadata(config, bodyCodeModel, url, resource, document, this.resourceDepthInClassNames, this.resourceTopLevelInClassNames);
 			controllers.add(controller);
 		}
 		//extract actions for this resource
