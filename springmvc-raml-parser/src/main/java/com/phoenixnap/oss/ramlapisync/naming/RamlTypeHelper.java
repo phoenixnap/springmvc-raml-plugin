@@ -178,6 +178,21 @@ public class RamlTypeHelper {
 	}
 	
 	/**
+	 * Safely get Name from a type with null checks
+	 * 
+	 * @param type
+	 *            The RAML TypeDeclaration to check
+	 * @return The Name if defined or null if empty
+	 */
+	public static String getName(TypeDeclaration type) {
+		if (type == null) {
+			return null;
+		} else {
+			return type.name();
+		}
+	}
+
+	/**
 	 * Safely get required from a type with null checks
 	 * 
 	 * @param type The RAML TypeDeclaration to check
@@ -307,12 +322,12 @@ public class RamlTypeHelper {
 			
 			@Override
 			public Integer minLength() {
-				return 0;
+				return null;
 			}
 			
 			@Override
 			public Integer maxLength() {
-				return Integer.MAX_VALUE;
+				return null;
 			}
 			
 			@Override

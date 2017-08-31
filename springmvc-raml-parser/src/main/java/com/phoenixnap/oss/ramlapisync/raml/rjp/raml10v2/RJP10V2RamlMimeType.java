@@ -12,10 +12,13 @@
  */
 package com.phoenixnap.oss.ramlapisync.raml.rjp.raml10v2;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import org.raml.v2.api.model.v10.datamodel.ExternalTypeDeclaration;
+import org.raml.v2.api.model.v10.datamodel.ObjectTypeDeclaration;
 import org.raml.v2.api.model.v10.datamodel.TypeDeclaration;
 
 import com.phoenixnap.oss.ramlapisync.data.RamlFormParameter;
@@ -32,7 +35,11 @@ import com.phoenixnap.oss.ramlapisync.raml.RamlMimeType;
 public class RJP10V2RamlMimeType implements RamlMimeType {
 
 
+	private static RJP10V2RamlModelFactory ramlModelFactory = new RJP10V2RamlModelFactory();
+
     private final TypeDeclaration mimeType;
+
+	private Map<String, List<RamlFormParameter>> formParameters;
 
 
     public RJP10V2RamlMimeType(TypeDeclaration mimeType) {
@@ -47,14 +54,28 @@ public class RJP10V2RamlMimeType implements RamlMimeType {
         return mimeType;
     }
 
-    @Override
-    public Map<String, List<RamlFormParameter>> getFormParameters() {
-    	throw new UnsupportedOperationException();
-    }
+	@Override
+	public Map<String, List<RamlFormParameter>> getFormParameters() {
+		if (formParameters == null) {
+			this.formParameters = ((ObjectTypeDeclaration) mimeType).properties().stream()
+					.collect(Collectors.toMap(this::getName, this::getList));
+		}
+		return this.formParameters;
+	}
+
+	private String getName(TypeDeclaration typeDeclaration) {
+		return typeDeclaration.name();
+	}
+
+	private List<RamlFormParameter> getList(TypeDeclaration typeDeclaration) {
+		List<RamlFormParameter> list = new ArrayList<>();
+		list.add(ramlModelFactory.createRamlFormParameter(typeDeclaration));
+		return list;
+	}
 
     @Override
     public void setFormParameters(Map<String, List<RamlFormParameter>> formParameters) {
-    	throw new UnsupportedOperationException();
+        this.formParameters = formParameters;
     }
 
     @Override

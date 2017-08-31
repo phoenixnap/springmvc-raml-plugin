@@ -40,7 +40,7 @@ public class RJP10V2RamlResponse implements RamlResponse {
         ramlModelFactory.transformToUnmodifiableMap(
 				this.response.body(), this.body,
                 ramlModelFactory::createRamlMimeType,
-                r -> RamlTypeHelper.getDisplayName(r));
+				r -> RamlTypeHelper.getName(r));
     }
 
     /**

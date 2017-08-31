@@ -18,6 +18,11 @@ import static org.springframework.util.StringUtils.uncapitalize;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.validation.constraints.Max;
+import javax.validation.constraints.Min;
+import javax.validation.constraints.Pattern;
+import javax.validation.constraints.Size;
+
 import org.springframework.http.HttpHeaders;
 import org.springframework.util.StringUtils;
 
@@ -29,6 +34,7 @@ import com.phoenixnap.oss.ramlapisync.naming.NamingHelper;
 import com.phoenixnap.oss.ramlapisync.raml.RamlAbstractParam;
 import com.phoenixnap.oss.ramlapisync.raml.RamlParamType;
 import com.phoenixnap.oss.ramlapisync.raml.rjp.raml10v2.RJP10V2RamlQueryParameter;
+import com.sun.codemodel.JAnnotationUse;
 import com.sun.codemodel.JClass;
 import com.sun.codemodel.JCodeModel;
 import com.sun.codemodel.JMethod;
@@ -68,6 +74,8 @@ import com.sun.codemodel.JVar;
  * @since 0.4.1
  */
 public class MethodParamsRule implements Rule<CodeModelHelper.JExtMethod, JMethod, ApiActionMetadata> {
+
+	protected static final String PATTERN_DATETIME = "yyyy-MM-dd'T'HH:mm:ss";
 
 	boolean addParameterJavadoc = false;
 	boolean allowArrayParameters = true;
@@ -111,7 +119,8 @@ public class MethodParamsRule implements Rule<CodeModelHelper.JExtMethod, JMetho
     }
 
 	protected JVar paramQueryForm(ApiParameterMetadata paramMetaData, CodeModelHelper.JExtMethod generatableType) {
-      String javaName = NamingHelper.getParameterName(paramMetaData.getName());
+		String javaName = NamingHelper.getParameterName(
+				paramMetaData.getDisplayName() != null ? paramMetaData.getDisplayName() : paramMetaData.getName());
     	if (addParameterJavadoc) {
 			String paramComment = "";
 			if (paramMetaData.getRamlParam() != null && StringUtils.hasText(paramMetaData.getRamlParam().getDescription())) {
@@ -134,7 +143,29 @@ public class MethodParamsRule implements Rule<CodeModelHelper.JExtMethod, JMetho
 			return generatableType.get().param(jc, paramMetaData.getName());
 		}
 
-		return generatableType.get().param(type, javaName);
+		JVar jVar = generatableType.get().param(type, javaName);
+		if (paramMetaData.getRamlParam().getPattern() != null) {
+			jVar.annotate(Pattern.class).param("regexp", paramMetaData.getRamlParam().getPattern());
+		}
+
+		if (paramMetaData.getRamlParam().getMinLength() != null
+				|| paramMetaData.getRamlParam().getMaxLength() != null) {
+			JAnnotationUse jAnnotationUse = jVar.annotate(Size.class);
+			if (paramMetaData.getRamlParam().getMinLength() != null) {
+				jAnnotationUse.param("min", paramMetaData.getRamlParam().getMinLength());
+			}
+			if (paramMetaData.getRamlParam().getMinLength() != null) {
+				jAnnotationUse.param("max", paramMetaData.getRamlParam().getMaxLength());
+			}
+		}
+
+		if (paramMetaData.getRamlParam().getMinimum() != null) {
+			jVar.annotate(Min.class).param("value", paramMetaData.getRamlParam().getMinimum().longValue());
+		}
+		if (paramMetaData.getRamlParam().getMaximum() != null) {
+			jVar.annotate(Max.class).param("value", paramMetaData.getRamlParam().getMaximum().longValue());
+		}
+		return jVar;
     }
 
     protected JVar paramObjects(ApiActionMetadata endpointMetadata, CodeModelHelper.JExtMethod generatableType) {

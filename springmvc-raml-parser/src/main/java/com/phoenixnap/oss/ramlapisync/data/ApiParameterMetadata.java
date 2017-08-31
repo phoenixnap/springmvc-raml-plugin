@@ -89,6 +89,11 @@ public class ApiParameterMetadata {
 	 */
 	private String example;
 
+	/**
+	 * The displayName of the parameter
+	 */
+	private String displayName;
+
 	private JCodeModel codeModel;
 	
 	/**
@@ -129,6 +134,7 @@ public class ApiParameterMetadata {
 
 
 		this.name = name;
+		this.displayName = param.getDisplayName();
 		this.param = null; //we wont have this.
 		
 		this.format = param.getFormat();
@@ -237,6 +243,16 @@ public class ApiParameterMetadata {
 	 */
 	public String getName() {
 		return name;
+	}
+
+	/**
+	 * The Parameter DisplayName in RAML
+	 * 
+	 * @return String with the parameter displayName
+	 * 
+	 */
+	public String getDisplayName() {
+		return displayName;
 	}
 
 	/**

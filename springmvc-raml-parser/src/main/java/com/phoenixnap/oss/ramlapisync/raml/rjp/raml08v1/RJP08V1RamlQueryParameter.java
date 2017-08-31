@@ -144,4 +144,9 @@ public class RJP08V1RamlQueryParameter extends RamlQueryParameter {
 	public String getFormat() {
 		return null;
 	}
+	
+	@Override
+	public String getName() {
+		return getDisplayName();
+	}
 }

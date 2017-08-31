@@ -17,6 +17,7 @@ import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.util.Set;
 
 import org.apache.log4j.Logger;
 import org.hamcrest.MatcherAssert;
@@ -76,6 +77,9 @@ public abstract class AbstractRuleTestBase {
         return controllerMetadata;
     }
 
+	protected Set<ApiResourceMetadata> getAllControllersMetadata() {
+		return defaultRamlParser.extractControllers(jCodeModel, RAML);
+	}
 
     protected ApiActionMetadata getEndpointMetadata() {
         return getEndpointMetadata(1);

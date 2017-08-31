@@ -100,6 +100,20 @@ public interface RamlModelFactory {
         return Collections.unmodifiableMap(target);
     }
 
+	default <SV, TV> List<TV> transformToUnmodifiableList(List<SV> source, List<TV> target,
+			Function<SV, TV> valueTransformer) {
+		if (source == null) {
+			target.clear();
+		} else if (target.size() != source.size()) {
+			target.clear();
+			for (SV entry : source) {
+				TV targetValue = valueTransformer.apply(entry);
+				target.add(targetValue);
+			}
+		}
+		return Collections.unmodifiableList(target);
+	}
+
     default <SK, TK, SV, TV> Map<TK, TV> transformToUnmodifiableMap(Collection<SV> source, Map<TK, TV> target, Function<SV, TV> valueTransformer, Function<SV, TK> keyTransformer) {
         if (source == null) {
             target.clear();

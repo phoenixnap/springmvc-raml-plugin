@@ -1,0 +1,78 @@
+#%RAML 1.0
+---
+  
+title: My Resources
+version: v0.1
+baseUri: /
+mediaType: application/json
+
+/a_resource:
+  get:
+    headers:
+      header_string_param:
+         type: string
+         pattern: "^[a-z]+$"
+         minLength: 2
+         maxLength: 12
+         required: false
+      header_int_param:
+         type: integer
+         minimum: 12
+         maximum: 22
+         required: false
+/b_resource:
+  get:
+    queryParameters: 
+      query_string_param:
+        type: string
+        pattern: "^[a-z]+$"
+        minLength: 3
+        maxLength: 13
+        required: false
+      query_int_param:
+        type: integer
+        minimum: 13
+        maximum: 23
+        required: false
+  /string/{uri_string_param}:
+    uriParameters: 
+      uri_string_param: 
+        type: string
+        pattern: "^[a-z]+$"
+        minLength: 4
+        maxLength: 14
+        required: false
+    get:
+      responses: 
+        200:
+          body: 
+            application/json:
+  /integer/{uri_int_param}:
+    uriParameters: 
+      uri_int_param: 
+        type: integer
+        minimum: 14
+        maximum: 24
+        required: false
+    get:
+      responses: 
+        200:
+          body: 
+            application/json:          
+/c_resource:
+  post:
+    body: 
+      application/x-www-form-urlencoded:
+        properties: 
+          form_string_param: 
+            type: string
+            pattern: "^[a-z]+$"
+            minLength: 5
+            maxLength: 15
+            required: false
+          form_int_param:
+            type: integer
+            minimum: 15
+            maximum: 25
+            required: false
+            

@@ -2,6 +2,7 @@
 
 package com.gen.test;
 
+import javax.validation.constraints.Pattern;
 import org.springframework.http.ResponseEntity;
 
 
@@ -17,7 +18,13 @@ public interface BaseController {
      * No description
      * 
      */
-    public ResponseEntity<?> getEndpointById(String id, String param1, String xMyHeader);
+    public ResponseEntity<?> getEndpointById(
+        @Pattern(regexp = "^.{1,255}$")
+        String id,
+        @Pattern(regexp = "^.{1,255}$")
+        String param1,
+        @Pattern(regexp = "^.{1,255}$")
+        String xMyHeader);
 
 }
 -----------------------------------com.gen.test.BaseControllerDecorator.java-----------------------------------
@@ -57,14 +64,14 @@ public class BaseControllerDecorator
      */
     @RequestMapping(value = "/endpoint/{id}", method = RequestMethod.GET)
     public ResponseEntity<?> getEndpointById(
-        @PathVariable
         @Pattern(regexp = "^.{1,255}$")
+        @PathVariable(required = false)
         String id,
+        @Pattern(regexp = "^.{1,255}$")
         @RequestParam
-        @Pattern(regexp = "^.{1,255}$")
         String param1,
-        @RequestHeader(name = "X-My-Header", required = false)
         @Pattern(regexp = "^.{1,255}$")
+        @RequestHeader(name = "X-My-Header", required = false)
         String xMyHeader) {
         return this.baseControllerDelegate.getEndpointById(id, param1, xMyHeader);
     }

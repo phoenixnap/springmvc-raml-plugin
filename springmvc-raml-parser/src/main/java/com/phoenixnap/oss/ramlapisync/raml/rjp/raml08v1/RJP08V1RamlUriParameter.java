@@ -12,6 +12,8 @@
  */
 package com.phoenixnap.oss.ramlapisync.raml.rjp.raml08v1;
 
+import java.math.BigDecimal;
+
 import org.raml.model.parameter.UriParameter;
 
 import com.phoenixnap.oss.ramlapisync.raml.RamlParamType;
@@ -110,5 +112,30 @@ public class RJP08V1RamlUriParameter extends RamlUriParameter {
 	@Override
 	public String getFormat() {
 		return null;
+	}
+
+	@Override
+	public Integer getMinLength() {
+		return uriParameter.getMinLength();
+	}
+
+	@Override
+	public Integer getMaxLength() {
+		return uriParameter.getMaxLength();
+	}
+
+	@Override
+	public BigDecimal getMinimum() {
+		return uriParameter.getMinimum();
+	}
+
+	@Override
+	public BigDecimal getMaximum() {
+		return uriParameter.getMaximum();
+	}
+
+	@Override
+	public String getName() {
+		return getDisplayName();
 	}
 }

@@ -12,6 +12,9 @@
  */
 package com.phoenixnap.oss.ramlapisync.raml.rjp.raml10v2;
 
+import java.math.BigDecimal;
+
+import org.raml.v2.api.model.v10.datamodel.NumberTypeDeclaration;
 import org.raml.v2.api.model.v10.datamodel.StringTypeDeclaration;
 import org.raml.v2.api.model.v10.datamodel.TypeDeclaration;
 
@@ -106,5 +109,48 @@ public class RJP10V2RamlHeader extends RamlHeader {
 	@Override
 	public String getFormat() {
 		return RamlTypeHelper.getFormat(this.header);
+	}
+
+	@Override
+	public Integer getMinLength() {
+		if (header instanceof StringTypeDeclaration) {
+			return ((StringTypeDeclaration) header).minLength();
+		}
+		return null;
+	}
+
+	@Override
+	public Integer getMaxLength() {
+		if (header instanceof StringTypeDeclaration) {
+			return ((StringTypeDeclaration) header).maxLength();
+		}
+		return null;
+	}
+
+	@Override
+	public BigDecimal getMinimum() {
+		if (header instanceof NumberTypeDeclaration) {
+			Double minimum = ((NumberTypeDeclaration) header).minimum();
+			if (minimum != null) {
+				return BigDecimal.valueOf(minimum);
+			}
+		}
+		return null;
+	}
+
+	@Override
+	public BigDecimal getMaximum() {
+		if (header instanceof NumberTypeDeclaration) {
+			Double maximum = ((NumberTypeDeclaration) header).maximum();
+			if (maximum != null) {
+				return BigDecimal.valueOf(maximum);
+			}
+		}
+		return null;
+	}
+
+	@Override
+	public String getName() {
+		return this.header.name();
 	}
 }

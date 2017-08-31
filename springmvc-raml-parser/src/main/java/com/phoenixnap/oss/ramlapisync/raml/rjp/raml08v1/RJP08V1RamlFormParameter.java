@@ -12,6 +12,8 @@
  */
 package com.phoenixnap.oss.ramlapisync.raml.rjp.raml08v1;
 
+import java.math.BigDecimal;
+
 import org.raml.model.parameter.FormParameter;
 
 import com.phoenixnap.oss.ramlapisync.data.RamlFormParameter;
@@ -120,5 +122,30 @@ public class RJP08V1RamlFormParameter extends RamlFormParameter {
 	@Override
 	public String getFormat() {
 		return null;
+	}
+
+	@Override
+	public Integer getMinLength() {
+		return formParameter.getMinLength();
+	}
+
+	@Override
+	public Integer getMaxLength() {
+		return formParameter.getMaxLength();
+	}
+
+	@Override
+	public BigDecimal getMinimum() {
+		return formParameter.getMinimum();
+	}
+
+	@Override
+	public BigDecimal getMaximum() {
+		return formParameter.getMaximum();
+	}
+
+	@Override
+	public String getName() {
+		return getDisplayName();
 	}
 }

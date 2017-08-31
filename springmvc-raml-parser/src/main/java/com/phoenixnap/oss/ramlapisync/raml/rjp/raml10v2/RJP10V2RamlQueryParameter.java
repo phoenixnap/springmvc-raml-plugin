@@ -176,4 +176,9 @@ public class RJP10V2RamlQueryParameter extends RamlQueryParameter {
 	public RamlDataType getRamlDataType() {
    		return new RJP10V2RamlDataType(this.queryParameter);
 	}
+
+	@Override
+	public String getName() {
+		return this.queryParameter.name();
+	}
 }

@@ -12,6 +12,9 @@
  */
 package com.phoenixnap.oss.ramlapisync.raml.rjp.raml10v2;
 
+import java.math.BigDecimal;
+
+import org.raml.v2.api.model.v10.datamodel.NumberTypeDeclaration;
 import org.raml.v2.api.model.v10.datamodel.StringTypeDeclaration;
 import org.raml.v2.api.model.v10.datamodel.TypeDeclaration;
 
@@ -124,5 +127,48 @@ public class RJP10V2RamlFormParameter extends RamlFormParameter {
 	@Override
 	public String getFormat() {
 		return RamlTypeHelper.getFormat(this.formParameter);
+	}
+
+	@Override
+	public Integer getMinLength() {
+		if (formParameter instanceof StringTypeDeclaration) {
+			return ((StringTypeDeclaration) formParameter).minLength();
+		}
+		return null;
+	}
+
+	@Override
+	public Integer getMaxLength() {
+		if (formParameter instanceof StringTypeDeclaration) {
+			return ((StringTypeDeclaration) formParameter).maxLength();
+		}
+		return null;
+	}
+
+	@Override
+	public BigDecimal getMinimum() {
+		if (formParameter instanceof NumberTypeDeclaration) {
+			Double minimum = ((NumberTypeDeclaration) formParameter).minimum();
+			if (minimum != null) {
+				return BigDecimal.valueOf(minimum);
+			}
+		}
+		return null;
+	}
+
+	@Override
+	public BigDecimal getMaximum() {
+		if (formParameter instanceof NumberTypeDeclaration) {
+			Double maximum = ((NumberTypeDeclaration) formParameter).maximum();
+			if (maximum != null) {
+				return BigDecimal.valueOf(maximum);
+			}
+		}
+		return null;
+	}
+
+	@Override
+	public String getName() {
+		return this.formParameter.name();
 	}
 }

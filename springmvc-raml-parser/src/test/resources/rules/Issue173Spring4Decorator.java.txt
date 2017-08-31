@@ -1,0 +1,73 @@
+-----------------------------------com.gen.test.AResourceController.java-----------------------------------
+
+package com.gen.test;
+
+import javax.validation.constraints.Pattern;
+import javax.validation.constraints.Size;
+import com.gen.test.model.TheResourceId;
+import org.springframework.http.ResponseEntity;
+
+
+/**
+ * No description
+ * (Generated with springmvc-raml-parser v.${project.version})
+ * 
+ */
+public interface AResourceController {
+
+
+    /**
+     * No description
+     * 
+     */
+    public ResponseEntity<TheResourceId> getAResource(
+        @Pattern(regexp = "^[a-z]+$")
+        @Size(min = 3, max = 16)
+        String anHeader);
+
+}
+-----------------------------------com.gen.test.AResourceControllerDecorator.java-----------------------------------
+
+package com.gen.test;
+
+import javax.validation.constraints.Pattern;
+import javax.validation.constraints.Size;
+import com.gen.test.model.TheResourceId;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.RequestHeader;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RestController;
+
+
+/**
+ * No description
+ * (Generated with springmvc-raml-parser v.${project.version})
+ * 
+ */
+@RestController
+@RequestMapping(value = "/api/a_resource", produces = "application/json")
+@Validated
+public class AResourceControllerDecorator
+    implements AResourceController
+{
+
+    @Autowired
+    private AResourceController aResourceControllerDelegate;
+
+    /**
+     * No description
+     * 
+     */
+    @RequestMapping(value = "", method = RequestMethod.GET)
+    public ResponseEntity<TheResourceId> getAResource(
+        @Pattern(regexp = "^[a-z]+$")
+        @Size(min = 3, max = 16)
+        @RequestHeader(name = "an_header", required = false)
+        String anHeader) {
+        return this.aResourceControllerDelegate.getAResource(anHeader);
+    }
+
+}

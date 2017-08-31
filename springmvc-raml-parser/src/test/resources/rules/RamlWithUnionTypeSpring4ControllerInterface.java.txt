@@ -15,7 +15,7 @@ public class Device implements Serializable
 
     /**
      * Creates a new Device.
-     *
+     * 
      */
     public Device() {
         super();
@@ -23,7 +23,7 @@ public class Device implements Serializable
 
     /**
      * Creates a new Device.
-     *
+     * 
      */
     public Device(com.gen.test.model.Phone Phone, com.gen.test.model.Notebook Notebook) {
         super();
@@ -52,7 +52,7 @@ public class Device implements Serializable
 
     /**
      * Returns the Phone.
-     *
+     * 
      * @return
      *     Phone
      */
@@ -62,7 +62,7 @@ public class Device implements Serializable
 
     /**
      * Set the Phone.
-     *
+     * 
      * @param Phone
      *     the new Phone
      */
@@ -72,7 +72,7 @@ public class Device implements Serializable
 
     /**
      * Returns the Notebook.
-     *
+     * 
      * @return
      *     Notebook
      */
@@ -82,7 +82,7 @@ public class Device implements Serializable
 
     /**
      * Set the Notebook.
-     *
+     * 
      * @param Notebook
      *     the new Notebook
      */
@@ -108,7 +108,7 @@ public class Notebook implements Serializable
 
     /**
      * Creates a new Notebook.
-     *
+     * 
      */
     public Notebook() {
         super();
@@ -116,7 +116,7 @@ public class Notebook implements Serializable
 
     /**
      * Creates a new Notebook.
-     *
+     * 
      */
     public Notebook(String manufacturer, Double numberOfUSBPorts) {
         super();
@@ -145,7 +145,7 @@ public class Notebook implements Serializable
 
     /**
      * Returns the manufacturer.
-     *
+     * 
      * @return
      *     manufacturer
      */
@@ -155,7 +155,7 @@ public class Notebook implements Serializable
 
     /**
      * Set the manufacturer.
-     *
+     * 
      * @param manufacturer
      *     the new manufacturer
      */
@@ -165,7 +165,7 @@ public class Notebook implements Serializable
 
     /**
      * Returns the numberOfUSBPorts.
-     *
+     * 
      * @return
      *     numberOfUSBPorts
      */
@@ -175,7 +175,7 @@ public class Notebook implements Serializable
 
     /**
      * Set the numberOfUSBPorts.
-     *
+     * 
      * @param numberOfUSBPorts
      *     the new numberOfUSBPorts
      */
@@ -195,12 +195,13 @@ import org.apache.commons.lang.builder.ToStringBuilder;
 
 public class Phone implements Serializable
 {
+
     private String manufacturer;
     private Double numberOfSIMCards;
 
     /**
      * Creates a new Phone.
-     *
+     * 
      */
     public Phone() {
         super();
@@ -208,7 +209,7 @@ public class Phone implements Serializable
 
     /**
      * Creates a new Phone.
-     *
+     * 
      */
     public Phone(String manufacturer, Double numberOfSIMCards) {
         super();
@@ -237,7 +238,7 @@ public class Phone implements Serializable
 
     /**
      * Returns the manufacturer.
-     *
+     * 
      * @return
      *     manufacturer
      */
@@ -247,7 +248,7 @@ public class Phone implements Serializable
 
     /**
      * Set the manufacturer.
-     *
+     * 
      * @param manufacturer
      *     the new manufacturer
      */
@@ -257,7 +258,7 @@ public class Phone implements Serializable
 
     /**
      * Returns the numberOfSIMCards.
-     *
+     * 
      * @return
      *     numberOfSIMCards
      */
@@ -267,7 +268,7 @@ public class Phone implements Serializable
 
     /**
      * Set the numberOfSIMCards.
-     *
+     * 
      * @param numberOfSIMCards
      *     the new numberOfSIMCards
      */

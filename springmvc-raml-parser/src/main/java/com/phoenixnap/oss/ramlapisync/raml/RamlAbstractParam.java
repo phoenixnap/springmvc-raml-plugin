@@ -12,6 +12,8 @@
  */
 package com.phoenixnap.oss.ramlapisync.raml;
 
+import java.math.BigDecimal;
+
 /**
  * Abstract Representation of a Raml Parameter
  * 
@@ -45,10 +47,20 @@ public abstract class RamlAbstractParam { //extends AbstractParam {
 
     public abstract String getDisplayName();
 
+	public abstract String getName();
+
 	public abstract String getDefaultValue();
 
 	public abstract String getPattern();
 	
+	public abstract Integer getMinLength();
+
+	public abstract Integer getMaxLength();
+
+	public abstract BigDecimal getMinimum();
+
+	public abstract BigDecimal getMaximum();
+
 	/**
 	 * Convenience method for easier processing. Non supporting parameters are assumed to be single.
 	 * 

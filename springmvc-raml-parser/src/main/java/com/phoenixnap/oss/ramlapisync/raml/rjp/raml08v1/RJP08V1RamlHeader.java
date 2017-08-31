@@ -12,6 +12,8 @@
  */
 package com.phoenixnap.oss.ramlapisync.raml.rjp.raml08v1;
 
+import java.math.BigDecimal;
+
 import org.raml.model.parameter.Header;
 
 import com.phoenixnap.oss.ramlapisync.raml.RamlHeader;
@@ -102,5 +104,30 @@ public class RJP08V1RamlHeader extends RamlHeader {
 	@Override
 	public String getFormat() {
 		return null;
+	}
+
+	@Override
+	public Integer getMinLength() {
+		return header.getMinLength();
+	}
+
+	@Override
+	public Integer getMaxLength() {
+		return header.getMaxLength();
+	}
+
+	@Override
+	public BigDecimal getMinimum() {
+		return header.getMinimum();
+	}
+
+	@Override
+	public BigDecimal getMaximum() {
+		return header.getMaximum();
+	}
+
+	@Override
+	public String getName() {
+		return getDisplayName();
 	}
 }

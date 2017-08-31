@@ -1,6 +1,7 @@
 package com.phoenixnap.oss.ramlapisync.raml.rjp.raml10v2;
 
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -96,7 +97,16 @@ public class RJP10V2RamlResource implements RamlResource {
     	//RJP08 detects and adds uri parameters from url even if there isnt an explicit parameter defined.
     	List<String> missingUriParams = NamingHelper.extractUriParams(this.getRelativeUri());
     	for (String missingParam : missingUriParams) {
-    		if (!uriParameters.containsKey(missingParam)) {    			
+			boolean contains = false;
+			Iterator<RamlUriParameter> iterator = uriParameters.values().iterator();
+			while (iterator.hasNext()) {
+				RamlUriParameter ramlUriParameter = iterator.next();
+				if (ramlUriParameter.getName().equals(missingParam)) {
+					contains = true;
+					break;
+				}
+			}
+			if (!contains) {
     			uriParameters.put(missingParam, new RJP10V2RamlUriParameter(RamlTypeHelper.createDefaultStringDeclaration(missingParam)));
     		}
     	}

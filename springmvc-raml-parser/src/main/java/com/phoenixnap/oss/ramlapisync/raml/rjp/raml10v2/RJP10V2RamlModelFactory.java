@@ -180,13 +180,13 @@ public class RJP10V2RamlModelFactory implements RamlModelFactory {
     }
 
     @Override
-    public RamlFormParameter createRamlFormParameter(Object formParameter) {
-        throw new UnsupportedOperationException();
+	public List<RamlFormParameter> createRamlFormParameters(List<? extends Object> formParameters) {
+		return formParameters.stream().map(this::createRamlFormParameter).collect(Collectors.toList());
     }
 
     @Override
-    public List<RamlFormParameter> createRamlFormParameters(List<? extends Object> formParameters) {
-        throw new UnsupportedOperationException();
+	public RamlFormParameter createRamlFormParameter(Object formParameter) {
+		return new RJP10V2RamlFormParameter((TypeDeclaration) formParameter);
     }
 
     @Override

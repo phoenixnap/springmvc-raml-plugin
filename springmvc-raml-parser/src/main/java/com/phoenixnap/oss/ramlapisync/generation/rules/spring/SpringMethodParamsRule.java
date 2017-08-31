@@ -13,7 +13,6 @@
 package com.phoenixnap.oss.ramlapisync.generation.rules.spring;
 
 import javax.validation.Valid;
-import javax.validation.constraints.Pattern;
 
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.util.StringUtils;
@@ -70,8 +69,6 @@ import com.sun.codemodel.JVar;
  */
 public class SpringMethodParamsRule extends MethodParamsRule {
 	
-	static final String PATTERN_DATETIME = "yyyy-MM-dd'T'HH:mm:ss";
-	
     public SpringMethodParamsRule() {
 		super();
 	}
@@ -82,21 +79,25 @@ public class SpringMethodParamsRule extends MethodParamsRule {
 
 	@Override
 	protected JVar paramQueryForm(ApiParameterMetadata paramMetaData, CodeModelHelper.JExtMethod generatableType) {
-        JVar jVar = super.paramQueryForm(paramMetaData, generatableType);
-        JAnnotationUse jAnnotationUse;
-        if (paramMetaData.getRamlParam() != null && paramMetaData.getRamlParam() instanceof RamlUriParameter) {
-            jVar.annotate(PathVariable.class);
-            if (paramMetaData.getRamlParam().getPattern() != null) {
-               jAnnotationUse = jVar.annotate(Pattern.class);
-               jAnnotationUse.param("regexp", paramMetaData.getRamlParam().getPattern());
-            }
-            return jVar;
-        } else if (paramMetaData.getRamlParam() != null && paramMetaData.getRamlParam() instanceof RamlHeader) {
-            jAnnotationUse = jVar.annotate(RequestHeader.class);
-            jAnnotationUse.param("name", paramMetaData.getName());
-            if (!paramMetaData.getRamlParam().isRequired()) {
-                jAnnotationUse.param("required", false);
-            }
+		JVar jVar = super.paramQueryForm(paramMetaData, generatableType);
+		JAnnotationUse jAnnotationUse;
+		if (paramMetaData.getRamlParam() != null && paramMetaData.getRamlParam() instanceof RamlUriParameter) {
+			jAnnotationUse = jVar.annotate(PathVariable.class);
+			if (!paramMetaData.getName().equals(jVar.name())) {
+				jAnnotationUse.param("name", paramMetaData.getName());
+			}
+			if (!paramMetaData.getRamlParam().isRequired()) {
+				jAnnotationUse.param("required", false);
+			}
+			return jVar;
+		} else if (paramMetaData.getRamlParam() != null && paramMetaData.getRamlParam() instanceof RamlHeader) {
+			jAnnotationUse = jVar.annotate(RequestHeader.class);
+			if (!paramMetaData.getName().equals(jVar.name())) {
+				jAnnotationUse.param("name", paramMetaData.getName());
+			}
+			if (!paramMetaData.getRamlParam().isRequired()) {
+				jAnnotationUse.param("required", false);
+			}
 
 			if (StringUtils.hasText(paramMetaData.getRamlParam().getDefaultValue())) {
 				jAnnotationUse.param("defaultValue", paramMetaData.getRamlParam().getDefaultValue());
@@ -104,18 +105,16 @@ public class SpringMethodParamsRule extends MethodParamsRule {
 				jAnnotationUse.param("required", false);
 			}
 
-			if (paramMetaData.getRamlParam().getPattern() != null) {
-               jAnnotationUse = jVar.annotate(Pattern.class);
-               jAnnotationUse.param("regexp", paramMetaData.getRamlParam().getPattern());
-         }
-
-            return jVar;
-        } else {
+			return jVar;
+		} else {
 			if (paramMetaData.getRamlParam() == null) {
 				return jVar;
 			}
 
-            jAnnotationUse = jVar.annotate(RequestParam.class);
+			jAnnotationUse = jVar.annotate(RequestParam.class);
+			if (!paramMetaData.getName().equals(jVar.name())) {
+				jAnnotationUse.param("name", paramMetaData.getName());
+			}
             // In RAML parameters are optional unless the required attribute is included and its value set to 'true'.
             // In Spring a parameter is required by default unlesse the required attribute is included and its value is set to 'false'
             // So we just need to set required=false if the RAML "required" parameter is not set or explicitly set to false.
@@ -128,11 +127,6 @@ public class SpringMethodParamsRule extends MethodParamsRule {
 				// Supplying a default value implicitly sets required to false.
 				jAnnotationUse.param("required", false);
 			}
-
-           if (paramMetaData.getRamlParam().getPattern() != null) {
-              jAnnotationUse = jVar.annotate(Pattern.class);
-              jAnnotationUse.param("regexp", paramMetaData.getRamlParam().getPattern());
-           }
 
 			if (paramMetaData.getRamlParam().getType() == RamlParamType.DATE
 					&& paramMetaData.getRamlParam() instanceof RJP10V2RamlQueryParameter) {
