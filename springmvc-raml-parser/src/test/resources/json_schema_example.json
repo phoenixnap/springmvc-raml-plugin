@@ -1,0 +1,32 @@
+{
+    "$schema": "http://json-schema.org/draft-04/schema#",
+    "title": "User sample Schema",
+    "type": "object",
+    "description": "The schema of a Sample",
+    "properties": {
+      "username": {
+        "type": "string",
+        "description": "The type string."
+      },
+      "name": {
+        "type": "string",
+        "description": "The type string."
+      },
+      "age": {
+        "type": "integer",
+        "description": "The type string."
+      },
+      "address": {
+        "type": "object",
+        "description": "The type string.",
+        "properties": {
+          "street": {
+            "type": "string"
+          },
+          "pin": {
+            "type": "string"
+          }
+        }
+      }
+    }
+  }

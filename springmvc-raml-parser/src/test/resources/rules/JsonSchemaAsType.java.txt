@@ -1,0 +1,416 @@
+-----------------------------------com.gen.test.model.Address.java-----------------------------------
+
+package com.gen.test.model;
+
+import java.util.HashMap;
+import java.util.Map;
+import com.fasterxml.jackson.annotation.JsonAnyGetter;
+import com.fasterxml.jackson.annotation.JsonAnySetter;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonPropertyOrder;
+import org.apache.commons.lang.builder.EqualsBuilder;
+import org.apache.commons.lang.builder.HashCodeBuilder;
+import org.apache.commons.lang.builder.ToStringBuilder;
+
+
+/**
+ * The type string.
+ *
+ */
+@JsonInclude(JsonInclude.Include.NON_NULL)
+@JsonPropertyOrder({
+    "street",
+    "pin"
+})
+public class Address {
+
+    @JsonProperty("street")
+    private String street;
+    @JsonProperty("pin")
+    private String pin;
+    @JsonIgnore
+    private Map<String, Object> additionalProperties = new HashMap<String, Object>();
+
+    @JsonProperty("street")
+    public String getStreet() {
+        return street;
+    }
+
+    @JsonProperty("street")
+    public void setStreet(String street) {
+        this.street = street;
+    }
+
+    public Address withStreet(String street) {
+        this.street = street;
+        return this;
+    }
+
+    @JsonProperty("pin")
+    public String getPin() {
+        return pin;
+    }
+
+    @JsonProperty("pin")
+    public void setPin(String pin) {
+        this.pin = pin;
+    }
+
+    public Address withPin(String pin) {
+        this.pin = pin;
+        return this;
+    }
+
+    @Override
+    public String toString() {
+        return ToStringBuilder.reflectionToString(this);
+    }
+
+    @JsonAnyGetter
+    public Map<String, Object> getAdditionalProperties() {
+        return this.additionalProperties;
+    }
+
+    @JsonAnySetter
+    public void setAdditionalProperty(String name, Object value) {
+        this.additionalProperties.put(name, value);
+    }
+
+    public Address withAdditionalProperty(String name, Object value) {
+        this.additionalProperties.put(name, value);
+        return this;
+    }
+
+    @Override
+    public int hashCode() {
+        return new HashCodeBuilder().append(street).append(pin).append(additionalProperties).toHashCode();
+    }
+
+    @Override
+    public boolean equals(Object other) {
+        if (other == this) {
+            return true;
+        }
+        if ((other instanceof Address) == false) {
+            return false;
+        }
+        Address rhs = ((Address) other);
+        return new EqualsBuilder().append(street, rhs.street).append(pin, rhs.pin).append(additionalProperties, rhs.additionalProperties).isEquals();
+    }
+
+}
+-----------------------------------com.gen.test.model.User.java-----------------------------------
+
+package com.gen.test.model;
+
+import java.util.HashMap;
+import java.util.Map;
+import com.fasterxml.jackson.annotation.JsonAnyGetter;
+import com.fasterxml.jackson.annotation.JsonAnySetter;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonPropertyDescription;
+import com.fasterxml.jackson.annotation.JsonPropertyOrder;
+import org.apache.commons.lang.builder.EqualsBuilder;
+import org.apache.commons.lang.builder.HashCodeBuilder;
+import org.apache.commons.lang.builder.ToStringBuilder;
+
+
+/**
+ * User sample Schema
+ * <p>
+ * The schema of a Sample
+ *
+ */
+@JsonInclude(JsonInclude.Include.NON_NULL)
+@JsonPropertyOrder({
+    "username",
+    "name",
+    "age",
+    "address"
+})
+public class User {
+
+    /**
+     * The type string.
+     *
+     */
+    @JsonProperty("username")
+    @JsonPropertyDescription("The type string.")
+    private String username;
+    /**
+     * The type string.
+     *
+     */
+    @JsonProperty("name")
+    @JsonPropertyDescription("The type string.")
+    private String name;
+    /**
+     * The type string.
+     *
+     */
+    @JsonProperty("age")
+    @JsonPropertyDescription("The type string.")
+    private Integer age;
+    /**
+     * The type string.
+     *
+     */
+    @JsonProperty("address")
+    @JsonPropertyDescription("The type string.")
+    private Address address;
+    @JsonIgnore
+    private Map<String, Object> additionalProperties = new HashMap<String, Object>();
+
+    /**
+     * Creates a new User.
+     *
+     */
+    public User(String username, String name, Integer age, Address address, Map<String, Object> additionalProperties) {
+        super();
+        this.username = username;
+        this.name = name;
+        this.age = age;
+        this.address = address;
+        this.additionalProperties = additionalProperties;
+    }
+
+    /**
+     * The type string.
+     *
+     */
+    @JsonProperty("username")
+    public String getUsername() {
+        return username;
+    }
+
+    /**
+     * The type string.
+     *
+     */
+    @JsonProperty("username")
+    public void setUsername(String username) {
+        this.username = username;
+    }
+
+    public User withUsername(String username) {
+        this.username = username;
+        return this;
+    }
+
+    /**
+     * The type string.
+     *
+     */
+    @JsonProperty("name")
+    public String getName() {
+        return name;
+    }
+
+    /**
+     * The type string.
+     *
+     */
+    @JsonProperty("name")
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public User withName(String name) {
+        this.name = name;
+        return this;
+    }
+
+    /**
+     * The type string.
+     *
+     */
+    @JsonProperty("age")
+    public Integer getAge() {
+        return age;
+    }
+
+    /**
+     * The type string.
+     *
+     */
+    @JsonProperty("age")
+    public void setAge(Integer age) {
+        this.age = age;
+    }
+
+    public User withAge(Integer age) {
+        this.age = age;
+        return this;
+    }
+
+    /**
+     * The type string.
+     *
+     */
+    @JsonProperty("address")
+    public Address getAddress() {
+        return address;
+    }
+
+    /**
+     * The type string.
+     *
+     */
+    @JsonProperty("address")
+    public void setAddress(Address address) {
+        this.address = address;
+    }
+
+    public User withAddress(Address address) {
+        this.address = address;
+        return this;
+    }
+
+    @Override
+    public String toString() {
+        return ToStringBuilder.reflectionToString(this);
+    }
+
+    @JsonAnyGetter
+    public Map<String, Object> getAdditionalProperties() {
+        return this.additionalProperties;
+    }
+
+    @JsonAnySetter
+    public void setAdditionalProperty(String name, Object value) {
+        this.additionalProperties.put(name, value);
+    }
+
+    public User withAdditionalProperty(String name, Object value) {
+        this.additionalProperties.put(name, value);
+        return this;
+    }
+
+    @Override
+    public int hashCode() {
+        return new HashCodeBuilder().append(username).append(name).append(age).append(address).append(additionalProperties).toHashCode();
+    }
+
+    @Override
+    public boolean equals(Object other) {
+        if (other == this) {
+            return true;
+        }
+        if ((other instanceof User) == false) {
+            return false;
+        }
+        User rhs = ((User) other);
+        return new EqualsBuilder().append(username, rhs.username).append(name, rhs.name).append(age, rhs.age).append(address, rhs.address).append(additionalProperties, rhs.additionalProperties).isEquals();
+    }
+
+    public String toString() {
+        return ToStringBuilder.reflectionToString(this);
+    }
+
+    public boolean equals(Object other) {
+        if (other == this) {
+            return true;
+        }
+        if ((other instanceof User) == false) {
+            return false;
+        }
+        User otherObject = ((User) other);
+        return new EqualsBuilder().isEquals();
+    }
+
+    public int hashCode() {
+        return new HashCodeBuilder().toHashCode();
+    }
+
+}
+-----------------------------------com.gen.test.UserController.java-----------------------------------
+
+package com.gen.test;
+
+import com.gen.test.model.User;
+import org.springframework.http.ResponseEntity;
+
+
+/**
+ * A collection of users
+ * (Generated with springmvc-raml-parser v.0.10.8-SNAPSHOT)
+ *
+ */
+public interface UserController {
+
+
+    /**
+     * Retrieves user
+     *
+     */
+    public ResponseEntity<User> getUsers()
+        throws Exception
+    ;
+
+    /**
+     * Creates a user
+     *
+     */
+    public ResponseEntity<?> createUser(User user)
+        throws Exception
+    ;
+
+}
+-----------------------------------com.gen.test.UserControllerDecorator.java-----------------------------------
+
+package com.gen.test;
+
+import javax.validation.Valid;
+import com.gen.test.model.User;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RestController;
+
+
+/**
+ * A collection of users
+ * (Generated with springmvc-raml-parser v.0.10.8-SNAPSHOT)
+ *
+ */
+@RestController
+@RequestMapping(value = "/api/users", produces = "application/json")
+@Validated
+public class UserControllerDecorator {
+
+    @Autowired
+    private UserController userControllerDelegate;
+
+    /**
+     * Retrieves user
+     *
+     */
+    @RequestMapping(value = "", method = RequestMethod.GET)
+    public ResponseEntity<User> getUsers()
+        throws Exception
+    {
+        return this.userControllerDelegate.getUsers();
+    }
+
+    /**
+     * Creates a user
+     *
+     */
+    @RequestMapping(value = "", method = RequestMethod.POST)
+    public ResponseEntity<?> createUser(
+        @Valid
+        @RequestBody
+        User user)
+        throws Exception
+    {
+        return this.userControllerDelegate.createUser(user);
+    }
+
+}

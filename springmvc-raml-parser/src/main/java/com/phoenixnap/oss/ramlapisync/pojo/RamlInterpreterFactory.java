@@ -34,6 +34,7 @@ public class RamlInterpreterFactory {
 	static RamlTypeInterpreter[] SUPPORTED_INTERPRETERS = { new ObjectTypeInterpreter(), new BooleanTypeInterpreter(),
 			new NullTypeInterpreter(), new NumberTypeInterpreter(), new ArrayTypeInterpreter(),
 			new AnyTypeInterpreter(), new FileTypeInterpreter(), new DateTypeInterpreter(), new UnionTypeInterpreter(),
+			new JsonTypeInterpreter(),
 			DEFAULT_INTERPRETER };
 
 	private static Map<Class<? extends TypeDeclaration>, RamlTypeInterpreter> interpreters = new LinkedHashMap<>();

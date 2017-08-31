@@ -1,0 +1,29 @@
+#%RAML 1.0
+
+title: Samp API
+version: v0.1
+baseUri: sample_unit
+mediaType:  application/json
+
+types:
+  User: !include json_schema_example.json
+/users:
+  displayName: User
+  description: A collection of users
+  post:
+    description: Creates a user
+    body:
+      application/json:
+        schema: User
+    responses:
+      201:
+       description: The user has been successfully created.
+  get:
+    description: Retrieves user
+    responses:
+      200:
+        description: The user collection has been successfully retrieved.
+        body:
+          application/json:
+            schema: User
+
