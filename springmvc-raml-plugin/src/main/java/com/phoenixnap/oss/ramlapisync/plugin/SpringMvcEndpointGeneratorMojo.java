@@ -179,6 +179,13 @@ public class SpringMvcEndpointGeneratorMojo extends AbstractMojo {
 	@Parameter(required = false, readonly = true, defaultValue = "1")
     protected Integer resourceDepthInClassNames;
 
+    /**
+     * Top level of URI included in generated class names. Default is 0 which means
+     * that all resources will be in included in controller/decorator names.
+     */
+    @Parameter(required = false, readonly = true, defaultValue = "0")
+    protected Integer resourceTopLevelInClassNames;
+
     private ClassRealm classRealm;
 
     private String resolvedSchemaLocation;
@@ -237,7 +244,7 @@ public class SpringMvcEndpointGeneratorMojo extends AbstractMojo {
         //Map the jsconschema2pojo config to ours. This will need to eventually take over. update just in case previous one was set before jsonconfig was set
         typeGenerationConfig = mapGenerationConfigMapping();
         
-        RamlParser par = new RamlParser(typeGenerationConfig, getBasePath(loadRamlFromFile), seperateMethodsByContentType, injectHttpHeadersParameter, this.resourceDepthInClassNames);
+        RamlParser par = new RamlParser(typeGenerationConfig, getBasePath(loadRamlFromFile), seperateMethodsByContentType, injectHttpHeadersParameter, this.resourceDepthInClassNames, this.resourceTopLevelInClassNames);
         Set<ApiResourceMetadata> controllers = par.extractControllers(codeModel, loadRamlFromFile);
 
         if (StringUtils.hasText(outputRelativePath)) {

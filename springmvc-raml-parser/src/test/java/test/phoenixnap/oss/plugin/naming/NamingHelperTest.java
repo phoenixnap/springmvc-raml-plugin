@@ -61,17 +61,19 @@ public class NamingHelperTest {
 
 		String url = "/services/things";
 		
-		assertEquals("Should deal with unlimited depth", "ServicesThings", NamingHelper.getAllResourcesNames(url, false, -1));
-		assertEquals("Should deal with unlimited depth and singularization", "ServiceThing", NamingHelper.getAllResourcesNames(url, true, -1));
-		assertEquals("Should deal with depth=1", "Things", NamingHelper.getAllResourcesNames(url, false, 1));
-		assertEquals("Should deal with depth=1 and singularization", "Thing", NamingHelper.getAllResourcesNames(url, true, 1));
-		assertEquals("Should deal with depth=2", "ServicesThings", NamingHelper.getAllResourcesNames(url, false, 2));
-		assertEquals("Should deal with depth=2 and singularization", "ServiceThing", NamingHelper.getAllResourcesNames(url, true, 2));
+		assertEquals("Should deal with unlimited depth", "ServicesThings", NamingHelper.getAllResourcesNames(url, false, -1, 0));
+		assertEquals("Should deal with unlimited depth and singularization", "ServiceThing", NamingHelper.getAllResourcesNames(url, true, -1, 0));
+		assertEquals("Should deal with depth=1", "Things", NamingHelper.getAllResourcesNames(url, false, 1, 0));
+		assertEquals("Should deal with depth=1 and singularization", "Thing", NamingHelper.getAllResourcesNames(url, true, 1, 0));
+		assertEquals("Should deal with depth=2", "ServicesThings", NamingHelper.getAllResourcesNames(url, false, 2, 0));
+		assertEquals("Should deal with depth=2 and singularization", "ServiceThing", NamingHelper.getAllResourcesNames(url, true, 2, 0));
 		
 		url = "/services/things/quotes";
 		
-		assertEquals("Should deal with unlimited depth", "ServicesThingsQuotes", NamingHelper.getAllResourcesNames(url, false, -1));
-		assertEquals("Should deal with unlimited depth and singularization", "ServiceThingQuote", NamingHelper.getAllResourcesNames(url, true, -1));
+		assertEquals("Should deal with unlimited depth and top-level=1", "ThingsQuotes", NamingHelper.getAllResourcesNames(url, false, -1, 1));
+		assertEquals("Should deal with unlimited depth, top-level=1 and singularization", "ThingQuote", NamingHelper.getAllResourcesNames(url, true, -1, 1));
+		assertEquals("Should deal with depth=2 and top-level=1", "ThingsQuotes", NamingHelper.getAllResourcesNames(url, false, 2, 1));
+		assertEquals("Should deal with depth=2, top-level=1 and singularization", "ThingQuote", NamingHelper.getAllResourcesNames(url, true, 2, 1));
 	}
 
 	@Test

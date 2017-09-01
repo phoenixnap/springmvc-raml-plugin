@@ -204,29 +204,41 @@ public class SpringMvcResourceParserTest {
         RamlRoot published = RamlLoader.loadRamlFromFile("test-controller-naming.raml");
         PojoGenerationConfig pojoGenerationConfig = new PojoGenerationConfig().withPackage("com.gen.test", null);
         
-        RamlParser par = new RamlParser(pojoGenerationConfig, "/api", true, false, 1);
+        RamlParser par = new RamlParser(pojoGenerationConfig, "/api", true, false, 1, 0);
         Set<ApiResourceMetadata> controllersMetadataSet = par.extractControllers(new JCodeModel(), published);
 
         ApiResourceMetadata controller = controllersMetadataSet.iterator().next();
         assertEquals("Thing", controller.getName());
         
-        par = new RamlParser(pojoGenerationConfig, "/api", true, false, 2);
+        par = new RamlParser(pojoGenerationConfig, "/api", true, false, 2, 0);
         controllersMetadataSet = par.extractControllers(new JCodeModel(), published);
 
         controller = controllersMetadataSet.iterator().next();
         assertEquals("ServiceThing", controller.getName());
         
-        par = new RamlParser(pojoGenerationConfig, "/api", true, false, 3);
+        par = new RamlParser(pojoGenerationConfig, "/api", true, false, 3, 0);
         controllersMetadataSet = par.extractControllers(new JCodeModel(), published);
 
         controller = controllersMetadataSet.iterator().next();
         assertEquals("BaseServiceThing", controller.getName());
         
-        par = new RamlParser(pojoGenerationConfig, "/api", true, false, -1);
+        par = new RamlParser(pojoGenerationConfig, "/api", true, false, -1, 0);
         controllersMetadataSet = par.extractControllers(new JCodeModel(), published);
 
         controller = controllersMetadataSet.iterator().next();
         assertEquals("ApiBaseServiceThing", controller.getName());
+        
+        par = new RamlParser(pojoGenerationConfig, "/api", true, false, -1, 1);
+        controllersMetadataSet = par.extractControllers(new JCodeModel(), published);
+
+        controller = controllersMetadataSet.iterator().next();
+        assertEquals("BaseServiceThing", controller.getName());
+        
+        par = new RamlParser(pojoGenerationConfig, "/api", true, false, 3, 2);
+        controllersMetadataSet = par.extractControllers(new JCodeModel(), published);
+
+        controller = controllersMetadataSet.iterator().next();
+        assertEquals("ServiceThing", controller.getName());
     }
 
 
