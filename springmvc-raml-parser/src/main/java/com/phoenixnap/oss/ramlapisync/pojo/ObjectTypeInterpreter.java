@@ -31,7 +31,7 @@ import com.sun.codemodel.JCodeModel;
 
 /**
  * Interpreter for Object types.
- * 
+ *
  * @author kurtpa
  * @since 0.10.0
  *
@@ -52,25 +52,30 @@ public class ObjectTypeInterpreter extends BaseTypeInterpreter {
 		typeCheck(type);
 
 		ObjectTypeDeclaration objectType = (ObjectTypeDeclaration) type;
-		String name = customName == null ? StringUtils.capitalize(objectType.name()) : customName;
+
+		String name = RamlTypeHelper.isBaseObject(objectType.name()) ||
+                objectType.name().equalsIgnoreCase("application/json")
+                ? customName
+                : StringUtils.capitalize(objectType.name());
 		Map<String, RamlDataType> types = document.getTypes();
-		String typeName = objectType.type();
-		
+		String typeName = RamlTypeHelper.isBaseObject(objectType.name())  ||
+				objectType.name().equalsIgnoreCase("application/json") ? customName : objectType.type();
+
 		//When we have base arrays with type in the object they differ from Type[] notated types. I'm not sure if this should be handled in the Array or in the ObjectInterpreter...
-		if(RamlTypeHelper.isBaseObject(objectType.name()) && !RamlTypeHelper.isBaseObject(typeName)) {
+		if(RamlTypeHelper.isBaseObject(name) && !RamlTypeHelper.isBaseObject(typeName)) {
 			//lets enter type and use that.
-			return interpret(document, type.parentTypes().get(0), builderModel, config, property, customName);
+			return interpret(document, type.parentTypes().get(0), builderModel, config, property, typeName);
 		}
-		
+
 		//When we have base objects we need to use them as type not blindly create them
-		if(!RamlTypeHelper.isBaseObject(objectType.name()) && !RamlTypeHelper.isBaseObject(typeName) && property) {
+		if(!RamlTypeHelper.isBaseObject(name) && !RamlTypeHelper.isBaseObject(typeName) && property) {
 			name = typeName;
 			if(types.get(name) == null){
 				throw new IllegalStateException("Data type " + name + " can't be found!");
 			}
 			typeName = types.get(name).getType().type();
 		}
-		
+
 		// For mime types we need to take the type not the name
 		try {
 			MimeType.valueOf(name);
@@ -98,11 +103,11 @@ public class ObjectTypeInterpreter extends BaseTypeInterpreter {
 		PojoBuilder builder = new PojoBuilder(config, builderModel, name);
 		result.setBuilder(builder);
 		TypeDeclaration parent = null;
-		
+
 		// lets handle extensions first
-		if (!RamlTypeHelper.isBaseObject(typeName)) {
+		if (!RamlTypeHelper.isBaseObject(typeName) && !typeName.equals(name)) {
 			parent = types.get(typeName).getType();
-		} else if (objectType.parentTypes() != null && objectType.parentTypes().size() > 0) {
+		} else if (objectType.parentTypes() != null && objectType.parentTypes().size() > 0 && !typeName.equals(name)) {
 			TypeDeclaration tempParent = objectType.parentTypes().get(0); // java doesnt support multiple parents take first;
 			if (!RamlTypeHelper.isBaseObject(tempParent.name())) {
 				parent = types.get(tempParent.name()).getType();
@@ -110,19 +115,22 @@ public class ObjectTypeInterpreter extends BaseTypeInterpreter {
 		} else {
 			parent = null;
 		}
-		
+
 		if (parent != null && !(parent.name().equals(name))) { //add cyclic dependency check
-			RamlInterpretationResult childResult = RamlInterpreterFactory.getInterpreterForType(parent).interpret(document, parent, builderModel, config, false, null);
+			RamlInterpretationResult childResult = RamlInterpreterFactory
+                    .getInterpreterForType(parent)
+                    .interpret(document, parent, builderModel, config, false, null);
 			String childType = childResult.getResolvedClassOrBuiltOrObject().name();
 			builder.extendsClass(childType);
 		}
 
 		for (TypeDeclaration objectProperty : objectType.properties()) {
-			RamlInterpretationResult childResult = RamlInterpreterFactory.getInterpreterForType(objectProperty).interpret(
-					document, objectProperty, builderModel, config, true, null);
+			RamlInterpretationResult childResult = RamlInterpreterFactory.getInterpreterForType(objectProperty)
+                    .interpret(document, objectProperty, builderModel, config, true, null);
 			String childType = childResult.getResolvedClassOrBuiltOrObject().fullName();
-			builder.withField(objectProperty.name(), childType, RamlTypeHelper.getDescription(objectProperty), childResult.getValidations(), objectProperty.defaultValue());
-			
+			builder.withField(objectProperty.name(), childType, RamlTypeHelper.getDescription(objectProperty),
+                    childResult.getValidations(), objectProperty.defaultValue());
+
 		}
 
 		// Add a constructor with all fields

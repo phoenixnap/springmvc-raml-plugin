@@ -5,18 +5,33 @@ version: v0.1
 baseUri: sample_unit
 mediaType:  application/json
 
+types:
+  responseType:
+    type: object
+    additionalProperties: false
+    description: "Facebook auth for the user"
+    properties:
+      token:
+        description: "facebook token for the user. This token will be validated with facebook"
+        type: string
+        required: true
+      facebookId:
+        type: string
+        required: true
+
 /sample_units:
   displayName: Samples
   description: A collection of samples
   post:
     description: Creates a sample unit
     body:
-      application/json:
-        properties:
-          a:
-            type: string
-          b:
-            type: integer
+      properties:
+        a:
+          type: string
+        b:
+          type: integer
     responses:
       201:
-       description: The sample unit has been successfully created.
+        body:
+          type: responseType
+          description: The sample unit has been successfully created.
