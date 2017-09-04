@@ -1,12 +1,5 @@
 package com.phoenixnap.oss.ramlapisync.pojo;
 
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.github.fge.jsonschema.core.exceptions.ProcessingException;
-import com.github.fge.jsonschema.core.report.ProcessingReport;
-import com.github.fge.jsonschema.examples.Utils;
-import com.github.fge.jsonschema.main.JsonSchema;
-import com.github.fge.jsonschema.main.JsonSchemaFactory;
 import com.phoenixnap.oss.ramlapisync.naming.RamlTypeHelper;
 import com.phoenixnap.oss.ramlapisync.raml.RamlDataType;
 import org.jsonschema2pojo.*;
@@ -18,10 +11,8 @@ import com.sun.codemodel.JClass;
 import com.sun.codemodel.JCodeModel;
 import org.raml.v2.api.model.v10.datamodel.*;
 
-import java.io.File;
 import java.io.IOException;
 import java.util.Collections;
-import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
 
@@ -32,7 +23,7 @@ public class JsonTypeInterpreter extends BaseTypeInterpreter {
     }
 
     @Override
-    public RamlInterpretationResult interpret(RamlRoot document, TypeDeclaration type, JCodeModel builderModel, PojoGenerationConfig config, boolean property) {
+    public RamlInterpretationResult interpret(RamlRoot document, TypeDeclaration type, JCodeModel builderModel, PojoGenerationConfig config, boolean property, String customName) {
         RamlInterpretationResult result = new RamlInterpretationResult(type.required());
         typeCheck(type);
 
@@ -44,7 +35,7 @@ public class JsonTypeInterpreter extends BaseTypeInterpreter {
         //When we have base arrays with type in the object they differ from Type[] notated types. I'm not sure if this should be handled in the Array or in the ObjectInterpreter...
         if (RamlTypeHelper.isBaseObject(objectType.name()) && !RamlTypeHelper.isBaseObject(typeName)) {
             //lets enter type and use that.
-            return interpret(document, type.parentTypes().get(0), builderModel, config, property);
+            return interpret(document, type.parentTypes().get(0), builderModel, config, property, null);
         }
 
         //When we have base objects we need to use them as type not blindly create them

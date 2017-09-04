@@ -1,0 +1,22 @@
+#%RAML 1.0
+
+title: Samp API
+version: v0.1
+baseUri: sample_unit
+mediaType:  application/json
+
+/sample_units:
+  displayName: Samples
+  description: A collection of samples
+  post:
+    description: Creates a sample unit
+    body:
+      application/json:
+        properties:
+          a:
+            type: string
+          b:
+            type: integer
+    responses:
+      201:
+       description: The sample unit has been successfully created.

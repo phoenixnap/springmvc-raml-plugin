@@ -44,7 +44,7 @@ public class NullTypeInterpreter extends BaseTypeInterpreter {
 
 
 	@Override
-	public RamlInterpretationResult interpret(RamlRoot document, TypeDeclaration type, JCodeModel builderModel, PojoGenerationConfig config, boolean property) {
+	public RamlInterpretationResult interpret(RamlRoot document, TypeDeclaration type, JCodeModel builderModel, PojoGenerationConfig config, boolean property, String customName) {
 		RamlInterpretationResult result = new RamlInterpretationResult(type.required());
 		result.setResolvedClass(CodeModelHelper.findFirstClassBySimpleName(builderModel, Void.class.getSimpleName()));
 		return result;

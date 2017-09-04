@@ -32,7 +32,7 @@ public class AnyTypeInterpreter extends BaseTypeInterpreter {
 
 	@Override
 	public RamlInterpretationResult interpret(RamlRoot document, TypeDeclaration type, JCodeModel builderModel,
-			PojoGenerationConfig config, boolean property) {
+                                              PojoGenerationConfig config, boolean property, String customName) {
 
 		AnyTypeDeclaration anyTypeDeclaration = (AnyTypeDeclaration) type;
 

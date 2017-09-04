@@ -38,7 +38,7 @@ public class StringTypeInterpreter extends BaseTypeInterpreter {
 
 
 	@Override
-	public RamlInterpretationResult interpret(RamlRoot document, TypeDeclaration type, JCodeModel builderModel, PojoGenerationConfig config, boolean property) {
+	public RamlInterpretationResult interpret(RamlRoot document, TypeDeclaration type, JCodeModel builderModel, PojoGenerationConfig config, boolean property, String customName) {
 		RamlInterpretationResult result = new RamlInterpretationResult(type.required());
 		
 		if (type instanceof StringTypeDeclaration) {

@@ -1,0 +1,161 @@
+-----------------------------------com.gen.test.model.CreateSampleUnitRequest.java-----------------------------------
+
+package com.gen.test.model;
+
+import java.io.Serializable;
+import org.apache.commons.lang.builder.EqualsBuilder;
+import org.apache.commons.lang.builder.HashCodeBuilder;
+import org.apache.commons.lang.builder.ToStringBuilder;
+
+public class CreateSampleUnitRequest implements Serializable
+{
+
+    private String a;
+    private Long b;
+
+    /**
+     * Creates a new CreateSampleUnitRequest.
+     *
+     */
+    public CreateSampleUnitRequest() {
+        super();
+    }
+
+    /**
+     * Creates a new CreateSampleUnitRequest.
+     *
+     */
+    public CreateSampleUnitRequest(String a, Long b) {
+        super();
+        this.a = a;
+        this.b = b;
+    }
+
+    public String toString() {
+        return ToStringBuilder.reflectionToString(this);
+    }
+
+    public boolean equals(Object other) {
+        if (other == this) {
+            return true;
+        }
+        if ((other instanceof CreateSampleUnitRequest) == false) {
+            return false;
+        }
+        CreateSampleUnitRequest otherObject = ((CreateSampleUnitRequest) other);
+        return new EqualsBuilder().isEquals();
+    }
+
+    public int hashCode() {
+        return new HashCodeBuilder().toHashCode();
+    }
+
+    /**
+     * Returns the a.
+     *
+     * @return
+     *     a
+     */
+    public String getA() {
+        return a;
+    }
+
+    /**
+     * Set the a.
+     *
+     * @param a
+     *     the new a
+     */
+    public void setA(String a) {
+        this.a = a;
+    }
+
+    /**
+     * Returns the b.
+     *
+     * @return
+     *     b
+     */
+    public Long getB() {
+        return b;
+    }
+
+    /**
+     * Set the b.
+     *
+     * @param b
+     *     the new b
+     */
+    public void setB(Long b) {
+        this.b = b;
+    }
+
+}
+-----------------------------------com.gen.test.SampleUnitController.java-----------------------------------
+
+package com.gen.test;
+
+import com.gen.test.model.CreateSampleUnitRequest;
+import org.springframework.http.ResponseEntity;
+
+
+/**
+ * A collection of samples
+ * (Generated with springmvc-raml-parser v.0.10.8-SNAPSHOT)
+ *
+ */
+public interface SampleUnitController {
+
+
+    /**
+     * Creates a sample unit
+     *
+     */
+    public ResponseEntity<?> createSampleUnit(CreateSampleUnitRequest createSampleUnitRequest)
+        throws Exception
+    ;
+
+}
+-----------------------------------com.gen.test.SampleUnitControllerDecorator.java-----------------------------------
+
+package com.gen.test;
+
+import javax.validation.Valid;
+import com.gen.test.model.CreateSampleUnitRequest;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RestController;
+
+
+/**
+ * A collection of samples
+ * (Generated with springmvc-raml-parser v.0.10.8-SNAPSHOT)
+ *
+ */
+@RestController
+@RequestMapping(value = "/api/sample_units", produces = "application/json")
+@Validated
+public class SampleUnitControllerDecorator {
+
+    @Autowired
+    private SampleUnitController sampleUnitControllerDelegate;
+
+    /**
+     * Creates a sample unit
+     *
+     */
+    @RequestMapping(value = "", method = RequestMethod.POST)
+    public ResponseEntity<?> createSampleUnit(
+        @Valid
+        @RequestBody
+        CreateSampleUnitRequest createSampleUnitRequest)
+        throws Exception
+    {
+        return this.sampleUnitControllerDelegate.createSampleUnit(createSampleUnitRequest);
+    }
+
+}

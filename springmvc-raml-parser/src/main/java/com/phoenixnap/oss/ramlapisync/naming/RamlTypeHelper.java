@@ -93,7 +93,7 @@ public class RamlTypeHelper {
      * @return Object representing this Body
      */
 	public static ApiBodyMetadata mapTypeToPojo(PojoGenerationConfig config, JCodeModel pojoCodeModel, RamlRoot document, TypeDeclaration type, String name) {
-		RamlInterpretationResult interpret = RamlInterpreterFactory.getInterpreterForType(type).interpret(document, type, pojoCodeModel, config, false);
+		RamlInterpretationResult interpret = RamlInterpreterFactory.getInterpreterForType(type).interpret(document, type, pojoCodeModel, config, false, name);
 		
 		//here we expect that a new object is created i guess... we'd need to see how primitive arrays fit in
 		JClass pojo = null;
@@ -112,7 +112,7 @@ public class RamlTypeHelper {
 		}
 		
 		boolean array = false;
-		String pojoName = pojo.name();
+		String pojoName = pojo.name().equals("object") ? name : pojo.name();
 		if(pojo.name().contains("List<")
 				|| pojo.name().contains("Set<")) {
 			array = true;

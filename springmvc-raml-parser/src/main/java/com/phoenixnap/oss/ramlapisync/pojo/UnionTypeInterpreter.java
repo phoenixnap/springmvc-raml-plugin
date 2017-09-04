@@ -17,7 +17,6 @@ import com.phoenixnap.oss.ramlapisync.raml.RamlDataType;
 import com.phoenixnap.oss.ramlapisync.raml.RamlRoot;
 import com.sun.codemodel.JClass;
 import com.sun.codemodel.JCodeModel;
-import org.raml.v2.api.model.v10.datamodel.ObjectTypeDeclaration;
 import org.raml.v2.api.model.v10.datamodel.TypeDeclaration;
 import org.raml.v2.api.model.v10.datamodel.UnionTypeDeclaration;
 import org.slf4j.Logger;
@@ -82,7 +81,7 @@ public class UnionTypeInterpreter extends BaseTypeInterpreter {
 
     @Override
     public RamlInterpretationResult interpret(RamlRoot document, TypeDeclaration type, JCodeModel builderModel,
-                                              PojoGenerationConfig config, boolean property) {
+                                              PojoGenerationConfig config, boolean property, String customName) {
         RamlInterpretationResult result = new RamlInterpretationResult(type.required());
         typeCheck(type);
 
@@ -113,7 +112,7 @@ public class UnionTypeInterpreter extends BaseTypeInterpreter {
         if (parent != null && !(parent.name().equals(name))) { //add cyclic dependency check
             RamlInterpretationResult childResult = RamlInterpreterFactory
                     .getInterpreterForType(parent)
-                    .interpret(document, parent, builderModel, config, false);
+                    .interpret(document, parent, builderModel, config, false, null);
             String childType = childResult.getResolvedClassOrBuiltOrObject().name();
 
             builder.extendsClass(childType);
@@ -123,7 +122,7 @@ public class UnionTypeInterpreter extends BaseTypeInterpreter {
             RamlInterpretationResult childResult =
                     RamlInterpreterFactory
                             .getInterpreterForType(objectProperty).interpret(
-                            document, objectProperty, builderModel, config, true);
+                            document, objectProperty, builderModel, config, true, null);
 
             String childType = childResult.getResolvedClassOrBuiltOrObject().fullName();
             if(!builder.pojo.fields().containsKey(objectProperty.name())){

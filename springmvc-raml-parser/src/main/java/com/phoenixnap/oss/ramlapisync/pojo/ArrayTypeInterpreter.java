@@ -40,7 +40,7 @@ public class ArrayTypeInterpreter extends BaseTypeInterpreter {
 
 
 	@Override
-	public RamlInterpretationResult interpret(RamlRoot document, TypeDeclaration type, JCodeModel builderModel, PojoGenerationConfig config, boolean property) {
+	public RamlInterpretationResult interpret(RamlRoot document, TypeDeclaration type, JCodeModel builderModel, PojoGenerationConfig config, boolean property, String customName) {
 		RamlInterpretationResult result = new RamlInterpretationResult(type.required());
 		
 		typeCheck(type);		
@@ -66,7 +66,7 @@ public class ArrayTypeInterpreter extends BaseTypeInterpreter {
 			TypeDeclaration arrayContentsType = arrayType.items();
 
 			//Lets process the array base class first
-			RamlInterpretationResult childResult = RamlInterpreterFactory.getInterpreterForType(arrayContentsType).interpret(document, arrayContentsType, builderModel, config, false);
+			RamlInterpretationResult childResult = RamlInterpreterFactory.getInterpreterForType(arrayContentsType).interpret(document, arrayContentsType, builderModel, config, false, null);
 			Class<?> container = List.class;
 			if (arrayType.uniqueItems() != null && arrayType.uniqueItems() ) {
 				container = Set.class;
