@@ -53,13 +53,14 @@ public class ObjectTypeInterpreter extends BaseTypeInterpreter {
 
 		ObjectTypeDeclaration objectType = (ObjectTypeDeclaration) type;
 
-		String name = RamlTypeHelper.isBaseObject(objectType.name()) ||
-                objectType.name().equalsIgnoreCase("application/json")
+		String typeName = RamlTypeHelper.isBaseObject(objectType.type())
+				? customName
+				: StringUtils.capitalize(objectType.type());
+
+		String name = RamlTypeHelper.isBaseObject(objectType.name())
                 ? customName
-                : StringUtils.capitalize(objectType.name());
+                : typeName;
 		Map<String, RamlDataType> types = document.getTypes();
-		String typeName = RamlTypeHelper.isBaseObject(objectType.name())  ||
-				objectType.name().equalsIgnoreCase("application/json") ? customName : objectType.type();
 
 		//When we have base arrays with type in the object they differ from Type[] notated types. I'm not sure if this should be handled in the Array or in the ObjectInterpreter...
 		if(RamlTypeHelper.isBaseObject(name) && !RamlTypeHelper.isBaseObject(typeName)) {

@@ -91,7 +91,7 @@ public class CreateSampleUnitRequest implements Serializable
     }
 
 }
------------------------------------com.gen.test.model.CreateSampleUnitResponse.java-----------------------------------
+-----------------------------------com.gen.test.model.ResponseType.java-----------------------------------
 
 package com.gen.test.model;
 
@@ -100,7 +100,7 @@ import org.apache.commons.lang.builder.EqualsBuilder;
 import org.apache.commons.lang.builder.HashCodeBuilder;
 import org.apache.commons.lang.builder.ToStringBuilder;
 
-public class CreateSampleUnitResponse implements Serializable
+public class ResponseType implements Serializable
 {
 
     /**
@@ -111,18 +111,18 @@ public class CreateSampleUnitResponse implements Serializable
     private String facebookId;
 
     /**
-     * Creates a new CreateSampleUnitResponse.
+     * Creates a new ResponseType.
      *
      */
-    public CreateSampleUnitResponse() {
+    public ResponseType() {
         super();
     }
 
     /**
-     * Creates a new CreateSampleUnitResponse.
+     * Creates a new ResponseType.
      *
      */
-    public CreateSampleUnitResponse(String token, String facebookId) {
+    public ResponseType(String token, String facebookId) {
         super();
         this.token = token;
         this.facebookId = facebookId;
@@ -136,10 +136,10 @@ public class CreateSampleUnitResponse implements Serializable
         if (other == this) {
             return true;
         }
-        if ((other instanceof CreateSampleUnitResponse) == false) {
+        if ((other instanceof ResponseType) == false) {
             return false;
         }
-        CreateSampleUnitResponse otherObject = ((CreateSampleUnitResponse) other);
+        ResponseType otherObject = ((ResponseType) other);
         return new EqualsBuilder().isEquals();
     }
 
@@ -193,13 +193,13 @@ public class CreateSampleUnitResponse implements Serializable
 package com.gen.test;
 
 import com.gen.test.model.CreateSampleUnitRequest;
-import com.gen.test.model.CreateSampleUnitResponse;
+import com.gen.test.model.ResponseType;
 import org.springframework.http.ResponseEntity;
 
 
 /**
  * A collection of samples
- * (Generated with springmvc-raml-parser v.0.10.8.1-SNAPSHOT)
+ * (Generated with springmvc-raml-parser v.0.10.8.2-SNAPSHOT)
  *
  */
 public interface SampleUnitController {
@@ -209,7 +209,7 @@ public interface SampleUnitController {
      * Creates a sample unit
      *
      */
-    public ResponseEntity<CreateSampleUnitResponse> createSampleUnit(CreateSampleUnitRequest createSampleUnitRequest)
+    public ResponseEntity<ResponseType> createSampleUnit(CreateSampleUnitRequest createSampleUnitRequest)
         throws Exception
     ;
 
@@ -220,7 +220,7 @@ package com.gen.test;
 
 import javax.validation.Valid;
 import com.gen.test.model.CreateSampleUnitRequest;
-import com.gen.test.model.CreateSampleUnitResponse;
+import com.gen.test.model.ResponseType;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
@@ -232,7 +232,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 /**
  * A collection of samples
- * (Generated with springmvc-raml-parser v.0.10.8.1-SNAPSHOT)
+ * (Generated with springmvc-raml-parser v.0.10.8.2-SNAPSHOT)
  *
  */
 @RestController
@@ -248,7 +248,7 @@ public class SampleUnitControllerDecorator {
      *
      */
     @RequestMapping(value = "", method = RequestMethod.POST)
-    public ResponseEntity<CreateSampleUnitResponse> createSampleUnit(
+    public ResponseEntity<ResponseType> createSampleUnit(
         @Valid
         @RequestBody
         CreateSampleUnitRequest createSampleUnitRequest)
