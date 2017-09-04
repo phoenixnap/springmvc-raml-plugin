@@ -11,13 +11,16 @@ types:
     additionalProperties: false
     description: "Facebook auth for the user"
     properties:
-      token:
-        description: "facebook token for the user. This token will be validated with facebook"
-        type: string
+      privileges:
+        displayName: Privileges
+        type: object
+        description: "privileges for the user"
         required: true
-      facebookId:
-        type: string
-        required: true
+        properties:
+          contentPrivileges:
+            enum: [ PREMIUM_BLOCKED, PREMIUM_GRANTED]
+          adsPrivileges:
+            enum: [  NO_ADS, SHOW_ADS]
 
 /sample_units:
   displayName: Samples
@@ -25,11 +28,11 @@ types:
   post:
     description: Creates a sample unit
     body:
-      properties:
-        a:
-          type: string
-        b:
-          type: integer
+#      properties:
+#        a:
+#          type: string
+#        b:
+#          type: integer
     responses:
       201:
         body:

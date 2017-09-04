@@ -70,7 +70,8 @@ public class ObjectTypeInterpreter extends BaseTypeInterpreter {
 		}
 
 		//When we have base objects we need to use them as type not blindly create them
-		if(!RamlTypeHelper.isBaseObject(name) && !RamlTypeHelper.isBaseObject(typeName) && property) {
+		if(!RamlTypeHelper.isBaseObject(name) && !RamlTypeHelper.isBaseObject(typeName)
+				&& !typeName.equals(name) && property) {
 			name = typeName;
 			if(types.get(name) == null){
 				throw new IllegalStateException("Data type " + name + " can't be found!");
@@ -128,7 +129,7 @@ public class ObjectTypeInterpreter extends BaseTypeInterpreter {
 
 		for (TypeDeclaration objectProperty : objectType.properties()) {
 			RamlInterpretationResult childResult = RamlInterpreterFactory.getInterpreterForType(objectProperty)
-                    .interpret(document, objectProperty, builderModel, config, true, null);
+                    .interpret(document, objectProperty, builderModel, config, true, StringUtils.capitalize(objectProperty.name()));
 			String childType = childResult.getResolvedClassOrBuiltOrObject().fullName();
 			builder.withField(objectProperty.name(), childType, RamlTypeHelper.getDescription(objectProperty),
                     childResult.getValidations(), objectProperty.defaultValue());
