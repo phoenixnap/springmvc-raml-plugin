@@ -122,7 +122,7 @@ public class UnionTypeInterpreter extends BaseTypeInterpreter {
             RamlInterpretationResult childResult =
                     RamlInterpreterFactory
                             .getInterpreterForType(objectProperty).interpret(
-                            document, objectProperty, builderModel, config, true, null);
+                            document, objectProperty, builderModel, config, true, objectProperty.name());
 
             String childType = childResult.getResolvedClassOrBuiltOrObject().fullName();
             if(!builder.pojo.fields().containsKey(objectProperty.name())){
