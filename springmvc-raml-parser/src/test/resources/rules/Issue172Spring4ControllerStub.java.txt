@@ -51,11 +51,11 @@ public class EventCreate implements Serializable
             return false;
         }
         EventCreate otherObject = ((EventCreate) other);
-        return new EqualsBuilder().isEquals();
+        return EqualsBuilder.reflectionEquals(this, otherObject, false);
     }
 
     public int hashCode() {
-        return new HashCodeBuilder().toHashCode();
+        return HashCodeBuilder.reflectionHashCode(this, false);
     }
 
     /**
@@ -132,11 +132,11 @@ public class EventPayload implements Serializable
             return false;
         }
         EventPayload otherObject = ((EventPayload) other);
-        return new EqualsBuilder().isEquals();
+        return EqualsBuilder.reflectionEquals(this, otherObject, false);
     }
 
     public int hashCode() {
-        return new HashCodeBuilder().toHashCode();
+        return HashCodeBuilder.reflectionHashCode(this, false);
     }
 
 }

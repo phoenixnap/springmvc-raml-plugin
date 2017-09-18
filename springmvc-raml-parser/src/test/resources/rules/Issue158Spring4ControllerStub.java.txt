@@ -43,11 +43,11 @@ public class User implements Serializable
             return false;
         }
         User otherObject = ((User) other);
-        return new EqualsBuilder().isEquals();
+        return EqualsBuilder.reflectionEquals(this, otherObject, false);
     }
 
     public int hashCode() {
-        return new HashCodeBuilder().toHashCode();
+        return HashCodeBuilder.reflectionHashCode(this, false);
     }
 
     /**

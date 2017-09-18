@@ -35,7 +35,9 @@ import com.sun.codemodel.JCodeModel;
 import com.sun.codemodel.JDefinedClass;
 import com.sun.codemodel.JExpr;
 import com.sun.codemodel.JExpression;
+import com.sun.codemodel.JExpressionImpl;
 import com.sun.codemodel.JFieldVar;
+import com.sun.codemodel.JFormatter;
 import com.sun.codemodel.JInvocation;
 import com.sun.codemodel.JMethod;
 import com.sun.codemodel.JMod;
@@ -355,7 +357,7 @@ public class PojoBuilder extends AbstractBuilder {
     private void withHashCode() {
         JMethod hashCode = this.pojo.method(JMod.PUBLIC, int.class, "hashCode");
 
-        Class<?> hashCodeBuilder = HashCodeBuilder.class;
+        Class<?> hashCodeBuilder = org.apache.commons.lang3.builder.HashCodeBuilder.class;
         if (!config.isUseCommonsLang3()) {
         	hashCodeBuilder = org.apache.commons.lang.builder.HashCodeBuilder.class;
         }
@@ -366,12 +368,11 @@ public class PojoBuilder extends AbstractBuilder {
             hashCodeBuilderInvocation = hashCodeBuilderInvocation.invoke("appendSuper")
                     .arg(JExpr._super().invoke("hashCode"));
         }
-        
-        hashCode.body()._return(hashCodeBuilderInvocation.invoke("toHashCode"));
+
+        hashCode.body()._return(this.pojo.owner().ref(hashCodeBuilder).staticInvoke("reflectionHashCode").arg(JExpr._this()).arg(JExpr.lit(Boolean.FALSE)));
     }
 
     private void withEquals() {
-       
         JMethod equals = this.pojo.method(JMod.PUBLIC, boolean.class, "equals");
         JVar otherObject = equals.param(Object.class, "other");
 
@@ -384,19 +385,10 @@ public class PojoBuilder extends AbstractBuilder {
 
         body._if(otherObject.eq(JExpr._this()))._then()._return(JExpr.TRUE);
         body._if(otherObject._instanceof(this.pojo).eq(JExpr.FALSE))._then()._return(JExpr.FALSE);
-        
+
         otherObjectVar = body.decl(this.pojo, "otherObject").init(JExpr.cast(this.pojo, otherObject));
-        equalsBuilderInvocation = JExpr._new( this.pojo.owner().ref(equalsBuilder));
 
-        if (!this.pojo._extends().name().equals("Object")) {
-            equalsBuilderInvocation = equalsBuilderInvocation.invoke("appendSuper").arg(JExpr.TRUE);
-        }
-        
-        this.pojo.owner()
-        	.ref(equalsBuilder)
-        	.staticInvoke("reflectionEquals").arg(JExpr._this()).arg(otherObject);
-
-        body._return(equalsBuilderInvocation.invoke("isEquals"));
+        body._return(this.pojo.owner().ref(equalsBuilder).staticInvoke("reflectionEquals").arg(JExpr._this()).arg(otherObjectVar).arg(JExpr.lit(Boolean.FALSE)));
     }
 
 }

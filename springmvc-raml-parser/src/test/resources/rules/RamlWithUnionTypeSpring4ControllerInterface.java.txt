@@ -43,11 +43,11 @@ public class Device implements Serializable
             return false;
         }
         Device otherObject = ((Device) other);
-        return new EqualsBuilder().isEquals();
+        return EqualsBuilder.reflectionEquals(this, otherObject, false);
     }
 
     public int hashCode() {
-        return new HashCodeBuilder().toHashCode();
+        return HashCodeBuilder.reflectionHashCode(this, false);
     }
 
     /**
@@ -136,11 +136,11 @@ public class Notebook implements Serializable
             return false;
         }
         Notebook otherObject = ((Notebook) other);
-        return new EqualsBuilder().isEquals();
+        return EqualsBuilder.reflectionEquals(this, otherObject, false);
     }
 
     public int hashCode() {
-        return new HashCodeBuilder().toHashCode();
+        return HashCodeBuilder.reflectionHashCode(this, false);
     }
 
     /**
@@ -229,11 +229,11 @@ public class Phone implements Serializable
             return false;
         }
         Phone otherObject = ((Phone) other);
-        return new EqualsBuilder().isEquals();
+        return EqualsBuilder.reflectionEquals(this, otherObject, false);
     }
 
     public int hashCode() {
-        return new HashCodeBuilder().toHashCode();
+        return HashCodeBuilder.reflectionHashCode(this, false);
     }
 
     /**

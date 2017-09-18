@@ -45,11 +45,11 @@ public class Manager implements Serializable
             return false;
         }
         Manager otherObject = ((Manager) other);
-        return new EqualsBuilder().isEquals();
+        return EqualsBuilder.reflectionEquals(this, otherObject, false);
     }
 
     public int hashCode() {
-        return new HashCodeBuilder().toHashCode();
+        return HashCodeBuilder.reflectionHashCode(this, false);
     }
 
     /**
