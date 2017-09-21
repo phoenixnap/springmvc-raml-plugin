@@ -39,25 +39,6 @@ public class EventCreate implements Serializable
         this.eventPayload = eventPayload;
     }
 
-    public String toString() {
-        return ToStringBuilder.reflectionToString(this);
-    }
-
-    public boolean equals(Object other) {
-        if (other == this) {
-            return true;
-        }
-        if ((other instanceof EventCreate) == false) {
-            return false;
-        }
-        EventCreate otherObject = ((EventCreate) other);
-        return new EqualsBuilder().isEquals();
-    }
-
-    public int hashCode() {
-        return new HashCodeBuilder().toHashCode();
-    }
-
     /**
      * Returns the eventName.
      * 
@@ -98,6 +79,28 @@ public class EventCreate implements Serializable
         this.eventPayload = eventPayload;
     }
 
+    public int hashCode() {
+        return new HashCodeBuilder().append(eventName).append(eventPayload).toHashCode();
+    }
+
+    public boolean equals(Object other) {
+        if (other == null) {
+            return false;
+        }
+        if (other == this) {
+            return true;
+        }
+        if ((other instanceof EventCreate) == false) {
+            return false;
+        }
+        EventCreate otherObject = ((EventCreate) other);
+        return new EqualsBuilder().append(eventName, otherObject.eventName).append(eventPayload, otherObject.eventPayload).isEquals();
+    }
+
+    public String toString() {
+        return new ToStringBuilder().append("eventName", eventName).append("eventPayload", eventPayload).toString();
+    }
+
 }
 -----------------------------------com.gen.test.model.EventPayload.java-----------------------------------
 
@@ -120,11 +123,14 @@ public class EventPayload implements Serializable
         super();
     }
 
-    public String toString() {
-        return ToStringBuilder.reflectionToString(this);
+    public int hashCode() {
+        return new HashCodeBuilder().toHashCode();
     }
 
     public boolean equals(Object other) {
+        if (other == null) {
+            return false;
+        }
         if (other == this) {
             return true;
         }
@@ -135,8 +141,8 @@ public class EventPayload implements Serializable
         return new EqualsBuilder().isEquals();
     }
 
-    public int hashCode() {
-        return new HashCodeBuilder().toHashCode();
+    public String toString() {
+        return new ToStringBuilder().toString();
     }
 
 }

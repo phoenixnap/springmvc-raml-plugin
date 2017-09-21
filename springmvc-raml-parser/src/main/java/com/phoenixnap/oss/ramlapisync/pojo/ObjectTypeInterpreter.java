@@ -128,6 +128,9 @@ public class ObjectTypeInterpreter extends BaseTypeInterpreter {
 		// Add a constructor with all fields
 		builder.withCompleteConstructor();
 
+		// Add overriden hashCode(), equals() and toString() methods
+		builder.withOverridenMethods();
+
 		return result;
 	}
 

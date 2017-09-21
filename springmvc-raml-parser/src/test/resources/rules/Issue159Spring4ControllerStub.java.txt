@@ -33,25 +33,6 @@ public class Manager implements Serializable
         this.departman = departman;
     }
 
-    public String toString() {
-        return ToStringBuilder.reflectionToString(this);
-    }
-
-    public boolean equals(Object other) {
-        if (other == this) {
-            return true;
-        }
-        if ((other instanceof Manager) == false) {
-            return false;
-        }
-        Manager otherObject = ((Manager) other);
-        return new EqualsBuilder().isEquals();
-    }
-
-    public int hashCode() {
-        return new HashCodeBuilder().toHashCode();
-    }
-
     /**
      * Returns the firstName.
      * 
@@ -110,6 +91,28 @@ public class Manager implements Serializable
      */
     public void setDepartman(String departman) {
         this.departman = departman;
+    }
+
+    public int hashCode() {
+        return new HashCodeBuilder().append(firstName).append(lastName).append(departman).toHashCode();
+    }
+
+    public boolean equals(Object other) {
+        if (other == null) {
+            return false;
+        }
+        if (other == this) {
+            return true;
+        }
+        if ((other instanceof Manager) == false) {
+            return false;
+        }
+        Manager otherObject = ((Manager) other);
+        return new EqualsBuilder().append(firstName, otherObject.firstName).append(lastName, otherObject.lastName).append(departman, otherObject.departman).isEquals();
+    }
+
+    public String toString() {
+        return new ToStringBuilder().append("firstName", firstName).append("lastName", lastName).append("departman", departman).toString();
     }
 
 }
