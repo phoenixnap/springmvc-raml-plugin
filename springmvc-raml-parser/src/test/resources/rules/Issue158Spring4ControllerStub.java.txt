@@ -82,7 +82,7 @@ public class User implements Serializable
         if (other == this) {
             return true;
         }
-        if ((other instanceof User) == false) {
+        if (this.getClass()!= other.getClass()) {
             return false;
         }
         User otherObject = ((User) other);
@@ -90,7 +90,7 @@ public class User implements Serializable
     }
 
     public String toString() {
-        return new ToStringBuilder().append("firstName", firstName).append("lastName", lastName).toString();
+        return new ToStringBuilder(this).append("firstName", firstName).append("lastName", lastName).toString();
     }
 
 }

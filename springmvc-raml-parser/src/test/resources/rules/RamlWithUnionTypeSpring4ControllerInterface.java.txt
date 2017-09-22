@@ -82,7 +82,7 @@ public class Device implements Serializable
         if (other == this) {
             return true;
         }
-        if ((other instanceof Device) == false) {
+        if (this.getClass()!= other.getClass()) {
             return false;
         }
         Device otherObject = ((Device) other);
@@ -90,7 +90,7 @@ public class Device implements Serializable
     }
 
     public String toString() {
-        return new ToStringBuilder().append("Phone", Phone).append("Notebook", Notebook).toString();
+        return new ToStringBuilder(this).append("Phone", Phone).append("Notebook", Notebook).toString();
     }
 
 }
@@ -178,7 +178,7 @@ public class Notebook implements Serializable
         if (other == this) {
             return true;
         }
-        if ((other instanceof Notebook) == false) {
+        if (this.getClass()!= other.getClass()) {
             return false;
         }
         Notebook otherObject = ((Notebook) other);
@@ -186,7 +186,7 @@ public class Notebook implements Serializable
     }
 
     public String toString() {
-        return new ToStringBuilder().append("manufacturer", manufacturer).append("numberOfUSBPorts", numberOfUSBPorts).toString();
+        return new ToStringBuilder(this).append("manufacturer", manufacturer).append("numberOfUSBPorts", numberOfUSBPorts).toString();
     }
 
 }
@@ -274,7 +274,7 @@ public class Phone implements Serializable
         if (other == this) {
             return true;
         }
-        if ((other instanceof Phone) == false) {
+        if (this.getClass()!= other.getClass()) {
             return false;
         }
         Phone otherObject = ((Phone) other);
@@ -282,7 +282,7 @@ public class Phone implements Serializable
     }
 
     public String toString() {
-        return new ToStringBuilder().append("manufacturer", manufacturer).append("numberOfSIMCards", numberOfSIMCards).toString();
+        return new ToStringBuilder(this).append("manufacturer", manufacturer).append("numberOfSIMCards", numberOfSIMCards).toString();
     }
 
 }

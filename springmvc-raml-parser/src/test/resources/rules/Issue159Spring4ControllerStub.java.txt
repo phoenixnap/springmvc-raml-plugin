@@ -104,7 +104,7 @@ public class Manager implements Serializable
         if (other == this) {
             return true;
         }
-        if ((other instanceof Manager) == false) {
+        if (this.getClass()!= other.getClass()) {
             return false;
         }
         Manager otherObject = ((Manager) other);
@@ -112,7 +112,7 @@ public class Manager implements Serializable
     }
 
     public String toString() {
-        return new ToStringBuilder().append("firstName", firstName).append("lastName", lastName).append("departman", departman).toString();
+        return new ToStringBuilder(this).append("firstName", firstName).append("lastName", lastName).append("departman", departman).toString();
     }
 
 }

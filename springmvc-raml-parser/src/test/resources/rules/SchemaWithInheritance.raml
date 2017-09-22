@@ -1,0 +1,40 @@
+#%RAML 1.0
+title: Persons
+mediaType: application/json
+baseUri: /api
+types: 
+  Person: 
+    type: object
+    properties:
+      firstName: string
+      lastName: string
+      age: number
+  User:
+    type: Person
+    properties:
+      username: string
+
+/persons:
+  get:
+    responses:
+      200:
+        body: Person[]
+  post:
+    body: Person
+    responses:
+      201:
+        body:
+          application/json:
+            type: Person
+/users:
+  get:
+    responses:
+      200:
+        body: User[]
+  post:
+    body: User
+    responses:
+      201:
+        body:
+          application/json:
+            type: User

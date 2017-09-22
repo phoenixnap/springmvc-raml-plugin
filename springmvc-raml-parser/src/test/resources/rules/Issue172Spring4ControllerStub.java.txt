@@ -90,7 +90,7 @@ public class EventCreate implements Serializable
         if (other == this) {
             return true;
         }
-        if ((other instanceof EventCreate) == false) {
+        if (this.getClass()!= other.getClass()) {
             return false;
         }
         EventCreate otherObject = ((EventCreate) other);
@@ -98,7 +98,7 @@ public class EventCreate implements Serializable
     }
 
     public String toString() {
-        return new ToStringBuilder().append("eventName", eventName).append("eventPayload", eventPayload).toString();
+        return new ToStringBuilder(this).append("eventName", eventName).append("eventPayload", eventPayload).toString();
     }
 
 }
@@ -134,7 +134,7 @@ public class EventPayload implements Serializable
         if (other == this) {
             return true;
         }
-        if ((other instanceof EventPayload) == false) {
+        if (this.getClass()!= other.getClass()) {
             return false;
         }
         EventPayload otherObject = ((EventPayload) other);
@@ -142,7 +142,7 @@ public class EventPayload implements Serializable
     }
 
     public String toString() {
-        return new ToStringBuilder().toString();
+        return new ToStringBuilder(this).toString();
     }
 
 }

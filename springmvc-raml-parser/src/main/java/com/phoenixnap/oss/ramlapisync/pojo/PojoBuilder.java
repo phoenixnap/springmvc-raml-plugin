@@ -337,108 +337,104 @@ public class PojoBuilder extends AbstractBuilder {
 
         JMethod toString = this.pojo.method(JMod.PUBLIC, String.class, "toString");
 
-        Class<?> toStringBuilder = org.apache.commons.lang3.builder.ToStringBuilder.class;
+        Class<?> toStringBuilderClass = org.apache.commons.lang3.builder.ToStringBuilder.class;
         if (!config.isUseCommonsLang3()) {
-            toStringBuilder = org.apache.commons.lang.builder.ToStringBuilder.class;
+            toStringBuilderClass = org.apache.commons.lang.builder.ToStringBuilder.class;
         }
 
-        JInvocation toStringBuilderInvocation = JExpr._new( this.pojo.owner().ref(toStringBuilder));
+        JClass toStringBuilderRef = this.pojo.owner().ref(toStringBuilderClass);
 
-        if (!this.pojo._extends().name().equals(Object.class.getSimpleName())) {
-        	toStringBuilderInvocation = toStringBuilderInvocation.invoke("appendSuper")
-                    .arg(JExpr._super().invoke("toString"));
-        }
-
-        toStringBuilderInvocation = appendFieldsToString(toStringBuilderInvocation, getNonTransientAndNonStaticFields());
+        JInvocation toStringBuilderInvocation = appendFieldsToString(getNonTransientAndNonStaticFields(), toStringBuilderRef);
 
         toString.body()._return(toStringBuilderInvocation.invoke("toString"));
     }
 
-	private JInvocation appendFieldsToString(JInvocation invocation, Map<String, JFieldVar> nonTransientAndNonStaticFields) {
+	private JInvocation appendFieldsToString(Map<String, JFieldVar> nonTransientAndNonStaticFields, JClass toStringBuilderRef) {
+		JInvocation invocation = JExpr._new(toStringBuilderRef).arg(JExpr._this());
 		Iterator<Map.Entry<String, JFieldVar>> iterator = nonTransientAndNonStaticFields.entrySet().iterator();
-
-		JInvocation result = invocation;
+	
+		if (!this.pojo._extends().name().equals(Object.class.getSimpleName())) { // If this POJO has a superclass, append the superclass toString() method.
+			invocation = invocation.invoke("appendSuper").arg(JExpr._super().invoke("toString"));
+		}
 
 		while (iterator.hasNext()) {
 			Map.Entry<String, JFieldVar> pair = iterator.next();
-			result = result.invoke("append").arg(JExpr.lit(pair.getKey())).arg(pair.getValue());
+			invocation = invocation.invoke("append").arg(JExpr.lit(pair.getKey())).arg(pair.getValue());
 		}
 
-		return result;
+		return invocation;
 	}
 
     //Ada
 	private void withHashCode() {
         JMethod hashCode = this.pojo.method(JMod.PUBLIC, int.class, "hashCode");
 
-        Class<?> hashCodeBuilder = org.apache.commons.lang3.builder.HashCodeBuilder.class;
+        Class<?> hashCodeBuilderClass = org.apache.commons.lang3.builder.HashCodeBuilder.class;
         if (!config.isUseCommonsLang3()) {
-        	hashCodeBuilder = org.apache.commons.lang.builder.HashCodeBuilder.class;
+        	hashCodeBuilderClass = org.apache.commons.lang.builder.HashCodeBuilder.class;
         }
 
-        JInvocation hashCodeBuilderInvocation = JExpr._new(this.pojo.owner().ref(hashCodeBuilder));
+        JClass hashCodeBuilderRef = this.pojo.owner().ref(hashCodeBuilderClass);
 
-        if (!this.pojo._extends().name().equals(Object.class.getSimpleName())) {
-            hashCodeBuilderInvocation = hashCodeBuilderInvocation.invoke("appendSuper")
-                    .arg(JExpr._super().invoke("hashCode"));
-        }
-
-        hashCodeBuilderInvocation = appendFieldsToHashCode(hashCodeBuilderInvocation, getNonTransientAndNonStaticFields());
+        JInvocation hashCodeBuilderInvocation = appendFieldsToHashCode(getNonTransientAndNonStaticFields(), hashCodeBuilderRef);
 
         hashCode.body()._return(hashCodeBuilderInvocation.invoke("toHashCode"));
     }
 
-	private JInvocation appendFieldsToHashCode(JInvocation invocation, Map<String, JFieldVar> nonTransientAndNonStaticFields) {
+	private JInvocation appendFieldsToHashCode(Map<String, JFieldVar> nonTransientAndNonStaticFields, JClass hashCodeBuilderRef) {
+		JInvocation invocation = JExpr._new(hashCodeBuilderRef);
 		Iterator<Map.Entry<String, JFieldVar>> iterator = nonTransientAndNonStaticFields.entrySet().iterator();
 
-		JInvocation result = invocation;
+		if (!this.pojo._extends().name().equals(Object.class.getSimpleName())) { // If this POJO has a superclass, append the superclass hashCode() method.
+			invocation = invocation.invoke("appendSuper").arg(JExpr._super().invoke("hashCode"));
+		}
 
 		while (iterator.hasNext()) {
 			Map.Entry<String, JFieldVar> pair = iterator.next();
-			result = result.invoke("append").arg(pair.getValue());
+			invocation = invocation.invoke("append").arg(pair.getValue());
 		}
 
-		return result;
+		return invocation;
 	}
 
 	private void withEquals() {
         JMethod equals = this.pojo.method(JMod.PUBLIC, boolean.class, "equals");
         JVar otherObject = equals.param(Object.class, "other");
 
-        Class<?> equalsBuilder = org.apache.commons.lang3.builder.EqualsBuilder.class;
+        Class<?> equalsBuilderClass = org.apache.commons.lang3.builder.EqualsBuilder.class;
         if (!config.isUseCommonsLang3()) {
-        	equalsBuilder = org.apache.commons.lang.builder.EqualsBuilder.class;
+            equalsBuilderClass = org.apache.commons.lang.builder.EqualsBuilder.class;
         }
 
         JBlock body = equals.body();
 
         body._if(otherObject.eq(JExpr._null()))._then()._return(JExpr.FALSE);
         body._if(otherObject.eq(JExpr._this()))._then()._return(JExpr.TRUE);
-        body._if(otherObject._instanceof(this.pojo).eq(JExpr.FALSE))._then()._return(JExpr.FALSE);
-        
+        body._if(JExpr._this().invoke("getClass").ne(otherObject.invoke("getClass")))._then()._return(JExpr.FALSE);
+
         JVar otherObjectVar = body.decl(this.pojo, "otherObject").init(JExpr.cast(this.pojo, otherObject));
-        JInvocation equalsBuilderInvocation = JExpr._new( this.pojo.owner().ref(equalsBuilder));
 
-        if (!this.pojo._extends().name().equals("Object")) {
-            equalsBuilderInvocation = equalsBuilderInvocation.invoke("appendSuper").arg(JExpr.TRUE);
-        }
+        JClass equalsBuilderRef = this.pojo.owner().ref(equalsBuilderClass);
 
-        equalsBuilderInvocation = appendFieldsToEquals(equalsBuilderInvocation, getNonTransientAndNonStaticFields(), otherObjectVar);
+        JInvocation equalsBuilderInvocation = appendFieldsToEquals(getNonTransientAndNonStaticFields(), otherObjectVar, equalsBuilderRef);
 
         body._return(equalsBuilderInvocation.invoke("isEquals"));
     }
 
-	private JInvocation appendFieldsToEquals(JInvocation invocation, Map<String, JFieldVar> nonTransientAndNonStaticFields, JVar otherObject) {
+	private JInvocation appendFieldsToEquals(Map<String, JFieldVar> nonTransientAndNonStaticFields, JVar otherObject, JClass equalsBuilderRef) {
+		JInvocation invocation = JExpr._new(equalsBuilderRef);
 		Iterator<Map.Entry<String, JFieldVar>> iterator = nonTransientAndNonStaticFields.entrySet().iterator();
 
-		JInvocation result = invocation;
+		if (!this.pojo._extends().name().equals(Object.class.getSimpleName())) {// If this POJO has a superclass, append the superclass equals() method.
+			invocation = invocation.invoke("appendSuper").arg(JExpr._super().invoke("equals").arg(otherObject));
+		}
 
 		while (iterator.hasNext()) {
 			Map.Entry<String, JFieldVar> pair = iterator.next();
-			result = result.invoke("append").arg(pair.getValue()).arg(otherObject.ref(pair.getKey()));
+				invocation = invocation.invoke("append").arg(pair.getValue()).arg(otherObject.ref(pair.getKey()));
 		}
 
-		return result;
+		return invocation;
 	}
 
 }
