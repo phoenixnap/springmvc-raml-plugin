@@ -17,7 +17,6 @@ import com.phoenixnap.oss.ramlapisync.raml.RamlDataType;
 import com.phoenixnap.oss.ramlapisync.raml.RamlRoot;
 import com.sun.codemodel.JClass;
 import com.sun.codemodel.JCodeModel;
-import org.raml.v2.api.model.v10.datamodel.ObjectTypeDeclaration;
 import org.raml.v2.api.model.v10.datamodel.TypeDeclaration;
 import org.raml.v2.api.model.v10.datamodel.UnionTypeDeclaration;
 import org.slf4j.Logger;
@@ -129,6 +128,9 @@ public class UnionTypeInterpreter extends BaseTypeInterpreter {
         }
         // Add a constructor with all fields
         builder.withCompleteConstructor();
+
+		// Add overriden hashCode(), equals() and toString() methods
+		builder.withOverridenMethods();
 
         return result;
 

@@ -31,25 +31,6 @@ public class Device implements Serializable
         this.Notebook = Notebook;
     }
 
-    public String toString() {
-        return ToStringBuilder.reflectionToString(this);
-    }
-
-    public boolean equals(Object other) {
-        if (other == this) {
-            return true;
-        }
-        if ((other instanceof Device) == false) {
-            return false;
-        }
-        Device otherObject = ((Device) other);
-        return new EqualsBuilder().isEquals();
-    }
-
-    public int hashCode() {
-        return new HashCodeBuilder().toHashCode();
-    }
-
     /**
      * Returns the Phone.
      * 
@@ -90,6 +71,28 @@ public class Device implements Serializable
         this.Notebook = Notebook;
     }
 
+    public int hashCode() {
+        return new HashCodeBuilder().append(Phone).append(Notebook).toHashCode();
+    }
+
+    public boolean equals(Object other) {
+        if (other == null) {
+            return false;
+        }
+        if (other == this) {
+            return true;
+        }
+        if (this.getClass()!= other.getClass()) {
+            return false;
+        }
+        Device otherObject = ((Device) other);
+        return new EqualsBuilder().append(Phone, otherObject.Phone).append(Notebook, otherObject.Notebook).isEquals();
+    }
+
+    public String toString() {
+        return new ToStringBuilder(this).append("Phone", Phone).append("Notebook", Notebook).toString();
+    }
+
 }
 -----------------------------------com.gen.test.model.Notebook.java-----------------------------------
 
@@ -122,25 +125,6 @@ public class Notebook implements Serializable
         super();
         this.manufacturer = manufacturer;
         this.numberOfUSBPorts = numberOfUSBPorts;
-    }
-
-    public String toString() {
-        return ToStringBuilder.reflectionToString(this);
-    }
-
-    public boolean equals(Object other) {
-        if (other == this) {
-            return true;
-        }
-        if ((other instanceof Notebook) == false) {
-            return false;
-        }
-        Notebook otherObject = ((Notebook) other);
-        return new EqualsBuilder().isEquals();
-    }
-
-    public int hashCode() {
-        return new HashCodeBuilder().toHashCode();
     }
 
     /**
@@ -183,6 +167,28 @@ public class Notebook implements Serializable
         this.numberOfUSBPorts = numberOfUSBPorts;
     }
 
+    public int hashCode() {
+        return new HashCodeBuilder().append(manufacturer).append(numberOfUSBPorts).toHashCode();
+    }
+
+    public boolean equals(Object other) {
+        if (other == null) {
+            return false;
+        }
+        if (other == this) {
+            return true;
+        }
+        if (this.getClass()!= other.getClass()) {
+            return false;
+        }
+        Notebook otherObject = ((Notebook) other);
+        return new EqualsBuilder().append(manufacturer, otherObject.manufacturer).append(numberOfUSBPorts, otherObject.numberOfUSBPorts).isEquals();
+    }
+
+    public String toString() {
+        return new ToStringBuilder(this).append("manufacturer", manufacturer).append("numberOfUSBPorts", numberOfUSBPorts).toString();
+    }
+
 }
 -----------------------------------com.gen.test.model.Phone.java-----------------------------------
 
@@ -215,25 +221,6 @@ public class Phone implements Serializable
         super();
         this.manufacturer = manufacturer;
         this.numberOfSIMCards = numberOfSIMCards;
-    }
-
-    public String toString() {
-        return ToStringBuilder.reflectionToString(this);
-    }
-
-    public boolean equals(Object other) {
-        if (other == this) {
-            return true;
-        }
-        if ((other instanceof Phone) == false) {
-            return false;
-        }
-        Phone otherObject = ((Phone) other);
-        return new EqualsBuilder().isEquals();
-    }
-
-    public int hashCode() {
-        return new HashCodeBuilder().toHashCode();
     }
 
     /**
@@ -274,6 +261,28 @@ public class Phone implements Serializable
      */
     public void setNumberOfSIMCards(Double numberOfSIMCards) {
         this.numberOfSIMCards = numberOfSIMCards;
+    }
+
+    public int hashCode() {
+        return new HashCodeBuilder().append(manufacturer).append(numberOfSIMCards).toHashCode();
+    }
+
+    public boolean equals(Object other) {
+        if (other == null) {
+            return false;
+        }
+        if (other == this) {
+            return true;
+        }
+        if (this.getClass()!= other.getClass()) {
+            return false;
+        }
+        Phone otherObject = ((Phone) other);
+        return new EqualsBuilder().append(manufacturer, otherObject.manufacturer).append(numberOfSIMCards, otherObject.numberOfSIMCards).isEquals();
+    }
+
+    public String toString() {
+        return new ToStringBuilder(this).append("manufacturer", manufacturer).append("numberOfSIMCards", numberOfSIMCards).toString();
     }
 
 }

@@ -31,25 +31,6 @@ public class User implements Serializable
         this.lastName = lastName;
     }
 
-    public String toString() {
-        return ToStringBuilder.reflectionToString(this);
-    }
-
-    public boolean equals(Object other) {
-        if (other == this) {
-            return true;
-        }
-        if ((other instanceof User) == false) {
-            return false;
-        }
-        User otherObject = ((User) other);
-        return new EqualsBuilder().isEquals();
-    }
-
-    public int hashCode() {
-        return new HashCodeBuilder().toHashCode();
-    }
-
     /**
      * Returns the firstName.
      * 
@@ -88,6 +69,28 @@ public class User implements Serializable
      */
     public void setLastName(String lastName) {
         this.lastName = lastName;
+    }
+
+    public int hashCode() {
+        return new HashCodeBuilder().append(firstName).append(lastName).toHashCode();
+    }
+
+    public boolean equals(Object other) {
+        if (other == null) {
+            return false;
+        }
+        if (other == this) {
+            return true;
+        }
+        if (this.getClass()!= other.getClass()) {
+            return false;
+        }
+        User otherObject = ((User) other);
+        return new EqualsBuilder().append(firstName, otherObject.firstName).append(lastName, otherObject.lastName).isEquals();
+    }
+
+    public String toString() {
+        return new ToStringBuilder(this).append("firstName", firstName).append("lastName", lastName).toString();
     }
 
 }

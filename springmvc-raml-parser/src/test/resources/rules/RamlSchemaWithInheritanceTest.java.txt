@@ -1,0 +1,241 @@
+-----------------------------------com.gen.test.model.Person.java-----------------------------------
+
+package com.gen.test.model;
+
+import java.io.Serializable;
+import org.apache.commons.lang.builder.EqualsBuilder;
+import org.apache.commons.lang.builder.HashCodeBuilder;
+import org.apache.commons.lang.builder.ToStringBuilder;
+
+public class Person implements Serializable
+{
+
+    private String firstName;
+    private String lastName;
+    private Double age;
+
+    /**
+     * Creates a new Person.
+     * 
+     */
+    public Person() {
+        super();
+    }
+
+    /**
+     * Creates a new Person.
+     * 
+     */
+    public Person(String firstName, String lastName, Double age) {
+        super();
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.age = age;
+    }
+
+    /**
+     * Returns the firstName.
+     * 
+     * @return
+     *     firstName
+     */
+    public String getFirstName() {
+        return firstName;
+    }
+
+    /**
+     * Set the firstName.
+     * 
+     * @param firstName
+     *     the new firstName
+     */
+    public void setFirstName(String firstName) {
+        this.firstName = firstName;
+    }
+
+    /**
+     * Returns the lastName.
+     * 
+     * @return
+     *     lastName
+     */
+    public String getLastName() {
+        return lastName;
+    }
+
+    /**
+     * Set the lastName.
+     * 
+     * @param lastName
+     *     the new lastName
+     */
+    public void setLastName(String lastName) {
+        this.lastName = lastName;
+    }
+
+    /**
+     * Returns the age.
+     * 
+     * @return
+     *     age
+     */
+    public Double getAge() {
+        return age;
+    }
+
+    /**
+     * Set the age.
+     * 
+     * @param age
+     *     the new age
+     */
+    public void setAge(Double age) {
+        this.age = age;
+    }
+
+    public int hashCode() {
+        return new HashCodeBuilder().append(firstName).append(lastName).append(age).toHashCode();
+    }
+
+    public boolean equals(Object other) {
+        if (other == null) {
+            return false;
+        }
+        if (other == this) {
+            return true;
+        }
+        if (this.getClass()!= other.getClass()) {
+            return false;
+        }
+        Person otherObject = ((Person) other);
+        return new EqualsBuilder().append(firstName, otherObject.firstName).append(lastName, otherObject.lastName).append(age, otherObject.age).isEquals();
+    }
+
+    public String toString() {
+        return new ToStringBuilder(this).append("firstName", firstName).append("lastName", lastName).append("age", age).toString();
+    }
+
+}
+-----------------------------------com.gen.test.model.User.java-----------------------------------
+
+package com.gen.test.model;
+
+import java.io.Serializable;
+import org.apache.commons.lang.builder.EqualsBuilder;
+import org.apache.commons.lang.builder.HashCodeBuilder;
+import org.apache.commons.lang.builder.ToStringBuilder;
+
+public class User
+    extends Person
+    implements Serializable
+{
+
+    private String username;
+
+    /**
+     * Creates a new User.
+     * 
+     */
+    public User() {
+        super();
+    }
+
+    /**
+     * Creates a new User.
+     * 
+     */
+    public User(String firstName, String lastName, Double age, String username) {
+        super(firstName, lastName, age);
+        this.username = username;
+    }
+
+    /**
+     * Returns the username.
+     * 
+     * @return
+     *     username
+     */
+    public String getUsername() {
+        return username;
+    }
+
+    /**
+     * Set the username.
+     * 
+     * @param username
+     *     the new username
+     */
+    public void setUsername(String username) {
+        this.username = username;
+    }
+
+    public int hashCode() {
+        return new HashCodeBuilder().appendSuper(super.hashCode()).append(username).toHashCode();
+    }
+
+    public boolean equals(Object other) {
+        if (other == null) {
+            return false;
+        }
+        if (other == this) {
+            return true;
+        }
+        if (this.getClass()!= other.getClass()) {
+            return false;
+        }
+        User otherObject = ((User) other);
+        return new EqualsBuilder().appendSuper(super.equals(otherObject)).append(username, otherObject.username).isEquals();
+    }
+
+    public String toString() {
+        return new ToStringBuilder(this).appendSuper(super.toString()).append("username", username).toString();
+    }
+
+}
+-----------------------------------com.gen.test.PersonController.java-----------------------------------
+
+package com.gen.test;
+
+import java.util.List;
+import javax.validation.Valid;
+import com.gen.test.model.Person;
+import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RestController;
+
+
+/**
+ * No description
+ * (Generated with springmvc-raml-parser v.0.10.9)
+ * 
+ */
+@RestController
+@RequestMapping(value = "/api/persons", produces = "application/json")
+@Validated
+public class PersonController {
+
+
+    /**
+     * No description
+     * 
+     */
+    @RequestMapping(value = "", method = RequestMethod.GET)
+    public List<Person> getPersons() {
+        return null; //TODO Autogenerated Method Stub. Implement me please.
+    }
+
+    /**
+     * No description
+     * 
+     */
+    @RequestMapping(value = "", method = RequestMethod.POST)
+    public Person createPerson(
+        @Valid
+        @RequestBody
+        Person person) {
+        return null; //TODO Autogenerated Method Stub. Implement me please.
+    }
+
+}
