@@ -25,6 +25,7 @@ import com.phoenixnap.oss.ramlapisync.data.ApiActionMetadata;
 import com.phoenixnap.oss.ramlapisync.data.ApiParameterMetadata;
 import com.phoenixnap.oss.ramlapisync.generation.CodeModelHelper;
 import com.phoenixnap.oss.ramlapisync.generation.rules.basic.MethodParamsRule;
+import com.phoenixnap.oss.ramlapisync.raml.RamlActionType;
 import com.phoenixnap.oss.ramlapisync.raml.RamlHeader;
 import com.phoenixnap.oss.ramlapisync.raml.RamlParamType;
 import com.phoenixnap.oss.ramlapisync.raml.RamlUriParameter;
@@ -169,7 +170,11 @@ public class SpringMethodParamsRule extends MethodParamsRule {
     @Override
     protected JVar paramObjects(ApiActionMetadata endpointMetadata, CodeModelHelper.JExtMethod generatableType) {
         JVar param = super.paramObjects(endpointMetadata, generatableType);
-        param.annotate(Valid.class);
+		if (!RamlActionType.PATCH.equals(endpointMetadata.getActionType())) {
+			// skip Valid annotation for PATCH actions since it's a partial
+			// update so some required fields might be omitted
+			param.annotate(Valid.class);
+		}
         param.annotate(RequestBody.class);
         return param;
     }
