@@ -49,6 +49,8 @@ public class RamlParser {
 
 	protected static final int DEFAULT_RESOURCE_TOP_LEVEL = 0;
 
+	protected static final boolean DEFAULT_REVERSE_ORDER = false;
+
 	/**
 	 * Base configuration for code generation
 	 */
@@ -82,6 +84,12 @@ public class RamlParser {
 	 */
 	protected int resourceTopLevelInClassNames = DEFAULT_RESOURCE_TOP_LEVEL;
 
+	/**
+	 * Reverse order of resource path that will be included in generated class names. Default is false which means
+	 * that resources will be in included in controller/decorator names from left to right.
+	 */
+	protected boolean reverseOrderInClassNames = DEFAULT_REVERSE_ORDER;
+
 	public RamlParser (PojoGenerationConfig config) {
 		this.config = config;
 	}
@@ -91,16 +99,17 @@ public class RamlParser {
 	}
 	
 	public RamlParser(String basePackage, String startUrl, boolean seperateMethodsByContentType, boolean injectHttpHeadersParameter) {
-		this(new PojoGenerationConfig().withPackage(basePackage, null), startUrl, seperateMethodsByContentType, injectHttpHeadersParameter, DEFAULT_RESOURCE_DEPTH, DEFAULT_RESOURCE_TOP_LEVEL);
+		this(new PojoGenerationConfig().withPackage(basePackage, null), startUrl, seperateMethodsByContentType, injectHttpHeadersParameter, DEFAULT_RESOURCE_DEPTH, DEFAULT_RESOURCE_TOP_LEVEL, DEFAULT_REVERSE_ORDER);
 	}
 	
-	public RamlParser(PojoGenerationConfig config, String startUrl, boolean seperateMethodsByContentType, boolean injectHttpHeadersParameter, int resourceDepthInClassNames, int resourceTopLevelInClassNames) {
+	public RamlParser(PojoGenerationConfig config, String startUrl, boolean seperateMethodsByContentType, boolean injectHttpHeadersParameter, int resourceDepthInClassNames, int resourceTopLevelInClassNames, boolean reverseOrderInClassNames) {
 		this(config);
 		this.seperateMethodsByContentType = seperateMethodsByContentType;
 		this.injectHttpHeadersParameter = injectHttpHeadersParameter;
 		this.startUrl = startUrl;
 		this.resourceDepthInClassNames = resourceDepthInClassNames;
 		this.resourceTopLevelInClassNames = resourceTopLevelInClassNames;
+		this.reverseOrderInClassNames = reverseOrderInClassNames;
 	}
 
 	/**
@@ -185,7 +194,7 @@ public class RamlParser {
 		//append resource URL to url.
 		String url = baseUrl + resource.getRelativeUri();
 		if (controller == null && shouldCreateController(resource)) {
-			controller = new ApiResourceMetadata(config, bodyCodeModel, url, resource, document, this.resourceDepthInClassNames, this.resourceTopLevelInClassNames);
+			controller = new ApiResourceMetadata(config, bodyCodeModel, url, resource, document, this.resourceDepthInClassNames, this.resourceTopLevelInClassNames, this.reverseOrderInClassNames);
 			controllers.add(controller);
 		}
 		//extract actions for this resource

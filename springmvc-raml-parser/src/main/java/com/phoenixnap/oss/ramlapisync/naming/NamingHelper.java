@@ -321,9 +321,10 @@ public class NamingHelper {
 	 * @param singularize Indicates if the resource name should be singularized or not
 	 * @param resourceDepthInClassNames The depth of uri to be included in a name 
 	 * @param resourceTopLevelInClassNames The top level of URI to be included in a name
+	 * @param reverseOrderInClassNames Is order of URI parts included in a name reversed
 	 * @return
 	 */
-	public static String getAllResourcesNames(String url, boolean singularize, int resourceDepthInClassNames, int resourceTopLevelInClassNames) {
+	public static String getAllResourcesNames(String url, boolean singularize, int resourceDepthInClassNames, int resourceTopLevelInClassNames, boolean reverseOrderInClassNames) {
 
 		StringBuilder stringBuilder = new StringBuilder();
 		if (StringUtils.hasText(url)) {
@@ -331,7 +332,12 @@ public class NamingHelper {
 			int lengthCounter = 0;
 			for(int i = resources.length - 1; i >= resourceTopLevelInClassNames + 1; --i){
 				if (StringUtils.hasText(resources[i])) {
-					stringBuilder.insert(0, getResourceName(resources[i], singularize));
+					String resourceName = getResourceName(resources[i], singularize);
+					if (reverseOrderInClassNames) {
+						stringBuilder.append(resourceName);
+					} else {
+						stringBuilder.insert(0, resourceName);
+					}
 					++lengthCounter;
 				}
 				if(resourceDepthInClassNames > 0 && lengthCounter >= resourceDepthInClassNames){

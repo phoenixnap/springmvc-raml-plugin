@@ -23,7 +23,7 @@ public class UnionTypeInterpretorTest extends AbstractRuleTestBase {
 	public UnionTypeInterpretorTest() {
 		super();
 		defaultRamlParser = new RamlParser(new PojoGenerationConfig().withPackage("com.gen.test", null), "/api", false,
-				false, 2, 0);
+				false, 2, 0, false);
 	}
 
 	@BeforeClass

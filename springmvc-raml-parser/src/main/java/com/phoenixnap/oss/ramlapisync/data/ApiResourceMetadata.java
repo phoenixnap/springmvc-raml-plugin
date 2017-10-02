@@ -42,11 +42,12 @@ public class ApiResourceMetadata {
 	private JCodeModel bodyCodeModel;
 	private int resourceDepthInClassNames;
 	private int resourceTopLevelInClassNames;
+	private boolean reverseOrderInClassNames;
 	
 	private PojoGenerationConfig config;
 	Set<ApiActionMetadata> apiCalls = new LinkedHashSet<>();
 	
-	public ApiResourceMetadata(PojoGenerationConfig config, JCodeModel bodyCodeModel, String controllerUrl, RamlResource resource, RamlRoot document, int resourceDepthInClassNames, int resourceTopLevelInClassNames) {
+	public ApiResourceMetadata(PojoGenerationConfig config, JCodeModel bodyCodeModel, String controllerUrl, RamlResource resource, RamlRoot document, int resourceDepthInClassNames, int resourceTopLevelInClassNames, boolean reverseOrderInClassNames) {
 		super();
 		this.controllerUrl = controllerUrl;
 		this.resource = resource;
@@ -55,6 +56,7 @@ public class ApiResourceMetadata {
 		this.config = config;
 		this.resourceDepthInClassNames = resourceDepthInClassNames;
 		this.resourceTopLevelInClassNames = resourceTopLevelInClassNames;
+		this.reverseOrderInClassNames = reverseOrderInClassNames;
 	} 
 	
 	
@@ -67,8 +69,8 @@ public class ApiResourceMetadata {
 	}
     
     public String getName() {
-    	if(this.resourceDepthInClassNames != 1){
-			return NamingHelper.getAllResourcesNames(controllerUrl, singularizeName, this.resourceDepthInClassNames, this.resourceTopLevelInClassNames);
+    	if(this.resourceDepthInClassNames != 1 || this.resourceTopLevelInClassNames != 0 || this.reverseOrderInClassNames){
+			return NamingHelper.getAllResourcesNames(controllerUrl, singularizeName, this.resourceDepthInClassNames, this.resourceTopLevelInClassNames, this.reverseOrderInClassNames);
 		} else {
 			return NamingHelper.getResourceName(resource, singularizeName);
 		}
