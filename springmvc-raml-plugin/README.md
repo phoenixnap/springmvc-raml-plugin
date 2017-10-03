@@ -299,6 +299,9 @@ Then simply include the following code in the POM of the project you wish to gen
 ### resourceTopLevelInClassNames
 (optional, default: 0) Top level of resource path that will be included in generated class names. If set to 0 entire URI will be included in class name.
 
+### reverseOrderInClassNames
+(optional, default: false) Reverse order of resource path that will be included in generated class names. If set to false URI will be included in class name from left to right.
+
 ### ruleConfiguration
 (optional) This is a key/value map for configuration of individual rules. Not all rules support configuration.
 
