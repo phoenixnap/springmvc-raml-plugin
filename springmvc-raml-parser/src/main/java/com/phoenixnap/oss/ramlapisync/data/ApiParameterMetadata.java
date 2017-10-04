@@ -115,6 +115,7 @@ public class ApiParameterMetadata {
 	 * 
 	 * @param name	The name of this parameter if different in annotation
 	 * @param param Java Parameter representation
+	 * @param codeModel
 	 */
 	public ApiParameterMetadata(String name, RamlAbstractParam param, JCodeModel codeModel) {
 		super();

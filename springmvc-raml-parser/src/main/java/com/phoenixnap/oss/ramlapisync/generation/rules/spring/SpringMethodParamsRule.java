@@ -25,6 +25,7 @@ import com.phoenixnap.oss.ramlapisync.data.ApiActionMetadata;
 import com.phoenixnap.oss.ramlapisync.data.ApiParameterMetadata;
 import com.phoenixnap.oss.ramlapisync.generation.CodeModelHelper;
 import com.phoenixnap.oss.ramlapisync.generation.rules.basic.MethodParamsRule;
+import com.phoenixnap.oss.ramlapisync.naming.RamlTypeHelper;
 import com.phoenixnap.oss.ramlapisync.raml.RamlActionType;
 import com.phoenixnap.oss.ramlapisync.raml.RamlHeader;
 import com.phoenixnap.oss.ramlapisync.raml.RamlParamType;
@@ -135,31 +136,8 @@ public class SpringMethodParamsRule extends MethodParamsRule {
 				RJP10V2RamlQueryParameter queryParameter = (RJP10V2RamlQueryParameter) paramMetaData.getRamlParam();
 				if (StringUtils.hasText(queryParameter.getRawType())) {
 					jAnnotationUse = jVar.annotate(DateTimeFormat.class);
-					String param = queryParameter.getRawType().toUpperCase();
-					switch (param) {
-						case "DATE-ONLY":
-							// example: 2013-09-29
-							jAnnotationUse.param("pattern", "yyyy-MM-dd");
-							break;
-						case "TIME-ONLY":
-							// example: 19:46:19
-							jAnnotationUse.param("pattern", "HH:mm:ss");
-							break;
-						case "DATETIME-ONLY":
-							// example: 2013-09-29T19:46:19
-							jAnnotationUse.param("pattern", PATTERN_DATETIME);
-							break;
-						case "DATETIME":
-							if ("rfc2616".equalsIgnoreCase(queryParameter.getFormat())) {
-								// example: Tue, 15 Nov 1994 12:45:26 GMT
-								jAnnotationUse.param("pattern", "EEE, dd MMM yyyy HH:mm:ss z");
-							} else {
-								jAnnotationUse.param("pattern", PATTERN_DATETIME);
-							}
-							break;
-						default:
-							jAnnotationUse.param("pattern", PATTERN_DATETIME);
-					}
+					RamlTypeHelper.annotateDateWithPattern(jAnnotationUse,
+							queryParameter.getRawType(), queryParameter.getFormat());
 				}
 			}
 

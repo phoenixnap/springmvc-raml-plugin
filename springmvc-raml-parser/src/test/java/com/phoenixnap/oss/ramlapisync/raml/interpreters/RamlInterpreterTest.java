@@ -10,11 +10,16 @@ import static org.hamcrest.Matchers.lessThan;
 import static org.hamcrest.Matchers.not;
 import static org.hamcrest.Matchers.notNullValue;
 import static org.hamcrest.Matchers.nullValue;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.fail;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.lang.reflect.Field;
 import java.math.BigDecimal;
 import java.math.BigInteger;
+import java.util.Iterator;
+import java.util.Map;
 import java.util.Set;
 
 import javax.validation.constraints.DecimalMax;
@@ -30,7 +35,9 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.raml.v2.internal.utils.Inflector;
+import org.springframework.format.annotation.DateTimeFormat;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.phoenixnap.oss.ramlapisync.data.ApiBodyMetadata;
 import com.phoenixnap.oss.ramlapisync.data.ApiResourceMetadata;
 import com.phoenixnap.oss.ramlapisync.generation.CodeModelHelper;
@@ -45,12 +52,14 @@ import com.phoenixnap.oss.ramlapisync.raml.RamlDataType;
 import com.phoenixnap.oss.ramlapisync.raml.RamlResource;
 import com.phoenixnap.oss.ramlapisync.raml.RamlRoot;
 import com.phoenixnap.oss.ramlapisync.raml.rjp.raml10v2.RJP10V2RamlModelFactory;
+import com.sun.codemodel.JAnnotationArrayMember;
 import com.sun.codemodel.JAnnotationUse;
 import com.sun.codemodel.JAnnotationValue;
 import com.sun.codemodel.JClass;
 import com.sun.codemodel.JCodeModel;
 import com.sun.codemodel.JDefinedClass;
 import com.sun.codemodel.JFieldVar;
+import com.sun.codemodel.JStringLiteral;
 import com.sun.codemodel.writer.SingleStreamCodeWriter;
 
 /**
@@ -378,21 +387,53 @@ public class RamlInterpreterTest {
 	}
 
 	@Test
-	public void checkTypeOfDates() {
+	public void checkTypeOfDates() throws Exception {
 
 		JDefinedClass pojo = getResponsePOJO("/validations", "Validation");
 		
 		JFieldVar field = getField(pojo, "dateO");
 		assertThat(field.type().fullName(), is("java.util.Date"));
+		assertAnnotations(field, "yyyy-MM-dd");
 
 		field = getField(pojo, "timeO");
 		assertThat(field.type().fullName(), is("java.util.Date"));
+		assertAnnotations(field, "HH:mm:ss");
 
 		field = getField(pojo, "dateTO");
 		assertThat(field.type().fullName(), is("java.util.Date"));
+		assertAnnotations(field, "yyyy-MM-dd'T'HH:mm:ss");
 
 		field = getField(pojo, "dateT");
 		assertThat(field.type().fullName(), is("java.util.Date"));
+		assertAnnotations(field, "yyyy-MM-dd'T'HH:mm:ss");
+		
+		field = getField(pojo, "datetimeRFC2616");
+		assertThat(field.type().fullName(), is("java.util.Date"));
+		assertAnnotations(field, "EEE, dd MMM yyyy HH:mm:ss z");
+	}
+	
+	private void assertAnnotations(JFieldVar field, String expectedPattern) throws Exception {
+		Iterator<JAnnotationUse> iterator = field.annotations().iterator();
+		
+		assertEquals(2, field.annotations().size());
+		while(iterator.hasNext()) {
+			JAnnotationUse jAnnotationUse = iterator.next();
+			if(NotNull.class.getName().equals(jAnnotationUse.getAnnotationClass().fullName())) {
+				// do nothing
+			} else if(JsonFormat.class.getName().equals(jAnnotationUse.getAnnotationClass().fullName())) {
+				assertPatternValue(jAnnotationUse, expectedPattern);
+			} else {
+				fail();
+			}
+		}
+	}
+	
+	private void assertPatternValue(JAnnotationUse jAnnotationUse, String expectedPattern) throws Exception {
+		JAnnotationValue jAnnotationValue = jAnnotationUse.getAnnotationMembers().get("pattern");
+		Field value = jAnnotationValue.getClass().getDeclaredField("value");
+		value.setAccessible(true);
+		JStringLiteral object = (JStringLiteral) value.get(jAnnotationValue);
+		assertThat(object.str, is(expectedPattern));
 	}
 
 	private JDefinedClass getResponsePOJO(String resource, String pojoName) {

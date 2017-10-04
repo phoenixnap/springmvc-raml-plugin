@@ -1,0 +1,246 @@
+-----------------------------------com.gen.test.model.Data.java-----------------------------------
+
+package com.gen.test.model;
+
+import java.io.Serializable;
+import java.util.Date;
+import com.fasterxml.jackson.annotation.JsonFormat;
+import org.apache.commons.lang.builder.EqualsBuilder;
+import org.apache.commons.lang.builder.HashCodeBuilder;
+import org.apache.commons.lang.builder.ToStringBuilder;
+
+public class Data implements Serializable
+{
+
+    private String name;
+    @JsonFormat(pattern = "yyyy-MM-dd")
+    private Date dateOnly;
+    @JsonFormat(pattern = "HH:mm:ss")
+    private Date timeOnly;
+    @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss")
+    private Date datetimeOnly;
+    @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss")
+    private Date datetimeNoFormat;
+    @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss")
+    private Date datetimeRFC3339;
+    @JsonFormat(pattern = "EEE, dd MMM yyyy HH:mm:ss z")
+    private Date datetimeRFC2616;
+
+    /**
+     * Creates a new Data.
+     * 
+     */
+    public Data() {
+        super();
+    }
+
+    /**
+     * Creates a new Data.
+     * 
+     */
+    public Data(String name, Date dateOnly, Date timeOnly, Date datetimeOnly, Date datetimeNoFormat, Date datetimeRFC3339, Date datetimeRFC2616) {
+        super();
+        this.name = name;
+        this.dateOnly = dateOnly;
+        this.timeOnly = timeOnly;
+        this.datetimeOnly = datetimeOnly;
+        this.datetimeNoFormat = datetimeNoFormat;
+        this.datetimeRFC3339 = datetimeRFC3339;
+        this.datetimeRFC2616 = datetimeRFC2616;
+    }
+
+    /**
+     * Returns the name.
+     * 
+     * @return
+     *     name
+     */
+    public String getName() {
+        return name;
+    }
+
+    /**
+     * Set the name.
+     * 
+     * @param name
+     *     the new name
+     */
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    /**
+     * Returns the dateOnly.
+     * 
+     * @return
+     *     dateOnly
+     */
+    public Date getDateOnly() {
+        return dateOnly;
+    }
+
+    /**
+     * Set the dateOnly.
+     * 
+     * @param dateOnly
+     *     the new dateOnly
+     */
+    public void setDateOnly(Date dateOnly) {
+        this.dateOnly = dateOnly;
+    }
+
+    /**
+     * Returns the timeOnly.
+     * 
+     * @return
+     *     timeOnly
+     */
+    public Date getTimeOnly() {
+        return timeOnly;
+    }
+
+    /**
+     * Set the timeOnly.
+     * 
+     * @param timeOnly
+     *     the new timeOnly
+     */
+    public void setTimeOnly(Date timeOnly) {
+        this.timeOnly = timeOnly;
+    }
+
+    /**
+     * Returns the datetimeOnly.
+     * 
+     * @return
+     *     datetimeOnly
+     */
+    public Date getDatetimeOnly() {
+        return datetimeOnly;
+    }
+
+    /**
+     * Set the datetimeOnly.
+     * 
+     * @param datetimeOnly
+     *     the new datetimeOnly
+     */
+    public void setDatetimeOnly(Date datetimeOnly) {
+        this.datetimeOnly = datetimeOnly;
+    }
+
+    /**
+     * Returns the datetimeNoFormat.
+     * 
+     * @return
+     *     datetimeNoFormat
+     */
+    public Date getDatetimeNoFormat() {
+        return datetimeNoFormat;
+    }
+
+    /**
+     * Set the datetimeNoFormat.
+     * 
+     * @param datetimeNoFormat
+     *     the new datetimeNoFormat
+     */
+    public void setDatetimeNoFormat(Date datetimeNoFormat) {
+        this.datetimeNoFormat = datetimeNoFormat;
+    }
+
+    /**
+     * Returns the datetimeRFC3339.
+     * 
+     * @return
+     *     datetimeRFC3339
+     */
+    public Date getDatetimeRFC3339() {
+        return datetimeRFC3339;
+    }
+
+    /**
+     * Set the datetimeRFC3339.
+     * 
+     * @param datetimeRFC3339
+     *     the new datetimeRFC3339
+     */
+    public void setDatetimeRFC3339(Date datetimeRFC3339) {
+        this.datetimeRFC3339 = datetimeRFC3339;
+    }
+
+    /**
+     * Returns the datetimeRFC2616.
+     * 
+     * @return
+     *     datetimeRFC2616
+     */
+    public Date getDatetimeRFC2616() {
+        return datetimeRFC2616;
+    }
+
+    /**
+     * Set the datetimeRFC2616.
+     * 
+     * @param datetimeRFC2616
+     *     the new datetimeRFC2616
+     */
+    public void setDatetimeRFC2616(Date datetimeRFC2616) {
+        this.datetimeRFC2616 = datetimeRFC2616;
+    }
+
+    public int hashCode() {
+        return new HashCodeBuilder().append(name).append(dateOnly).append(timeOnly).append(datetimeOnly).append(datetimeNoFormat).append(datetimeRFC3339).append(datetimeRFC2616).toHashCode();
+    }
+
+    public boolean equals(Object other) {
+        if (other == null) {
+            return false;
+        }
+        if (other == this) {
+            return true;
+        }
+        if (this.getClass()!= other.getClass()) {
+            return false;
+        }
+        Data otherObject = ((Data) other);
+        return new EqualsBuilder().append(name, otherObject.name).append(dateOnly, otherObject.dateOnly).append(timeOnly, otherObject.timeOnly).append(datetimeOnly, otherObject.datetimeOnly).append(datetimeNoFormat, otherObject.datetimeNoFormat).append(datetimeRFC3339, otherObject.datetimeRFC3339).append(datetimeRFC2616, otherObject.datetimeRFC2616).isEquals();
+    }
+
+    public String toString() {
+        return new ToStringBuilder(this).append("name", name).append("dateOnly", dateOnly).append("timeOnly", timeOnly).append("datetimeOnly", datetimeOnly).append("datetimeNoFormat", datetimeNoFormat).append("datetimeRFC3339", datetimeRFC3339).append("datetimeRFC2616", datetimeRFC2616).toString();
+    }
+
+}
+-----------------------------------com.gen.test.TestController.java-----------------------------------
+
+package com.gen.test;
+
+import com.gen.test.model.Data;
+import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RestController;
+
+
+/**
+ * No description
+ * (Generated with springmvc-raml-parser v.${project.version})
+ * 
+ */
+@RestController
+@RequestMapping("/api/test")
+@Validated
+public class TestController {
+
+
+    /**
+     * No description
+     * 
+     */
+    @RequestMapping(value = "", method = RequestMethod.GET)
+    public Data getTest() {
+        return null; //TODO Autogenerated Method Stub. Implement me please.
+    }
+
+}

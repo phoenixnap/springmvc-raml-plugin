@@ -13,6 +13,7 @@
 package com.phoenixnap.oss.ramlapisync.naming;
 
 import java.util.Collections;
+import java.util.Date;
 import java.util.List;
 
 import org.raml.v2.api.model.common.ValidationResult;
@@ -29,11 +30,16 @@ import org.raml.v2.api.model.v10.declarations.AnnotationTarget;
 import org.raml.v2.api.model.v10.system.types.AnnotableStringType;
 import org.raml.v2.api.model.v10.system.types.MarkdownString;
 
+import org.springframework.format.annotation.DateTimeFormat;
+
+import com.fasterxml.jackson.annotation.JsonFormat;
+
 import com.phoenixnap.oss.ramlapisync.data.ApiBodyMetadata;
 import com.phoenixnap.oss.ramlapisync.pojo.PojoGenerationConfig;
 import com.phoenixnap.oss.ramlapisync.pojo.RamlInterpretationResult;
 import com.phoenixnap.oss.ramlapisync.pojo.RamlInterpreterFactory;
 import com.phoenixnap.oss.ramlapisync.raml.RamlRoot;
+import com.sun.codemodel.JAnnotationUse;
 import com.sun.codemodel.JClass;
 import com.sun.codemodel.JCodeModel;
 
@@ -46,6 +52,8 @@ import com.sun.codemodel.JCodeModel;
  */
 public class RamlTypeHelper {
 	
+	protected static final String PATTERN_DATETIME = "yyyy-MM-dd'T'HH:mm:ss";
+
 	/**
 	 * IF it has a format defined, this will return it
 	 * @param param The parameter to inspect
@@ -213,6 +221,42 @@ public class RamlTypeHelper {
 	 */
 	public static boolean isBaseObject(String type) {
 		return type.equalsIgnoreCase(Object.class.getSimpleName());
+	}
+	
+	/**
+	 * Adds appropriate <code>pattern</code> attribute to provided annotation on {@link Date} property. 
+	 * 
+	 * @param jAnnotationUse annotation to add pattern. Can be for: {@link JsonFormat} or {@link DateTimeFormat}
+	 * @param type RAML type of the property
+	 * @param format of date if specified
+	 */
+	public static void annotateDateWithPattern(JAnnotationUse jAnnotationUse, String type, String format) {
+		
+		String param = type.toUpperCase();
+		switch (param) {
+			case "DATE-ONLY":
+				// example: 2013-09-29
+				jAnnotationUse.param("pattern", "yyyy-MM-dd");
+				break;
+			case "TIME-ONLY":
+				// example: 19:46:19
+				jAnnotationUse.param("pattern", "HH:mm:ss");
+				break;
+			case "DATETIME-ONLY":
+				// example: 2013-09-29T19:46:19
+				jAnnotationUse.param("pattern", PATTERN_DATETIME);
+				break;
+			case "DATETIME":
+				if ("rfc2616".equalsIgnoreCase(format)) {
+					// example: Tue, 15 Nov 1994 12:45:26 GMT
+					jAnnotationUse.param("pattern", "EEE, dd MMM yyyy HH:mm:ss z");
+				} else {
+					jAnnotationUse.param("pattern", PATTERN_DATETIME);
+				}
+				break;
+			default:
+				jAnnotationUse.param("pattern", PATTERN_DATETIME);
+		}
 	}
 
 	/**

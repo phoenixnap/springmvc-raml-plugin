@@ -75,8 +75,6 @@ import com.sun.codemodel.JVar;
  */
 public class MethodParamsRule implements Rule<CodeModelHelper.JExtMethod, JMethod, ApiActionMetadata> {
 
-	protected static final String PATTERN_DATETIME = "yyyy-MM-dd'T'HH:mm:ss";
-
 	boolean addParameterJavadoc = false;
 	boolean allowArrayParameters = true;
 	

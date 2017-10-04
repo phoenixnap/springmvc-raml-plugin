@@ -322,7 +322,7 @@ public class NamingHelper {
 	 * @param resourceDepthInClassNames The depth of uri to be included in a name 
 	 * @param resourceTopLevelInClassNames The top level of URI to be included in a name
 	 * @param reverseOrderInClassNames Is order of URI parts included in a name reversed
-	 * @return
+	 * @return name of a resource
 	 */
 	public static String getAllResourcesNames(String url, boolean singularize, int resourceDepthInClassNames, int resourceTopLevelInClassNames, boolean reverseOrderInClassNames) {
 
@@ -372,8 +372,8 @@ public class NamingHelper {
 	/**
 	 * Singularises a string. uses underlying raml parser system
 	 * 
-	 * @param target
-	 * @return
+	 * @param target name to singularize
+	 * @return singularized name
 	 */
 	public static String singularize(String target) {
 		//TODO we should add this as an issue in the RamlBase project and provide a pull request

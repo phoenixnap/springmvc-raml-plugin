@@ -14,20 +14,28 @@ package com.phoenixnap.oss.ramlapisync.pojo;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import javax.validation.constraints.Pattern;
+
 import org.apache.commons.collections.MapUtils;
+import org.raml.v2.api.model.v10.datamodel.DateTimeTypeDeclaration;
+import org.raml.v2.api.model.v10.datamodel.TypeDeclaration;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.util.StringUtils;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.phoenixnap.oss.ramlapisync.generation.CodeModelHelper;
 import com.phoenixnap.oss.ramlapisync.naming.NamingHelper;
+import com.phoenixnap.oss.ramlapisync.naming.RamlTypeHelper;
 import com.sun.codemodel.ClassType;
+import com.sun.codemodel.JAnnotationUse;
 import com.sun.codemodel.JBlock;
 import com.sun.codemodel.JClass;
 import com.sun.codemodel.JClassAlreadyExistsException;
@@ -156,7 +164,7 @@ public class PojoBuilder extends AbstractBuilder {
 		return false;
 	}
 
-	public PojoBuilder withField(String name, String type, String comment, RamlTypeValidations validations, String defaultValue) {
+	public PojoBuilder withField(String name, String type, String comment, RamlTypeValidations validations, TypeDeclaration typeDeclaration) {
 		pojoCreationCheck();
 		logger.debug("Adding field: " + name + " to " + this.pojo.name());
 
@@ -181,24 +189,24 @@ public class PojoBuilder extends AbstractBuilder {
 		}
 		
 		JExpression jExpression = null;
-		if (StringUtils.hasText(defaultValue)) {
+		if (StringUtils.hasText(typeDeclaration.defaultValue())) {
 			if (resolvedType.name().equals(Integer.class.getSimpleName())) {
-				jExpression = JExpr.lit(Integer.valueOf(defaultValue));
+				jExpression = JExpr.lit(Integer.valueOf(typeDeclaration.defaultValue()));
 			} else if (resolvedType.name().equals(Boolean.class.getSimpleName())) {
-				jExpression = JExpr.lit(Boolean.valueOf(defaultValue));
+				jExpression = JExpr.lit(Boolean.valueOf(typeDeclaration.defaultValue()));
 			} else if (resolvedType.name().equals(Double.class.getSimpleName())) {
-				jExpression = JExpr.lit(Double.valueOf(defaultValue));
+				jExpression = JExpr.lit(Double.valueOf(typeDeclaration.defaultValue()));
 			} else if (resolvedType.name().equals(Float.class.getSimpleName())) {
-				jExpression = JExpr.lit(Float.valueOf(defaultValue));
+				jExpression = JExpr.lit(Float.valueOf(typeDeclaration.defaultValue()));
 			} else if (resolvedType.name().equals(Long.class.getSimpleName())) {
-				jExpression = JExpr.lit(Long.valueOf(defaultValue));
+				jExpression = JExpr.lit(Long.valueOf(typeDeclaration.defaultValue()));
 			} else if (resolvedType.name().equals(BigDecimal.class.getSimpleName())) {
-				jExpression = JExpr.direct("new BigDecimal(\"" + defaultValue + "\")");
+				jExpression = JExpr.direct("new BigDecimal(\"" + typeDeclaration.defaultValue() + "\")");
 			} else if (resolvedType.name().equals(String.class.getSimpleName())) {
-				jExpression = JExpr.lit(defaultValue);
+				jExpression = JExpr.lit(typeDeclaration.defaultValue());
 			} else if (type.contains(".") && resolvedType instanceof JDefinedClass
 					&& ((JDefinedClass) resolvedType).getClassType().equals(ClassType.ENUM)) {
-				jExpression = JExpr.direct(resolvedType.name() + "." + NamingHelper.cleanNameForJavaEnum(defaultValue));
+				jExpression = JExpr.direct(resolvedType.name() + "." + NamingHelper.cleanNameForJavaEnum(typeDeclaration.defaultValue()));
 			}
 		} else if(resolvedType.fullName().startsWith(List.class.getName() +"<")){
 			JClass narrowedListClass = this.pojoModel.ref(ArrayList.class).narrow(resolvedType.getTypeParameters().get(0));
@@ -210,6 +218,15 @@ public class PojoBuilder extends AbstractBuilder {
 		JFieldVar field = this.pojo.field(JMod.PRIVATE, resolvedType, toJavaName(name), jExpression);
 		if (this.config.isGenerateJSR303Annotations() && validations != null) {
 			validations.annotateFieldJSR303(field);
+		}
+		
+		if (resolvedType.name().equals(Date.class.getSimpleName())) {
+			JAnnotationUse jAnnotationUse = field.annotate(JsonFormat.class);
+			String format = null;
+			if(typeDeclaration instanceof DateTimeTypeDeclaration) {
+				format = ((DateTimeTypeDeclaration) typeDeclaration).format();
+			}
+			RamlTypeHelper.annotateDateWithPattern(jAnnotationUse, typeDeclaration.type(), format);
 		}
 		
 		if (StringUtils.hasText(comment)) {
