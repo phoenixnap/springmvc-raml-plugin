@@ -80,7 +80,7 @@ public class RamlInterpreterTest {
     @BeforeClass
     public static void initRamlRoot() throws InvalidRamlResourceException {
         ramlRoot = new RJP10V2RamlModelFactory().buildRamlRoot("raml/raml-interpreter-test-v10.raml");
-        defaultRamlParser = new RamlParser("com.gen.test", "/api", false, false);
+        defaultRamlParser = new RamlParser("com.gen.test", "/api", false, false, false);
         
     }
     
@@ -337,7 +337,7 @@ public class RamlInterpreterTest {
     }
        
     private void checkIntegration(JCodeModel codeModel) {
-    	RamlParser defaultRamlParser = new RamlParser("com.gen.test", "/api", false, false);
+    	RamlParser defaultRamlParser = new RamlParser("com.gen.test", "/api", false, false, false);
     	Rule<JCodeModel, JDefinedClass, ApiResourceMetadata> rule = new Spring4ControllerDecoratorRule();
     	Set<ApiResourceMetadata> extractControllers = defaultRamlParser.extractControllers(codeModel, ramlRoot);
     	for (ApiResourceMetadata controller : extractControllers) {

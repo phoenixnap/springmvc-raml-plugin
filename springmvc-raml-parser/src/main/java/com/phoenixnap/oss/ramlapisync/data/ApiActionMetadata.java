@@ -64,9 +64,12 @@ public class ApiActionMetadata {
 	Set<ApiParameterMetadata> requestHeaders = null;
 	boolean injectHttpHeadersParameter = false;
 
+	private boolean addThrowsExceptionForControllerMethod;
 	private String responseContentTypeFilter;
 
-	public ApiActionMetadata(PojoGenerationConfig config, ApiResourceMetadata parent, RamlResource resource, RamlActionType actionType, RamlAction action, String responseContentTypeFilter, boolean injectHttpHeadersParameter) {
+	public ApiActionMetadata(PojoGenerationConfig config, ApiResourceMetadata parent, RamlResource resource,
+							 RamlActionType actionType, RamlAction action, String responseContentTypeFilter,
+							 boolean injectHttpHeadersParameter, boolean addThrowsExceptionForControllerMethod) {
 		super();
 		this.parent = parent;
 		this.resource = resource;
@@ -74,13 +77,14 @@ public class ApiActionMetadata {
 		this.action = action;
 		this.responseContentTypeFilter = responseContentTypeFilter;
 		this.injectHttpHeadersParameter = injectHttpHeadersParameter;
+		this.addThrowsExceptionForControllerMethod = addThrowsExceptionForControllerMethod;
 		parseRequest(config, parent.getBodyCodeModel());
 		parseResponse(config, parent.getBodyCodeModel(), responseContentTypeFilter);
 
 	}
 
 	public ApiActionMetadata(PojoGenerationConfig config, ApiResourceMetadata parent, RamlResource resource, RamlActionType actionType, RamlAction action) {
-		this(config, parent, resource, actionType, action, null, false);
+		this(config, parent, resource, actionType, action, null, false, false);
 	}
 
 	@Override
@@ -359,5 +363,9 @@ public class ApiActionMetadata {
 
 	public boolean getInjectHttpHeadersParameter() {
 		return injectHttpHeadersParameter;
+	}
+
+	public boolean isControllerMethodThrowsException(){
+		return addThrowsExceptionForControllerMethod;
 	}
 }
