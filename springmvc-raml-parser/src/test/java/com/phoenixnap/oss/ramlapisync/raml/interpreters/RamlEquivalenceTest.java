@@ -41,7 +41,7 @@ public class RamlEquivalenceTest {
     public static void initRamlRoot() throws InvalidRamlResourceException {
     	raml10Root = new RJP10V2RamlModelFactory().buildRamlRoot("raml/raml-equivalence-test-v10.raml");
     	raml08Root = new RJP08V1RamlModelFactory().buildRamlRoot("raml/raml-equivalence-test-v08.raml");
-        defaultRamlParser = new RamlParser("com.gen.test", "/api", false, false);
+        defaultRamlParser = new RamlParser("com.gen.test", "/api", false, false, false);
         
     }
     

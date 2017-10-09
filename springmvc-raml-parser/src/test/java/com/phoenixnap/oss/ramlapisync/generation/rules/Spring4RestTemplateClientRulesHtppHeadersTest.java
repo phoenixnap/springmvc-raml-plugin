@@ -13,7 +13,7 @@ public class Spring4RestTemplateClientRulesHtppHeadersTest extends AbstractRuleT
     private Rule<JCodeModel, JDefinedClass, ApiResourceMetadata> rule;
 
     public Spring4RestTemplateClientRulesHtppHeadersTest() {
-        defaultRamlParser =  new RamlParser("com.gen.test", "/api", false, true);
+        defaultRamlParser =  new RamlParser("com.gen.test", "/api", false, true, false);
     }
     @Test
     public void applySpring4SpringTemplateClient_shouldCreate_validCode() throws Exception {

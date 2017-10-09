@@ -193,6 +193,15 @@ public class SpringMvcEndpointGeneratorMojo extends AbstractMojo {
     @Parameter(required = false, readonly = true, defaultValue = "false")
     protected Boolean reverseOrderInClassNames;
 
+    /**
+     * Parameter which decides if the methods in controller have throws Exception in the signature.
+     * This is to use the spring @ExceptionHandler for handling exceptions.
+     * When set to true, all the methods in all the controllers have the throws Exception added to the signature.
+     * Default value is false.
+     */
+    @Parameter(required = false, readonly = true, defaultValue = "false")
+    protected Boolean controllerMethodThrowsException;
+
     private ClassRealm classRealm;
 
     private String resolvedSchemaLocation;
@@ -251,7 +260,9 @@ public class SpringMvcEndpointGeneratorMojo extends AbstractMojo {
         //Map the jsconschema2pojo config to ours. This will need to eventually take over. update just in case previous one was set before jsonconfig was set
         typeGenerationConfig = mapGenerationConfigMapping();
         
-        RamlParser par = new RamlParser(typeGenerationConfig, getBasePath(loadRamlFromFile), seperateMethodsByContentType, injectHttpHeadersParameter, this.resourceDepthInClassNames, this.resourceTopLevelInClassNames, this.reverseOrderInClassNames);
+        RamlParser par = new RamlParser(typeGenerationConfig, getBasePath(loadRamlFromFile), seperateMethodsByContentType,
+                injectHttpHeadersParameter, this.resourceDepthInClassNames, this.resourceTopLevelInClassNames,
+                this.reverseOrderInClassNames, this.controllerMethodThrowsException);
         Set<ApiResourceMetadata> controllers = par.extractControllers(codeModel, loadRamlFromFile);
 
         if (StringUtils.hasText(outputRelativePath)) {

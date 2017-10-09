@@ -60,8 +60,10 @@ public class ApiResourceMetadata {
 	} 
 	
 	
-	public void addApiCall(RamlResource resource, RamlActionType actionType, RamlAction action, String responseContentType, boolean injectHttpHeadersParameter) {
-		apiCalls.add(new ApiActionMetadata(config, this, resource, actionType, action, responseContentType, injectHttpHeadersParameter));
+	public void addApiCall(RamlResource resource, RamlActionType actionType, RamlAction action, String responseContentType,
+						   boolean injectHttpHeadersParameter, boolean addThrowsExceptionToControllerMethod) {
+		apiCalls.add(new ApiActionMetadata(config, this, resource, actionType, action, responseContentType,
+				injectHttpHeadersParameter, addThrowsExceptionToControllerMethod));
 	}
 	
     public Set<ApiActionMetadata> getApiCalls() {

@@ -21,7 +21,7 @@ public class Issue159RulesTest extends AbstractRuleTestBase {
 	public Issue159RulesTest() {
 		super();
 		defaultRamlParser = new RamlParser(new PojoGenerationConfig().withPackage("com.gen.test", null), "/api", false,
-				false, 2, 0, false);
+				false, 2, 0, false, false);
 	}
 
 	@BeforeClass

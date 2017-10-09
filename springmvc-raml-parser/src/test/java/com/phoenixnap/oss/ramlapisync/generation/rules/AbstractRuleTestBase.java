@@ -53,7 +53,7 @@ public abstract class AbstractRuleTestBase {
     private ApiResourceMetadata controllerMetadata;
 
     public AbstractRuleTestBase() {
-        defaultRamlParser = new RamlParser("com.gen.test", "/api", false, false);
+        defaultRamlParser = new RamlParser("com.gen.test", "/api", false, false, false);
     }
 
     @BeforeClass

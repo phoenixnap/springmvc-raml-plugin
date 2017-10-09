@@ -71,6 +71,9 @@ public class RamlParser {
 	 */
 	protected boolean injectHttpHeadersParameter = false;
 
+	//If set to true, the controller methods will have a `throws Exception` in the signature.
+	protected boolean addThrowsExceptionForControllerMethod = false;
+
 	/**
 	 * How many levels of uri will be included in generated class names. Default
 	 * is 1 which means that only current resource will be in included in
@@ -98,11 +101,18 @@ public class RamlParser {
 		config = new PojoGenerationConfig().withPackage(basePackage, null);
 	}
 	
-	public RamlParser(String basePackage, String startUrl, boolean seperateMethodsByContentType, boolean injectHttpHeadersParameter) {
-		this(new PojoGenerationConfig().withPackage(basePackage, null), startUrl, seperateMethodsByContentType, injectHttpHeadersParameter, DEFAULT_RESOURCE_DEPTH, DEFAULT_RESOURCE_TOP_LEVEL, DEFAULT_REVERSE_ORDER);
+	public RamlParser(String basePackage, String startUrl, boolean seperateMethodsByContentType,
+					  boolean injectHttpHeadersParameter, boolean addThrowsExceptionToControllerMethod) {
+
+	    this(new PojoGenerationConfig().withPackage(basePackage, null), startUrl, seperateMethodsByContentType,
+				injectHttpHeadersParameter, DEFAULT_RESOURCE_DEPTH, DEFAULT_RESOURCE_TOP_LEVEL, DEFAULT_REVERSE_ORDER,
+				addThrowsExceptionToControllerMethod);
 	}
 	
-	public RamlParser(PojoGenerationConfig config, String startUrl, boolean seperateMethodsByContentType, boolean injectHttpHeadersParameter, int resourceDepthInClassNames, int resourceTopLevelInClassNames, boolean reverseOrderInClassNames) {
+	public RamlParser(PojoGenerationConfig config, String startUrl, boolean seperateMethodsByContentType,
+					  boolean injectHttpHeadersParameter, int resourceDepthInClassNames,
+					  int resourceTopLevelInClassNames, boolean reverseOrderInClassNames,
+					  boolean addThrowsExceptionToControllerMethod) {
 		this(config);
 		this.seperateMethodsByContentType = seperateMethodsByContentType;
 		this.injectHttpHeadersParameter = injectHttpHeadersParameter;
@@ -110,6 +120,7 @@ public class RamlParser {
 		this.resourceDepthInClassNames = resourceDepthInClassNames;
 		this.resourceTopLevelInClassNames = resourceTopLevelInClassNames;
 		this.reverseOrderInClassNames = reverseOrderInClassNames;
+		this.addThrowsExceptionForControllerMethod = addThrowsExceptionToControllerMethod;
 	}
 
 	/**
@@ -212,11 +223,13 @@ public class RamlParser {
 					
 					if (seperateMethodsByContentType && response != null && response.hasBody() && response.getBody().size() > 1) {
 							for (String responseType : response.getBody().keySet()) {
-								controller.addApiCall(resource, actionType, childResource, responseType, injectHttpHeadersParameter);
+								controller.addApiCall(resource, actionType, childResource, responseType,
+										injectHttpHeadersParameter, addThrowsExceptionForControllerMethod);
 							}
 						
 					} else {
-						controller.addApiCall(resource, actionType, childResource, null, injectHttpHeadersParameter);
+						controller.addApiCall(resource, actionType, childResource, null,
+								injectHttpHeadersParameter, addThrowsExceptionForControllerMethod);
 					}
 				}
 			}

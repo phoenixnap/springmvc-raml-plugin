@@ -25,7 +25,7 @@ public abstract class AbstractEquivalenceRuleTestBase extends AbstractRuleTestBa
 
     public AbstractEquivalenceRuleTestBase() {
     	super();
-    	equivalenceRamlParser = new RamlParser("com.gen.test", "/api", false, false);
+    	equivalenceRamlParser = new RamlParser("com.gen.test", "/api", false, false, false);
     }
 
     public static void initRamlModels(String raml) throws InvalidRamlResourceException {

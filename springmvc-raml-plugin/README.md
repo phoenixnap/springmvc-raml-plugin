@@ -278,6 +278,11 @@ Then simply include the following code in the POM of the project you wish to gen
 ### baseUri
 (optional) Base URI for generated Spring controllers. This overrules the baseUri attribute from inside the .raml spec.
 
+### controllerMethodThrowsException
+(optional) Parameter which decides if the generated methods in controller have `throws Exception` in the signature.
+This is to use the spring ``@ExceptionHandler` for handling exceptions.
+When set to true, all the methods in all the controllers have the throws Exception added to the signature. Default value is false.
+
 ### generateUnreferencedSchemas
 (optional) Determines whether POJOs for unreferenced schemas included in the RAML file should be generated.
 
