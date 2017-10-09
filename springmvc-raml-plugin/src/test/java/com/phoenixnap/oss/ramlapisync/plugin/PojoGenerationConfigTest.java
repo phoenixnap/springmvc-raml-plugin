@@ -64,6 +64,7 @@ public class PojoGenerationConfigTest
       Assert.assertFalse(typeGenerationConfig.isGenerateJSR303Annotations());
       Assert.assertFalse(typeGenerationConfig.isUseCommonsLang3());
       Assert.assertFalse(typeGenerationConfig.isUseLongIntegers());
+      Assert.assertTrue(typeGenerationConfig.isMakeSerializale());
       mojo.execute();
    }
    
@@ -77,12 +78,14 @@ public class PojoGenerationConfigTest
       generationConfig.includeJsr303Annotations = true;
       generationConfig.useLongIntegers = true;
       generationConfig.useCommonsLang3 = true;
+      generationConfig.makeSerializable = false;
       //re-sync configs
       final PojoGenerationConfig typeGenerationConfig = mojo.mapGenerationConfigMapping();;
       Assert.assertFalse(typeGenerationConfig.isGenerateHashcodeEqualsToString());
       Assert.assertTrue(typeGenerationConfig.isGenerateJSR303Annotations());
       Assert.assertTrue(typeGenerationConfig.isUseCommonsLang3());
       Assert.assertTrue(typeGenerationConfig.isUseLongIntegers());
+      Assert.assertFalse(typeGenerationConfig.isMakeSerializale());
       mojo.execute();
    }
 
