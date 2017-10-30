@@ -145,17 +145,17 @@ public class SpringMethodParamsRule extends MethodParamsRule {
 		}
 	}
 
-    @Override
-    protected JVar paramObjects(ApiActionMetadata endpointMetadata, CodeModelHelper.JExtMethod generatableType) {
-        JVar param = super.paramObjects(endpointMetadata, generatableType);
+	@Override
+	protected JVar paramObjects(ApiActionMetadata endpointMetadata, CodeModelHelper.JExtMethod generatableType) {
+		JVar param = super.paramObjects(endpointMetadata, generatableType);
 		if (!RamlActionType.PATCH.equals(endpointMetadata.getActionType())) {
 			// skip Valid annotation for PATCH actions since it's a partial
 			// update so some required fields might be omitted
 			param.annotate(Valid.class);
 		}
-        param.annotate(RequestBody.class);
-        return param;
-    }
+		param.annotate(RequestBody.class);
+		return param;
+	}
 
     @Override
     protected JVar paramHttpHeaders(CodeModelHelper.JExtMethod generatableType) {

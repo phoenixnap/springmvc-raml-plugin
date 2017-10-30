@@ -59,6 +59,7 @@ public abstract class SpringControllerInterfaceRule extends SpringConfigurableRu
                 .setPackageRule(new PackageRule())
                 .setClassCommentRule(new ClassCommentRule())
                 .addClassAnnotationRule(getControllerAnnotationRule())
+                .addClassAnnotationRule(new SpringValidatedClassAnnotationRule())
                 .addClassAnnotationRule(new SpringRequestMappingClassAnnotationRule())
                 .setClassRule(new ControllerInterfaceDeclarationRule())
                 .setMethodCommentRule(new MethodCommentRule())
