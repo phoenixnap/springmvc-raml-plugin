@@ -357,7 +357,7 @@ Creates a standalone `org.springframework.cloud.netflix.feign.FeignClient` (REST
 ## Contributing
 [Pull requests][] are welcome; Be a good citizen and create unit tests for any bugs squished or features added
 
-[GenerationConfig]: https://github.com/phoenixnap/springmvc-raml-plugin/blob/master/springmvc-raml-plugin/src/main/java/com/phoenixnap/oss/ramlapisync/plugin/PojoGenerationConfig.java
+[GenerationConfig]: https://github.com/phoenixnap/springmvc-raml-plugin/blob/master/springmvc-raml-parser/src/main/java/com/phoenixnap/oss/ramlapisync/pojo/PojoGenerationConfig.java
 [Pull requests]: http://help.github.com/send-pull-requests
 [Apache License]: http://www.apache.org/licenses/LICENSE-2.0
 [Git]: http://help.github.com/set-up-git-redirect
