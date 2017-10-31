@@ -100,7 +100,6 @@ package com.gen.test;
 
 import javax.validation.Valid;
 import com.gen.test.model.User;
-import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -112,7 +111,7 @@ import org.springframework.web.bind.annotation.RestController;
 /**
  * No description
  * (Generated with springmvc-raml-parser v.${project.version})
- * 
+ *
  */
 @RestController
 @RequestMapping(value = "/api/users", produces = "application/json")
@@ -122,10 +121,10 @@ public class UserController {
 
     /**
      * No description
-     * 
+     *
      */
     @RequestMapping(value = "/{userId}", method = RequestMethod.PUT)
-    public ResponseEntity<?> updateUserById(
+    public Object updateUserById(
         @PathVariable
         Long userId,
         @Valid
@@ -136,10 +135,10 @@ public class UserController {
 
     /**
      * No description
-     * 
+     *
      */
     @RequestMapping(value = "/{userId}", method = RequestMethod.PATCH)
-    public ResponseEntity<?> modifyUserById(
+    public Object modifyUserById(
         @PathVariable
         Long userId,
         @RequestBody
@@ -148,4 +147,3 @@ public class UserController {
     }
 
 }
-

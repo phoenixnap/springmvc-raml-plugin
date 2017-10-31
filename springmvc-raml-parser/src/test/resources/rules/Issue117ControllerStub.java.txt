@@ -2,7 +2,6 @@
 
 package com.gen.test;
 
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -26,7 +25,7 @@ public class FileController {
      * 
      */
     @RequestMapping(value = "", method = RequestMethod.GET)
-    public ResponseEntity<?> getFiles(
+    public Object getFiles(
         @RequestParam
         String notArray,
         @RequestParam

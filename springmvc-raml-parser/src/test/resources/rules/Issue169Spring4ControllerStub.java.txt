@@ -4,7 +4,6 @@ package com.gen.test;
 
 import java.util.Date;
 import org.springframework.format.annotation.DateTimeFormat;
-import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -15,7 +14,7 @@ import org.springframework.web.bind.annotation.RestController;
 /**
  * No description
  * (Generated with springmvc-raml-parser v.${project.version})
- * 
+ *
  */
 @RestController
 @RequestMapping(value = "/api/dates", produces = "application/json")
@@ -25,10 +24,10 @@ public class DateController {
 
     /**
      * No description
-     * 
+     *
      */
     @RequestMapping(value = "", method = RequestMethod.GET)
-    public ResponseEntity<?> getDates(
+    public Object getDates(
         @RequestParam
         @DateTimeFormat(pattern = "yyyy-MM-dd")
         Date dateOnly,
