@@ -339,7 +339,7 @@ All you have to do is to provide an implementation for the controller interface
 ```
 Configuration:
 	callableResponse: [OPTIONAL] set to 'true' to support asynchronous callables. Default: 'false'
-	simpleReturnTypes: [OPTIONAL] set to 'true' to remove ResponseEntity<> from controllers method's return types. Default: 'false'
+	simpleReturnTypes: [OPTIONAL] set to 'true' to generate controllers method's return types without ResponseEntity<> wrapper. Default: 'false'
 ```
 
 - **com.phoenixnap.oss.ramlapisync.generation.rules.Spring4RestTemplateClientRule**:
