@@ -36,15 +36,19 @@ public abstract class SpringConfigurableRule implements ConfigurableRule<JCodeMo
  	public static final String PARAMETER_JAVADOC_CONFIGURATION = "addParameterJavadoc";
  			
  	public static final String ARRAY_PARAMETER_CONFIGURATION = "allowArrayParameters";
- 	
- 	
+
+ 	public static final String SIMPLE_RETURN_TYPES = "simpleReturnTypes";
+
 
     private boolean callableResponse = false;
     private boolean addParameterJavadoc = false;
     private boolean allowArrayParameters = true;
+    /**
+     * Can only be set to true if <b>SpringControllerInterface</b> is used for now
+     */
+    private boolean simpleReturnTypes = false;
 
-   
-    
+
     @Override
     public void applyConfiguration(Map<String, String> configuration) {
         if(!CollectionUtils.isEmpty(configuration)) {
@@ -84,4 +88,11 @@ public abstract class SpringConfigurableRule implements ConfigurableRule<JCodeMo
 		this.callableResponse = callableResponse;
 	}
 
+    public boolean isSimpleReturnTypes() {
+        return simpleReturnTypes;
+    }
+
+    public void setSimpleReturnTypes(boolean simpleReturnTypes) {
+        this.simpleReturnTypes = simpleReturnTypes;
+    }
 }

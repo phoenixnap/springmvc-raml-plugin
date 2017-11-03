@@ -25,6 +25,10 @@ import com.sun.codemodel.JAnnotationUse;
 import com.sun.codemodel.JCodeModel;
 import com.sun.codemodel.JDefinedClass;
 import com.sun.codemodel.JMethod;
+import org.apache.commons.lang3.BooleanUtils;
+import org.springframework.util.CollectionUtils;
+
+import java.util.Map;
 
 /**
  * A code generation Rule that provides a standalone Controller interface with Spring4 annotations.
@@ -61,12 +65,22 @@ public abstract class SpringControllerInterfaceRule extends SpringConfigurableRu
                 .addMethodAnnotationRule(new SpringRequestMappingMethodAnnotationRule())
                 .addMethodAnnotationRule(getResponseBodyAnnotationRule())
                 .setMethodSignatureRule(new ControllerMethodSignatureRule(
-                        isCallableResponse() ? new SpringCallableResponseEntityRule() :  new SpringResponseEntityRule(),
+                        isCallableResponse() ? new SpringCallableResponseEntityRule() :
+                                isSimpleReturnTypes() ? new SpringSimpleResponseTypeRule() : new SpringResponseEntityRule(),
                         new SpringMethodParamsRule(isAddParameterJavadoc(), isAllowArrayParameters()))
                 );
         return generator.apply(metadata, generatableType);
     }
 
+    @Override
+    public void applyConfiguration(Map<String, String> configuration) {
+        super.applyConfiguration(configuration);
+        if(!CollectionUtils.isEmpty(configuration)) {
+            if(configuration.containsKey(SIMPLE_RETURN_TYPES)) {
+                setSimpleReturnTypes(BooleanUtils.toBoolean(configuration.get(SIMPLE_RETURN_TYPES)));
+            }
+        }
+    }
 
 	protected abstract Rule<JDefinedClass, JAnnotationUse, ApiResourceMetadata> getControllerAnnotationRule();
 	
