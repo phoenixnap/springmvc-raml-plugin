@@ -12,12 +12,6 @@
  */
 package com.phoenixnap.oss.ramlapisync.generation.rules.spring;
 
-import static com.phoenixnap.oss.ramlapisync.generation.CodeModelHelper.findFirstClassBySimpleName;
-
-import java.util.List;
-
-import org.springframework.http.ResponseEntity;
-
 import com.phoenixnap.oss.ramlapisync.data.ApiActionMetadata;
 import com.phoenixnap.oss.ramlapisync.data.ApiBodyMetadata;
 import com.phoenixnap.oss.ramlapisync.generation.rules.Rule;
@@ -25,8 +19,12 @@ import com.sun.codemodel.JClass;
 import com.sun.codemodel.JDefinedClass;
 import com.sun.codemodel.JType;
 
+import java.util.List;
+
+import static com.phoenixnap.oss.ramlapisync.generation.CodeModelHelper.findFirstClassBySimpleName;
+
 /**
- * Creates a org.springframework.http.ResponseEntity as a return type for an endpoint.
+ * Creates an Object as a return type for an endpoint.
  * If the endpoint declares a response body the first type of the response body will used as return type instead.
  * If the endpoints response body is an "array" th
  *
@@ -52,25 +50,25 @@ import com.sun.codemodel.JType;
  * OR:
  * ArrayList{@literal <}NamedResponseType{@literal >} (if the NamedResponseType is an "array")
  *
- * @author armin.weisser
- * @since 0.4.1
+ * @author yuranos
  */
-public class SpringSimpleResponseTypeRule implements Rule<JDefinedClass, JType, ApiActionMetadata> {
+public class SpringObjectReturnTypeRule implements Rule<JDefinedClass, JType, ApiActionMetadata> {
 
     @Override
     public JType apply(ApiActionMetadata endpointMetadata, JDefinedClass generatableType) {
-        JClass responseType = generatableType.owner().ref(ResponseEntity.class);
         if (!endpointMetadata.getResponseBody().isEmpty()) {
-            ApiBodyMetadata apiBodyMetadata = endpointMetadata.getResponseBody().values().iterator().next();
-            JClass genericType = findFirstClassBySimpleName(apiBodyMetadata.getCodeModel(), apiBodyMetadata.getName());
+            ApiBodyMetadata apiBodyMetadata =
+                    endpointMetadata.getResponseBody().values().iterator().next();
+            JClass returnType =
+                    findFirstClassBySimpleName(apiBodyMetadata.getCodeModel(), apiBodyMetadata.getName());
             if (apiBodyMetadata.isArray()) {
                 JClass arrayType = generatableType.owner().ref(List.class);
-                return arrayType.narrow(genericType);
-            } else {
-                return genericType;
+                return arrayType.narrow(returnType);
             }
+            return returnType;
+
         }
-        return responseType
-                .narrow(generatableType.owner().wildcard());
+        return generatableType.owner().ref(Object.class);
     }
+
 }
