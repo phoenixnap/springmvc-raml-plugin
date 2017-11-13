@@ -6,6 +6,7 @@ import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
+import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -16,7 +17,7 @@ import org.springframework.web.bind.annotation.RestController;
 /**
  * No description
  * (Generated with springmvc-raml-parser v.${project.version})
- *
+ * 
  */
 @RestController
 @RequestMapping(value = "/api/a_resource", produces = "application/json")
@@ -26,10 +27,10 @@ public class AResourceController {
 
     /**
      * No description
-     *
+     * 
      */
     @RequestMapping(value = "", method = RequestMethod.GET)
-    public Object getAResource(
+    public ResponseEntity<?> getAResource(
         @Pattern(regexp = "^[a-z]+$")
         @Size(min = 2, max = 12)
         @RequestHeader(name = "header_string_param", required = false)
@@ -50,6 +51,7 @@ import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
+import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -61,7 +63,7 @@ import org.springframework.web.bind.annotation.RestController;
 /**
  * No description
  * (Generated with springmvc-raml-parser v.${project.version})
- *
+ * 
  */
 @RestController
 @RequestMapping(value = "/api/b_resource", produces = "application/json")
@@ -71,10 +73,10 @@ public class BResourceController {
 
     /**
      * No description
-     *
+     * 
      */
     @RequestMapping(value = "", method = RequestMethod.GET)
-    public Object getBResource(
+    public ResponseEntity<?> getBResource(
         @Pattern(regexp = "^[a-z]+$")
         @Size(min = 3, max = 13)
         @RequestParam(name = "query_string_param", required = false)
@@ -88,10 +90,10 @@ public class BResourceController {
 
     /**
      * No description
-     *
+     * 
      */
     @RequestMapping(value = "/string/{uri_string_param}", method = RequestMethod.GET)
-    public Object getStringById(
+    public ResponseEntity<?> getStringById(
         @Pattern(regexp = "^[a-z]+$")
         @Size(min = 4, max = 14)
         @PathVariable(name = "uri_string_param", required = false)
@@ -101,10 +103,10 @@ public class BResourceController {
 
     /**
      * No description
-     *
+     * 
      */
     @RequestMapping(value = "/integer/{uri_int_param}", method = RequestMethod.GET)
-    public Object getIntegerByUri_int_param(
+    public ResponseEntity<?> getIntegerByUri_int_param(
         @Min(14L)
         @Max(24L)
         @PathVariable(name = "uri_int_param", required = false)
@@ -121,6 +123,7 @@ import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
+import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -131,7 +134,7 @@ import org.springframework.web.bind.annotation.RestController;
 /**
  * No description
  * (Generated with springmvc-raml-parser v.${project.version})
- *
+ * 
  */
 @RestController
 @RequestMapping(value = "/api/c_resource", produces = "application/json")
@@ -141,10 +144,10 @@ public class CResourceController {
 
     /**
      * No description
-     *
+     * 
      */
     @RequestMapping(value = "", method = RequestMethod.POST)
-    public Object updateCResource(
+    public ResponseEntity<?> updateCResource(
         @Min(15L)
         @Max(25L)
         @RequestParam(name = "form_int_param", required = false)
