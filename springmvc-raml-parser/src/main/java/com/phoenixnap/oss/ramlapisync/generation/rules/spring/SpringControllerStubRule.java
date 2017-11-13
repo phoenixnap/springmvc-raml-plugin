@@ -51,7 +51,7 @@ import com.sun.codemodel.JMethod;
  */
 public abstract class SpringControllerStubRule extends SpringConfigurableRule {
 
-   
+
 
     @Override
     public final JDefinedClass apply(ApiResourceMetadata metadata, JCodeModel generatableType) {
@@ -67,8 +67,7 @@ public abstract class SpringControllerStubRule extends SpringConfigurableRule {
                 .addMethodAnnotationRule(new SpringRequestMappingMethodAnnotationRule())
                 .addMethodAnnotationRule(getResponseBodyAnnotationRule())
                 .setMethodSignatureRule(new ControllerMethodSignatureRule(
-                        isCallableResponse() ? new SpringSimpleCallableResponseTypeRule() :
-                                isObjectReturnType() ? new SpringObjectReturnTypeRule() : new SpringSimpleResponseTypeRule(),
+                        isCallableResponse() ? new SpringSimpleCallableResponseTypeRule() :  new SpringSimpleResponseTypeRule(),
                         new SpringMethodParamsRule(isAddParameterJavadoc(), isAllowArrayParameters())
                 ))
                 .setMethodBodyRule(new ImplementMeMethodBodyRule());
@@ -78,6 +77,6 @@ public abstract class SpringControllerStubRule extends SpringConfigurableRule {
 
 
     protected abstract Rule<JMethod, JAnnotationUse, ApiActionMetadata> getResponseBodyAnnotationRule();
-    
+
     protected abstract Rule<JDefinedClass, JAnnotationUse, ApiResourceMetadata> getControllerAnnotationRule();
 }
