@@ -6,6 +6,9 @@ import java.math.BigDecimal;
 import java.util.concurrent.Callable;
 import com.gen.test.model.NamedResponseType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestHeader;
+import org.springframework.web.bind.annotation.RequestParam;
 
 
 /**
@@ -26,13 +29,27 @@ public interface BaseController {
      * Get base entity by ID
      *
      */
-    public Callable<ResponseEntity<NamedResponseType>> getBaseById(String id);
+    public Callable<ResponseEntity<NamedResponseType>> getBaseById(
+        @PathVariable
+        String id);
 
     /**
      * No description
      *
      */
-    public Callable<ResponseEntity<?>> getElements(String id, Long requiredQueryParam, String optionalQueryParam, BigDecimal optionalQueryParam2, Long xMyHeader, String xAnotherHeader);
+    public Callable<ResponseEntity<?>> getElements(
+        @PathVariable
+        String id,
+        @RequestParam
+        Long requiredQueryParam,
+        @RequestParam(required = false, defaultValue = "dummyDefault")
+        String optionalQueryParam,
+        @RequestParam(required = false, defaultValue = "2")
+        BigDecimal optionalQueryParam2,
+        @RequestHeader(name = "X-My-Header", required = false, defaultValue = "3")
+        Long xMyHeader,
+        @RequestHeader(name = "X-Another-Header")
+        String xAnotherHeader);
 
 }
 -----------------------------------com.gen.test.BaseControllerDecorator.java-----------------------------------

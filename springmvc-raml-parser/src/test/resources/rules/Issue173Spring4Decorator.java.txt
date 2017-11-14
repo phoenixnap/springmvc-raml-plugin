@@ -6,6 +6,7 @@ import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
 import com.gen.test.model.TheResourceId;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.RequestHeader;
 
 
 /**
@@ -23,6 +24,7 @@ public interface AResourceController {
     public ResponseEntity<TheResourceId> getAResource(
         @Pattern(regexp = "^[a-z]+$")
         @Size(min = 3, max = 16)
+        @RequestHeader(name = "an_header", required = false)
         String anHeader);
 
 }

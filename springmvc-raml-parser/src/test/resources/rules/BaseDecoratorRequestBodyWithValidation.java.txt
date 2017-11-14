@@ -2,9 +2,11 @@
 
 package com.gen.test;
 
+import javax.validation.Valid;
 import com.gen.test.model.UpdateBaseRequest;
 import com.gen.test.model.UpdateBaseResponse;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.RequestBody;
 
 
 /**
@@ -19,7 +21,10 @@ public interface BaseController {
      * No description
      *
      */
-    public ResponseEntity<UpdateBaseResponse> updateBase(UpdateBaseRequest updateBaseRequest);
+    public ResponseEntity<UpdateBaseResponse> updateBase(
+        @Valid
+        @RequestBody
+        UpdateBaseRequest updateBaseRequest);
 
 }
 -----------------------------------com.gen.test.BaseControllerDecorator.java-----------------------------------
