@@ -341,6 +341,7 @@ Configuration:
 	callableResponse: [OPTIONAL] set to 'true' to support asynchronous callables. Default: 'false'
 	simpleReturnTypes: [OPTIONAL] set to 'true' to generate controllers method's return types without ResponseEntity<> wrapper. Default: 'false'
 	objectForUnspecifiedReturnType: [OPTIONAL] set to 'true' to generate Object instead of ResponseEntity<?> return type for controllers method's when return type is not specified for the endpoint. Specifying simpleReturnTypes is redundant if this property is set to 'true'. Default: 'false'
+	useShortcutMethodMappings: [OPTIONAL] set to 'true' to generate new shortcut method annotations(e.g. @PutMapping, @GetMapping) instead of old-style @RequestMapping. Default: 'false'
 ```
 
 - **com.phoenixnap.oss.ramlapisync.generation.rules.Spring4RestTemplateClientRule**:

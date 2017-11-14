@@ -62,7 +62,8 @@ public abstract class SpringControllerInterfaceRule extends SpringConfigurableRu
                 .addClassAnnotationRule(new SpringRequestMappingClassAnnotationRule())
                 .setClassRule(new ControllerInterfaceDeclarationRule())
                 .setMethodCommentRule(new MethodCommentRule())
-                .addMethodAnnotationRule(new SpringRequestMappingMethodAnnotationRule())
+                .addMethodAnnotationRule(isUseShortcutMethodMappings() ?
+                        new SpringShortcutMappingMethodAnnotationRule() : new SpringRequestMappingMethodAnnotationRule())
                 .addMethodAnnotationRule(getResponseBodyAnnotationRule())
                 .setMethodSignatureRule(new ControllerMethodSignatureRule(
                         isCallableResponse() ? new SpringCallableResponseEntityRule() :

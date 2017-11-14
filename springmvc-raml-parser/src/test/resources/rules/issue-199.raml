@@ -1,0 +1,35 @@
+#%RAML 1.0
+baseUri: https://api.example.com
+title: Employee API
+version: 0.1
+mediaType:  application/json
+
+types:
+  Employee:
+    properties:
+      name: string
+      skill: string
+
+  EmployeeExtended:
+    type: Employee
+    properties:
+      job: string
+
+  EmployeeRq:
+    properties:
+      employees: Employee[]
+
+  EmployeeRs:
+    properties:
+      employees: EmployeeExtended[]
+
+/employee:
+  post:
+    body:
+      application/json:
+        type: EmployeeRq
+    responses:
+      200:
+        body:
+          application/json:
+            type: EmployeeRs

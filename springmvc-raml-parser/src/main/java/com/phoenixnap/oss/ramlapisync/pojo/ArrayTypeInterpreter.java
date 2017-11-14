@@ -52,11 +52,12 @@ public class ArrayTypeInterpreter extends BaseTypeInterpreter {
 			
 			//Lets check if we've already handled this class before.
 			if (builderModel != null) {
-				JClass searchedClass = CodeModelHelper.findFirstClassBySimpleName(builderModel, arrayType.items().type());
+				JClass searchedClass = CodeModelHelper.findFirstClassBySimpleName(builderModel, arrayType.items().name());
 				if (!searchedClass.getClass().getSimpleName().contains("JDirectClass")) { //WTF can't we use this dude pff
 					//we've already handled this pojo in the model, no need to re-interpret
+					JClass collection = resolveCollectionClass(arrayType, searchedClass, builderModel);
 					result.setCodeModel(builderModel);
-					result.setResolvedClass(searchedClass);
+					result.setResolvedClass(collection);
 					return result;
 				}
 			} else {
@@ -67,15 +68,19 @@ public class ArrayTypeInterpreter extends BaseTypeInterpreter {
 
 			//Lets process the array base class first
 			RamlInterpretationResult childResult = RamlInterpreterFactory.getInterpreterForType(arrayContentsType).interpret(document, arrayContentsType, builderModel, config, false);
-			Class<?> container = List.class;
-			if (arrayType.uniqueItems() != null && arrayType.uniqueItems() ) {
-				container = Set.class;
-			}
-			JClass collection = builderModel.ref(container).narrow(childResult.getResolvedClassOrBuiltOrObject());
+			JClass collection = resolveCollectionClass(arrayType, childResult.getResolvedClassOrBuiltOrObject(), builderModel);
 			result.setResolvedClass(collection);
 		}
 		
 		return result;
+	}
+
+	private JClass resolveCollectionClass(ArrayTypeDeclaration arrayType, JClass resolvedClass, JCodeModel builderModel) {
+		Class<?> container = List.class;
+		if (arrayType.uniqueItems() != null && arrayType.uniqueItems()) {
+			container = Set.class;
+		}
+		return builderModel.ref(container).narrow(resolvedClass);
 	}
 
 }
