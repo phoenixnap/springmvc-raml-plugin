@@ -1,0 +1,195 @@
+-----------------------------------com.gen.test.model.Manager.java-----------------------------------
+
+package com.gen.test.model;
+
+import java.io.Serializable;
+import org.apache.commons.lang.builder.EqualsBuilder;
+import org.apache.commons.lang.builder.HashCodeBuilder;
+import org.apache.commons.lang.builder.ToStringBuilder;
+
+public class Manager implements Serializable
+{
+
+    private String firstName;
+    private String lastName;
+    private String departman;
+
+    /**
+     * Creates a new Manager.
+     * 
+     */
+    public Manager() {
+        super();
+    }
+
+    /**
+     * Creates a new Manager.
+     * 
+     */
+    public Manager(String firstName, String lastName, String departman) {
+        super();
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.departman = departman;
+    }
+
+    /**
+     * Returns the firstName.
+     * 
+     * @return
+     *     firstName
+     */
+    public String getFirstName() {
+        return firstName;
+    }
+
+    /**
+     * Set the firstName.
+     * 
+     * @param firstName
+     *     the new firstName
+     */
+    public void setFirstName(String firstName) {
+        this.firstName = firstName;
+    }
+
+    /**
+     * Returns the lastName.
+     * 
+     * @return
+     *     lastName
+     */
+    public String getLastName() {
+        return lastName;
+    }
+
+    /**
+     * Set the lastName.
+     * 
+     * @param lastName
+     *     the new lastName
+     */
+    public void setLastName(String lastName) {
+        this.lastName = lastName;
+    }
+
+    /**
+     * Returns the departman.
+     * 
+     * @return
+     *     departman
+     */
+    public String getDepartman() {
+        return departman;
+    }
+
+    /**
+     * Set the departman.
+     * 
+     * @param departman
+     *     the new departman
+     */
+    public void setDepartman(String departman) {
+        this.departman = departman;
+    }
+
+    public int hashCode() {
+        return new HashCodeBuilder().append(firstName).append(lastName).append(departman).toHashCode();
+    }
+
+    public boolean equals(Object other) {
+        if (other == null) {
+            return false;
+        }
+        if (other == this) {
+            return true;
+        }
+        if (this.getClass()!= other.getClass()) {
+            return false;
+        }
+        Manager otherObject = ((Manager) other);
+        return new EqualsBuilder().append(firstName, otherObject.firstName).append(lastName, otherObject.lastName).append(departman, otherObject.departman).isEquals();
+    }
+
+    public String toString() {
+        return new ToStringBuilder(this).append("firstName", firstName).append("lastName", lastName).append("departman", departman).toString();
+    }
+
+}
+-----------------------------------com.gen.test.PersonManagerController.java-----------------------------------
+
+package com.gen.test;
+
+import java.util.List;
+import javax.validation.Valid;
+import com.gen.test.model.Manager;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
+
+/**
+ * No description
+ * (Generated with springmvc-raml-parser v.${project.version})
+ *
+ */
+@RestController
+@RequestMapping(value = "/api/organization/persons/managers", produces = "application/json")
+public interface PersonManagerController {
+
+
+    /**
+     * No description
+     *
+     */
+    @GetMapping
+    public ResponseEntity<List<Manager>> getPersonsManagers();
+
+    /**
+     * No description
+     *
+     */
+    @PostMapping
+    public ResponseEntity<Manager> createPersonsManager(
+        @Valid
+        @RequestBody
+        Manager manager);
+
+    /**
+     * No description
+     *
+     */
+    @PatchMapping
+    public ResponseEntity<Manager> modifyPersonsManagers(
+        @RequestBody
+        Manager manager);
+
+    /**
+     * No description
+     *
+     */
+    @PutMapping("/{id}")
+    public ResponseEntity<?> updateById(
+        @PathVariable
+        String id,
+        @Valid
+        @RequestBody
+        Manager manager);
+
+    /**
+     * No description
+     *
+     */
+    @DeleteMapping("/{id}")
+    public ResponseEntity<?> deleteById(
+        @PathVariable
+        String id);
+
+}
