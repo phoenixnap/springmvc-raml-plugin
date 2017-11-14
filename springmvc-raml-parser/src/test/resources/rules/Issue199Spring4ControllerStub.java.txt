@@ -1,0 +1,359 @@
+-----------------------------------com.gen.test.model.Employee.java-----------------------------------
+
+package com.gen.test.model;
+
+import java.io.Serializable;
+import org.apache.commons.lang.builder.EqualsBuilder;
+import org.apache.commons.lang.builder.HashCodeBuilder;
+import org.apache.commons.lang.builder.ToStringBuilder;
+
+public class Employee implements Serializable
+{
+
+    private String name;
+    private String skill;
+
+    /**
+     * Creates a new Employee.
+     *
+     */
+    public Employee() {
+        super();
+    }
+
+    /**
+     * Creates a new Employee.
+     *
+     */
+    public Employee(String name, String skill) {
+        super();
+        this.name = name;
+        this.skill = skill;
+    }
+
+    /**
+     * Returns the name.
+     *
+     * @return
+     *     name
+     */
+    public String getName() {
+        return name;
+    }
+
+    /**
+     * Set the name.
+     *
+     * @param name
+     *     the new name
+     */
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    /**
+     * Returns the skill.
+     *
+     * @return
+     *     skill
+     */
+    public String getSkill() {
+        return skill;
+    }
+
+    /**
+     * Set the skill.
+     *
+     * @param skill
+     *     the new skill
+     */
+    public void setSkill(String skill) {
+        this.skill = skill;
+    }
+
+    public int hashCode() {
+        return new HashCodeBuilder().append(name).append(skill).toHashCode();
+    }
+
+    public boolean equals(Object other) {
+        if (other == null) {
+            return false;
+        }
+        if (other == this) {
+            return true;
+        }
+        if (this.getClass()!= other.getClass()) {
+            return false;
+        }
+        Employee otherObject = ((Employee) other);
+        return new EqualsBuilder().append(name, otherObject.name).append(skill, otherObject.skill).isEquals();
+    }
+
+    public String toString() {
+        return new ToStringBuilder(this).append("name", name).append("skill", skill).toString();
+    }
+
+}
+-----------------------------------com.gen.test.model.EmployeeExtended.java-----------------------------------
+
+package com.gen.test.model;
+
+import java.io.Serializable;
+import org.apache.commons.lang.builder.EqualsBuilder;
+import org.apache.commons.lang.builder.HashCodeBuilder;
+import org.apache.commons.lang.builder.ToStringBuilder;
+
+public class EmployeeExtended
+    extends Employee
+    implements Serializable
+{
+
+    private String job;
+
+    /**
+     * Creates a new EmployeeExtended.
+     *
+     */
+    public EmployeeExtended() {
+        super();
+    }
+
+    /**
+     * Creates a new EmployeeExtended.
+     *
+     */
+    public EmployeeExtended(String name, String skill, String job) {
+        super(name, skill);
+        this.job = job;
+    }
+
+    /**
+     * Returns the job.
+     *
+     * @return
+     *     job
+     */
+    public String getJob() {
+        return job;
+    }
+
+    /**
+     * Set the job.
+     *
+     * @param job
+     *     the new job
+     */
+    public void setJob(String job) {
+        this.job = job;
+    }
+
+    public int hashCode() {
+        return new HashCodeBuilder().appendSuper(super.hashCode()).append(job).toHashCode();
+    }
+
+    public boolean equals(Object other) {
+        if (other == null) {
+            return false;
+        }
+        if (other == this) {
+            return true;
+        }
+        if (this.getClass()!= other.getClass()) {
+            return false;
+        }
+        EmployeeExtended otherObject = ((EmployeeExtended) other);
+        return new EqualsBuilder().appendSuper(super.equals(otherObject)).append(job, otherObject.job).isEquals();
+    }
+
+    public String toString() {
+        return new ToStringBuilder(this).appendSuper(super.toString()).append("job", job).toString();
+    }
+
+}
+-----------------------------------com.gen.test.model.EmployeeRq.java-----------------------------------
+
+package com.gen.test.model;
+
+import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
+import org.apache.commons.lang.builder.EqualsBuilder;
+import org.apache.commons.lang.builder.HashCodeBuilder;
+import org.apache.commons.lang.builder.ToStringBuilder;
+
+public class EmployeeRq implements Serializable
+{
+
+    private List<Employee> employees = new ArrayList<Employee>();
+
+    /**
+     * Creates a new EmployeeRq.
+     *
+     */
+    public EmployeeRq() {
+        super();
+    }
+
+    /**
+     * Creates a new EmployeeRq.
+     *
+     */
+    public EmployeeRq(List<Employee> employees) {
+        super();
+        this.employees = employees;
+    }
+
+    /**
+     * Returns the employees.
+     *
+     * @return
+     *     employees
+     */
+    public List<Employee> getEmployees() {
+        return employees;
+    }
+
+    /**
+     * Set the employees.
+     *
+     * @param employees
+     *     the new employees
+     */
+    public void setEmployees(List<Employee> employees) {
+        this.employees = employees;
+    }
+
+    public int hashCode() {
+        return new HashCodeBuilder().append(employees).toHashCode();
+    }
+
+    public boolean equals(Object other) {
+        if (other == null) {
+            return false;
+        }
+        if (other == this) {
+            return true;
+        }
+        if (this.getClass()!= other.getClass()) {
+            return false;
+        }
+        EmployeeRq otherObject = ((EmployeeRq) other);
+        return new EqualsBuilder().append(employees, otherObject.employees).isEquals();
+    }
+
+    public String toString() {
+        return new ToStringBuilder(this).append("employees", employees).toString();
+    }
+
+}
+-----------------------------------com.gen.test.model.EmployeeRs.java-----------------------------------
+
+package com.gen.test.model;
+
+import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
+import org.apache.commons.lang.builder.EqualsBuilder;
+import org.apache.commons.lang.builder.HashCodeBuilder;
+import org.apache.commons.lang.builder.ToStringBuilder;
+
+public class EmployeeRs implements Serializable
+{
+
+    private List<EmployeeExtended> employees = new ArrayList<EmployeeExtended>();
+
+    /**
+     * Creates a new EmployeeRs.
+     *
+     */
+    public EmployeeRs() {
+        super();
+    }
+
+    /**
+     * Creates a new EmployeeRs.
+     *
+     */
+    public EmployeeRs(List<EmployeeExtended> employees) {
+        super();
+        this.employees = employees;
+    }
+
+    /**
+     * Returns the employees.
+     *
+     * @return
+     *     employees
+     */
+    public List<EmployeeExtended> getEmployees() {
+        return employees;
+    }
+
+    /**
+     * Set the employees.
+     *
+     * @param employees
+     *     the new employees
+     */
+    public void setEmployees(List<EmployeeExtended> employees) {
+        this.employees = employees;
+    }
+
+    public int hashCode() {
+        return new HashCodeBuilder().append(employees).toHashCode();
+    }
+
+    public boolean equals(Object other) {
+        if (other == null) {
+            return false;
+        }
+        if (other == this) {
+            return true;
+        }
+        if (this.getClass()!= other.getClass()) {
+            return false;
+        }
+        EmployeeRs otherObject = ((EmployeeRs) other);
+        return new EqualsBuilder().append(employees, otherObject.employees).isEquals();
+    }
+
+    public String toString() {
+        return new ToStringBuilder(this).append("employees", employees).toString();
+    }
+
+}
+-----------------------------------com.gen.test.EmployeeController.java-----------------------------------
+
+package com.gen.test;
+
+import javax.validation.Valid;
+import com.gen.test.model.EmployeeRq;
+import com.gen.test.model.EmployeeRs;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RestController;
+
+
+/**
+ * No description
+ * (Generated with springmvc-raml-parser v.${project.version})
+ *
+ */
+@RestController
+@RequestMapping(value = "/api/employee", produces = "application/json")
+public interface EmployeeController {
+
+
+    /**
+     * No description
+     *
+     */
+    @RequestMapping(value = "", method = RequestMethod.POST)
+    public ResponseEntity<EmployeeRs> updateEmployee(
+        @Valid
+        @RequestBody
+        EmployeeRq employeeRq);
+
+}
