@@ -19,6 +19,10 @@ import com.phoenixnap.oss.ramlapisync.generation.rules.spring.SpringRestControll
 import com.sun.codemodel.JAnnotationUse;
 import com.sun.codemodel.JDefinedClass;
 import com.sun.codemodel.JMethod;
+import org.apache.commons.lang3.BooleanUtils;
+import org.springframework.util.CollectionUtils;
+
+import java.util.Map;
 
 /**
  * A code generation Rule that provides a standalone Controller interface with Spring4 annotations.
@@ -48,6 +52,16 @@ public class Spring4ControllerInterfaceRule extends SpringControllerInterfaceRul
 	@Override
 	protected Rule<JMethod, JAnnotationUse, ApiActionMetadata> getResponseBodyAnnotationRule() {
 		return null; //ResponseBody not needed for RestController
+	}
+
+	@Override
+	public void applyConfiguration(Map<String, String> configuration) {
+		super.applyConfiguration(configuration);
+		if(!CollectionUtils.isEmpty(configuration)) {
+			if(configuration.containsKey(SHORTCUT_METHOD_MAPPINGS)) {
+				setUseShortcutMethodMappings(BooleanUtils.toBoolean(configuration.get(SHORTCUT_METHOD_MAPPINGS)));
+			}
+		}
 	}
 	
 }
