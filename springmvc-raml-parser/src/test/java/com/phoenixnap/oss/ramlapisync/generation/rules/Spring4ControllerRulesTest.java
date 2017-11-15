@@ -44,6 +44,15 @@ public class Spring4ControllerRulesTest extends AbstractRuleTestBase {
     }
 
     @Test
+    public void applySpring4ControllerInterfaceRuleWithObjectReturnType_shouldCreate_validCode() throws Exception {
+        rule = new Spring4ControllerInterfaceRule();
+        ((Spring4ControllerInterfaceRule) rule).setSimpleReturnTypes(true);
+        rule.apply(getControllerMetadata(), jCodeModel);
+        verifyGeneratedCode("BaseControllerInterfaceWithObjectReturnTypes");
+    }
+
+
+    @Test
     public void applySpring4ControllerInterfaceWithShortcutMappingsRule_shouldCreate_validCode() throws Exception {
         rule = new Spring4ControllerInterfaceRule();
         ((Spring4ControllerInterfaceRule) rule).setUseShortcutMethodMappings(true);

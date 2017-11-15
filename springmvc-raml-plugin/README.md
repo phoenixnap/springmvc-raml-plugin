@@ -339,7 +339,7 @@ All you have to do is to provide an implementation for the controller interface
 ```
 Configuration:
 	callableResponse: [OPTIONAL] set to 'true' to support asynchronous callables. Default: 'false'
-	simpleReturnTypes: [OPTIONAL] set to 'true' to generate controllers method's return types without ResponseEntity<> wrapper. Default: 'false'
+	simpleReturnTypes: [OPTIONAL] set to 'true' to generate controllers method's return types without ResponseEntity<> wrapper. Will also generate Object instead of ResponseEntity<?> return type for methods when return type is not specified for the endpoint. Default: 'false'
 	useShortcutMethodMappings: [OPTIONAL] set to 'true' to generate new shortcut method annotations(e.g. @PutMapping, @GetMapping) instead of old-style @RequestMapping. Default: 'false'
 ```
 
