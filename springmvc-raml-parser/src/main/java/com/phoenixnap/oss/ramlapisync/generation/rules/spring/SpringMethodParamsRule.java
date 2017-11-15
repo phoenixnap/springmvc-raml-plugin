@@ -70,7 +70,7 @@ import com.sun.codemodel.JVar;
  * @since 0.4.1
  */
 public class SpringMethodParamsRule extends MethodParamsRule {
-
+	
     public SpringMethodParamsRule() {
 		super();
 	}
