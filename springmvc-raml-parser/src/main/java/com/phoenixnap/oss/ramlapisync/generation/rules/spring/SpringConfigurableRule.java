@@ -37,8 +37,6 @@ public abstract class SpringConfigurableRule implements ConfigurableRule<JCodeMo
  			
  	public static final String ARRAY_PARAMETER_CONFIGURATION = "allowArrayParameters";
 
- 	public static final String OBJECT_RETURN_TYPE = "objectForUnspecifiedReturnType";
-
  	public static final String SIMPLE_RETURN_TYPES = "simpleReturnTypes";
 
 
@@ -52,7 +50,6 @@ public abstract class SpringConfigurableRule implements ConfigurableRule<JCodeMo
      * Can only be set to true if <b>SpringControllerInterface</b> is used for now
      */
     private boolean simpleReturnTypes = false;
-    private boolean objectReturnType = false;
     private boolean useShortcutMethodMappings = false;
 
 
@@ -67,9 +64,6 @@ public abstract class SpringConfigurableRule implements ConfigurableRule<JCodeMo
             }
             if(configuration.containsKey(ARRAY_PARAMETER_CONFIGURATION)) {
             	setAllowArrayParameters(BooleanUtils.toBoolean(configuration.get(ARRAY_PARAMETER_CONFIGURATION)));
-            }
-            if(configuration.containsKey(OBJECT_RETURN_TYPE)) {
-                setAllowArrayParameters(BooleanUtils.toBoolean(configuration.get(OBJECT_RETURN_TYPE)));
             }
         }
     }
@@ -98,13 +92,6 @@ public abstract class SpringConfigurableRule implements ConfigurableRule<JCodeMo
 		this.callableResponse = callableResponse;
 	}
 
-    public boolean isObjectReturnType() {
-        return objectReturnType;
-    }
-
-    public void setObjectReturnType(boolean objectReturnType) {
-        this.objectReturnType = objectReturnType;
-    }
     public boolean isUseShortcutMethodMappings() {
         return useShortcutMethodMappings;
     }

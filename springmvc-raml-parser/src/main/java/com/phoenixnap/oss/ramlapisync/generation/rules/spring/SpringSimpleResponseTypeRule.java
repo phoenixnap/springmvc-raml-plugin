@@ -67,10 +67,10 @@ public class SpringSimpleResponseTypeRule implements Rule<JDefinedClass, JType, 
                 JClass arrayType = generatableType.owner().ref(List.class);
                 return arrayType.narrow(genericType);
             } else {
-                return genericType;
+               return genericType;
             }
         }
         return responseType
-                .narrow(generatableType.owner().wildcard());
+            .narrow(generatableType.owner().wildcard());
     }
 }
