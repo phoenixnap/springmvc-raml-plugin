@@ -210,7 +210,7 @@ public class RamlTypeHelper {
 		if (type == null || type.required() == null) {
 			return true;
 		} else {
-			return type.required().booleanValue();
+			return type.required();
 		}
 	}
 

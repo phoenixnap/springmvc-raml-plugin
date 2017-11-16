@@ -3,7 +3,9 @@
 package com.gen.test;
 
 import java.util.List;
+import javax.validation.Valid;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.RequestBody;
 
 
 /**
@@ -24,7 +26,10 @@ public interface PersonController {
      * No description
      * 
      */
-    public ResponseEntity<?> createPerson(com.gen.test.model.Person person);
+    public ResponseEntity<?> createPerson(
+        @Valid
+        @RequestBody
+        com.gen.test.model.Person person);
 
 }
 -----------------------------------com.gen.test.PersonControllerDecorator.java-----------------------------------

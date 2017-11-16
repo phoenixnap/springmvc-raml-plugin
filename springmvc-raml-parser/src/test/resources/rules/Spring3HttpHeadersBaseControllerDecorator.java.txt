@@ -6,6 +6,9 @@ import java.math.BigDecimal;
 import com.gen.test.model.NamedResponseType;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestHeader;
+import org.springframework.web.bind.annotation.RequestParam;
 
 
 /**
@@ -16,23 +19,43 @@ import org.springframework.http.ResponseEntity;
 public interface BaseController {
 
 
-	/**
-	 * No description
-	 *
-	 */
-	public ResponseEntity<?> getBase(HttpHeaders httpHeaders);
+    /**
+     * No description
+     *
+     */
+    public ResponseEntity<?> getBase(
+        @RequestHeader
+        HttpHeaders httpHeaders);
 
     /**
      * Get base entity by ID
      *
      */
-    public ResponseEntity<NamedResponseType> getBaseById(String id, HttpHeaders httpHeaders);
+    public ResponseEntity<NamedResponseType> getBaseById(
+        @PathVariable
+        String id,
+        @RequestHeader
+        HttpHeaders httpHeaders);
 
     /**
      * No description
      *
      */
-    public ResponseEntity<?> getElements(String id, Long requiredQueryParam, String optionalQueryParam, BigDecimal optionalQueryParam2, Long xMyHeader, String xAnotherHeader, HttpHeaders httpHeaders);
+    public ResponseEntity<?> getElements(
+        @PathVariable
+        String id,
+        @RequestParam
+        Long requiredQueryParam,
+        @RequestParam(required = false, defaultValue = "dummyDefault")
+        String optionalQueryParam,
+        @RequestParam(required = false, defaultValue = "2")
+        BigDecimal optionalQueryParam2,
+        @RequestHeader(name = "X-My-Header", required = false, defaultValue = "3")
+        Long xMyHeader,
+        @RequestHeader(name = "X-Another-Header")
+        String xAnotherHeader,
+        @RequestHeader
+        HttpHeaders httpHeaders);
 
 }
 -----------------------------------com.gen.test.BaseControllerDecorator.java-----------------------------------
