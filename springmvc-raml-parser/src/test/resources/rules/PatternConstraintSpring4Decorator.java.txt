@@ -4,9 +4,6 @@ package com.gen.test;
 
 import javax.validation.constraints.Pattern;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestHeader;
-import org.springframework.web.bind.annotation.RequestParam;
 
 
 /**
@@ -23,13 +20,10 @@ public interface BaseController {
      */
     public ResponseEntity<?> getEndpointById(
         @Pattern(regexp = "^.{1,255}$")
-        @PathVariable(required = false)
         String id,
         @Pattern(regexp = "^.{1,255}$")
-        @RequestParam
         String param1,
         @Pattern(regexp = "^.{1,255}$")
-        @RequestHeader(name = "X-My-Header", required = false)
         String xMyHeader);
 
 }

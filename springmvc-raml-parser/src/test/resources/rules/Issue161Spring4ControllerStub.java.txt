@@ -4,10 +4,13 @@ package com.gen.test.model;
 
 import java.util.HashMap;
 import java.util.Map;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 public enum TestT {
 
+    @JsonProperty("A")
     A("A"),
+    @JsonProperty("B")
     B("B");
     private final String value;
     private final static Map<String, TestT> VALUE_CACHE = new HashMap<String, TestT>();

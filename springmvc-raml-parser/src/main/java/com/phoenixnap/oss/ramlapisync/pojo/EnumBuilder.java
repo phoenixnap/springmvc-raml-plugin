@@ -17,11 +17,11 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.jsonschema2pojo.util.NameHelper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.util.StringUtils;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.phoenixnap.oss.ramlapisync.generation.CodeModelHelper;
 import com.phoenixnap.oss.ramlapisync.naming.NamingHelper;
 import com.sun.codemodel.ClassType;
@@ -186,6 +186,7 @@ public class EnumBuilder extends AbstractBuilder {
 					enumConstant.arg(JExpr.lit((Long)name));
 				} else {
 					enumConstant.arg(JExpr.lit(name.toString()));
+					enumConstant.annotate(JsonProperty.class).param("value", name.toString());
 				}
 			}
 		}

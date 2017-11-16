@@ -18,6 +18,7 @@ import static org.springframework.util.StringUtils.uncapitalize;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.validation.Valid;
 import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.Pattern;
@@ -32,6 +33,7 @@ import com.phoenixnap.oss.ramlapisync.generation.CodeModelHelper;
 import com.phoenixnap.oss.ramlapisync.generation.rules.Rule;
 import com.phoenixnap.oss.ramlapisync.naming.NamingHelper;
 import com.phoenixnap.oss.ramlapisync.raml.RamlAbstractParam;
+import com.phoenixnap.oss.ramlapisync.raml.RamlActionType;
 import com.phoenixnap.oss.ramlapisync.raml.RamlParamType;
 import com.phoenixnap.oss.ramlapisync.raml.rjp.raml10v2.RJP10V2RamlQueryParameter;
 import com.sun.codemodel.JAnnotationUse;
@@ -187,7 +189,13 @@ public class MethodParamsRule implements Rule<CodeModelHelper.JExtMethod, JMetho
         if (addParameterJavadoc) {
         	generatableType.get().javadoc().addParam(uncapitalize(requestBodyName) + " The Request Body Payload");
         }
-        return generatableType.get().param(requestBodyType, uncapitalize(requestBodyName));
+		JVar param = generatableType.get().param(requestBodyType, uncapitalize(requestBodyName));
+		if (!RamlActionType.PATCH.equals(endpointMetadata.getActionType())) {
+			// skip Valid annotation for PATCH actions since it's a partial
+			// update so some required fields might be omitted
+			param.annotate(Valid.class);
+		}
+		return param;
     }
 
    protected JVar paramHttpHeaders(CodeModelHelper.JExtMethod generatableType) {

@@ -12,8 +12,6 @@
  */
 package com.phoenixnap.oss.ramlapisync.generation.rules.spring;
 
-import javax.validation.Valid;
-
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -26,7 +24,6 @@ import com.phoenixnap.oss.ramlapisync.data.ApiParameterMetadata;
 import com.phoenixnap.oss.ramlapisync.generation.CodeModelHelper;
 import com.phoenixnap.oss.ramlapisync.generation.rules.basic.MethodParamsRule;
 import com.phoenixnap.oss.ramlapisync.naming.RamlTypeHelper;
-import com.phoenixnap.oss.ramlapisync.raml.RamlActionType;
 import com.phoenixnap.oss.ramlapisync.raml.RamlHeader;
 import com.phoenixnap.oss.ramlapisync.raml.RamlParamType;
 import com.phoenixnap.oss.ramlapisync.raml.RamlUriParameter;
@@ -148,11 +145,6 @@ public class SpringMethodParamsRule extends MethodParamsRule {
     @Override
     protected JVar paramObjects(ApiActionMetadata endpointMetadata, CodeModelHelper.JExtMethod generatableType) {
         JVar param = super.paramObjects(endpointMetadata, generatableType);
-		if (!RamlActionType.PATCH.equals(endpointMetadata.getActionType())) {
-			// skip Valid annotation for PATCH actions since it's a partial
-			// update so some required fields might be omitted
-			param.annotate(Valid.class);
-		}
         param.annotate(RequestBody.class);
         return param;
     }

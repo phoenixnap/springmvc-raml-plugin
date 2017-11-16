@@ -6,7 +6,6 @@ import javax.validation.Valid;
 import com.gen.test.model.UpdateBaseRequest;
 import com.gen.test.model.UpdateBaseResponse;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.RequestBody;
 
 
 /**
@@ -23,7 +22,6 @@ public interface BaseController {
      */
     public ResponseEntity<UpdateBaseResponse> updateBase(
         @Valid
-        @RequestBody
         UpdateBaseRequest updateBaseRequest);
 
 }

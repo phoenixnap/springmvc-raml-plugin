@@ -3,7 +3,6 @@
 package com.gen.test;
 
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.RequestParam;
 
 
 /**
@@ -18,11 +17,7 @@ public interface FileController {
      * Create file.
      *
      */
-    public ResponseEntity<?> getFiles(
-        @RequestParam
-        String notArray,
-        @RequestParam
-        String[] stringArray);
+    public ResponseEntity<?> getFiles(String notArray, String[] stringArray);
 
 }
 -----------------------------------com.gen.test.FileControllerDecorator.java-----------------------------------

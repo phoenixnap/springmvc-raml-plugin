@@ -76,7 +76,7 @@ public abstract class SpringControllerDecoratorRule extends SpringConfigurableRu
                 .setMethodCommentRule(new MethodCommentRule())
                 .setMethodSignatureRule(new ControllerMethodSignatureRule(
                         isCallableResponse() ? new SpringCallableResponseEntityRule() :  new SpringResponseEntityRule(),
-                        new SpringMethodParamsRule(isAddParameterJavadoc(), isAllowArrayParameters())))
+						new MethodParamsRule(isAddParameterJavadoc(), isAllowArrayParameters())))
                 .apply(metadata, generatableType);
 
         String delegateFieldName = StringUtils.uncapitalize(generatedInterface.name()+"Delegate");
