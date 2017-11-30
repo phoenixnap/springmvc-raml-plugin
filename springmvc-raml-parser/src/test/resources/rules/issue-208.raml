@@ -1,0 +1,23 @@
+#%RAML 1.0
+title: API
+version: 1.0
+
+uses:
+  product: issue-208-product.raml
+
+/products:
+  /{productId}:
+    uriParameters:
+      productId:
+        type: integer
+        example: 1234
+    get:
+      responses:
+        200:
+          body:
+            application/json:
+              type: product.Product
+    put:
+      body:
+        application/json:
+          type: product.ProductUpdate

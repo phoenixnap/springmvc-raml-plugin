@@ -1,0 +1,13 @@
+#%RAML 1.0
+title: API
+version: 1.0
+
+/test:
+    post:
+      queryParameters:
+        locationIds:
+          type: array
+          items: integer
+        someStrings:
+          type: array
+          items: string

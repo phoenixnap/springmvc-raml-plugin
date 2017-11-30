@@ -14,6 +14,7 @@ package com.phoenixnap.oss.ramlapisync.raml.rjp.raml10v2;
 
 import java.math.BigDecimal;
 
+import org.raml.v2.api.model.v10.datamodel.ArrayTypeDeclaration;
 import org.raml.v2.api.model.v10.datamodel.NumberTypeDeclaration;
 import org.raml.v2.api.model.v10.datamodel.StringTypeDeclaration;
 import org.raml.v2.api.model.v10.datamodel.TypeDeclaration;
@@ -75,6 +76,10 @@ public class RJP10V2RamlQueryParameter extends RamlQueryParameter {
 
     @Override
     public RamlParamType getType() {
+		if (queryParameter instanceof ArrayTypeDeclaration) {
+			TypeDeclaration items = ((ArrayTypeDeclaration) queryParameter).items();
+			return ramlModelFactory.createRamlParamType(items.type());
+		}
         return ramlModelFactory.createRamlParamType(queryParameter.type());
     }
 

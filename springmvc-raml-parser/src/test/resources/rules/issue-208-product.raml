@@ -1,0 +1,22 @@
+#%RAML 1.0 Library
+
+uses: 
+  group: issue-208-group.raml
+  
+types:
+  Product:
+    properties:
+      id:
+        type: string
+        required: false
+        example: "Dummy"
+      groups:
+        type: array
+        items: group.Group
+        required: false
+
+  ProductUpdate:
+    type: Product
+    properties:
+      locationId:
+        type: number

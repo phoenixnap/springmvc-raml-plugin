@@ -1,0 +1,320 @@
+-----------------------------------com.gen.test.model.Group.java-----------------------------------
+
+package com.gen.test.model;
+
+import java.io.Serializable;
+import org.apache.commons.lang.builder.EqualsBuilder;
+import org.apache.commons.lang.builder.HashCodeBuilder;
+import org.apache.commons.lang.builder.ToStringBuilder;
+
+public class Group implements Serializable
+{
+
+    private Long id;
+    private String name;
+
+    /**
+     * Creates a new Group.
+     * 
+     */
+    public Group() {
+        super();
+    }
+
+    /**
+     * Creates a new Group.
+     * 
+     */
+    public Group(Long id, String name) {
+        super();
+        this.id = id;
+        this.name = name;
+    }
+
+    /**
+     * Returns the id.
+     * 
+     * @return
+     *     id
+     */
+    public Long getId() {
+        return id;
+    }
+
+    /**
+     * Set the id.
+     * 
+     * @param id
+     *     the new id
+     */
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    /**
+     * Returns the name.
+     * 
+     * @return
+     *     name
+     */
+    public String getName() {
+        return name;
+    }
+
+    /**
+     * Set the name.
+     * 
+     * @param name
+     *     the new name
+     */
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public int hashCode() {
+        return new HashCodeBuilder().append(id).append(name).toHashCode();
+    }
+
+    public boolean equals(Object other) {
+        if (other == null) {
+            return false;
+        }
+        if (other == this) {
+            return true;
+        }
+        if (this.getClass()!= other.getClass()) {
+            return false;
+        }
+        Group otherObject = ((Group) other);
+        return new EqualsBuilder().append(id, otherObject.id).append(name, otherObject.name).isEquals();
+    }
+
+    public String toString() {
+        return new ToStringBuilder(this).append("id", id).append("name", name).toString();
+    }
+
+}
+-----------------------------------com.gen.test.model.Product.java-----------------------------------
+
+package com.gen.test.model;
+
+import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
+import org.apache.commons.lang.builder.EqualsBuilder;
+import org.apache.commons.lang.builder.HashCodeBuilder;
+import org.apache.commons.lang.builder.ToStringBuilder;
+
+public class Product implements Serializable
+{
+
+    private String id;
+    private List<Group> groups = new ArrayList<Group>();
+
+    /**
+     * Creates a new Product.
+     * 
+     */
+    public Product() {
+        super();
+    }
+
+    /**
+     * Creates a new Product.
+     * 
+     */
+    public Product(String id, List<Group> groups) {
+        super();
+        this.id = id;
+        this.groups = groups;
+    }
+
+    /**
+     * Returns the id.
+     * 
+     * @return
+     *     id
+     */
+    public String getId() {
+        return id;
+    }
+
+    /**
+     * Set the id.
+     * 
+     * @param id
+     *     the new id
+     */
+    public void setId(String id) {
+        this.id = id;
+    }
+
+    /**
+     * Returns the groups.
+     * 
+     * @return
+     *     groups
+     */
+    public List<Group> getGroups() {
+        return groups;
+    }
+
+    /**
+     * Set the groups.
+     * 
+     * @param groups
+     *     the new groups
+     */
+    public void setGroups(List<Group> groups) {
+        this.groups = groups;
+    }
+
+    public int hashCode() {
+        return new HashCodeBuilder().append(id).append(groups).toHashCode();
+    }
+
+    public boolean equals(Object other) {
+        if (other == null) {
+            return false;
+        }
+        if (other == this) {
+            return true;
+        }
+        if (this.getClass()!= other.getClass()) {
+            return false;
+        }
+        Product otherObject = ((Product) other);
+        return new EqualsBuilder().append(id, otherObject.id).append(groups, otherObject.groups).isEquals();
+    }
+
+    public String toString() {
+        return new ToStringBuilder(this).append("id", id).append("groups", groups).toString();
+    }
+
+}
+-----------------------------------com.gen.test.model.ProductUpdate.java-----------------------------------
+
+package com.gen.test.model;
+
+import java.io.Serializable;
+import java.util.List;
+import org.apache.commons.lang.builder.EqualsBuilder;
+import org.apache.commons.lang.builder.HashCodeBuilder;
+import org.apache.commons.lang.builder.ToStringBuilder;
+
+public class ProductUpdate
+    extends Product
+    implements Serializable
+{
+
+    private Double locationId;
+
+    /**
+     * Creates a new ProductUpdate.
+     * 
+     */
+    public ProductUpdate() {
+        super();
+    }
+
+    /**
+     * Creates a new ProductUpdate.
+     * 
+     */
+    public ProductUpdate(String id, List<Group> groups, Double locationId) {
+        super(id, groups);
+        this.locationId = locationId;
+    }
+
+    /**
+     * Returns the locationId.
+     * 
+     * @return
+     *     locationId
+     */
+    public Double getLocationId() {
+        return locationId;
+    }
+
+    /**
+     * Set the locationId.
+     * 
+     * @param locationId
+     *     the new locationId
+     */
+    public void setLocationId(Double locationId) {
+        this.locationId = locationId;
+    }
+
+    public int hashCode() {
+        return new HashCodeBuilder().appendSuper(super.hashCode()).append(locationId).toHashCode();
+    }
+
+    public boolean equals(Object other) {
+        if (other == null) {
+            return false;
+        }
+        if (other == this) {
+            return true;
+        }
+        if (this.getClass()!= other.getClass()) {
+            return false;
+        }
+        ProductUpdate otherObject = ((ProductUpdate) other);
+        return new EqualsBuilder().appendSuper(super.equals(otherObject)).append(locationId, otherObject.locationId).isEquals();
+    }
+
+    public String toString() {
+        return new ToStringBuilder(this).appendSuper(super.toString()).append("locationId", locationId).toString();
+    }
+
+}
+-----------------------------------com.gen.test.ProductController.java-----------------------------------
+
+package com.gen.test;
+
+import javax.validation.Valid;
+import com.gen.test.model.Product;
+import com.gen.test.model.ProductUpdate;
+import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RestController;
+
+
+/**
+ * No description
+ * (Generated with springmvc-raml-parser v.${project.version})
+ * 
+ */
+@RestController
+@Validated
+@RequestMapping("/api/products")
+public interface ProductController {
+
+
+    /**
+     * No description
+     * 
+     */
+    @RequestMapping(value = "/{productId}", method = RequestMethod.GET)
+    public ResponseEntity<Product> getProductById(
+        @PathVariable
+        Long productId);
+
+    /**
+     * No description
+     * 
+     */
+    @RequestMapping(value = "/{productId}", method = RequestMethod.PUT)
+    public ResponseEntity<?> updateProductById(
+        @PathVariable
+        Long productId,
+        @Valid
+        @RequestBody
+        ProductUpdate productUpdate);
+
+}

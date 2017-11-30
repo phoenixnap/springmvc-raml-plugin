@@ -52,7 +52,13 @@ public class ObjectTypeInterpreter extends BaseTypeInterpreter {
 		typeCheck(type);
 
 		ObjectTypeDeclaration objectType = (ObjectTypeDeclaration) type;
-		String name = StringUtils.capitalize(objectType.name());
+		String name;
+		if (objectType.name().endsWith("." + objectType.type())) {
+			// when type is e.g. libName.Product
+			name = StringUtils.capitalize(objectType.type());
+		} else {
+			name = StringUtils.capitalize(objectType.name());
+		}
 		Map<String, RamlDataType> types = document.getTypes();
 		String typeName = objectType.type();
 		
