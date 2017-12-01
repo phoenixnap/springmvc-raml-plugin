@@ -29,11 +29,9 @@ import org.raml.v2.api.model.v10.declarations.AnnotationRef;
 import org.raml.v2.api.model.v10.declarations.AnnotationTarget;
 import org.raml.v2.api.model.v10.system.types.AnnotableStringType;
 import org.raml.v2.api.model.v10.system.types.MarkdownString;
-
 import org.springframework.format.annotation.DateTimeFormat;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
-
 import com.phoenixnap.oss.ramlapisync.data.ApiBodyMetadata;
 import com.phoenixnap.oss.ramlapisync.pojo.PojoGenerationConfig;
 import com.phoenixnap.oss.ramlapisync.pojo.RamlInterpretationResult;
@@ -52,8 +50,6 @@ import com.sun.codemodel.JCodeModel;
  */
 public class RamlTypeHelper {
 	
-	protected static final String PATTERN_DATETIME = "yyyy-MM-dd'T'HH:mm:ss";
-
 	/**
 	 * IF it has a format defined, this will return it
 	 * @param param The parameter to inspect
@@ -244,18 +240,18 @@ public class RamlTypeHelper {
 				break;
 			case "DATETIME-ONLY":
 				// example: 2013-09-29T19:46:19
-				jAnnotationUse.param("pattern", PATTERN_DATETIME);
+				jAnnotationUse.param("pattern", "yyyy-MM-dd'T'HH:mm:ss");
 				break;
 			case "DATETIME":
 				if ("rfc2616".equalsIgnoreCase(format)) {
 					// example: Tue, 15 Nov 1994 12:45:26 GMT
 					jAnnotationUse.param("pattern", "EEE, dd MMM yyyy HH:mm:ss z");
 				} else {
-					jAnnotationUse.param("pattern", PATTERN_DATETIME);
+					jAnnotationUse.param("pattern", "yyyy-MM-dd'T'HH:mm:ssXXX");
 				}
 				break;
 			default:
-				jAnnotationUse.param("pattern", PATTERN_DATETIME);
+				jAnnotationUse.param("pattern", "yyyy-MM-dd'T'HH:mm:ss");
 		}
 	}
 

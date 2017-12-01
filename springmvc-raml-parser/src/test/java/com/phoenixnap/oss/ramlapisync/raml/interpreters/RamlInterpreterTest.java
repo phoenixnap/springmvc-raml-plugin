@@ -19,7 +19,6 @@ import java.lang.reflect.Field;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.Iterator;
-import java.util.Map;
 import java.util.Set;
 
 import javax.validation.constraints.DecimalMax;
@@ -34,8 +33,6 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
-import org.raml.v2.internal.utils.Inflector;
-import org.springframework.format.annotation.DateTimeFormat;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.phoenixnap.oss.ramlapisync.data.ApiBodyMetadata;
@@ -52,7 +49,6 @@ import com.phoenixnap.oss.ramlapisync.raml.RamlDataType;
 import com.phoenixnap.oss.ramlapisync.raml.RamlResource;
 import com.phoenixnap.oss.ramlapisync.raml.RamlRoot;
 import com.phoenixnap.oss.ramlapisync.raml.rjp.raml10v2.RJP10V2RamlModelFactory;
-import com.sun.codemodel.JAnnotationArrayMember;
 import com.sun.codemodel.JAnnotationUse;
 import com.sun.codemodel.JAnnotationValue;
 import com.sun.codemodel.JClass;
@@ -405,7 +401,7 @@ public class RamlInterpreterTest {
 
 		field = getField(pojo, "dateT");
 		assertThat(field.type().fullName(), is("java.util.Date"));
-		assertAnnotations(field, "yyyy-MM-dd'T'HH:mm:ss");
+		assertAnnotations(field, "yyyy-MM-dd'T'HH:mm:ssXXX");
 		
 		field = getField(pojo, "datetimeRFC2616");
 		assertThat(field.type().fullName(), is("java.util.Date"));
