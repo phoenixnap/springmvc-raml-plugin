@@ -1,0 +1,17 @@
+#%RAML 1.0
+title: API
+version: 1.0
+
+types:
+  User:
+    properties:
+      nickNames: string[]
+      orderNumbers: number[]
+
+/users:
+    get:
+      responses:
+        200:
+          body:
+            application/json:
+              type: User[]

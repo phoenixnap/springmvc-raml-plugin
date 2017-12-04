@@ -18,6 +18,7 @@ import java.util.Set;
 
 import org.raml.v2.api.model.v10.datamodel.ArrayTypeDeclaration;
 import org.raml.v2.api.model.v10.datamodel.TypeDeclaration;
+import org.springframework.util.StringUtils;
 
 import com.phoenixnap.oss.ramlapisync.generation.CodeModelHelper;
 import com.phoenixnap.oss.ramlapisync.raml.RamlRoot;
@@ -52,7 +53,12 @@ public class ArrayTypeInterpreter extends BaseTypeInterpreter {
 			
 			//Lets check if we've already handled this class before.
 			if (builderModel != null) {
-				JClass searchedClass = CodeModelHelper.findFirstClassBySimpleName(builderModel, arrayType.items().name());
+				String arrayItem = arrayType.items().name();
+				if (!StringUtils.isEmpty(arrayItem) && arrayItem.endsWith("[]")) {
+					arrayItem = arrayItem.substring(0, arrayItem.length() - 2);
+				}
+				JClass searchedClass = CodeModelHelper.findFirstClassBySimpleName(builderModel,
+						arrayItem);
 				if (!searchedClass.getClass().getSimpleName().contains("JDirectClass")) { //WTF can't we use this dude pff
 					//we've already handled this pojo in the model, no need to re-interpret
 					JClass collection = resolveCollectionClass(arrayType, searchedClass, builderModel);
