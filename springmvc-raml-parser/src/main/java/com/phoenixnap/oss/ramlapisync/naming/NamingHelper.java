@@ -104,7 +104,7 @@ public class NamingHelper {
 				out += "AsJson";
 			}
 			
-			candidate = StringUtils.deleteAny(candidate, " ,.+=-'\"\\|~`#$%^&\n\t");		
+			candidate = StringUtils.deleteAny(candidate, " ,.+=-'\"\\|~`#$%^&\n\t");
 			if (StringUtils.hasText(candidate)) {
 				out = StringUtils.capitalize(candidate) + out;
 			}
@@ -468,14 +468,14 @@ public class NamingHelper {
     		//Split the url into segments by seperator
     		String[] splitUrl = url.split("/");
     		String name = "";
-    		int nonIdsParsed = 0;
+    		int numberOfIdsParsed = 0;
     		int index = splitUrl.length-1;
     		boolean singularizeNext = false;
     		
     		//Parse segments until end is reached or we travers a maximum of 2 non Path Variable segments, these 2 should both have at least 1
     		//id path variable each otherwise they would have been typically part of the parent controller
     		//or we have REALLY long URL nesting which isnt really a happy place.
-    		while (nonIdsParsed < 2 && index >= 0) {
+    		while (numberOfIdsParsed < 2 && index >= 0) {
     			
     			String segment = splitUrl[index];
     			//Lets check for ID path variables
@@ -484,11 +484,11 @@ public class NamingHelper {
     				//peek
     				if (index > 0 && index == splitUrl.length-1) {
     					String peek = splitUrl[index-1].toLowerCase();
-    					if (segment.toLowerCase().contains(NamingHelper.singularize(peek))) {
+    					if (!StringUtils.isEmpty(peek) && segment.toLowerCase().contains(NamingHelper.singularize(peek))) {
     						//this is probably the Id
-    						name = name + "ById";
+    						name = "ById";
     					} else {
-    						name = name + "By" + StringUtils.capitalize(segment.substring(1, segment.length()-1));
+    						name = "By" + StringUtils.capitalize(segment.substring(1, segment.length()-1));
     					}
     				}
     				//Since we probably found an ID, it means that method acts on a single resource in the collection. probably :)
@@ -506,7 +506,7 @@ public class NamingHelper {
         				name = StringUtils.capitalize(segment) + name;
         			}
     				
-    				nonIdsParsed ++;
+    				numberOfIdsParsed ++;
     				if (singularizeNext) { //consume singularisation
         				singularizeNext = false;
         			}
