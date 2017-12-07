@@ -230,7 +230,7 @@ public class ApiActionMetadata {
 	}
 
 	public String getName() {
-		String name = NamingHelper.getActionName(parent.getResource(), resource, action, actionType);
+		String name = NamingHelper.getActionName(parent.getResource(), resource, actionType);
 		if (responseContentTypeFilter != null) {
 			name += NamingHelper.convertContentTypeToQualifier(responseContentTypeFilter);
 		}
