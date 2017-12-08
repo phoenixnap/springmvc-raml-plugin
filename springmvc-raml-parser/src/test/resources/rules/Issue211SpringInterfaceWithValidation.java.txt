@@ -5,8 +5,11 @@ package com.gen.test;
 import javax.validation.Valid;
 import com.gen.test.model.CreateBaseRequest;
 import com.gen.test.model.CreateBaseResponse;
+import com.gen.test.model.UpdateBaseByIdRequest;
+import com.gen.test.model.UpdateBaseByIdResponse;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -33,5 +36,17 @@ public interface BaseController {
         @Valid
         @RequestBody
         CreateBaseRequest createBaseRequest);
+
+    /**
+     * No description
+     *
+     */
+    @RequestMapping(value = "/{id}", method = RequestMethod.PUT)
+    public ResponseEntity<UpdateBaseByIdResponse> updateBaseById(
+        @PathVariable
+        String id,
+        @Valid
+        @RequestBody
+        UpdateBaseByIdRequest updateBaseByIdRequest);
 
 }

@@ -26,7 +26,7 @@ public interface TestController {
      * 
      */
     @RequestMapping(value = "", method = RequestMethod.POST)
-    public ResponseEntity<?> updateTest(
+    public ResponseEntity<?> createTest(
         @RequestParam
         Long[] locationIds,
         @RequestParam

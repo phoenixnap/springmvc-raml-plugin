@@ -67,6 +67,7 @@ import com.sun.codemodel.JVar;
  * @since 0.4.1
  */
 public class SpringMethodParamsRule extends MethodParamsRule {
+    static int paramCounter;
 	
     public SpringMethodParamsRule() {
 		super();
@@ -145,7 +146,10 @@ public class SpringMethodParamsRule extends MethodParamsRule {
     @Override
     protected JVar paramObjects(ApiActionMetadata endpointMetadata, CodeModelHelper.JExtMethod generatableType) {
         JVar param = super.paramObjects(endpointMetadata, generatableType);
-        param.annotate(RequestBody.class);
+        if(paramCounter < 1) {
+            param.annotate(RequestBody.class);
+            paramCounter++;
+        }
         return param;
     }
 

@@ -1,11 +1,8 @@
 package com.phoenixnap.oss.ramlapisync.generation.rules;
 
-import com.phoenixnap.oss.ramlapisync.data.ApiResourceMetadata;
 import com.phoenixnap.oss.ramlapisync.generation.RamlParser;
 import com.phoenixnap.oss.ramlapisync.pojo.PojoGenerationConfig;
 import com.phoenixnap.oss.ramlapisync.raml.InvalidRamlResourceException;
-import com.sun.codemodel.JCodeModel;
-import com.sun.codemodel.JDefinedClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
