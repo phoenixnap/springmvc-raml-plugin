@@ -424,12 +424,7 @@ public class NamingHelper {
 		
 		List<String> nameGroups = new ArrayList<>(asList(splitByCharacterTypeCamelCase(enumConstant)));
 
-        Iterator<String> iter = nameGroups.iterator();
-        while(iter.hasNext()){
-        	if (containsOnly(iter.next().replaceAll(ILLEGAL_CHARACTER_REGEX, "_"), "_")) {
-                iter.remove();
-            }
-        }
+		nameGroups.removeIf(s -> containsOnly(s.replaceAll(ILLEGAL_CHARACTER_REGEX, "_"), "_"));
 
         String enumName = upperCase(join(nameGroups, "_"));
         if (isEmpty(enumName)) {
@@ -515,8 +510,9 @@ public class NamingHelper {
     		//Add the http verb into the mix
     		String tail = splitUrl[splitUrl.length-1];
     		String prefix = convertActionTypeToIntent(actionType, isIdInPath);
+    		//singularize name if it's a proper POST or PUT
     		if (!NamingHelper.singularize(tail).equals(tail) && !tail.endsWith("details")
-					&& RamlActionType.POST.equals(actionType)) {
+					&& (RamlActionType.POST.equals(actionType) || RamlActionType.PUT.equals(actionType) && isIdInPath)) {
     			name = NamingHelper.singularize(name);
     		}
 
