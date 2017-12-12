@@ -486,12 +486,12 @@ public class NamingHelper {
     					String peek = splitUrl[index-1].toLowerCase();
     					if (!StringUtils.isEmpty(peek) && segment.toLowerCase().contains(NamingHelper.singularize(peek))) {
     						//this is probably the Id
-    						name = name + "ById";
+    						name = "ById";
     					} else if (segment.startsWith("{") && segment.endsWith("}")) {
-    						name = name + "By" + StringUtils.capitalize(segment.substring(1, segment.length()-1));
+    						name = "By" + StringUtils.capitalize(segment.substring(1, segment.length()-1));
     					} else {
-    						String[] split = segment.split("\\{|}");
-    						name = name + "By";
+    						String[] split = segment.split("[{}]");
+    						name = "By";
     						for(String segmentPart : split) {
     							name = name + StringUtils.capitalize(segmentPart);
     						}
@@ -513,10 +513,7 @@ public class NamingHelper {
         			}
     				
     				numberOfIdsParsed ++;
-    				if (singularizeNext) { //consume singularisation
-        				singularizeNext = false;
-        			}
-    			}
+				}
     			index--;
     		}
     		
@@ -565,10 +562,4 @@ public class NamingHelper {
 		return ".model";
 	}
 
-
-	public static void main(String[] args) {
-		String test = "size{optionalSize}something";
-		String[] split = test.split("\\{|}");
-		System.out.println(split.length);
-	}
 }
