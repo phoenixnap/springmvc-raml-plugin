@@ -66,7 +66,9 @@ public class RJP08V1RamlUriParameter extends RamlUriParameter {
 
     @Override
     public boolean isRequired() {
-        return uriParameter.isRequired();
+    	// hardcoding to true since we don't have reliable mechanism to detect this value
+    	// by default uriParameters are true
+    	return true;
     }
 
     @Override

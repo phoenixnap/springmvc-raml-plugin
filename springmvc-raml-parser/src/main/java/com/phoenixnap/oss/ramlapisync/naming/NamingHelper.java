@@ -362,7 +362,7 @@ public class NamingHelper {
 				if (singularize) {
 					resourceName = singularize(resourceName);
 				} 
-				resourceName = cleanNameForJava(resourceName);
+				resourceName = StringUtils.capitalize(cleanNameForJava(resourceName));
 				return resourceName;
 		}
     	
@@ -486,9 +486,15 @@ public class NamingHelper {
     					String peek = splitUrl[index-1].toLowerCase();
     					if (!StringUtils.isEmpty(peek) && segment.toLowerCase().contains(NamingHelper.singularize(peek))) {
     						//this is probably the Id
-    						name = "ById";
+    						name = name + "ById";
+    					} else if (segment.startsWith("{") && segment.endsWith("}")) {
+    						name = name + "By" + StringUtils.capitalize(segment.substring(1, segment.length()-1));
     					} else {
-    						name = "By" + StringUtils.capitalize(segment.substring(1, segment.length()-1));
+    						String[] split = segment.split("\\{|}");
+    						name = name + "By";
+    						for(String segmentPart : split) {
+    							name = name + StringUtils.capitalize(segmentPart);
+    						}
     					}
     				}
     				//Since we probably found an ID, it means that method acts on a single resource in the collection. probably :)
@@ -559,5 +565,10 @@ public class NamingHelper {
 		return ".model";
 	}
 
-	
+
+	public static void main(String[] args) {
+		String test = "size{optionalSize}something";
+		String[] split = test.split("\\{|}");
+		System.out.println(split.length);
+	}
 }
