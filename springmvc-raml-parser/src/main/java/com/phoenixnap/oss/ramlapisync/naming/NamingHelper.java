@@ -447,12 +447,10 @@ public class NamingHelper {
 	 * 
 	 * @param controllerizedResource The resource that is mapped to the root controller
 	 * @param resource The child resource that will be mapped as a method of the root controller
-	 * @param action The RAML action object
 	 * @param actionType The ActionType/HTTP Verb for this Action
 	 * @return The java name of the method that will represent this Action
 	 */
-	public static String getActionName(RamlResource controllerizedResource, RamlResource resource, RamlAction action,
-			RamlActionType actionType) {
+	public static String getActionName(RamlResource controllerizedResource, RamlResource resource, RamlActionType actionType) {
 		
 		String url = resource.getUri();
 		//Since this will be part of a resource/controller, remove the parent portion of the URL if enough details remain
@@ -471,7 +469,8 @@ public class NamingHelper {
     		int nonIdsParsed = 0;
     		int index = splitUrl.length-1;
     		boolean singularizeNext = false;
-    		
+    		boolean isIdInPath = false;
+
     		//Parse segments until end is reached or we travers a maximum of 2 non Path Variable segments, these 2 should both have at least 1
     		//id path variable each otherwise they would have been typically part of the parent controller
     		//or we have REALLY long URL nesting which isnt really a happy place.
@@ -481,9 +480,11 @@ public class NamingHelper {
     			//Lets check for ID path variables
     			if (segment.contains("{") && segment.contains("}")) {
     				//should we add this to Method name
-    				//peek
-    				if (index > 0 && index == splitUrl.length-1) {
-    					String peek = splitUrl[index-1].toLowerCase();
+					//peek
+					if (index > 0 && index == splitUrl.length-1) {
+						//set if the last segment of the url is an Id
+						isIdInPath = true;
+						String peek = splitUrl[index-1].toLowerCase();
     					if (segment.toLowerCase().contains(NamingHelper.singularize(peek))) {
     						//this is probably the Id
     						name = name + "ById";
@@ -513,24 +514,18 @@ public class NamingHelper {
         			}
     				
     				nonIdsParsed ++;
-    				if (singularizeNext) { //consume singularisation
-        				singularizeNext = false;
-        			}
     			}
     			index--;
     		}
     		
     		//Add the http verb into the mix
-    		boolean collection = false;
     		String tail = splitUrl[splitUrl.length-1];
-    		if (!NamingHelper.singularize(tail).equals(tail) && !tail.endsWith("details")) {
-    			collection = true;
-    		} 
-    		String prefix = convertActionTypeToIntent(actionType, collection);
-    		if (collection && RamlActionType.POST.equals(actionType)) {
+    		String prefix = convertActionTypeToIntent(actionType, isIdInPath);
+    		if (!NamingHelper.singularize(tail).equals(tail) && !tail.endsWith("details")
+					&& RamlActionType.POST.equals(actionType)) {
     			name = NamingHelper.singularize(name);
     		}
-    		
+
     		return prefix + name;
 		}
     	//Poop happened. return nothing
@@ -541,14 +536,14 @@ public class NamingHelper {
 	 * Attempts to convert the Http Verb into a textual representation of Intent based on REST conventions
 	 * 
 	 * @param actionType The ActionType/Http verb of the action
-	 * @param isTargetCollection True if this action is being done on a collection or plural resource (eg: books)
-	 * @return
+	 * @param isIdInPath True if the path contains an Id meaning that it must be an idempotent operation, i.e. PUT
+	 * @return method name prefix
 	 */
-	private static String convertActionTypeToIntent(RamlActionType actionType, boolean isTargetCollection) {
+	private static String convertActionTypeToIntent(RamlActionType actionType, boolean isIdInPath) {
 		switch (actionType) {
 			case DELETE : return "delete";
 			case GET : return "get";
-			case POST : if (isTargetCollection) {
+			case POST : if (!isIdInPath) {
 							return "create";
 						}
 			case PUT:	return "update";

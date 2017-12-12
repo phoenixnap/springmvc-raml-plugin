@@ -154,7 +154,7 @@ public class CResourceController {
      * 
      */
     @RequestMapping(value = "", method = RequestMethod.POST)
-    public ResponseEntity<?> updateCResource(
+    public ResponseEntity<?> createCResource(
         @Min(15L)
         @Max(25L)
         @RequestParam(name = "form_int_param", required = false)
