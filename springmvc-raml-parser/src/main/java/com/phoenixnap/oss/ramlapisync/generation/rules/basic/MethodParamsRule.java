@@ -17,6 +17,7 @@ import static org.springframework.util.StringUtils.uncapitalize;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import javax.validation.Valid;
 import javax.validation.constraints.Max;
@@ -36,6 +37,7 @@ import com.phoenixnap.oss.ramlapisync.raml.RamlAbstractParam;
 import com.phoenixnap.oss.ramlapisync.raml.RamlActionType;
 import com.phoenixnap.oss.ramlapisync.raml.RamlParamType;
 import com.phoenixnap.oss.ramlapisync.raml.rjp.raml10v2.RJP10V2RamlQueryParameter;
+import com.phoenixnap.oss.ramlapisync.raml.rjp.raml10v2.RJP10V2RamlUriParameter;
 import com.sun.codemodel.JAnnotationUse;
 import com.sun.codemodel.JClass;
 import com.sun.codemodel.JCodeModel;
@@ -128,9 +130,18 @@ public class MethodParamsRule implements Rule<CodeModelHelper.JExtMethod, JMetho
 			}
 	    	generatableType.get().javadoc().addParam(javaName + " " + paramComment);
     	}
-    	Class<?> type = paramMetaData.getType();
+
+    	JClass type = null;
+    	if(paramMetaData.getRamlParam() instanceof RJP10V2RamlUriParameter && paramMetaData.isNullable()) {
+    		// for optional uri parameters use java.util.Optional since Spring doesn't support optional uri parameters
+    		type = generatableType.owner().ref(Optional.class).narrow(paramMetaData.getType());
+    	}
+    	if(type == null) {
+    		type = generatableType.owner().ref(paramMetaData.getType());
+    	}
+    	
     	if (!allowArrayParameters && paramMetaData.isArray() ) {
-    		type = type.getComponentType();
+    		type = generatableType.owner().ref(paramMetaData.getType().getComponentType());
     	} else {
     		//TODO should this be blank?
     	}
