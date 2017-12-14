@@ -1,0 +1,143 @@
+-----------------------------------com.gen.test.model.Booking.java-----------------------------------
+
+package com.gen.test.model;
+
+import java.io.Serializable;
+import org.apache.commons.lang.builder.EqualsBuilder;
+import org.apache.commons.lang.builder.HashCodeBuilder;
+import org.apache.commons.lang.builder.ToStringBuilder;
+
+public class Booking implements Serializable
+{
+
+    private String firstName;
+    private String lastName;
+
+    /**
+     * Creates a new Booking.
+     *
+     */
+    public Booking() {
+        super();
+    }
+
+    /**
+     * Creates a new Booking.
+     *
+     */
+    public Booking(String firstName, String lastName) {
+        super();
+        this.firstName = firstName;
+        this.lastName = lastName;
+    }
+
+    /**
+     * Returns the firstName.
+     *
+     * @return
+     *     firstName
+     */
+    public String getFirstName() {
+        return firstName;
+    }
+
+    /**
+     * Set the firstName.
+     *
+     * @param firstName
+     *     the new firstName
+     */
+    public void setFirstName(String firstName) {
+        this.firstName = firstName;
+    }
+
+    /**
+     * Returns the lastName.
+     *
+     * @return
+     *     lastName
+     */
+    public String getLastName() {
+        return lastName;
+    }
+
+    /**
+     * Set the lastName.
+     *
+     * @param lastName
+     *     the new lastName
+     */
+    public void setLastName(String lastName) {
+        this.lastName = lastName;
+    }
+
+    public int hashCode() {
+        return new HashCodeBuilder().append(firstName).append(lastName).toHashCode();
+    }
+
+    public boolean equals(Object other) {
+        if (other == null) {
+            return false;
+        }
+        if (other == this) {
+            return true;
+        }
+        if (this.getClass()!= other.getClass()) {
+            return false;
+        }
+        Booking otherObject = ((Booking) other);
+        return new EqualsBuilder().append(firstName, otherObject.firstName).append(lastName, otherObject.lastName).isEquals();
+    }
+
+    public String toString() {
+        return new ToStringBuilder(this).append("firstName", firstName).append("lastName", lastName).toString();
+    }
+
+}
+-----------------------------------com.gen.test.BookingController.java-----------------------------------
+
+package com.gen.test;
+
+import java.math.BigDecimal;
+import java.util.List;
+import com.gen.test.model.Booking;
+import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RestController;
+
+
+/**
+ * No description
+ * (Generated with springmvc-raml-parser v.${project.version})
+ *
+ */
+@RestController
+@Validated
+@RequestMapping("/api/customers/{customerId}/bookings")
+public interface BookingController {
+
+
+    /**
+     * No description
+     *
+     */
+    @RequestMapping(value = "", method = RequestMethod.GET)
+    public ResponseEntity<List<Booking>> getCustomerBookings(
+        @PathVariable
+        BigDecimal customerId);
+
+    /**
+     * No description
+     *
+     */
+    @RequestMapping(value = "/{bookingRef}", method = RequestMethod.GET)
+    public ResponseEntity<Booking> getByBookingRef(
+        @PathVariable
+        BigDecimal bookingRef,
+        @PathVariable
+        BigDecimal customerId);
+
+}
