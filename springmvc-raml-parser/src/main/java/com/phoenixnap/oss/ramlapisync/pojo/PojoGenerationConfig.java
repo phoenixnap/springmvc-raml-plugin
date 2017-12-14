@@ -43,6 +43,9 @@ public class PojoGenerationConfig {
 	
 	//If set to true, longs will be generated as BigIntegers
 	private boolean useBigIntegers = false;
+
+	//If we want to generate builder methods
+	private boolean generateBuilderMethods=false;
 		
 		
 	
@@ -75,6 +78,10 @@ public class PojoGenerationConfig {
 	}
 	public boolean isUseBigIntegers() {
 		return useBigIntegers;
+	}
+
+	public boolean isGenerateBuilderMethods() {
+		return generateBuilderMethods;
 	}
 	
 	public PojoGenerationConfig withPackage(String basePackage, String pojoSubPackage) {
@@ -117,6 +124,11 @@ public class PojoGenerationConfig {
 		this.useBigIntegers = useBigIntegers;
 		return this;
 	}
+
+	public PojoGenerationConfig withGenerateBuilderMethods(boolean generateBuilderMethods) {
+		this.generateBuilderMethods = generateBuilderMethods;
+		return this;
+	}
 	
 	/**
 	 * Applies a JSONSchema2Pojo config to this config
@@ -130,7 +142,8 @@ public class PojoGenerationConfig {
 		.withBigDecimals(generationConfig.isUseBigDecimals())
 		.withBigIntegers(generationConfig.isUseBigIntegers())
 		.withJSR303Annotations(generationConfig.isIncludeJsr303Annotations())
-		.withHashcodeEqualsToString((generationConfig.isIncludeHashcodeAndEquals() && generationConfig.isIncludeToString()));
+		.withHashcodeEqualsToString((generationConfig.isIncludeHashcodeAndEquals() && generationConfig.isIncludeToString()))
+		.withGenerateBuilderMethods(generationConfig.isGenerateBuilders());
 	}
 	
 
