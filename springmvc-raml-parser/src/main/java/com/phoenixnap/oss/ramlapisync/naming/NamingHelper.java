@@ -14,6 +14,7 @@ package com.phoenixnap.oss.ramlapisync.naming;
 
 import static java.util.Arrays.asList;
 import static org.apache.commons.lang3.StringUtils.containsOnly;
+import static org.apache.commons.lang3.StringUtils.difference;
 import static org.apache.commons.lang3.StringUtils.isEmpty;
 import static org.apache.commons.lang3.StringUtils.join;
 import static org.apache.commons.lang3.StringUtils.splitByCharacterTypeCamelCase;
@@ -48,6 +49,8 @@ public class NamingHelper {
 	
 	private static final Pattern CONTENT_TYPE_VERSION = Pattern.compile(
 			"[^v]*(v[\\d\\.]*).*", Pattern.CASE_INSENSITIVE);
+
+    private static final Pattern SLASH = Pattern.compile("/");
 	
 	private static final String ILLEGAL_CHARACTER_REGEX = "[^0-9a-zA-Z_$]";
 	
@@ -328,7 +331,7 @@ public class NamingHelper {
 
 		StringBuilder stringBuilder = new StringBuilder();
 		if (StringUtils.hasText(url)) {
-			String[] resources = url.split("/");
+			String[] resources = SLASH.split(url);
 			int lengthCounter = 0;
 			for(int i = resources.length - 1; i >= resourceTopLevelInClassNames + 1; --i){
 				if (StringUtils.hasText(resources[i])) {
@@ -424,12 +427,7 @@ public class NamingHelper {
 		
 		List<String> nameGroups = new ArrayList<>(asList(splitByCharacterTypeCamelCase(enumConstant)));
 
-        Iterator<String> iter = nameGroups.iterator();
-        while(iter.hasNext()){
-        	if (containsOnly(iter.next().replaceAll(ILLEGAL_CHARACTER_REGEX, "_"), "_")) {
-                iter.remove();
-            }
-        }
+        nameGroups.removeIf(s -> containsOnly(s.replaceAll(ILLEGAL_CHARACTER_REGEX, "_"), "_"));
 
         String enumName = upperCase(join(nameGroups, "_"));
         if (isEmpty(enumName)) {
@@ -457,16 +455,16 @@ public class NamingHelper {
 		String url = resource.getUri();
 		//Since this will be part of a resource/controller, remove the parent portion of the URL if enough details remain
 		//to infer a meaningful method name
-		if (controllerizedResource != resource 
+		if (controllerizedResource != resource
 				&& StringUtils.countOccurrencesOf(url, "{") < StringUtils.countOccurrencesOf(url, "/")-1) {
-			url = url.replace(controllerizedResource.getUri(), "");
+			url = reduceToResourceNameAndId(url);
 		}
 		
 		//sanity check
     	if (StringUtils.hasText(url)) {
     		
     		//Split the url into segments by seperator
-    		String[] splitUrl = url.split("/");
+    		String[] splitUrl = SLASH.split(url);
     		String name = "";
     		int numberOfIdsParsed = 0;
     		int index = splitUrl.length-1;
@@ -483,12 +481,9 @@ public class NamingHelper {
     				//should we add this to Method name
     				//peek
     				if (index > 0 && index == splitUrl.length-1) {
-    					String peek = splitUrl[index-1].toLowerCase();
-    					if (!StringUtils.isEmpty(peek) && segment.toLowerCase().contains(NamingHelper.singularize(peek))) {
-    						//this is probably the Id
-    						name = "ById";
-    					} else if (segment.startsWith("{") && segment.endsWith("}")) {
-    						name = "By" + StringUtils.capitalize(segment.substring(1, segment.length()-1));
+    					if (segment.startsWith("{") && segment.endsWith("}")) {
+                            String peek = splitUrl[index-1].toLowerCase();
+    					    name = "By" + StringUtils.capitalize(difference(peek, segment.substring(1, segment.length()-1)));
     					} else {
     						String[] split = segment.split("[{}]");
     						name = "By";
@@ -532,6 +527,17 @@ public class NamingHelper {
 		}
     	//Poop happened. return nothing
 		return null;
+	}
+
+    /**
+     * Reduces long URL paths to a format {@code /resource/{id}}"
+     * @param url
+     * @return
+     */
+	private static String reduceToResourceNameAndId(String url) {
+        String[] splitUrl = SLASH.split(url);
+        String slash = "/";
+        return slash + splitUrl[splitUrl.length - 2] + slash + splitUrl[splitUrl.length - 1];
 	}
 
 	/**
