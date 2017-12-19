@@ -16,30 +16,30 @@ title: displayName bug
         type: string
         displayName: queryStrDisplayName
   /str/{uri_string_param}:
-      uriParameters: 
-        uri_string_param: 
+      uriParameters:
+        uri_string_param:
           type: string
           displayName: uriStrDisplayName
       get:
-        responses: 
+        responses:
           200:
-            body: 
+            body:
               application/json:
   /int/{uri_int_param}:
-      uriParameters: 
-        uri_int_param: 
+      uriParameters:
+        uri_int_param:
           type: integer
           displayName: uriIntDisplayName
       get:
-        responses: 
+        responses:
           200:
-            body: 
+            body:
               application/json:
 /c_resource:
   post:
-    body: 
+    body:
       application/x-www-form-urlencoded:
-        properties: 
+        properties:
           form_string_param:
             type: string
             displayName: formStrDisplayName

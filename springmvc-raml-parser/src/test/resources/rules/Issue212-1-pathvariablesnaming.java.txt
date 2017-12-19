@@ -134,7 +134,7 @@ public interface BookingController {
      *
      */
     @RequestMapping(value = "/{bookingRef}", method = RequestMethod.GET)
-    public ResponseEntity<Booking> getByBookingRef(
+    public ResponseEntity<Booking> getBookingByRef(
         @PathVariable
         BigDecimal bookingRef,
         @PathVariable
