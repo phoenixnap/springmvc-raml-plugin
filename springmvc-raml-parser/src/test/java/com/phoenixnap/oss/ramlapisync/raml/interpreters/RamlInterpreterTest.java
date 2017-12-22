@@ -27,6 +27,7 @@ import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
 
+import com.sun.codemodel.JMethod;
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.log4j.Logger;
 import org.junit.After;
@@ -190,6 +191,15 @@ public class RamlInterpreterTest {
 		}
     	return null;
     }
+
+	private JMethod getMethod(JDefinedClass classToCheck, String methodToFind) {
+		for (JMethod method : classToCheck.methods()) {
+			if( methodToFind.equals(method.name())){
+				return method;
+			}
+		}
+		return null;
+	}
     
     private void checkIfFieldContainsAnnotation(boolean expected, JDefinedClass classToCheck, Class<?> annotationClass, String... fields) {
     	for (JFieldVar field : classToCheck.fields().values()) {
@@ -372,14 +382,27 @@ public class RamlInterpreterTest {
 	@Test
 	public void checkBigInteger() {
 		PojoGenerationConfig jsr303Config = new PojoGenerationConfig().withPackage("com.gen.foo", "").withBigIntegers(true);
-        assertThat(ramlRoot, is(notNullValue())); 
+        assertThat(ramlRoot, is(notNullValue()));
         RamlResource bigStuff = ramlRoot.getResource("/bigStuff");
-        
+
         RamlDataType getType = bigStuff.getAction(RamlActionType.GET).getResponses().get("200").getBody().get("application/json").getType();
-        assertThat(getType, is(notNullValue()));        
+        assertThat(getType, is(notNullValue()));
         ApiBodyMetadata validationsGetRequest = RamlTypeHelper.mapTypeToPojo(jsr303Config, jCodeModel, ramlRoot, getType.getType(), "testName");
         JFieldVar field = getField((JDefinedClass) CodeModelHelper.findFirstClassBySimpleName(validationsGetRequest.getCodeModel(), "BigStuff"), "theInteger");
         assertThat(field.type().fullName(), is(BigInteger.class.getName()));
+	}
+
+	@Test
+	public void checkBuilderMethods() {
+		PojoGenerationConfig config = new PojoGenerationConfig().withPackage("com.gen.foo", "").withGenerateBuilderMethods(true);
+		assertThat(ramlRoot, is(notNullValue()));
+		RamlResource bigStuff = ramlRoot.getResource("/bigStuff");
+
+		RamlDataType getType = bigStuff.getAction(RamlActionType.GET).getResponses().get("200").getBody().get("application/json").getType();
+		assertThat(getType, is(notNullValue()));
+		ApiBodyMetadata validationsGetRequest = RamlTypeHelper.mapTypeToPojo(config, jCodeModel, ramlRoot, getType.getType(), "testName");
+		JMethod method = getMethod((JDefinedClass) CodeModelHelper.findFirstClassBySimpleName(validationsGetRequest.getCodeModel(), "BigStuff"), "withTheInteger");
+		assertThat(method, is(notNullValue()));
 	}
 
 	@Test

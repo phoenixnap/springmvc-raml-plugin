@@ -126,13 +126,11 @@ public class ApiParameterMetadata {
 
 
 		if (param instanceof RamlUriParameter) {
-			resourceId = true;
-			nullable = false;
+			this.resourceId = true;
 		} else {
-			resourceId = false;
-			nullable = !param.isRequired();
+			this.resourceId = false;
 		}
-
+		this.nullable = !param.isRequired();
 
 		this.name = name;
 		this.displayName = param.getDisplayName();

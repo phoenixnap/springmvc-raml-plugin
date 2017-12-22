@@ -53,7 +53,7 @@ public class NamingHelperTest {
 		assertEquals("Should deal with invalid java identifiers", "_2342quote", NamingHelper.getResourceName(testResource, true));
 		
 		testResource.setRelativeUri("/;qu%ot'es");
-		assertEquals("Should deal with invalid java characters", "quote", NamingHelper.getResourceName(testResource, true));
+		assertEquals("Should deal with invalid java characters", "Quote", NamingHelper.getResourceName(testResource, true));
 	}
 	
 	@Test

@@ -65,7 +65,7 @@ public class BaseControllerDecorator
     @RequestMapping(value = "/endpoint/{id}", method = RequestMethod.GET)
     public ResponseEntity<?> getEndpointById(
         @Pattern(regexp = "^.{1,255}$")
-        @PathVariable(required = false)
+        @PathVariable
         String id,
         @Pattern(regexp = "^.{1,255}$")
         @RequestParam

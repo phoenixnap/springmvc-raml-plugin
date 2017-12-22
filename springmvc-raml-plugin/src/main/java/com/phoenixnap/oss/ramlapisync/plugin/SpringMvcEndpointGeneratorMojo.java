@@ -270,7 +270,7 @@ public class SpringMvcEndpointGeneratorMojo extends AbstractMojo {
             throw new IOException("Could not create directory:" + rootDir.getAbsolutePath());
         }
 
-        generateCode(codeModel, controllers, rootDir);        
+        generateCode(codeModel, controllers, rootDir);
         generateUnreferencedSchemas(codeModel, resolvedRamlPath, loadRamlFromFile, rootDir);
         
     	if (unifiedModel) {
@@ -282,7 +282,7 @@ public class SpringMvcEndpointGeneratorMojo extends AbstractMojo {
     private void generateUnreferencedSchemas(JCodeModel codeModel, String resolvedRamlPath, RamlRoot loadRamlFromFile, File rootDir) {
         if (this.generateUnreferencedSchemas) {
         	this.getLog().debug("Generating Code for Unreferenced Schemas");
-
+            boolean isErrorDtoInList = loadRamlFromFile.getSchemas().stream().anyMatch(map -> map.containsKey("ErrorDto"));
             if (loadRamlFromFile.getSchemas() != null && !loadRamlFromFile.getSchemas().isEmpty()) {
                 for (Map<String, String> map : loadRamlFromFile.getSchemas()) {
                     for (String schemaName : map.keySet()) {

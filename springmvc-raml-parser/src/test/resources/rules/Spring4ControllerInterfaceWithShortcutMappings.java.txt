@@ -178,7 +178,7 @@ public interface PersonManagerController {
      *
      */
     @PutMapping("/{id}")
-    public ResponseEntity<?> updateById(
+    public ResponseEntity<?> updateManagerById(
         @PathVariable
         String id,
         @Valid
@@ -190,7 +190,7 @@ public interface PersonManagerController {
      *
      */
     @DeleteMapping("/{id}")
-    public ResponseEntity<?> deleteById(
+    public ResponseEntity<?> deleteManagerById(
         @PathVariable
         String id);
 

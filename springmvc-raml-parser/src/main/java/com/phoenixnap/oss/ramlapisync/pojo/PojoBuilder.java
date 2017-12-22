@@ -247,6 +247,15 @@ public class PojoBuilder extends AbstractBuilder {
 		setter.javadoc().add("Set the " + name + ".");
 		setter.javadoc().addParam(field.name()).add("the new " + field.name());
 
+		// Add with method
+		if (this.config.isGenerateBuilderMethods()) {
+			JMethod wither = this.pojo.method(JMod.PUBLIC, this.pojo, "with" + fieldName);
+			wither.param(field.type(), field.name());
+			wither.body().assign(JExpr._this().ref(field.name()), JExpr.ref(field.name()))._return(JExpr._this());
+			wither.javadoc().add("With the " + name + ".");
+			wither.javadoc().addParam(field.name()).add("the new " + field.name());
+		}
+
 		return this;
 	}
 

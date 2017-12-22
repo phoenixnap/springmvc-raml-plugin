@@ -14,6 +14,7 @@ package com.phoenixnap.oss.ramlapisync.naming;
 
 import static java.util.Arrays.asList;
 import static org.apache.commons.lang3.StringUtils.containsOnly;
+import static org.apache.commons.lang3.StringUtils.difference;
 import static org.apache.commons.lang3.StringUtils.isEmpty;
 import static org.apache.commons.lang3.StringUtils.join;
 import static org.apache.commons.lang3.StringUtils.splitByCharacterTypeCamelCase;
@@ -48,7 +49,9 @@ public class NamingHelper {
 	
 	private static final Pattern CONTENT_TYPE_VERSION = Pattern.compile(
 			"[^v]*(v[\\d\\.]*).*", Pattern.CASE_INSENSITIVE);
-	
+
+    private static final Pattern SLASH = Pattern.compile("/");
+
 	private static final String ILLEGAL_CHARACTER_REGEX = "[^0-9a-zA-Z_$]";
 	
 	private static NameHelper cachedNameHelper;
@@ -104,7 +107,7 @@ public class NamingHelper {
 				out += "AsJson";
 			}
 			
-			candidate = StringUtils.deleteAny(candidate, " ,.+=-'\"\\|~`#$%^&\n\t");		
+			candidate = StringUtils.deleteAny(candidate, " ,.+=-'\"\\|~`#$%^&\n\t");
 			if (StringUtils.hasText(candidate)) {
 				out = StringUtils.capitalize(candidate) + out;
 			}
@@ -328,7 +331,7 @@ public class NamingHelper {
 
 		StringBuilder stringBuilder = new StringBuilder();
 		if (StringUtils.hasText(url)) {
-			String[] resources = url.split("/");
+			String[] resources = SLASH.split(url);
 			int lengthCounter = 0;
 			for(int i = resources.length - 1; i >= resourceTopLevelInClassNames + 1; --i){
 				if (StringUtils.hasText(resources[i])) {
@@ -362,7 +365,7 @@ public class NamingHelper {
 				if (singularize) {
 					resourceName = singularize(resourceName);
 				} 
-				resourceName = cleanNameForJava(resourceName);
+				resourceName = StringUtils.capitalize(cleanNameForJava(resourceName));
 				return resourceName;
 		}
     	
@@ -424,7 +427,7 @@ public class NamingHelper {
 		
 		List<String> nameGroups = new ArrayList<>(asList(splitByCharacterTypeCamelCase(enumConstant)));
 
-		nameGroups.removeIf(s -> containsOnly(s.replaceAll(ILLEGAL_CHARACTER_REGEX, "_"), "_"));
+        nameGroups.removeIf(s -> containsOnly(s.replaceAll(ILLEGAL_CHARACTER_REGEX, "_"), "_"));
 
         String enumName = upperCase(join(nameGroups, "_"));
         if (isEmpty(enumName)) {
@@ -450,18 +453,18 @@ public class NamingHelper {
 		String url = resource.getUri();
 		//Since this will be part of a resource/controller, remove the parent portion of the URL if enough details remain
 		//to infer a meaningful method name
-		if (controllerizedResource != resource 
+		if (controllerizedResource != resource
 				&& StringUtils.countOccurrencesOf(url, "{") < StringUtils.countOccurrencesOf(url, "/")-1) {
-			url = url.replace(controllerizedResource.getUri(), "");
+			url = reduceToResourceNameAndId(url);
 		}
 		
 		//sanity check
     	if (StringUtils.hasText(url)) {
     		
     		//Split the url into segments by seperator
-    		String[] splitUrl = url.split("/");
+    		String[] splitUrl = SLASH.split(url);
     		String name = "";
-    		int nonIdsParsed = 0;
+    		int numberOfIdsParsed = 0;
     		int index = splitUrl.length-1;
     		boolean singularizeNext = false;
     		boolean isIdInPath = false;
@@ -469,22 +472,24 @@ public class NamingHelper {
     		//Parse segments until end is reached or we travers a maximum of 2 non Path Variable segments, these 2 should both have at least 1
     		//id path variable each otherwise they would have been typically part of the parent controller
     		//or we have REALLY long URL nesting which isnt really a happy place.
-    		while (nonIdsParsed < 2 && index >= 0) {
+    		while (numberOfIdsParsed < 2 && index >= 0) {
     			
     			String segment = splitUrl[index];
     			//Lets check for ID path variables
     			if (segment.contains("{") && segment.contains("}")) {
+					//set if the last segment of the url is an Id
+					isIdInPath = true;
     				//should we add this to Method name
-					//peek
-					if (index > 0 && index == splitUrl.length-1) {
-						//set if the last segment of the url is an Id
-						isIdInPath = true;
-						String peek = splitUrl[index-1].toLowerCase();
-    					if (segment.toLowerCase().contains(NamingHelper.singularize(peek))) {
-    						//this is probably the Id
-    						name = name + "ById";
+    				if (index > 0 && index == splitUrl.length-1) {
+    					if (segment.startsWith("{") && segment.endsWith("}")) {
+                            String peek = splitUrl[index-1].toLowerCase();
+    					    name = "By" + StringUtils.capitalize(difference(peek, segment.substring(1, segment.length()-1)));
     					} else {
-    						name = name + "By" + StringUtils.capitalize(segment.substring(1, segment.length()-1));
+    						String[] split = segment.split("[{}]");
+    						name = "By";
+    						for(String segmentPart : split) {
+    							name = name + StringUtils.capitalize(segmentPart);
+    						}
     					}
     				}
     				//Since we probably found an ID, it means that method acts on a single resource in the collection. probably :)
@@ -502,8 +507,8 @@ public class NamingHelper {
         				name = StringUtils.capitalize(segment) + name;
         			}
     				
-    				nonIdsParsed ++;
-    			}
+    				numberOfIdsParsed ++;
+				}
     			index--;
     		}
     		
@@ -520,6 +525,17 @@ public class NamingHelper {
 		}
     	//Poop happened. return nothing
 		return null;
+	}
+
+    /**
+     * Reduces long URL paths to a format {@code /resource/{id}}"
+     * @param url
+     * @return
+     */
+	private static String reduceToResourceNameAndId(String url) {
+        String[] splitUrl = SLASH.split(url);
+        String slash = "/";
+        return slash + splitUrl[splitUrl.length - 2] + slash + splitUrl[splitUrl.length - 1];
 	}
 
 	/**
@@ -550,5 +566,4 @@ public class NamingHelper {
 		return ".model";
 	}
 
-	
 }

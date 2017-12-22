@@ -1,0 +1,23 @@
+#%RAML 1.0
+title: API
+version: 1.0
+
+/cars:
+  /{carId}:
+    uriParameters: 
+      carId: number
+    get:
+      responses: 
+        200:
+          body: 
+            application/json:
+              type: string
+    /wheels/{wheelId}:
+      uriParameters: 
+        wheelId?: number # optional path variable
+      get:
+        responses: 
+          200:
+            body: 
+              application/json:
+                type: string
