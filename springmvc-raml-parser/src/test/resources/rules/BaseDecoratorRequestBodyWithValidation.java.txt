@@ -3,8 +3,8 @@
 package com.gen.test;
 
 import javax.validation.Valid;
-import com.gen.test.model.UpdateBaseRequest;
-import com.gen.test.model.UpdateBaseResponse;
+import com.gen.test.model.CreateBaseRequest;
+import com.gen.test.model.CreateBaseResponse;
 import org.springframework.http.ResponseEntity;
 
 
@@ -20,9 +20,9 @@ public interface BaseController {
      * No description
      *
      */
-    public ResponseEntity<UpdateBaseResponse> updateBase(
+    public ResponseEntity<CreateBaseResponse> createBase(
         @Valid
-        UpdateBaseRequest updateBaseRequest);
+        CreateBaseRequest createBaseRequest);
 
 }
 -----------------------------------com.gen.test.BaseControllerDecorator.java-----------------------------------
@@ -30,8 +30,8 @@ public interface BaseController {
 package com.gen.test;
 
 import javax.validation.Valid;
-import com.gen.test.model.UpdateBaseRequest;
-import com.gen.test.model.UpdateBaseResponse;
+import com.gen.test.model.CreateBaseRequest;
+import com.gen.test.model.CreateBaseResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
@@ -61,11 +61,11 @@ public class BaseControllerDecorator
      *
      */
     @RequestMapping(value = "", method = RequestMethod.POST)
-    public ResponseEntity<UpdateBaseResponse> updateBase(
+    public ResponseEntity<CreateBaseResponse> createBase(
         @Valid
         @RequestBody
-        UpdateBaseRequest updateBaseRequest) {
-        return this.baseControllerDelegate.updateBase(updateBaseRequest);
+        CreateBaseRequest createBaseRequest) {
+        return this.baseControllerDelegate.createBase(createBaseRequest);
     }
 
 }
