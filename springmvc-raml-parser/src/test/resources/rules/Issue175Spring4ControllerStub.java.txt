@@ -97,7 +97,7 @@ public class BResourceController {
         "/string/{uri_string_param}",
         "/string/"
     }, method = RequestMethod.GET)
-    public ResponseEntity<?> getStringById(
+    public ResponseEntity<?> getStringByUri_string_param(
         @Pattern(regexp = "^[a-z]+$")
         @Size(min = 4, max = 14)
         @PathVariable(name = "uri_string_param", required = false)
