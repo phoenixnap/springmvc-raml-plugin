@@ -353,7 +353,7 @@ public interface EmployeeController {
      *
      */
     @RequestMapping(value = "", method = RequestMethod.POST)
-    public ResponseEntity<EmployeeRs> updateEmployee(
+    public ResponseEntity<EmployeeRs> createEmployee(
         @Valid
         @RequestBody
         EmployeeRq employeeRq);
