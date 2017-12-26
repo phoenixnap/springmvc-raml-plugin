@@ -90,13 +90,9 @@ public class RamlTypeHelper {
      *            The Raml document being parsed
      * @param type
      *            The RAML type declaration
-     * @param name
-     *            The suggested name of the class based on the api call and whether it's a
-     *            request/response. This will only be used if no suitable alternative is found in
-     *            the type
      * @return Object representing this Body
      */
-	public static ApiBodyMetadata mapTypeToPojo(PojoGenerationConfig config, JCodeModel pojoCodeModel, RamlRoot document, TypeDeclaration type, String name) {
+	public static ApiBodyMetadata mapTypeToPojo(PojoGenerationConfig config, JCodeModel pojoCodeModel, RamlRoot document, TypeDeclaration type) {
 		RamlInterpretationResult interpret = RamlInterpreterFactory.getInterpreterForType(type).interpret(document, type, pojoCodeModel, config, false);
 		
 		//here we expect that a new object is created i guess... we'd need to see how primitive arrays fit in

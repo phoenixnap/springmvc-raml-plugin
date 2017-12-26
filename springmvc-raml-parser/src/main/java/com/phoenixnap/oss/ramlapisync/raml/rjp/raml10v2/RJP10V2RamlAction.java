@@ -71,7 +71,7 @@ public class RJP10V2RamlAction implements RamlAction {
                 method.queryParameters(),
                 queryParameters,
                 ramlModelFactory::createRamlQueryParameter,
-                r -> RamlTypeHelper.getName(r));
+                RamlTypeHelper::getName);
     }
 
     @Override
@@ -99,7 +99,7 @@ public class RJP10V2RamlAction implements RamlAction {
                 method.headers(),
                 headers,
                 ramlModelFactory::createRamlHeader,
-				r -> RamlTypeHelper.getName(r));
+                RamlTypeHelper::getName);
     }
 
     @Override
@@ -108,7 +108,7 @@ public class RJP10V2RamlAction implements RamlAction {
                 method.body(),
                 body,
                 ramlModelFactory::createRamlMimeType,
-				r -> RamlTypeHelper.getName(r));
+                RamlTypeHelper::getName);
     }
 
     @Override
