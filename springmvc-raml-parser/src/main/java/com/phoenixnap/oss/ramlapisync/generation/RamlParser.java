@@ -45,11 +45,11 @@ public class RamlParser {
 	 */
 	protected static final Logger logger = LoggerFactory.getLogger(RamlParser.class);
 	
-	protected static final int DEFAULT_RESOURCE_DEPTH = 1;
+	public static final int DEFAULT_RESOURCE_DEPTH = 1;
 
-	protected static final int DEFAULT_RESOURCE_TOP_LEVEL = 0;
+	public static final int DEFAULT_RESOURCE_TOP_LEVEL = 0;
 
-	protected static final boolean DEFAULT_REVERSE_ORDER = false;
+	public static final boolean DEFAULT_REVERSE_ORDER = false;
 
 	/**
 	 * Base configuration for code generation

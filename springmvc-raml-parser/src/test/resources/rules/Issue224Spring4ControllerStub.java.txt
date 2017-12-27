@@ -1,0 +1,479 @@
+-----------------------------------com.gen.test.model.Book.java-----------------------------------
+
+package com.gen.test.model;
+
+import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
+import javax.validation.Valid;
+import javax.validation.constraints.NotNull;
+import org.apache.commons.lang.builder.EqualsBuilder;
+import org.apache.commons.lang.builder.HashCodeBuilder;
+import org.apache.commons.lang.builder.ToStringBuilder;
+
+public class Book implements Serializable
+{
+
+    @NotNull
+    private Double id;
+    @NotNull
+    private String title;
+    @NotNull
+    private String author;
+    @NotNull
+    @Valid
+    private Publisher publisher;
+    @Valid
+    private List<Chapter> chapters = new ArrayList<Chapter>();
+
+    /**
+     * Creates a new Book.
+     * 
+     */
+    public Book() {
+        super();
+    }
+
+    /**
+     * Creates a new Book.
+     * 
+     */
+    public Book(Double id, String title, String author, Publisher publisher, List<Chapter> chapters) {
+        super();
+        this.id = id;
+        this.title = title;
+        this.author = author;
+        this.publisher = publisher;
+        this.chapters = chapters;
+    }
+
+    /**
+     * Returns the id.
+     * 
+     * @return
+     *     id
+     */
+    public Double getId() {
+        return id;
+    }
+
+    /**
+     * Set the id.
+     * 
+     * @param id
+     *     the new id
+     */
+    public void setId(Double id) {
+        this.id = id;
+    }
+
+    /**
+     * Returns the title.
+     * 
+     * @return
+     *     title
+     */
+    public String getTitle() {
+        return title;
+    }
+
+    /**
+     * Set the title.
+     * 
+     * @param title
+     *     the new title
+     */
+    public void setTitle(String title) {
+        this.title = title;
+    }
+
+    /**
+     * Returns the author.
+     * 
+     * @return
+     *     author
+     */
+    public String getAuthor() {
+        return author;
+    }
+
+    /**
+     * Set the author.
+     * 
+     * @param author
+     *     the new author
+     */
+    public void setAuthor(String author) {
+        this.author = author;
+    }
+
+    /**
+     * Returns the publisher.
+     * 
+     * @return
+     *     publisher
+     */
+    public Publisher getPublisher() {
+        return publisher;
+    }
+
+    /**
+     * Set the publisher.
+     * 
+     * @param publisher
+     *     the new publisher
+     */
+    public void setPublisher(Publisher publisher) {
+        this.publisher = publisher;
+    }
+
+    /**
+     * Returns the chapters.
+     * 
+     * @return
+     *     chapters
+     */
+    public List<Chapter> getChapters() {
+        return chapters;
+    }
+
+    /**
+     * Set the chapters.
+     * 
+     * @param chapters
+     *     the new chapters
+     */
+    public void setChapters(List<Chapter> chapters) {
+        this.chapters = chapters;
+    }
+
+    public int hashCode() {
+        return new HashCodeBuilder().append(id).append(title).append(author).append(publisher).append(chapters).toHashCode();
+    }
+
+    public boolean equals(Object other) {
+        if (other == null) {
+            return false;
+        }
+        if (other == this) {
+            return true;
+        }
+        if (this.getClass()!= other.getClass()) {
+            return false;
+        }
+        Book otherObject = ((Book) other);
+        return new EqualsBuilder().append(id, otherObject.id).append(title, otherObject.title).append(author, otherObject.author).append(publisher, otherObject.publisher).append(chapters, otherObject.chapters).isEquals();
+    }
+
+    public String toString() {
+        return new ToStringBuilder(this).append("id", id).append("title", title).append("author", author).append("publisher", publisher).append("chapters", chapters).toString();
+    }
+
+}
+-----------------------------------com.gen.test.model.Chapter.java-----------------------------------
+
+package com.gen.test.model;
+
+import java.io.Serializable;
+import javax.validation.constraints.NotNull;
+import org.apache.commons.lang.builder.EqualsBuilder;
+import org.apache.commons.lang.builder.HashCodeBuilder;
+import org.apache.commons.lang.builder.ToStringBuilder;
+
+public class Chapter implements Serializable
+{
+
+    @NotNull
+    private String chapTitle;
+    @NotNull
+    private Double noPages;
+
+    /**
+     * Creates a new Chapter.
+     * 
+     */
+    public Chapter() {
+        super();
+    }
+
+    /**
+     * Creates a new Chapter.
+     * 
+     */
+    public Chapter(String chapTitle, Double noPages) {
+        super();
+        this.chapTitle = chapTitle;
+        this.noPages = noPages;
+    }
+
+    /**
+     * Returns the chapTitle.
+     * 
+     * @return
+     *     chapTitle
+     */
+    public String getChapTitle() {
+        return chapTitle;
+    }
+
+    /**
+     * Set the chapTitle.
+     * 
+     * @param chapTitle
+     *     the new chapTitle
+     */
+    public void setChapTitle(String chapTitle) {
+        this.chapTitle = chapTitle;
+    }
+
+    /**
+     * Returns the noPages.
+     * 
+     * @return
+     *     noPages
+     */
+    public Double getNoPages() {
+        return noPages;
+    }
+
+    /**
+     * Set the noPages.
+     * 
+     * @param noPages
+     *     the new noPages
+     */
+    public void setNoPages(Double noPages) {
+        this.noPages = noPages;
+    }
+
+    public int hashCode() {
+        return new HashCodeBuilder().append(chapTitle).append(noPages).toHashCode();
+    }
+
+    public boolean equals(Object other) {
+        if (other == null) {
+            return false;
+        }
+        if (other == this) {
+            return true;
+        }
+        if (this.getClass()!= other.getClass()) {
+            return false;
+        }
+        Chapter otherObject = ((Chapter) other);
+        return new EqualsBuilder().append(chapTitle, otherObject.chapTitle).append(noPages, otherObject.noPages).isEquals();
+    }
+
+    public String toString() {
+        return new ToStringBuilder(this).append("chapTitle", chapTitle).append("noPages", noPages).toString();
+    }
+
+}
+-----------------------------------com.gen.test.model.Publisher.java-----------------------------------
+
+package com.gen.test.model;
+
+import java.io.Serializable;
+import javax.validation.constraints.NotNull;
+import org.apache.commons.lang.builder.EqualsBuilder;
+import org.apache.commons.lang.builder.HashCodeBuilder;
+import org.apache.commons.lang.builder.ToStringBuilder;
+
+public class Publisher implements Serializable
+{
+
+    @NotNull
+    private String name;
+    @NotNull
+    private String country;
+    private Long revenue;
+
+    /**
+     * Creates a new Publisher.
+     * 
+     */
+    public Publisher() {
+        super();
+    }
+
+    /**
+     * Creates a new Publisher.
+     * 
+     */
+    public Publisher(String name, String country, Long revenue) {
+        super();
+        this.name = name;
+        this.country = country;
+        this.revenue = revenue;
+    }
+
+    /**
+     * Returns the name.
+     * 
+     * @return
+     *     name
+     */
+    public String getName() {
+        return name;
+    }
+
+    /**
+     * Set the name.
+     * 
+     * @param name
+     *     the new name
+     */
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    /**
+     * Returns the country.
+     * 
+     * @return
+     *     country
+     */
+    public String getCountry() {
+        return country;
+    }
+
+    /**
+     * Set the country.
+     * 
+     * @param country
+     *     the new country
+     */
+    public void setCountry(String country) {
+        this.country = country;
+    }
+
+    /**
+     * Returns the revenue.
+     * 
+     * @return
+     *     revenue
+     */
+    public Long getRevenue() {
+        return revenue;
+    }
+
+    /**
+     * Set the revenue.
+     * 
+     * @param revenue
+     *     the new revenue
+     */
+    public void setRevenue(Long revenue) {
+        this.revenue = revenue;
+    }
+
+    public int hashCode() {
+        return new HashCodeBuilder().append(name).append(country).append(revenue).toHashCode();
+    }
+
+    public boolean equals(Object other) {
+        if (other == null) {
+            return false;
+        }
+        if (other == this) {
+            return true;
+        }
+        if (this.getClass()!= other.getClass()) {
+            return false;
+        }
+        Publisher otherObject = ((Publisher) other);
+        return new EqualsBuilder().append(name, otherObject.name).append(country, otherObject.country).append(revenue, otherObject.revenue).isEquals();
+    }
+
+    public String toString() {
+        return new ToStringBuilder(this).append("name", name).append("country", country).append("revenue", revenue).toString();
+    }
+
+}
+-----------------------------------com.gen.test.BookController.java-----------------------------------
+
+package com.gen.test;
+
+import java.util.List;
+import javax.validation.Valid;
+import com.gen.test.model.Book;
+import org.springframework.http.ResponseEntity;
+
+
+/**
+ * No description
+ * (Generated with springmvc-raml-parser v.${project.version})
+ * 
+ */
+public interface BookController {
+
+
+    /**
+     * Get all
+     * 
+     */
+    public ResponseEntity<List<Book>> getBooks();
+
+    /**
+     * Create
+     * 
+     */
+    public ResponseEntity<?> createBook(
+        @Valid
+        Book book);
+
+}
+-----------------------------------com.gen.test.BookControllerDecorator.java-----------------------------------
+
+package com.gen.test;
+
+import java.util.List;
+import javax.validation.Valid;
+import com.gen.test.model.Book;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RestController;
+
+
+/**
+ * No description
+ * (Generated with springmvc-raml-parser v.${project.version})
+ * 
+ */
+@RestController
+@RequestMapping("/api/books")
+@Validated
+public class BookControllerDecorator
+    implements BookController
+{
+
+    @Autowired
+    private BookController bookControllerDelegate;
+
+    /**
+     * Get all
+     * 
+     */
+    @RequestMapping(value = "", method = RequestMethod.GET)
+    public ResponseEntity<List<Book>> getBooks() {
+        return this.bookControllerDelegate.getBooks();
+    }
+
+    /**
+     * Create
+     * 
+     */
+    @RequestMapping(value = "", method = RequestMethod.POST)
+    public ResponseEntity<?> createBook(
+        @Valid
+        @RequestBody
+        Book book) {
+        return this.bookControllerDelegate.createBook(book);
+    }
+
+}
+

@@ -217,7 +217,17 @@ public class PojoBuilder extends AbstractBuilder {
 		// Add private variable
 		JFieldVar field = this.pojo.field(JMod.PRIVATE, resolvedType, toJavaName(name), jExpression);
 		if (this.config.isGenerateJSR303Annotations() && validations != null) {
-			validations.annotateFieldJSR303(field);
+			
+			// check if field is complex object so we can mark it with @Valid
+			boolean isPOJO = type.startsWith(this.pojo._package().name() + ".");
+			if (!isPOJO
+					&& resolvedType.getClass().getName().equals("com.sun.codemodel.JNarrowedClass")
+					&& resolvedType.getTypeParameters().size() == 1) {
+				JClass typeClass = resolvedType.getTypeParameters().get(0);
+				isPOJO = typeClass.fullName().startsWith(this.pojo._package().name() + ".");
+			}
+			
+			validations.annotateFieldJSR303(field, isPOJO);
 		}
 		
 		if (resolvedType.name().equals(Date.class.getSimpleName())) {

@@ -1,5 +1,6 @@
 package com.phoenixnap.oss.ramlapisync.pojo;
 
+import javax.validation.Valid;
 import javax.validation.constraints.DecimalMax;
 import javax.validation.constraints.DecimalMin;
 import javax.validation.constraints.NotNull;
@@ -80,7 +81,7 @@ public class RamlTypeValidations {
 	 * 
 	 * @param field to add annotations to
 	 */
-	public void annotateFieldJSR303(JFieldVar field) {
+	public void annotateFieldJSR303(JFieldVar field, boolean addValidAnnotation) {
 		if (isRequired()) {
 			field.annotate(NotNull.class);
 		}
@@ -99,7 +100,10 @@ public class RamlTypeValidations {
                 annotation.param("max", getMaxLength());
             }
 		}
-
+		if(addValidAnnotation) {
+			field.annotate(Valid.class);
+		}
+		
         if (minimum != null ) {
         	JAnnotationUse annotation = field.annotate(DecimalMin.class); 
             annotation.param("value", String.valueOf(minimum));

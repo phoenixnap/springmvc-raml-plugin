@@ -1,0 +1,38 @@
+#%RAML 1.0
+title: API
+version: 1.0
+
+types:
+  Chapter:
+    type: object
+    properties: 
+      chapTitle: string
+      noPages: number
+  Publisher:
+    type: object
+    properties: 
+      name: string
+      country: string
+      revenue?: integer
+  Book: 
+    type: object
+    properties: 
+      id: number
+      title: string
+      author: string
+      publisher: Publisher
+      chapters?: Chapter[]
+
+/books:
+  get:
+    description: Get all
+    responses: 
+      200:
+        body: 
+          application/json:
+            type: Book[]
+  post:
+    description: Create
+    body: 
+      application/json:
+        type: Book
