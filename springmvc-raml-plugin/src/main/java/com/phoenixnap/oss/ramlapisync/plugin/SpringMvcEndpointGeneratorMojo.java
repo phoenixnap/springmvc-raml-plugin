@@ -13,20 +13,27 @@
 package com.phoenixnap.oss.ramlapisync.plugin;
 
 
-import java.io.File;
-import java.io.IOException;
-import java.lang.reflect.Method;
-import java.net.MalformedURLException;
-import java.net.URL;
-import java.net.URLClassLoader;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-
+import com.phoenixnap.oss.ramlapisync.data.ApiBodyMetadata;
+import com.phoenixnap.oss.ramlapisync.data.ApiResourceMetadata;
+import com.phoenixnap.oss.ramlapisync.generation.RamlParser;
+import com.phoenixnap.oss.ramlapisync.generation.rules.ConfigurableRule;
+import com.phoenixnap.oss.ramlapisync.generation.rules.RamlLoader;
+import com.phoenixnap.oss.ramlapisync.generation.rules.Rule;
+import com.phoenixnap.oss.ramlapisync.generation.rules.Spring4ControllerStubRule;
+import com.phoenixnap.oss.ramlapisync.naming.NamingHelper;
 import com.phoenixnap.oss.ramlapisync.naming.RamlTypeHelper;
+import com.phoenixnap.oss.ramlapisync.naming.SchemaHelper;
+import com.phoenixnap.oss.ramlapisync.pojo.PojoGenerationConfig;
+import com.phoenixnap.oss.ramlapisync.raml.InvalidRamlResourceException;
 import com.phoenixnap.oss.ramlapisync.raml.RamlDataType;
+import com.phoenixnap.oss.ramlapisync.raml.RamlRoot;
+import com.phoenixnap.oss.ramlapisync.raml.RamlVersion;
+import com.phoenixnap.oss.ramlapisync.raml.rjp.raml10v2.RJP10V2RamlRoot;
+import com.sun.codemodel.JCodeModel;
+import com.sun.codemodel.JDefinedClass;
 import org.apache.maven.artifact.DependencyResolutionRequiredException;
+import org.apache.maven.model.Model;
+import org.apache.maven.model.io.xpp3.MavenXpp3Reader;
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
@@ -39,30 +46,21 @@ import org.codehaus.plexus.classworlds.realm.ClassRealm;
 import org.jsonschema2pojo.Annotator;
 import org.jsonschema2pojo.GenerationConfig;
 import org.jsonschema2pojo.Jackson1Annotator;
-import org.raml.v2.api.model.v10.datamodel.TypeDeclaration;
 import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
 
-import com.phoenixnap.oss.ramlapisync.data.ApiBodyMetadata;
-import com.phoenixnap.oss.ramlapisync.data.ApiResourceMetadata;
-import com.phoenixnap.oss.ramlapisync.generation.RamlParser;
-import com.phoenixnap.oss.ramlapisync.generation.rules.ConfigurableRule;
-import com.phoenixnap.oss.ramlapisync.generation.rules.RamlLoader;
-import com.phoenixnap.oss.ramlapisync.generation.rules.Rule;
-import com.phoenixnap.oss.ramlapisync.generation.rules.Spring4ControllerStubRule;
-import com.phoenixnap.oss.ramlapisync.naming.NamingHelper;
-import com.phoenixnap.oss.ramlapisync.naming.SchemaHelper;
-import com.phoenixnap.oss.ramlapisync.pojo.PojoGenerationConfig;
-import com.phoenixnap.oss.ramlapisync.raml.InvalidRamlResourceException;
-import com.phoenixnap.oss.ramlapisync.raml.RamlRoot;
-import com.phoenixnap.oss.ramlapisync.raml.rjp.raml10v2.RJP10V2RamlRoot;
-import com.sun.codemodel.JCodeModel;
-import com.sun.codemodel.JDefinedClass;
-
+import javax.annotation.PostConstruct;
+import java.io.File;
 import java.io.FileReader;
-
-import org.apache.maven.model.io.xpp3.MavenXpp3Reader;
-import org.apache.maven.model.Model;
+import java.io.IOException;
+import java.lang.reflect.Method;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.net.URLClassLoader;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 /**
  * Maven Plugin MOJO specific to Generation of Spring MVC Endpoints from RAML documents.
@@ -167,7 +165,7 @@ public class SpringMvcEndpointGeneratorMojo extends AbstractMojo {
     @Parameter(required = false, readonly = true)
     protected JsonShema2PojoGenerationConfig generationConfig = new JsonShema2PojoGenerationConfig();
 
-    protected PojoGenerationConfig typeGenerationConfig = mapGenerationConfigMapping();
+    protected PojoGenerationConfig typeGenerationConfig;
 
     /**
      * If set to true, we will generate methods with HttpHeaders as a parameter
@@ -200,7 +198,6 @@ public class SpringMvcEndpointGeneratorMojo extends AbstractMojo {
     private ClassRealm classRealm;
 
     private String resolvedSchemaLocation;
-
 
     protected void generateEndpoints()
             throws MojoExecutionException, MojoFailureException, IOException, InvalidRamlResourceException {
@@ -245,12 +242,14 @@ public class SpringMvcEndpointGeneratorMojo extends AbstractMojo {
         //In the RJP10V2 we have support for a unified code model. RJP08V1 does not work well with this.
         //TODO update RJP08V1 to support a unified view.
         boolean unifiedModel = false;
+        RamlVersion ramlVersion = RamlVersion.V08;
         if (loadRamlFromFile instanceof RJP10V2RamlRoot) {
+            ramlVersion = RamlVersion.V10;
             codeModel = new JCodeModel();
             unifiedModel = true;
         }
 
-        //Map the jsconschema2pojo config to ours. This will need to eventually take over. update just in case previous one was set before jsonconfig was set
+        //Map the jsconschema2pojo config to ours. This will need to eventually take over.
         typeGenerationConfig = mapGenerationConfigMapping();
 
         RamlParser par = new RamlParser(typeGenerationConfig, getBasePath(loadRamlFromFile), seperateMethodsByContentType, injectHttpHeadersParameter, this.resourceDepthInClassNames, this.resourceTopLevelInClassNames, this.reverseOrderInClassNames);
@@ -272,10 +271,21 @@ public class SpringMvcEndpointGeneratorMojo extends AbstractMojo {
         }
 
         generateCode(codeModel, controllers, rootDir);
-        generateUnreferencedSchemasV10(codeModel, resolvedRamlPath, loadRamlFromFile, rootDir);
+        generateUnreferencedSchemas(codeModel, resolvedRamlPath, loadRamlFromFile, rootDir, ramlVersion);
 
         if (unifiedModel) {
             buildCodeModelToDisk(codeModel, "Unified", rootDir);
+        }
+    }
+
+    private void generateUnreferencedSchemas(JCodeModel codeModel, String resolvedRamlPath, RamlRoot loadRamlFromFile, File rootDir, RamlVersion ramlVersion) {
+        switch (ramlVersion) {
+            case V08:
+                generateUnreferencedSchemasV08(codeModel, resolvedRamlPath, loadRamlFromFile, rootDir);
+                break;
+            case V10:
+                generateUnreferencedSchemasV10(codeModel, resolvedRamlPath, loadRamlFromFile, rootDir);
+                break;
         }
     }
 
@@ -302,7 +312,6 @@ public class SpringMvcEndpointGeneratorMojo extends AbstractMojo {
             if (loadRamlFromFile.getTypes() != null && !loadRamlFromFile.getTypes().isEmpty()) {
                 for (RamlDataType type : loadRamlFromFile.getTypes().values()) {
                     ApiBodyMetadata tempBodyMetadata = RamlTypeHelper.mapTypeToPojo(typeGenerationConfig, codeModel, loadRamlFromFile, type.getType());
-                    // TODO Check if this already has been written to disk
                     generateModelSources(codeModel, tempBodyMetadata, rootDir, this.generationConfig, this.useJackson1xCompatibility ? new Jackson1Annotator(this.generationConfig) : null);
                 }
             }
@@ -501,6 +510,8 @@ public class SpringMvcEndpointGeneratorMojo extends AbstractMojo {
         if (generationConfig != null) {
             config.apply(generationConfig);
         }
+        config.withGenerateAllSchemas(generateUnreferencedSchemas);
+
         return config;
     }
 

@@ -28,29 +28,30 @@ public class PojoGenerationConfig {
 	
 	private String basePackage;
 	private String pojoPackage;
-	
-	//If set to true, Integers will be generated as longs
-	private boolean useLongIntegers = true;
-	
-	private boolean generateJSR303Annotations = false;
-	
-	private boolean generateHashcodeEqualsToString = true;
-	
-	private boolean useCommonsLang3 = false;
-	
-	//If set to true, doubles will be generated as BigDecimals
-	private boolean useBigDecimals = false;
-	
-	//If set to true, longs will be generated as BigIntegers
-	private boolean useBigIntegers = false;
 
-	//If we want to generate builder methods
-	private boolean generateBuilderMethods=false;
-		
-		
-	
+    //If set to true, Integers will be generated as longs
+    private boolean useLongIntegers = true;
 
-	public String getPojoPackage() {
+    private boolean generateJSR303Annotations = false;
+
+    private boolean generateHashcodeEqualsToString = true;
+
+    private boolean useCommonsLang3 = false;
+
+    //If set to true, doubles will be generated as BigDecimals
+    private boolean useBigDecimals = false;
+
+    //If set to true, longs will be generated as BigIntegers
+    private boolean useBigIntegers = false;
+
+    //If we want to generate builder methods
+    private boolean generateBuilderMethods = false;
+
+    //Mimicking generateUnreferencedSchemas
+    private boolean generateAllSchemas = false;
+
+
+    public String getPojoPackage() {
 		return pojoPackage;
 	}
 	public String getBasePackage() {
@@ -83,6 +84,10 @@ public class PojoGenerationConfig {
 	public boolean isGenerateBuilderMethods() {
 		return generateBuilderMethods;
 	}
+
+    public boolean isGenerateAllSchemas() {
+        return generateAllSchemas;
+    }
 	
 	public PojoGenerationConfig withPackage(String basePackage, String pojoSubPackage) {
 		this.basePackage = basePackage;
@@ -129,7 +134,12 @@ public class PojoGenerationConfig {
 		this.generateBuilderMethods = generateBuilderMethods;
 		return this;
 	}
-	
+
+    public PojoGenerationConfig withGenerateAllSchemas(boolean generateAllSchemas) {
+        this.generateAllSchemas = generateAllSchemas;
+        return this;
+    }
+
 	/**
 	 * Applies a JSONSchema2Pojo config to this config
 	 * 
