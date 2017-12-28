@@ -106,7 +106,7 @@ public class MethodParamsRule implements Rule<CodeModelHelper.JExtMethod, JMetho
         parameterMetadataList.addAll(endpointMetadata.getRequestHeaders());
 
         parameterMetadataList.forEach( paramMetaData -> {
-            paramQueryForm(paramMetaData, generatableType);
+            paramQueryForm(paramMetaData, generatableType, endpointMetadata);
         });
 
         if (endpointMetadata.getRequestBody() != null) {
@@ -120,7 +120,7 @@ public class MethodParamsRule implements Rule<CodeModelHelper.JExtMethod, JMetho
         return generatableType.get();
     }
 
-	protected JVar paramQueryForm(ApiParameterMetadata paramMetaData, CodeModelHelper.JExtMethod generatableType) {
+	protected JVar paramQueryForm(ApiParameterMetadata paramMetaData, CodeModelHelper.JExtMethod generatableType, ApiActionMetadata endpointMetadata) {
 		String javaName = NamingHelper.getParameterName(
 				paramMetaData.getDisplayName() != null ? paramMetaData.getDisplayName() : paramMetaData.getName());
     	if (addParameterJavadoc) {

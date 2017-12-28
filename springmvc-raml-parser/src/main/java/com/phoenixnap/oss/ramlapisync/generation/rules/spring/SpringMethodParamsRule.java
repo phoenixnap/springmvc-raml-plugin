@@ -12,6 +12,7 @@
  */
 package com.phoenixnap.oss.ramlapisync.generation.rules.spring;
 
+import com.sun.codemodel.JDefinedClass;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -30,6 +31,8 @@ import com.phoenixnap.oss.ramlapisync.raml.RamlUriParameter;
 import com.phoenixnap.oss.ramlapisync.raml.rjp.raml10v2.RJP10V2RamlQueryParameter;
 import com.sun.codemodel.JAnnotationUse;
 import com.sun.codemodel.JVar;
+
+import javax.validation.Valid;
 
 /**
  * Generates all method parameters with Spring annotations needed for an endpoint defined by ApiMappingMetadata.
@@ -77,8 +80,8 @@ public class SpringMethodParamsRule extends MethodParamsRule {
 	}
 
 	@Override
-	protected JVar paramQueryForm(ApiParameterMetadata paramMetaData, CodeModelHelper.JExtMethod generatableType) {
-		JVar jVar = super.paramQueryForm(paramMetaData, generatableType);
+	protected JVar paramQueryForm(ApiParameterMetadata paramMetaData, CodeModelHelper.JExtMethod generatableType, ApiActionMetadata endpointMetadata) {
+		JVar jVar = super.paramQueryForm(paramMetaData, generatableType, endpointMetadata);
 		JAnnotationUse jAnnotationUse;
 		if (paramMetaData.getRamlParam() != null && paramMetaData.getRamlParam() instanceof RamlUriParameter) {
 			jAnnotationUse = jVar.annotate(PathVariable.class);
@@ -135,6 +138,13 @@ public class SpringMethodParamsRule extends MethodParamsRule {
 					jAnnotationUse = jVar.annotate(DateTimeFormat.class);
 					RamlTypeHelper.annotateDateWithPattern(jAnnotationUse,
 							queryParameter.getRawType(), queryParameter.getFormat());
+				}
+			}
+			//In most cases will be JReferencedClass - for a primitive/boxed primitive
+			if(jVar.type() instanceof JDefinedClass) {
+				boolean isPOJO = ((JDefinedClass) jVar.type())._package().name().startsWith(endpointMetadata.getParent().getBasePackage());
+				if (isPOJO) {
+					jVar.annotate(Valid.class);
 				}
 			}
 
