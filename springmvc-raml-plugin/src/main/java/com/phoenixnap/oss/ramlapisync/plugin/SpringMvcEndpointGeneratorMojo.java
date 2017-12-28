@@ -14,6 +14,7 @@ package com.phoenixnap.oss.ramlapisync.plugin;
 
 
 import com.phoenixnap.oss.ramlapisync.data.ApiBodyMetadata;
+import com.phoenixnap.oss.ramlapisync.data.ApiParameterMetadata;
 import com.phoenixnap.oss.ramlapisync.data.ApiResourceMetadata;
 import com.phoenixnap.oss.ramlapisync.generation.RamlParser;
 import com.phoenixnap.oss.ramlapisync.generation.rules.ConfigurableRule;
@@ -49,7 +50,6 @@ import org.jsonschema2pojo.Jackson1Annotator;
 import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
 
-import javax.annotation.PostConstruct;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
@@ -61,6 +61,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 /**
  * Maven Plugin MOJO specific to Generation of Spring MVC Endpoints from RAML documents.
@@ -270,21 +271,47 @@ public class SpringMvcEndpointGeneratorMojo extends AbstractMojo {
             throw new IOException("Could not create directory:" + rootDir.getAbsolutePath());
         }
 
+        Set<String> allReferencedTypes = getAllReferencedTypeNames(controllers);
         generateCode(codeModel, controllers, rootDir);
-        generateUnreferencedSchemas(codeModel, resolvedRamlPath, loadRamlFromFile, rootDir, ramlVersion);
+        generateUnreferencedSchemas(codeModel, resolvedRamlPath, loadRamlFromFile, rootDir, ramlVersion, allReferencedTypes);
+
 
         if (unifiedModel) {
             buildCodeModelToDisk(codeModel, "Unified", rootDir);
         }
     }
 
-    private void generateUnreferencedSchemas(JCodeModel codeModel, String resolvedRamlPath, RamlRoot loadRamlFromFile, File rootDir, RamlVersion ramlVersion) {
+    /**
+     * Fetches all referenced type names so as to not generate classes multiple times
+     * @param controllers ApiResourceMetadata list
+     * @return set of names
+     */
+    private Set<String> getAllReferencedTypeNames(Set<ApiResourceMetadata> controllers) {
+        //TODO Add nested objects as well. For now only the top level objects are included
+        Set<String> parametersNames = controllers.stream().flatMap(resourceMetadata -> resourceMetadata.getParameters().stream())
+                .map(apiParameter -> StringUtils.capitalize(apiParameter.getName())).collect(Collectors.toSet());
+        Set<String> bodyNames = controllers.stream().flatMap(resourceMetadata -> resourceMetadata.getDependencies().stream())
+                .map(ApiBodyMetadata::getName).collect(Collectors.toSet());
+        bodyNames.addAll(parametersNames);
+        return bodyNames;
+    }
+
+    /**
+     * Generates objects for all schemas linked to the raml file even if it's not used in the api itself.
+     * @param codeModel - JCodeModel
+     * @param resolvedRamlPath resolvedRamlPath
+     * @param loadRamlFromFile loadRamlFromFile
+     * @param rootDir rootDir
+     * @param ramlVersion 0.8 or 1.0
+     * @param allReferencedTypes
+     */
+    private void generateUnreferencedSchemas(JCodeModel codeModel, String resolvedRamlPath, RamlRoot loadRamlFromFile, File rootDir, RamlVersion ramlVersion, Set<String> allReferencedTypes) {
         switch (ramlVersion) {
             case V08:
                 generateUnreferencedSchemasV08(codeModel, resolvedRamlPath, loadRamlFromFile, rootDir);
                 break;
             case V10:
-                generateUnreferencedSchemasV10(codeModel, resolvedRamlPath, loadRamlFromFile, rootDir);
+                generateUnreferencedSchemasV10(codeModel, loadRamlFromFile, rootDir, allReferencedTypes);
                 break;
         }
     }
@@ -306,13 +333,15 @@ public class SpringMvcEndpointGeneratorMojo extends AbstractMojo {
         }
     }
 
-    private void generateUnreferencedSchemasV10(JCodeModel codeModel, String resolvedRamlPath, RamlRoot loadRamlFromFile, File rootDir) {
+    private void generateUnreferencedSchemasV10(JCodeModel codeModel, RamlRoot loadRamlFromFile, File rootDir, Set<String> allReferencedTypes) {
         if (this.generateUnreferencedSchemas) {
-            this.getLog().debug("Generating Code for Unreferenced Schemas");
+            this.getLog().debug("Generating Code for Unreferenced Types");
             if (loadRamlFromFile.getTypes() != null && !loadRamlFromFile.getTypes().isEmpty()) {
-                for (RamlDataType type : loadRamlFromFile.getTypes().values()) {
-                    ApiBodyMetadata tempBodyMetadata = RamlTypeHelper.mapTypeToPojo(typeGenerationConfig, codeModel, loadRamlFromFile, type.getType());
-                    generateModelSources(codeModel, tempBodyMetadata, rootDir, this.generationConfig, this.useJackson1xCompatibility ? new Jackson1Annotator(this.generationConfig) : null);
+                for (Map.Entry<String, RamlDataType> type : loadRamlFromFile.getTypes().entrySet()) {
+                    if(!allReferencedTypes.contains(type.getKey())) {
+                        ApiBodyMetadata tempBodyMetadata = RamlTypeHelper.mapTypeToPojo(typeGenerationConfig, codeModel, loadRamlFromFile, type.getValue().getType());
+                        generateModelSources(codeModel, tempBodyMetadata, rootDir, this.generationConfig, this.useJackson1xCompatibility ? new Jackson1Annotator(this.generationConfig) : null);
+                    }
                 }
             }
         }
@@ -448,7 +477,7 @@ public class SpringMvcEndpointGeneratorMojo extends AbstractMojo {
                     Class<?> urlClass = URLClassLoader.class;
                     Method method = urlClass.getDeclaredMethod("addURL", new Class[]{URL.class});
                     method.setAccessible(true);
-                    method.invoke(urlClassLoader, new Object[]{new File(resolvedPath).toURI().toURL()});
+                    method.invoke(urlClassLoader, new File(resolvedPath).toURI().toURL());
                     return "classpath:/"; // since we have added this folder to the classpath this
                     // should be used by the plugin
                 } catch (Exception ex) {

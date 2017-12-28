@@ -12,10 +12,6 @@
  */
 package com.phoenixnap.oss.ramlapisync.data;
 
-import java.util.Collections;
-import java.util.LinkedHashSet;
-import java.util.Set;
-
 import com.phoenixnap.oss.ramlapisync.naming.NamingHelper;
 import com.phoenixnap.oss.ramlapisync.pojo.PojoGenerationConfig;
 import com.phoenixnap.oss.ramlapisync.raml.RamlAction;
@@ -24,17 +20,21 @@ import com.phoenixnap.oss.ramlapisync.raml.RamlResource;
 import com.phoenixnap.oss.ramlapisync.raml.RamlRoot;
 import com.sun.codemodel.JCodeModel;
 
+import java.util.Collections;
+import java.util.LinkedHashSet;
+import java.util.Set;
+
 
 /**
- * 
+ *
  * Class containing the data required to successfully generate code for an api rest controller within spring mvc
- * 
+ *
  * @author Kurt Paris
  * @since 0.2.1
  *
- */	
+ */
 public class ApiResourceMetadata {
-	
+
 	private String controllerUrl;
 	private transient RamlResource resource;
 	private RamlRoot document;
@@ -43,10 +43,10 @@ public class ApiResourceMetadata {
 	private int resourceDepthInClassNames;
 	private int resourceTopLevelInClassNames;
 	private boolean reverseOrderInClassNames;
-	
+
 	private PojoGenerationConfig config;
 	Set<ApiActionMetadata> apiCalls = new LinkedHashSet<>();
-	
+
 	public ApiResourceMetadata(PojoGenerationConfig config, JCodeModel bodyCodeModel, String controllerUrl, RamlResource resource, RamlRoot document, int resourceDepthInClassNames, int resourceTopLevelInClassNames, boolean reverseOrderInClassNames) {
 		super();
 		this.controllerUrl = controllerUrl;
@@ -57,17 +57,17 @@ public class ApiResourceMetadata {
 		this.resourceDepthInClassNames = resourceDepthInClassNames;
 		this.resourceTopLevelInClassNames = resourceTopLevelInClassNames;
 		this.reverseOrderInClassNames = reverseOrderInClassNames;
-	} 
-	
-	
+	}
+
+
 	public void addApiCall(RamlResource resource, RamlActionType actionType, RamlAction action, String responseContentType, boolean injectHttpHeadersParameter) {
 		apiCalls.add(new ApiActionMetadata(config, this, resource, actionType, action, responseContentType, injectHttpHeadersParameter));
 	}
-	
+
     public Set<ApiActionMetadata> getApiCalls() {
 		return Collections.unmodifiableSet(apiCalls);
 	}
-    
+
     public String getName() {
     	if(this.resourceDepthInClassNames != 1 || this.resourceTopLevelInClassNames != 0 || this.reverseOrderInClassNames){
 			return NamingHelper.getAllResourcesNames(controllerUrl, singularizeName, this.resourceDepthInClassNames, this.resourceTopLevelInClassNames, this.reverseOrderInClassNames);
@@ -80,11 +80,11 @@ public class ApiResourceMetadata {
 	public RamlResource getResource() {
 		return resource;
 	}
-	
+
 	public String getResourceName() {
 		return NamingHelper.getResourceName(resource, singularizeName);
 	}
-	
+
 	public String getResourceUri() {
 		return resource.getUri();
 	}
@@ -96,13 +96,13 @@ public class ApiResourceMetadata {
 
 	public String toString() {
     	return "Controller "+getName()+"["+ getControllerUrl() +"]";
-    	
+
     }
 
 	public String getBasePackage() {
 		return config.getBasePackage();
-	}	
-	
+	}
+
 	public Set<ApiBodyMetadata> getDependencies() {
 		Set<ApiBodyMetadata> dependencies = new LinkedHashSet<>();
 		for (ApiActionMetadata method : apiCalls) {
@@ -114,9 +114,18 @@ public class ApiResourceMetadata {
 		return dependencies;
 	}
 
-	public String getDescription() {
-		return resource.getDescription();
-	}
+    public Set<ApiParameterMetadata> getParameters() {
+        Set<ApiParameterMetadata> parameters = new LinkedHashSet<>();
+        for (ApiActionMetadata method : apiCalls) {
+            parameters.addAll(method.getRequestHeaders());
+            parameters.addAll(method.getRequestParameters());
+        }
+        return parameters;
+    }
+
+    public String getDescription() {
+        return resource.getDescription();
+    }
 
 
 	public RamlRoot getDocument() {
@@ -125,7 +134,7 @@ public class ApiResourceMetadata {
 
 
 	public void setSingularizeName(boolean singularizeName) {
-		this.singularizeName = singularizeName;		
+		this.singularizeName = singularizeName;
 	}
 
 

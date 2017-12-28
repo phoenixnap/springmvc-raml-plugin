@@ -151,7 +151,7 @@ public class ApiActionMetadata {
 		if (queryParameter.getValue() instanceof RJP10V2RamlQueryParameter) {
 
 			RamlDataType type = ((RJP10V2RamlQueryParameter) queryParameter.getValue()).getRamlDataType();
-			if (type != null && !config.isGenerateAllSchemas()) {
+			if (type != null) {
 				RamlTypeHelper.mapTypeToPojo(config, codeModel, parent.getDocument(), type.getType());
 			}
 		}
@@ -175,7 +175,7 @@ public class ApiActionMetadata {
 			ApiBodyMetadata requestBody = null;
 			
 			String name = StringUtils.capitalize(getName()) + "Request";
-			if (type != null && type.getType() != null && !config.isGenerateAllSchemas()) {
+			if (type != null && type.getType() != null) {
 				requestBody = RamlTypeHelper.mapTypeToPojo(config, codeModel, parent.getDocument(), type.getType());
 			} else if (StringUtils.hasText(schema)) {
 				requestBody = SchemaHelper.mapSchemaToPojo(parent.getDocument(), schema, config.getPojoPackage(), name, null);
@@ -210,7 +210,7 @@ public class ApiActionMetadata {
 						String schema = body.getValue().getSchema();
 						//prefer type if we have it.
 						String name = StringUtils.capitalize(getName()) + "Response";
-						if (type != null && type.getType() != null && !config.isGenerateAllSchemas()) {
+						if (type != null && type.getType() != null) {
 							responseBody = RamlTypeHelper.mapTypeToPojo(config, codeModel, parent.getDocument(), type.getType());
 						} else if (StringUtils.hasText(schema)) {
 							responseBody = SchemaHelper.mapSchemaToPojo(parent.getDocument(), schema, config.getPojoPackage(), name, null);
