@@ -13,18 +13,28 @@
 package com.phoenixnap.oss.ramlapisync.plugin;
 
 
-import java.io.File;
-import java.io.IOException;
-import java.lang.reflect.Method;
-import java.net.MalformedURLException;
-import java.net.URL;
-import java.net.URLClassLoader;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-
+import com.phoenixnap.oss.ramlapisync.data.ApiBodyMetadata;
+import com.phoenixnap.oss.ramlapisync.data.ApiParameterMetadata;
+import com.phoenixnap.oss.ramlapisync.data.ApiResourceMetadata;
+import com.phoenixnap.oss.ramlapisync.generation.RamlParser;
+import com.phoenixnap.oss.ramlapisync.generation.rules.ConfigurableRule;
+import com.phoenixnap.oss.ramlapisync.generation.rules.RamlLoader;
+import com.phoenixnap.oss.ramlapisync.generation.rules.Rule;
+import com.phoenixnap.oss.ramlapisync.generation.rules.Spring4ControllerStubRule;
+import com.phoenixnap.oss.ramlapisync.naming.NamingHelper;
+import com.phoenixnap.oss.ramlapisync.naming.RamlTypeHelper;
+import com.phoenixnap.oss.ramlapisync.naming.SchemaHelper;
+import com.phoenixnap.oss.ramlapisync.pojo.PojoGenerationConfig;
+import com.phoenixnap.oss.ramlapisync.raml.InvalidRamlResourceException;
+import com.phoenixnap.oss.ramlapisync.raml.RamlDataType;
+import com.phoenixnap.oss.ramlapisync.raml.RamlRoot;
+import com.phoenixnap.oss.ramlapisync.raml.RamlVersion;
+import com.phoenixnap.oss.ramlapisync.raml.rjp.raml10v2.RJP10V2RamlRoot;
+import com.sun.codemodel.JCodeModel;
+import com.sun.codemodel.JDefinedClass;
 import org.apache.maven.artifact.DependencyResolutionRequiredException;
+import org.apache.maven.model.Model;
+import org.apache.maven.model.io.xpp3.MavenXpp3Reader;
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
@@ -40,33 +50,26 @@ import org.jsonschema2pojo.Jackson1Annotator;
 import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
 
-import com.phoenixnap.oss.ramlapisync.data.ApiBodyMetadata;
-import com.phoenixnap.oss.ramlapisync.data.ApiResourceMetadata;
-import com.phoenixnap.oss.ramlapisync.generation.RamlParser;
-import com.phoenixnap.oss.ramlapisync.generation.rules.ConfigurableRule;
-import com.phoenixnap.oss.ramlapisync.generation.rules.RamlLoader;
-import com.phoenixnap.oss.ramlapisync.generation.rules.Rule;
-import com.phoenixnap.oss.ramlapisync.generation.rules.Spring4ControllerStubRule;
-import com.phoenixnap.oss.ramlapisync.naming.NamingHelper;
-import com.phoenixnap.oss.ramlapisync.naming.SchemaHelper;
-import com.phoenixnap.oss.ramlapisync.pojo.PojoGenerationConfig;
-import com.phoenixnap.oss.ramlapisync.raml.InvalidRamlResourceException;
-import com.phoenixnap.oss.ramlapisync.raml.RamlRoot;
-import com.phoenixnap.oss.ramlapisync.raml.rjp.raml10v2.RJP10V2RamlRoot;
-import com.sun.codemodel.JCodeModel;
-import com.sun.codemodel.JDefinedClass;
-
+import java.io.File;
 import java.io.FileReader;
+import java.io.IOException;
+import java.lang.reflect.Method;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.net.URLClassLoader;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.stream.Collectors;
 
-import org.apache.maven.model.io.xpp3.MavenXpp3Reader;
-import org.apache.maven.model.Model;
 /**
  * Maven Plugin MOJO specific to Generation of Spring MVC Endpoints from RAML documents.
  *
  * @author Kurt Paris
  * @since 0.2.1
  */
-@Mojo(name = "generate-springmvc-endpoints", requiresDependencyResolution = ResolutionScope.COMPILE_PLUS_RUNTIME ,threadSafe = true,requiresProject = false)
+@Mojo(name = "generate-springmvc-endpoints", requiresDependencyResolution = ResolutionScope.COMPILE_PLUS_RUNTIME, threadSafe = true, requiresProject = false)
 public class SpringMvcEndpointGeneratorMojo extends AbstractMojo {
 
     /**
@@ -81,20 +84,20 @@ public class SpringMvcEndpointGeneratorMojo extends AbstractMojo {
     /**
      * Path to the raml document to be verified
      */
-    @Parameter(property="ramlPath",required = true, readonly = true, defaultValue = "")
+    @Parameter(property = "ramlPath", required = true, readonly = true, defaultValue = "")
     protected String ramlPath;
 
     /**
      * Path to the pom  document to be verified
      */
-    @Parameter(property="pomPath",required = false, readonly = true, defaultValue = "NA")
+    @Parameter(property = "pomPath", required = false, readonly = true, defaultValue = "NA")
     protected String pomPath;
 
 
     /**
      * Relative file path where the Java files will be saved to
      */
-    @Parameter(property="outputRelativePath",required = false, readonly = true, defaultValue = "")
+    @Parameter(property = "outputRelativePath", required = false, readonly = true, defaultValue = "")
     protected String outputRelativePath;
 
     /**
@@ -107,7 +110,7 @@ public class SpringMvcEndpointGeneratorMojo extends AbstractMojo {
     /**
      * Java package to be applied to the generated files
      */
-    @Parameter(property="basePackage", required = true, readonly = true, defaultValue = "")
+    @Parameter(property = "basePackage", required = true, readonly = true, defaultValue = "")
     protected String basePackage;
 
     /**
@@ -162,21 +165,21 @@ public class SpringMvcEndpointGeneratorMojo extends AbstractMojo {
      */
     @Parameter(required = false, readonly = true)
     protected JsonShema2PojoGenerationConfig generationConfig = new JsonShema2PojoGenerationConfig();
-    
-    protected PojoGenerationConfig typeGenerationConfig = mapGenerationConfigMapping();
+
+    protected PojoGenerationConfig typeGenerationConfig;
 
     /**
      * If set to true, we will generate methods with HttpHeaders as a parameter
      */
     @Parameter(required = false, readonly = true, defaultValue = "false")
     protected Boolean injectHttpHeadersParameter;
-    
-	/**
-	 * How many levels of uri will be included in generated class names. Default
-	 * is 1 which means that only current resource will be in included in
-	 * controller/decorator names.
-	 */
-	@Parameter(required = false, readonly = true, defaultValue = "1")
+
+    /**
+     * How many levels of uri will be included in generated class names. Default
+     * is 1 which means that only current resource will be in included in
+     * controller/decorator names.
+     */
+    @Parameter(required = false, readonly = true, defaultValue = "1")
     protected Integer resourceDepthInClassNames;
 
     /**
@@ -197,60 +200,59 @@ public class SpringMvcEndpointGeneratorMojo extends AbstractMojo {
 
     private String resolvedSchemaLocation;
 
-
-
     protected void generateEndpoints()
             throws MojoExecutionException, MojoFailureException, IOException, InvalidRamlResourceException {
 
-     File pomFile = null;
-     if(!pomPath.equals("NA")){
+        File pomFile = null;
+        if (!pomPath.equals("NA")) {
 
-      Model model = null;
-      FileReader reader = null;
-      MavenXpp3Reader mavenreader = new MavenXpp3Reader();
-      pomFile = new File(pomPath);
-      try {
-          reader = new FileReader(pomFile);
-          model = mavenreader.read(reader);
-          model.setPomFile(pomFile);
-       }catch(Exception ex){
-       getLog().info("Exception Occured",ex);
-       }
-       project = new MavenProject(model);
-       project.setFile(pomFile);
-     }
+            Model model = null;
+            FileReader reader = null;
+            MavenXpp3Reader mavenreader = new MavenXpp3Reader();
+            pomFile = new File(pomPath);
+            try {
+                reader = new FileReader(pomFile);
+                model = mavenreader.read(reader);
+                model.setPomFile(pomFile);
+            } catch (Exception ex) {
+                getLog().info("Exception Occured", ex);
+            }
+            project = new MavenProject(model);
+            project.setFile(pomFile);
+        }
 
         String resolvedPath = project.getBasedir().getAbsolutePath();
         if (resolvedPath.endsWith(File.separator) || resolvedPath.endsWith("/")) {
             resolvedPath = resolvedPath.substring(0, resolvedPath.length() - 1);
         }
-        
+
         String resolvedRamlPath = project.getBasedir().getAbsolutePath();
 
         if (!ramlPath.startsWith(File.separator) && !ramlPath.startsWith("/")) {
             resolvedRamlPath += File.separator + ramlPath;
-        }
-        else {
+        } else {
             resolvedRamlPath += ramlPath;
         }
 
         // Resolve schema location and add to classpath
         resolvedSchemaLocation = getSchemaLocation();
-        
+
         RamlRoot loadRamlFromFile = RamlLoader.loadRamlFromFile(new File(resolvedRamlPath).toURI().toString());
-        
+
         JCodeModel codeModel = null;
         //In the RJP10V2 we have support for a unified code model. RJP08V1 does not work well with this.
         //TODO update RJP08V1 to support a unified view.
         boolean unifiedModel = false;
+        RamlVersion ramlVersion = RamlVersion.V08;
         if (loadRamlFromFile instanceof RJP10V2RamlRoot) {
-        	codeModel = new JCodeModel();
-        	unifiedModel = true;
+            ramlVersion = RamlVersion.V10;
+            codeModel = new JCodeModel();
+            unifiedModel = true;
         }
-        
-        //Map the jsconschema2pojo config to ours. This will need to eventually take over. update just in case previous one was set before jsonconfig was set
+
+        //Map the jsconschema2pojo config to ours. This will need to eventually take over.
         typeGenerationConfig = mapGenerationConfigMapping();
-        
+
         RamlParser par = new RamlParser(typeGenerationConfig, getBasePath(loadRamlFromFile), seperateMethodsByContentType, injectHttpHeadersParameter, this.resourceDepthInClassNames, this.resourceTopLevelInClassNames, this.reverseOrderInClassNames);
         Set<ApiResourceMetadata> controllers = par.extractControllers(codeModel, loadRamlFromFile);
 
@@ -259,30 +261,65 @@ public class SpringMvcEndpointGeneratorMojo extends AbstractMojo {
                 resolvedPath += File.separator;
             }
             resolvedPath += outputRelativePath;
-        }
-        else {
+        } else {
             resolvedPath += "/target/generated-sources/spring-mvc";
         }
 
-        File rootDir = new File(resolvedPath + (addTimestampFolder == true ? System.currentTimeMillis() : "") + "/");
+        File rootDir = new File(resolvedPath + (addTimestampFolder ? System.currentTimeMillis() : "") + "/");
 
         if (!rootDir.exists() && !rootDir.mkdirs()) {
             throw new IOException("Could not create directory:" + rootDir.getAbsolutePath());
         }
 
+        Set<String> allReferencedTypes = getAllReferencedTypeNames(controllers);
         generateCode(codeModel, controllers, rootDir);
-        generateUnreferencedSchemas(codeModel, resolvedRamlPath, loadRamlFromFile, rootDir);
-        
-    	if (unifiedModel) {
-    		buildCodeModelToDisk(codeModel, "Unified", rootDir);
-    	}
+        generateUnreferencedSchemas(codeModel, resolvedRamlPath, loadRamlFromFile, rootDir, ramlVersion, allReferencedTypes);
+
+
+        if (unifiedModel) {
+            buildCodeModelToDisk(codeModel, "Unified", rootDir);
+        }
+    }
+
+    /**
+     * Fetches all referenced type names so as to not generate classes multiple times
+     * @param controllers ApiResourceMetadata list
+     * @return set of names
+     */
+    private Set<String> getAllReferencedTypeNames(Set<ApiResourceMetadata> controllers) {
+        //TODO Add nested objects as well. For now only the top level objects are included
+        Set<String> parametersNames = controllers.stream().flatMap(resourceMetadata -> resourceMetadata.getParameters().stream())
+                .map(apiParameter -> StringUtils.capitalize(apiParameter.getName())).collect(Collectors.toSet());
+        Set<String> bodyNames = controllers.stream().flatMap(resourceMetadata -> resourceMetadata.getDependencies().stream())
+                .map(ApiBodyMetadata::getName).collect(Collectors.toSet());
+        bodyNames.addAll(parametersNames);
+        return bodyNames;
+    }
+
+    /**
+     * Generates objects for all schemas linked to the raml file even if it's not used in the api itself.
+     * @param codeModel - JCodeModel
+     * @param resolvedRamlPath resolvedRamlPath
+     * @param loadRamlFromFile loadRamlFromFile
+     * @param rootDir rootDir
+     * @param ramlVersion 0.8 or 1.0
+     * @param allReferencedTypes
+     */
+    private void generateUnreferencedSchemas(JCodeModel codeModel, String resolvedRamlPath, RamlRoot loadRamlFromFile, File rootDir, RamlVersion ramlVersion, Set<String> allReferencedTypes) {
+        switch (ramlVersion) {
+            case V08:
+                generateUnreferencedSchemasV08(codeModel, resolvedRamlPath, loadRamlFromFile, rootDir);
+                break;
+            case V10:
+                generateUnreferencedSchemasV10(codeModel, loadRamlFromFile, rootDir, allReferencedTypes);
+                break;
+        }
     }
 
 
-    private void generateUnreferencedSchemas(JCodeModel codeModel, String resolvedRamlPath, RamlRoot loadRamlFromFile, File rootDir) {
+    private void generateUnreferencedSchemasV08(JCodeModel codeModel, String resolvedRamlPath, RamlRoot loadRamlFromFile, File rootDir) {
         if (this.generateUnreferencedSchemas) {
-        	this.getLog().debug("Generating Code for Unreferenced Schemas");
-            boolean isErrorDtoInList = loadRamlFromFile.getSchemas().stream().anyMatch(map -> map.containsKey("ErrorDto"));
+            this.getLog().debug("Generating Code for Unreferenced Schemas");
             if (loadRamlFromFile.getSchemas() != null && !loadRamlFromFile.getSchemas().isEmpty()) {
                 for (Map<String, String> map : loadRamlFromFile.getSchemas()) {
                     for (String schemaName : map.keySet()) {
@@ -296,12 +333,25 @@ public class SpringMvcEndpointGeneratorMojo extends AbstractMojo {
         }
     }
 
-	/**
-	 * 
-	 * @param codeModel If not null this will operated assuming a unified code model for all output
-	 * @param controllers
-	 * @param rootDir
-	 */
+    private void generateUnreferencedSchemasV10(JCodeModel codeModel, RamlRoot loadRamlFromFile, File rootDir, Set<String> allReferencedTypes) {
+        if (this.generateUnreferencedSchemas) {
+            this.getLog().debug("Generating Code for Unreferenced Types");
+            if (loadRamlFromFile.getTypes() != null && !loadRamlFromFile.getTypes().isEmpty()) {
+                for (Map.Entry<String, RamlDataType> type : loadRamlFromFile.getTypes().entrySet()) {
+                    if(!allReferencedTypes.contains(type.getKey())) {
+                        ApiBodyMetadata tempBodyMetadata = RamlTypeHelper.mapTypeToPojo(typeGenerationConfig, codeModel, loadRamlFromFile, type.getValue().getType());
+                        generateModelSources(codeModel, tempBodyMetadata, rootDir, this.generationConfig, this.useJackson1xCompatibility ? new Jackson1Annotator(this.generationConfig) : null);
+                    }
+                }
+            }
+        }
+    }
+
+    /**
+     * @param codeModel   If not null this will operated assuming a unified code model for all output
+     * @param controllers
+     * @param rootDir
+     */
     private void generateCode(JCodeModel codeModel, Set<ApiResourceMetadata> controllers, File rootDir) {
         for (ApiResourceMetadata met : controllers) {
             this.getLog().debug("");
@@ -310,10 +360,10 @@ public class SpringMvcEndpointGeneratorMojo extends AbstractMojo {
             this.getLog().debug("");
 
             if (codeModel == null) {
-	            Set<ApiBodyMetadata> dependencies = met.getDependencies();
-	            for (ApiBodyMetadata body : dependencies) {
-	                generateModelSources(codeModel, body, rootDir, generationConfig, useJackson1xCompatibility ? new Jackson1Annotator(generationConfig) : null);
-	            }
+                Set<ApiBodyMetadata> dependencies = met.getDependencies();
+                for (ApiBodyMetadata body : dependencies) {
+                    generateModelSources(codeModel, body, rootDir, generationConfig, useJackson1xCompatibility ? new Jackson1Annotator(generationConfig) : null);
+                }
             }
 
             generateControllerSource(codeModel, met, rootDir);
@@ -357,8 +407,7 @@ public class SpringMvcEndpointGeneratorMojo extends AbstractMojo {
                 this.getLog().debug("SETTING CONFIG");
                 ((ConfigurableRule<?, ?, ?>) ruleInstance).applyConfiguration(ruleConfiguration);
             }
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
             getLog().error("Could not instantiate Rule " + this.rule + ". The default Rule will be used for code generation.", e);
         }
         return ruleInstance;
@@ -376,8 +425,7 @@ public class SpringMvcEndpointGeneratorMojo extends AbstractMojo {
                 classRealm = project.getClassRealm();
             }
 
-            for (String element : runtimeClasspathElements)
-            {
+            for (String element : runtimeClasspathElements) {
                 File elementFile = new File(element);
                 classRealm.addURL(elementFile.toURI().toURL());
             }
@@ -387,19 +435,18 @@ public class SpringMvcEndpointGeneratorMojo extends AbstractMojo {
 
 
     private void generateModelSources(JCodeModel codeModel, ApiBodyMetadata body, File rootDir, GenerationConfig config, Annotator annotator) {
-    	boolean build = false;
-    	if (codeModel == null) {
-    		this.getLog().info("Generating Model object for: " + body.getName());
-    		build = true;
+        boolean build = false;
+        if (codeModel == null) {
+            this.getLog().info("Generating Model object for: " + body.getName());
+            build = true;
             if (config == null && annotator == null) {
                 codeModel = body.getCodeModel();
-            }
-            else {
+            } else {
                 codeModel = body.getCodeModel(resolvedSchemaLocation, basePackage + NamingHelper.getDefaultModelPackage(), config, annotator);
             }
         }
         if (build && codeModel != null) {
-        	buildCodeModelToDisk(codeModel, body.getName(), rootDir);
+            buildCodeModelToDisk(codeModel, body.getName(), rootDir);
         }
     }
 
@@ -428,13 +475,12 @@ public class SpringMvcEndpointGeneratorMojo extends AbstractMojo {
                 try {
                     URLClassLoader urlClassLoader = (URLClassLoader) ClassLoader.getSystemClassLoader();
                     Class<?> urlClass = URLClassLoader.class;
-                    Method method = urlClass.getDeclaredMethod("addURL", new Class[] { URL.class });
+                    Method method = urlClass.getDeclaredMethod("addURL", new Class[]{URL.class});
                     method.setAccessible(true);
-                    method.invoke(urlClassLoader, new Object[] { new File(resolvedPath).toURI().toURL() });
+                    method.invoke(urlClassLoader, new File(resolvedPath).toURI().toURL());
                     return "classpath:/"; // since we have added this folder to the classpath this
-                                          // should be used by the plugin
-                }
-                catch (Exception ex) {
+                    // should be used by the plugin
+                } catch (Exception ex) {
                     this.getLog().error("Could not add schema location to classpath", ex);
                     return new File(resolvedPath).toURI().toString();
                 }
@@ -447,26 +493,25 @@ public class SpringMvcEndpointGeneratorMojo extends AbstractMojo {
 
     private void generateControllerSource(JCodeModel codeModel, ApiResourceMetadata met, File dir) {
         boolean build = false;
-    	if (codeModel == null) {
-        	codeModel = new JCodeModel();
-        	build = true;
+        if (codeModel == null) {
+            codeModel = new JCodeModel();
+            build = true;
         }
         loadRule().apply(met, codeModel);
         if (build) {
-        	buildCodeModelToDisk(codeModel, met.getName(), dir);
+            buildCodeModelToDisk(codeModel, met.getName(), dir);
         }
     }
 
 
-	private void buildCodeModelToDisk(JCodeModel codeModel, String name, File dir) {
-		try {
+    private void buildCodeModelToDisk(JCodeModel codeModel, String name, File dir) {
+        try {
             codeModel.build(dir);
-        }
-        catch (IOException e) {
+        } catch (IOException e) {
             e.printStackTrace();
             this.getLog().error("Could not build code model for " + name, e);
         }
-	}
+    }
 
 
     @Override
@@ -481,20 +526,22 @@ public class SpringMvcEndpointGeneratorMojo extends AbstractMojo {
                     e.toString());
         } catch (InvalidRamlResourceException e) {
             throw new MojoExecutionException(e, "Supplied RAML has failed validation and cannot be loaded.",
-                     e.toString());
-		}
+                    e.toString());
+        }
 
         this.getLog().info("Endpoint Generation Complete in:" + (System.currentTimeMillis() - startTime) + "ms");
     }
-    
-    protected PojoGenerationConfig mapGenerationConfigMapping() {
-    	PojoGenerationConfig config = new PojoGenerationConfig()
-    										.withPackage(basePackage, null);
-    	
-    	if (generationConfig != null) {
-    		config.apply(generationConfig);
-    	}
-		return config;
+
+    PojoGenerationConfig mapGenerationConfigMapping() {
+        PojoGenerationConfig config = new PojoGenerationConfig()
+                .withPackage(basePackage, null);
+
+        if (generationConfig != null) {
+            config.apply(generationConfig);
+        }
+        config.withGenerateAllSchemas(generateUnreferencedSchemas);
+
+        return config;
     }
 
 }

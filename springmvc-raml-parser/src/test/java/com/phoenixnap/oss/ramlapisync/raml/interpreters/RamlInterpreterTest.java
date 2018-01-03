@@ -102,7 +102,7 @@ public class RamlInterpreterTest {
         
         RamlDataType managersPostType = managers.getAction(RamlActionType.POST).getBody().get("application/json").getType();
         assertThat(managersPostType, is(notNullValue()));        
-        ApiBodyMetadata managersPostRequest = RamlTypeHelper.mapTypeToPojo(config, jCodeModel, ramlRoot, managersPostType.getType(), "testName");
+        ApiBodyMetadata managersPostRequest = RamlTypeHelper.mapTypeToPojo(config, jCodeModel, ramlRoot, managersPostType.getType());
         assertThat(managersPostRequest, is(notNullValue()));        
         assertThat(managersPostRequest.getName(), is("Manager"));      
         assertThat(managersPostRequest.isArray(), is(false)); 
@@ -118,7 +118,7 @@ public class RamlInterpreterTest {
         
         RamlDataType managersPostType = managers.getAction(RamlActionType.POST).getBody().get("application/json").getType();
         assertThat(managersPostType, is(notNullValue()));        
-        ApiBodyMetadata managersPostRequest = RamlTypeHelper.mapTypeToPojo(jsr303Config, jCodeModel, ramlRoot, managersPostType.getType(), "testName");
+        ApiBodyMetadata managersPostRequest = RamlTypeHelper.mapTypeToPojo(jsr303Config, jCodeModel, ramlRoot, managersPostType.getType());
         assertThat(managersPostRequest, is(notNullValue()));        
         assertThat(managersPostRequest.getName(), is("Manager"));      
         assertThat(managersPostRequest.isArray(), is(false)); 
@@ -142,7 +142,7 @@ public class RamlInterpreterTest {
         
         RamlDataType validationsGetType = validations.getAction(RamlActionType.GET).getResponses().get("200").getBody().get("application/json").getType();
         assertThat(validationsGetType, is(notNullValue()));        
-        ApiBodyMetadata validationsGetRequest = RamlTypeHelper.mapTypeToPojo(jsr303Config, jCodeModel, ramlRoot, validationsGetType.getType(), "testName");
+        ApiBodyMetadata validationsGetRequest = RamlTypeHelper.mapTypeToPojo(jsr303Config, jCodeModel, ramlRoot, validationsGetType.getType());
         assertThat(validationsGetRequest, is(notNullValue()));        
         assertThat(validationsGetRequest.getName(), is("Validation"));      
         assertThat(validationsGetRequest.isArray(), is(false)); 
@@ -235,7 +235,7 @@ public class RamlInterpreterTest {
         RamlResource nestedArrayPersons = ramlRoot.getResource("/nestedArrayPersons");
         RamlDataType nestedArrayPersonsGetType = nestedArrayPersons.getAction(RamlActionType.GET).getResponses().get("200").getBody().get("application/json").getType();
         assertThat(nestedArrayPersonsGetType, is(notNullValue()));        
-        ApiBodyMetadata nestedArrayPersonsGetRequest = RamlTypeHelper.mapTypeToPojo(config, jCodeModel, ramlRoot, nestedArrayPersonsGetType.getType(), "testName");
+        ApiBodyMetadata nestedArrayPersonsGetRequest = RamlTypeHelper.mapTypeToPojo(config, jCodeModel, ramlRoot, nestedArrayPersonsGetType.getType());
         assertThat(nestedArrayPersonsGetRequest, is(notNullValue()));   
         assertThat(nestedArrayPersonsGetRequest.getName(), is("NestedArrayPerson"));
         assertThat(nestedArrayPersonsGetRequest.isArray(), is(true)); 
@@ -254,7 +254,7 @@ public class RamlInterpreterTest {
         RamlResource nestedArrayPersons = ramlRoot.getResource("/nestedNestedArrayPersons");
         RamlDataType nestedArrayPersonsGetType = nestedArrayPersons.getAction(RamlActionType.GET).getResponses().get("200").getBody().get("application/json").getType();
         assertThat(nestedArrayPersonsGetType, is(notNullValue()));        
-        ApiBodyMetadata nestedArrayPersonsGetRequest = RamlTypeHelper.mapTypeToPojo(config, jCodeModel, ramlRoot, nestedArrayPersonsGetType.getType(), "testName");
+        ApiBodyMetadata nestedArrayPersonsGetRequest = RamlTypeHelper.mapTypeToPojo(config, jCodeModel, ramlRoot, nestedArrayPersonsGetType.getType());
         assertThat(nestedArrayPersonsGetRequest, is(notNullValue()));   
         assertThat(nestedArrayPersonsGetRequest.getName(), is("NestedNestedArrayPerson"));
         assertThat(nestedArrayPersonsGetRequest.isArray(), is(true)); 
@@ -273,7 +273,7 @@ public class RamlInterpreterTest {
         RamlResource songs = ramlRoot.getResource("/songs");
         RamlDataType songsGetType = songs.getAction(RamlActionType.GET).getResponses().get("200").getBody().get("application/json").getType();
         assertThat(songsGetType, is(notNullValue()));        
-        ApiBodyMetadata songsGetRequest = RamlTypeHelper.mapTypeToPojo( config, jCodeModel, ramlRoot, songsGetType.getType(), "testName");
+        ApiBodyMetadata songsGetRequest = RamlTypeHelper.mapTypeToPojo( config, jCodeModel, ramlRoot, songsGetType.getType());
         assertThat(songsGetRequest, is(notNullValue()));   
         
         assertThat(songsGetRequest.isArray(), is(false)); 
@@ -292,7 +292,7 @@ public class RamlInterpreterTest {
         RamlResource managers = ramlRoot.getResource("/managers");
         RamlDataType managersGetType = managers.getAction(RamlActionType.GET).getResponses().get("200").getBody().get("application/json").getType();
         assertThat(managersGetType, is(notNullValue()));        
-        ApiBodyMetadata managersGetRequest = RamlTypeHelper.mapTypeToPojo(config, jCodeModel, ramlRoot, managersGetType.getType(), "testName");
+        ApiBodyMetadata managersGetRequest = RamlTypeHelper.mapTypeToPojo(config, jCodeModel, ramlRoot, managersGetType.getType());
         assertThat(managersGetRequest, is(notNullValue()));   
         assertThat(managersGetRequest.getName(), is("Manager"));
         assertThat(managersGetRequest.isArray(), is(true)); 
@@ -313,7 +313,7 @@ public class RamlInterpreterTest {
         assertThat(personsGetType, is(notNullValue()));
         assertThat(personListsGetType, is(notNullValue()));  
         
-        ApiBodyMetadata personsGetRequest = RamlTypeHelper.mapTypeToPojo(config, jCodeModel, ramlRoot, personsGetType.getType(), "testName");
+        ApiBodyMetadata personsGetRequest = RamlTypeHelper.mapTypeToPojo(config, jCodeModel, ramlRoot, personsGetType.getType());
         assertThat(personsGetRequest, is(notNullValue()));   
         assertThat(personsGetRequest.getName(), is("Person"));
         assertThat(personsGetRequest.isArray(), is(true)); 
@@ -322,7 +322,7 @@ public class RamlInterpreterTest {
 		checkIntegration(jCodeModel);
         
 		setupModel();
-        ApiBodyMetadata personListsGetRequest = RamlTypeHelper.mapTypeToPojo(config, jCodeModel, ramlRoot, personListsGetType.getType(), "testName");
+        ApiBodyMetadata personListsGetRequest = RamlTypeHelper.mapTypeToPojo(config, jCodeModel, ramlRoot, personListsGetType.getType());
         assertThat(personListsGetRequest, is(notNullValue()));   
         assertThat(personListsGetRequest.getName(), is("Person"));
         assertThat(personListsGetRequest.isArray(), is(true)); 
@@ -338,7 +338,7 @@ public class RamlInterpreterTest {
         RamlDataType managersDeleteType = managers.getAction(RamlActionType.DELETE).getResponses().get("200").getBody().get("application/json").getType();
         assertThat(managersDeleteType, is(notNullValue()));     
         
-        ApiBodyMetadata managersDeleteRequest = RamlTypeHelper.mapTypeToPojo(config, jCodeModel, ramlRoot, managersDeleteType.getType(), "testName");
+        ApiBodyMetadata managersDeleteRequest = RamlTypeHelper.mapTypeToPojo(config, jCodeModel, ramlRoot, managersDeleteType.getType());
         assertThat(managersDeleteRequest, is(nullValue()));   
     }
        
@@ -374,7 +374,7 @@ public class RamlInterpreterTest {
         
         RamlDataType getType = bigStuff.getAction(RamlActionType.GET).getResponses().get("200").getBody().get("application/json").getType();
         assertThat(getType, is(notNullValue()));        
-        ApiBodyMetadata validationsGetRequest = RamlTypeHelper.mapTypeToPojo(jsr303Config, jCodeModel, ramlRoot, getType.getType(), "testName");
+        ApiBodyMetadata validationsGetRequest = RamlTypeHelper.mapTypeToPojo(jsr303Config, jCodeModel, ramlRoot, getType.getType());
         JFieldVar field = getField((JDefinedClass) CodeModelHelper.findFirstClassBySimpleName(validationsGetRequest.getCodeModel(), "BigStuff"), "theDecimal");
         assertThat(field.type().fullName(), is(BigDecimal.class.getName()));
 	}
@@ -387,7 +387,7 @@ public class RamlInterpreterTest {
 
         RamlDataType getType = bigStuff.getAction(RamlActionType.GET).getResponses().get("200").getBody().get("application/json").getType();
         assertThat(getType, is(notNullValue()));
-        ApiBodyMetadata validationsGetRequest = RamlTypeHelper.mapTypeToPojo(jsr303Config, jCodeModel, ramlRoot, getType.getType(), "testName");
+        ApiBodyMetadata validationsGetRequest = RamlTypeHelper.mapTypeToPojo(jsr303Config, jCodeModel, ramlRoot, getType.getType());
         JFieldVar field = getField((JDefinedClass) CodeModelHelper.findFirstClassBySimpleName(validationsGetRequest.getCodeModel(), "BigStuff"), "theInteger");
         assertThat(field.type().fullName(), is(BigInteger.class.getName()));
 	}
@@ -400,7 +400,7 @@ public class RamlInterpreterTest {
 
 		RamlDataType getType = bigStuff.getAction(RamlActionType.GET).getResponses().get("200").getBody().get("application/json").getType();
 		assertThat(getType, is(notNullValue()));
-		ApiBodyMetadata validationsGetRequest = RamlTypeHelper.mapTypeToPojo(config, jCodeModel, ramlRoot, getType.getType(), "testName");
+		ApiBodyMetadata validationsGetRequest = RamlTypeHelper.mapTypeToPojo(config, jCodeModel, ramlRoot, getType.getType());
 		JMethod method = getMethod((JDefinedClass) CodeModelHelper.findFirstClassBySimpleName(validationsGetRequest.getCodeModel(), "BigStuff"), "withTheInteger");
 		assertThat(method, is(notNullValue()));
 	}
@@ -464,7 +464,7 @@ public class RamlInterpreterTest {
 
 		RamlDataType validationsGetType = validations.getAction(RamlActionType.GET).getResponses().get("200").getBody()
 				.get("application/json").getType();
-		RamlTypeHelper.mapTypeToPojo(jsr303Config, jCodeModel, ramlRoot, validationsGetType.getType(), "testName");
+		RamlTypeHelper.mapTypeToPojo(jsr303Config, jCodeModel, ramlRoot, validationsGetType.getType());
 
 		return (JDefinedClass) CodeModelHelper.findFirstClassBySimpleName(jCodeModel, pojoName);
 	}

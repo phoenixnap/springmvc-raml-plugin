@@ -59,7 +59,7 @@ public class PojoGenerationConfigTest
       Assert.assertTrue(generationConfig.isIncludeToString());
       Assert.assertTrue(generationConfig.isInitializeCollections());
       
-      final PojoGenerationConfig typeGenerationConfig = mojo.typeGenerationConfig;
+      final PojoGenerationConfig typeGenerationConfig = mojo.mapGenerationConfigMapping();
       Assert.assertTrue(typeGenerationConfig.isGenerateHashcodeEqualsToString());
       Assert.assertFalse(typeGenerationConfig.isGenerateJSR303Annotations());
       Assert.assertFalse(typeGenerationConfig.isUseCommonsLang3());
