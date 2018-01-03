@@ -477,11 +477,11 @@ public class NamingHelper {
     			String segment = splitUrl[index];
     			//Lets check for ID path variables
     			if (segment.contains("{") && segment.contains("}")) {
-					//set if the last segment of the url is an Id
-					isIdInPath = true;
     				//should we add this to Method name
-    				if (index > 0 && index == splitUrl.length-1) {
-    					if (segment.startsWith("{") && segment.endsWith("}")) {
+					if (index > 0 && index == splitUrl.length-1) {
+						//set if the last segment of the url is an Id
+						isIdInPath = true;
+						if (segment.startsWith("{") && segment.endsWith("}")) {
                             String peek = splitUrl[index-1].toLowerCase();
     					    name = "By" + StringUtils.capitalize(difference(peek, segment.substring(1, segment.length()-1)));
     					} else {
