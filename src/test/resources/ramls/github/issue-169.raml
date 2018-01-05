@@ -1,0 +1,18 @@
+#%RAML 1.0
+title: Date Test
+mediaType: application/json
+
+/dates:
+  get:
+    queryParameters: 
+      dateOnly: date-only
+      timeOnly: time-only
+      datetimeOnly: datetime-only
+      datetimeNoFormat: 
+        type: datetime
+      datetimeRFC3339: 
+        type: datetime
+        format: rfc3339
+      datetimeRFC2616: 
+        type: datetime
+        format: rfc2616

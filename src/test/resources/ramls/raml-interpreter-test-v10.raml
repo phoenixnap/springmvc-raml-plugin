@@ -1,0 +1,178 @@
+#%RAML 1.0
+title: myapi
+baseUri: api
+mediaType: application/json 
+types:
+  FeeParent:
+    type : object
+    properties: 
+      abc: string
+  FeeCategory:
+    type : FeeParent
+    properties: 
+      efg: string
+  Song:
+    type: object
+    properties: 
+      songId: string
+      songTitle: string
+      artist: string
+      fee:
+        type: FeeCategory
+        required: false
+      otherFee:
+        type: FeeCategory
+        required: false
+  BigStuff:
+    type: object
+    properties:
+      theDecimal:
+        type: number
+        format: double
+      theInteger:
+        type: number
+        format: int64
+      anotherEnum:
+        type: EnumChecks
+  EnumChecks:
+    type: string
+    enum: [one, two, three, value_with_underscore, "value with space", testfee, fee]
+  Validation:
+    type: object
+    properties:
+      firstname:
+        type: string
+        required: false
+      lastname: string
+      pattern:
+        type: string
+        pattern: "[0-9|-]+"
+      length:
+        type: string
+        minLength: 1
+        maxLength: 3
+        required: true
+      minLength:
+        type: string
+        required: false
+        minLength: 5
+      id: 
+        type: number
+        format: int64 
+        minimum: 1
+        maximum: 42.3
+      anEnum:
+        type: string
+        enum: [blue, red, green]
+      anotherEnum:
+        type: EnumChecks
+      anotherEnumAgain:
+        type: EnumChecks
+      testDefArray:
+        type: array # we'll not define items' type here
+      fileObject: file
+      dateO: date-only
+      timeO: time-only
+      dateTO: datetime-only
+      dateT: datetime
+      datetimeRFC2616: 
+        type: datetime
+        format: rfc2616
+  Person:
+    type: object
+    properties:
+      firstname: string
+      lastname: string
+      id: 
+        type: number
+        format: int64      
+  PersonList:
+      type: array
+      items: 
+        Person  
+  Manager:
+    type: Person
+    properties:
+      department: Department
+      clearanceLevel:
+        enum: [ low, high ]
+  Department:
+    type: object
+    properties:
+      name: string
+  NestedArrayPerson:
+    type: Person
+    properties:
+      departmentList: Department[]
+  NestedNestedArrayPerson:
+    type: NestedArrayPerson
+    properties:
+      childList: Person[]
+/songs:
+  get:
+    displayName: getPersons
+    responses:
+      200:
+        body:
+          application/json:
+            type: Song
+/bigStuff:
+  get:
+    responses:
+      200:
+        body:
+          application/json:
+            type: BigStuff
+/validations:
+  get:
+    responses:
+      200:
+        body:
+          application/json:
+            type: Validation
+/persons:
+  get:
+    responses:
+      200:
+        body:
+          application/json:
+            type: Person[]
+/personLists:
+  get:
+    responses:
+      200:
+        body:
+          application/json:
+            type: PersonList
+/managers:
+  post:
+    body:
+      application/json:
+        type: Manager 
+  get:
+    responses:
+      200:
+        body:
+          application/json:
+            type: Manager[]
+  delete:
+    responses:
+      200:
+        body:
+          application/json:
+/nestedArrayPersons:
+  get:
+    displayName: getPersons
+    responses:
+      200:
+        body:
+          application/json:
+            type: NestedArrayPerson[]
+/nestedNestedArrayPersons:
+  get:
+    displayName: getNestedPersons
+    responses:
+      200:
+        body:
+          application/json:
+            type: NestedNestedArrayPerson[]

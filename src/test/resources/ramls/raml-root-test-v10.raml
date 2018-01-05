@@ -1,0 +1,51 @@
+#%RAML 1.0
+title: myapi
+documentation:
+  - title: Home
+    content: |
+      Welcome to the _Sample API_ Documentation.
+  - title: Legal
+    content: |
+      CWIE (c) All Rights Reserved
+baseUri: api
+mediaType: application/json
+uses: 
+  TestLib: raml-root-test-lib-v10.raml
+  Test3Lib: raml-root-test-lib3-v10.raml
+types:
+  Person:
+    type: object
+    displayName: Person
+    properties: 
+      testX: 
+        displayName: testX
+        type: string
+        default: def_value
+        minLength: 3
+        maxLength: 10
+      testY:
+        type: array
+        items: string
+        description: array attribute
+        example: ["a", "b"]
+        minItems: 2
+        maxItems: 5
+  Manager:
+    type: Person
+  Persons: 
+    type: array
+    items: Person
+/persons:
+/managers:
+/defaultType:
+  get:
+    responses:
+      200:
+        body:
+          type: Manager
+/songs:
+  get:
+    responses: 
+      200:
+        body: 
+          type: TestLib.Song[]

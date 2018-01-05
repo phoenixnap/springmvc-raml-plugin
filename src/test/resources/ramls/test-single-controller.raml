@@ -1,0 +1,43 @@
+#%RAML 1.0
+title: myapi
+mediaType: application/json
+baseUri: /
+
+types:
+  NamedResponseType:
+    type: object
+    
+/base:
+  description: The BaseController class
+  get:
+  /{id}:
+    get:
+      description: Get base entity by ID
+      responses:
+        200:
+          body:
+            application/json:
+              type: NamedResponseType
+  /{id}/elements:
+    get:
+      queryParameters:
+        requiredQueryParam:
+          type: integer
+          required: true
+        optionalQueryParam:
+          type: string
+          default: dummyDefault
+        optionalQueryParam2:
+          type: number
+
+          required: false
+          default: 2
+      headers:
+        X-My-Header:
+          type: integer
+          required: false
+          default: 3
+        X-Another-Header:
+          type: string
+          required: true
+

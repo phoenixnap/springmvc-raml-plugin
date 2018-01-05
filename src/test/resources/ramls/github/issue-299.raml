@@ -1,0 +1,68 @@
+#%RAML 1.0
+title: spring-boot-example
+version: "0.0.1"
+baseUri: /
+
+types:
+    Message:
+        properties:
+            value:
+                required: true
+                type: string
+    MessageSubResource: 
+      type: object
+      properties: 
+        title: string
+        desc: string
+                
+/messages: 
+    displayName: Messages Resource
+    description: Messages Resource
+    post: 
+        description: createMessage
+        body: 
+            application/json: 
+                type: Message
+        responses: 
+            201:
+                description: Successful Response
+    get: 
+        description: getMessages
+        responses: 
+            "200": 
+                description: Successful Response
+                body: 
+                    application/json: 
+                        type: Message[]
+    /{messageId}:
+        displayName: "{id} Resource"
+        description: "{id} Resource"
+        get: 
+            description: getMessage
+            responses: 
+                200:
+                    description: Successful Response
+                    body: 
+                        application/json: 
+                            type: Message
+        put:
+          description: updateMessage
+          body: 
+            application/json:
+              type: Message
+          responses: 
+            200:
+              description: Successful Response
+        delete:
+          description: deleteMessage
+          responses: 
+            200:
+              description: Successful Response
+        /subresource:
+          get:
+            description: subresource
+            responses: 
+              200:
+                body: 
+                  application/json:
+                    type: MessageSubResource

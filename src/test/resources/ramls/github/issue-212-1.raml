@@ -1,0 +1,27 @@
+#%RAML 1.0
+title: Booking API
+
+types:
+  Booking:
+    properties:
+      firstName: string
+      lastName: string
+
+/customers/{customerId}/bookings:
+  uriParameters:
+    customerId: number
+  get:
+    responses:
+      200:
+        body:
+          application/json:
+            type: Booking[]
+  /{bookingRef}:
+    uriParameters:
+      bookingRef: number
+    get:
+      responses:
+        200:
+          body:
+            application/json:
+              type: Booking

@@ -1,0 +1,72 @@
+#%RAML 1.0
+
+title: Sample API
+version: v0.1
+baseUri: sample
+mediaType:  application/json
+
+types:
+  tRef: 
+    type: object
+    properties: 
+      refId:
+        type: string
+        description: The identifier of a reference.
+  Sample:
+    type: object
+    properties: 
+      tString?: string
+      tInteger: integer
+      tNumber?: 
+        type: number
+        minimum: 0
+      tDate?:
+        type: datetime
+        default: 2011-02-24T09:25:23.112Z
+      tBoolean?:
+        type: boolean
+        default: true
+      tArrayRef:
+        type: array
+        items: tRef
+        
+/samples:
+  displayName: Samples
+  description: A collection of samples
+  get:
+    description: Retrieves samples
+    responses:
+      200:
+        description: The sample collection has been successfully retrieved.
+        body:
+          application/json:
+            type: Sample[]
+            example: !include examples/example-samples.json
+  post:
+    description: Creates a sample
+    body:
+      application/json:
+        type: Sample
+        example: !include examples/example-sample.json
+    responses:
+      201:
+        description: The sample has been successfully created.
+  /{id}:
+    displayName: Sample
+    description: A sample referenced by its identifier.
+    uriParameters:
+      id:
+        displayName: Sample Identifier
+        description: The UUID of a sample
+        type: string
+    get:
+      description: Retrieves a given sample by its identifier.
+      responses:
+        200:
+          description: The sample has been successfully retrieved.
+          body:
+            application/json:
+              type: Sample
+              example: !include examples/example-sample.json
+        404:
+          description: The sample does not exist.

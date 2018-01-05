@@ -1,0 +1,15 @@
+#%RAML 1.0
+title: test-api
+version: 0.0.1
+mediaType: application/json
+
+types: 
+  TestT:
+    type: string
+    enum: [A, B]
+
+/enums:
+  get:
+    queryParameters: 
+      commonType:
+          type: TestT

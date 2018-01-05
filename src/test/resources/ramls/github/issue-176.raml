@@ -1,0 +1,18 @@
+#%RAML 1.0
+
+title: Support form parameters please
+ 
+/formUrlencodedTest:
+  post:
+    body: 
+      application/x-www-form-urlencoded:
+        properties: 
+          form_string_param: string
+          form_int_param: integer
+/multipartFormTest:
+  post:
+    body: 
+      multipart/form-data:
+        properties: 
+          multipart_string_param: string
+          multipart_int_param: integer

@@ -1,0 +1,37 @@
+#%RAML 0.8
+title: myapi
+baseUri: /
+version: 1
+
+/ignored:
+  /thisShouldBeIgnored:
+    get:
+  /balls:
+    /{ignoreMeId}:
+      get:
+  /books:
+    get:
+      responses:
+        200:
+          body:
+            application/json:
+              example: |
+                {
+                  "status" : "UP"
+                }
+    post:
+    /{bookId}:
+      get:
+  /houses:
+    get:
+      responses:
+        200:
+          body:
+            application/json:
+              example: |
+                {
+                  "status" : "UP"
+                }
+    post:
+    /{houseId}:
+      get:

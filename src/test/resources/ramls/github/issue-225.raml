@@ -1,0 +1,81 @@
+#%RAML 1.0
+title: API
+version: 1.0
+
+schemas: 
+  car: |
+    {
+      "definitions": {},
+      "$schema": "http://json-schema.org/draft-06/schema#",
+      "$id": "http://example.com/example.json",
+      "type": "object",
+      "properties": {
+        "id": {
+          "$id": "/properties/id",
+          "type": "integer",
+          "title": "The Id Schema.",
+          "description": "An explanation about the purpose of this instance.",
+          "default": 0,
+          "examples": [
+            12345
+          ]
+        },
+        "manufacturer": {
+          "$id": "/properties/manufacturer",
+          "type": "string",
+          "title": "The Manufacturer Schema.",
+          "description": "An explanation about the purpose of this instance.",
+          "default": "",
+          "examples": [
+            "Volvo"
+          ]
+        },
+        "model": {
+          "$id": "/properties/model",
+          "type": "string",
+          "title": "The Model Schema.",
+          "description": "An explanation about the purpose of this instance.",
+          "default": "",
+          "examples": [
+            "CX60"
+          ]
+        },
+        "color": {
+          "$id": "/properties/color",
+          "type": "string",
+          "title": "The Color Schema.",
+          "description": "An explanation about the purpose of this instance.",
+          "default": "",
+          "examples": [
+            "blue"
+          ]
+        },
+        "rightWheel": {
+          "$id": "/properties/rightWheel",
+          "type": "boolean",
+          "title": "The Rightwheel Schema.",
+          "description": "An explanation about the purpose of this instance.",
+          "default": false,
+          "examples": [
+            true
+          ]
+        }
+      }
+    }
+
+/cars:
+  /{carId}:
+    uriParameters: 
+      carId: # optional path variable
+        type: number
+        required: false
+    get:
+      responses: 
+        200:
+          body: 
+            application/json:
+              schema: car
+    post:
+      body: 
+        application/json:
+          schema: car

@@ -1,0 +1,56 @@
+#%RAML 1.0
+title: myapi
+documentation:
+  - title: Home
+    content: |
+      Welcome to the _Sample API_ Documentation.
+  - title: Legal
+    content: |
+      CWIE (c) All Rights Reserved
+baseUri: api
+mediaType: application/json
+  
+schemas: 
+  person: |
+    {
+      "definitions": {},
+      "$schema": "http://json-schema.org/draft-06/schema#",
+      "$id": "http://example.com/example.json",
+      "type": "object",
+      "properties": {
+        "testX": {
+          "$id": "/properties/testX",
+          "type": "string",
+          "minLength": 3,
+          "maxLength": 10,
+          "title": "The Testx Schema.",
+          "description": "An explanation about the purpose of this instance.",
+          "default": "def_value",
+          "examples": [
+            "X example"
+          ]
+        },
+        "testY": {
+          "$id": "/properties/testY",
+          "type": "array",
+          "minItems": 2,
+          "maxItems": 5,
+          "items": {
+            "$id": "/properties/testY/items",
+            "type": "string",
+            "title": "The 0 Schema.",
+            "description": "An explanation about the purpose of this instance.",
+            "default": "",
+            "examples": [
+              "one", "two"
+            ]
+          }
+        }
+      }
+    }
+/persons:
+  get:
+    responses:
+      200:
+        body:
+          schema: person

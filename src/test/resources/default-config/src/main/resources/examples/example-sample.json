@@ -1,0 +1,11 @@
+{
+    "tString": "a string",
+    "tInteger": 1,
+    "tNumber": 1.0151,
+    "tBoolean": true,
+    "tArrayRef": [
+        {
+            "refId": "112315"
+        }
+    ]
+}

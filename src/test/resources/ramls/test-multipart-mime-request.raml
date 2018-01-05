@@ -1,0 +1,15 @@
+#%RAML 1.0
+title: myapi
+mediaType: application/json
+baseUri: /
+
+/base:
+  description: The BaseController class
+  post:
+    body:
+      multipart/form-data:
+        properties: 
+          file:
+            description: The file to be uploaded
+            required: true
+            type: file

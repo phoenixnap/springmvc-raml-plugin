@@ -1,0 +1,31 @@
+#%RAML 1.0
+title: API
+baseUri: /
+version: 1.0
+
+types:
+  User:
+    properties:
+      nickNames: string[]
+      orderNumbers: number[]
+
+/domain/{domainId}/users:
+    post:
+      body:
+        application/json:
+          type: User
+      responses:
+        200:
+          body:
+            application/json:
+              type: User
+    /{id}:
+      put:
+        body:
+          application/json:
+            type: User
+        responses:
+          200:
+            body:
+              application/json:
+                type: User

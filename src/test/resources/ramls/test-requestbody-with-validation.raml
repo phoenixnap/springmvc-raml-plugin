@@ -1,0 +1,21 @@
+#%RAML 1.0
+title: myapi
+baseUri: /
+version: 1
+
+/base:
+  post:
+    body:
+      application/json:
+        type:
+          properties: 
+            stuffId: integer
+            coolerId: integer
+    responses:
+      200:
+        body:
+          application/json:
+            type:
+              properties: 
+                stuffId: integer
+                coolerId: integer

@@ -1,0 +1,29 @@
+#%RAML 1.0
+title: Users
+version: 0.1
+mediaType: application/json
+baseUri: /
+types:
+  User:
+    properties:
+      firstName: string
+      lastName: string
+
+/users:
+  /{userId}:
+    uriParameters:
+      userId:
+          type: integer
+          example: 123
+    put:
+      body:
+        application/json:
+          type: User
+      responses:
+       200:
+    patch:
+      body:
+        aapplication/json:
+          type: User
+      responses:
+        200:

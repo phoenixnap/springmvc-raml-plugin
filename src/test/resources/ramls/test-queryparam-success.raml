@@ -1,0 +1,25 @@
+#%RAML 0.8
+title: myapi
+baseUri: /
+version: 1
+
+/base:
+  /endpointWithGet:
+    get:
+      queryParameters:
+        param1:
+          required: true
+        param2:
+  /endpointWithURIParam:
+    /{uriParam}:
+      get:
+        queryParameters:
+          param3:
+            required: true
+          param4:        
+      post:
+        queryParameters:
+          param5:
+            required: true
+          param6:
+            required: true

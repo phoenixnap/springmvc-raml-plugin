@@ -1,0 +1,11 @@
+#%RAML 0.8
+title: myapi
+baseUri: /
+version: 1
+
+/secondBase:
+  /endpointWithGet:    
+    get:
+  /endpointWithURIParam:
+    /{differentNameParam}:
+      get:

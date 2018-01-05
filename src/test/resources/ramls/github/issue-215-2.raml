@@ -1,0 +1,18 @@
+#%RAML 1.0
+title: API
+version: 1.0
+
+/image/{imageId}:
+  uriParameters: 
+    imageId: number
+  /download/size{optionalSize}:
+    uriParameters: 
+      optionalSize: 
+        type: number
+        required: false
+    get:
+      responses: 
+        200:
+          body: 
+            application/json:
+              type: string

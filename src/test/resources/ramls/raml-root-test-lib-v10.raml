@@ -1,0 +1,21 @@
+#%RAML 1.0 Library
+
+uses: 
+  Test2Lib: raml-root-test-lib2-v10.raml
+  
+types: 
+  Song: 
+    type: object
+    displayName: Song
+    properties: 
+      title:
+        type: string
+        example: Smells Like Teen Spirit
+        minLength: 5
+        maxLength: 999
+      artist: string
+      album?: Test2Lib.Album
+      year: 
+        type: integer
+        required: false
+        example: 1991

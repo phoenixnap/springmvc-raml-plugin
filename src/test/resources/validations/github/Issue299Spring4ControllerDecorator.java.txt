@@ -1,0 +1,333 @@
+-----------------------------------com.gen.test.model.Message.java-----------------------------------
+
+package com.gen.test.model;
+
+import java.io.Serializable;
+import org.apache.commons.lang.builder.EqualsBuilder;
+import org.apache.commons.lang.builder.HashCodeBuilder;
+import org.apache.commons.lang.builder.ToStringBuilder;
+
+public class Message implements Serializable
+{
+
+    private String value;
+
+    /**
+     * Creates a new Message.
+     * 
+     */
+    public Message() {
+        super();
+    }
+
+    /**
+     * Creates a new Message.
+     * 
+     */
+    public Message(String value) {
+        super();
+        this.value = value;
+    }
+
+    /**
+     * Returns the value.
+     * 
+     * @return
+     *     value
+     */
+    public String getValue() {
+        return value;
+    }
+
+    /**
+     * Set the value.
+     * 
+     * @param value
+     *     the new value
+     */
+    public void setValue(String value) {
+        this.value = value;
+    }
+
+    public int hashCode() {
+        return new HashCodeBuilder().append(value).toHashCode();
+    }
+
+    public boolean equals(Object other) {
+        if (other == null) {
+            return false;
+        }
+        if (other == this) {
+            return true;
+        }
+        if (this.getClass()!= other.getClass()) {
+            return false;
+        }
+        Message otherObject = ((Message) other);
+        return new EqualsBuilder().append(value, otherObject.value).isEquals();
+    }
+
+    public String toString() {
+        return new ToStringBuilder(this).append("value", value).toString();
+    }
+
+}
+-----------------------------------com.gen.test.model.MessageSubResource.java-----------------------------------
+
+package com.gen.test.model;
+
+import java.io.Serializable;
+import org.apache.commons.lang.builder.EqualsBuilder;
+import org.apache.commons.lang.builder.HashCodeBuilder;
+import org.apache.commons.lang.builder.ToStringBuilder;
+
+public class MessageSubResource implements Serializable
+{
+
+    private String title;
+    private String desc;
+
+    /**
+     * Creates a new MessageSubResource.
+     * 
+     */
+    public MessageSubResource() {
+        super();
+    }
+
+    /**
+     * Creates a new MessageSubResource.
+     * 
+     */
+    public MessageSubResource(String title, String desc) {
+        super();
+        this.title = title;
+        this.desc = desc;
+    }
+
+    /**
+     * Returns the title.
+     * 
+     * @return
+     *     title
+     */
+    public String getTitle() {
+        return title;
+    }
+
+    /**
+     * Set the title.
+     * 
+     * @param title
+     *     the new title
+     */
+    public void setTitle(String title) {
+        this.title = title;
+    }
+
+    /**
+     * Returns the desc.
+     * 
+     * @return
+     *     desc
+     */
+    public String getDesc() {
+        return desc;
+    }
+
+    /**
+     * Set the desc.
+     * 
+     * @param desc
+     *     the new desc
+     */
+    public void setDesc(String desc) {
+        this.desc = desc;
+    }
+
+    public int hashCode() {
+        return new HashCodeBuilder().append(title).append(desc).toHashCode();
+    }
+
+    public boolean equals(Object other) {
+        if (other == null) {
+            return false;
+        }
+        if (other == this) {
+            return true;
+        }
+        if (this.getClass()!= other.getClass()) {
+            return false;
+        }
+        MessageSubResource otherObject = ((MessageSubResource) other);
+        return new EqualsBuilder().append(title, otherObject.title).append(desc, otherObject.desc).isEquals();
+    }
+
+    public String toString() {
+        return new ToStringBuilder(this).append("title", title).append("desc", desc).toString();
+    }
+
+}
+-----------------------------------com.gen.test.MessageController.java-----------------------------------
+
+package com.gen.test;
+
+import java.util.List;
+import javax.validation.Valid;
+import com.gen.test.model.Message;
+import com.gen.test.model.MessageSubResource;
+import org.springframework.http.ResponseEntity;
+
+
+/**
+ * Messages Resource
+ * (Generated with springmvc-raml-parser v.@project.version@)
+ * 
+ */
+public interface MessageController {
+
+
+    /**
+     * getMessages
+     * 
+     */
+    public ResponseEntity<List<Message>> getMessages();
+
+    /**
+     * createMessage
+     * 
+     */
+    public ResponseEntity<?> createMessage(
+        @Valid
+        Message message);
+
+    /**
+     * getMessage
+     * 
+     */
+    public ResponseEntity<Message> getMessageByMessageId(String messageId);
+
+    /**
+     * updateMessage
+     * 
+     */
+    public ResponseEntity<?> updateMessage(String messageId,
+        @Valid
+        Message message);
+
+    /**
+     * deleteMessage
+     * 
+     */
+    public ResponseEntity<?> deleteByMessageId(String messageId);
+
+    /**
+     * subresource
+     * 
+     */
+    public ResponseEntity<MessageSubResource> getMessageSubResourceByMessageId(String messageId);
+
+}
+-----------------------------------com.gen.test.MessageControllerDecorator.java-----------------------------------
+
+package com.gen.test;
+
+import java.util.List;
+import javax.validation.Valid;
+import com.gen.test.model.Message;
+import com.gen.test.model.MessageSubResource;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RestController;
+
+
+/**
+ * Messages Resource
+ * (Generated with springmvc-raml-parser v.@project.version@)
+ * 
+ */
+@RestController
+@RequestMapping("/api/messages")
+@Validated
+public class MessageControllerDecorator
+    implements MessageController
+{
+
+    @Autowired
+    private MessageController messageControllerDelegate;
+
+    /**
+     * getMessages
+     * 
+     */
+    @RequestMapping(value = "", method = RequestMethod.GET)
+    public ResponseEntity<List<Message>> getMessages() {
+        return this.messageControllerDelegate.getMessages();
+    }
+
+    /**
+     * createMessage
+     * 
+     */
+    @RequestMapping(value = "", method = RequestMethod.POST)
+    public ResponseEntity<?> createMessage(
+        @Valid
+        @RequestBody
+        Message message) {
+        return this.messageControllerDelegate.createMessage(message);
+    }
+
+    /**
+     * getMessage
+     * 
+     */
+    @RequestMapping(value = "/{messageId}", method = RequestMethod.GET)
+    public ResponseEntity<Message> getMessageByMessageId(
+        @PathVariable
+        String messageId) {
+        return this.messageControllerDelegate.getMessageByMessageId(messageId);
+    }
+
+    /**
+     * updateMessage
+     * 
+     */
+    @RequestMapping(value = "/{messageId}", method = RequestMethod.PUT)
+    public ResponseEntity<?> updateMessage(
+        @PathVariable
+        String messageId,
+        @Valid
+        @RequestBody
+        Message message) {
+        return this.messageControllerDelegate.updateMessage(messageId, message);
+    }
+
+    /**
+     * deleteMessage
+     * 
+     */
+    @RequestMapping(value = "/{messageId}", method = RequestMethod.DELETE)
+    public ResponseEntity<?> deleteByMessageId(
+        @PathVariable
+        String messageId) {
+        return this.messageControllerDelegate.deleteByMessageId(messageId);
+    }
+
+    /**
+     * subresource
+     * 
+     */
+    @RequestMapping(value = "/{messageId}/subresource", method = RequestMethod.GET)
+    public ResponseEntity<MessageSubResource> getMessageSubResourceByMessageId(
+        @PathVariable
+        String messageId) {
+        return this.messageControllerDelegate.getMessageSubResourceByMessageId(messageId);
+    }
+
+}
+

@@ -1,0 +1,18 @@
+#%RAML 1.0 Library
+
+types: 
+  Album: 
+    type: object
+    displayName: Album
+    properties: 
+      title:
+        type: string
+        example: Nevermind
+        minLength: 1
+        maxLength: 999
+      artist: string
+      studio?: string
+      year: 
+        type: integer
+        required: false
+        example: 1991

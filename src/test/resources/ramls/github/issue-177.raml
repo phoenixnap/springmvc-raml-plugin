@@ -1,0 +1,45 @@
+#%RAML 1.0
+
+description: Showcase for bug with displayName
+title: displayName bug
+
+/a_resource:
+  get:
+    headers:
+      header_string_param:
+         type: string
+         displayName: headerStrDisplayName
+/b_resource:
+  get:
+    queryParameters: 
+      query_string_param:
+        type: string
+        displayName: queryStrDisplayName
+  /str/{uri_string_param}:
+      uriParameters: 
+        uri_string_param: 
+          type: string
+          displayName: uriStrDisplayName
+      get:
+        responses: 
+          200:
+            body: 
+              application/json:
+  /int/{uri_int_param}:
+      uriParameters: 
+        uri_int_param: 
+          type: integer
+          displayName: uriIntDisplayName
+      get:
+        responses: 
+          200:
+            body: 
+              application/json:
+/c_resource:
+  post:
+    body: 
+      application/x-www-form-urlencoded:
+        properties: 
+          form_string_param:
+            type: string
+            displayName: formStrDisplayName

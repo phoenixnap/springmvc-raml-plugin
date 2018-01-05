@@ -1,0 +1,25 @@
+#%RAML 1.0
+title: Managers
+mediaType: application/json
+baseUri: /api
+types:
+  Manager:
+      properties:
+        firstName: string
+        lastName: string
+        departman: string
+
+/organization:
+  /persons:
+    /managers:
+      get:
+        responses:
+          200:
+            body: Manager[]
+      post:
+        body: Manager
+        responses:
+          201:
+            body:
+              application/json:
+                type: Manager

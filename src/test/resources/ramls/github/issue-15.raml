@@ -1,0 +1,149 @@
+#%RAML 0.8
+title: raml2springmvc
+version: "0.0.1"
+baseUri: http://localhost:7070/Payments/1.0
+/customers: 
+    displayName: Customers Resource
+    description: Customers Resource
+    /card: 
+        displayName: Card Resource
+        description: Card Resource
+        get: 
+            description: getCustomersCard
+            queryParameters: 
+                id: 
+                    displayName: id
+                    type: string
+                    required: true
+                    repeat: false
+            responses: 
+                "200": 
+                    description: Successful Response
+                    body: 
+                        application/json: 
+                            schema: |
+                                {
+                                  "type" : "object",
+                                  "id" : "urn:jsonschema:com:org:test:raml2springmvc:model:LocateCustomerByCardResponseSchema",
+                                  "properties" : {
+                                    "fatalError" : {
+                                      "type" : "boolean",
+                                      "description" : "(Required)"
+                                    },
+                                    "messages" : {
+                                      "type" : "array",
+                                      "description" : "(Required)"
+                                    },
+                                    "canIViewRestrictedCustomers" : {
+                                      "type" : "boolean",
+                                      "description" : "(Required)"
+                                    },
+                                    "customers" : {
+                                      "type" : "array",
+                                      "description" : "(Required)",
+                                      "items" : {
+                                        "type" : "object",
+                                        "id" : "urn:jsonschema:com:org:test:raml2springmvc:model:Customer",
+                                        "properties" : {
+                                          "tradingName" : {
+                                            "type" : "any"
+                                          },
+                                          "addresses" : {
+                                            "type" : "array",
+                                            "items" : {
+                                              "type" : "object",
+                                              "id" : "urn:jsonschema:com:org:test:raml2springmvc:model:Address",
+                                              "properties" : {
+                                                "country" : {
+                                                  "type" : "any"
+                                                },
+                                                "dateOccupied" : {
+                                                  "type" : "any"
+                                                },
+                                                "addressType" : {
+                                                  "type" : "any"
+                                                },
+                                                "residentialStatus" : {
+                                                  "type" : "any"
+                                                },
+                                                "postCode" : {
+                                                  "type" : "string"
+                                                },
+                                                "lines" : {
+                                                  "type" : "array"
+                                                },
+                                                "completeAddress" : {
+                                                  "type" : "string"
+                                                }
+                                              }
+                                            }
+                                          },
+                                          "gender" : {
+                                            "type" : "string"
+                                          },
+                                          "contactInfo" : {
+                                            "type" : "any"
+                                          },
+                                          "idvStatusCode" : {
+                                            "type" : "any"
+                                          },
+                                          "fullName" : {
+                                            "type" : "string"
+                                          },
+                                          "dateOfBirth" : {
+                                            "type" : "string"
+                                          },
+                                          "referenceId" : {
+                                            "type" : "string"
+                                          },
+                                          "officialBean" : {
+                                            "type" : "any"
+                                          },
+                                          "primaryCustomer" : {
+                                            "type" : "boolean"
+                                          },
+                                          "ageYears" : {
+                                            "type" : "string"
+                                          },
+                                          "registeredName" : {
+                                            "type" : "any"
+                                          },
+                                          "restricted" : {
+                                            "type" : "boolean"
+                                          },
+                                          "customerClass" : {
+                                            "type" : "string"
+                                          },
+                                          "customerId" : {
+                                            "type" : "string"
+                                          },
+                                          "name" : {
+                                            "type" : "object",
+                                            "id" : "urn:jsonschema:com:org:test:raml2springmvc:model:Name",
+                                            "properties" : {
+                                              "surName" : {
+                                                "type" : "string"
+                                              },
+                                              "middleName" : {
+                                                "type" : "any"
+                                              },
+                                              "suffix" : {
+                                                "type" : "any"
+                                              },
+                                              "title" : {
+                                                "type" : "string"
+                                              },
+                                              "foreName" : {
+                                                "type" : "string"
+                                              }
+                                            }
+                                          }
+                                        }
+                                      }
+                                    },
+                                    "customerMerged" : {
+                                      "type" : "any",
+                                      "description" : "(Required)"
+                                    }
+                                  }
+                                }
