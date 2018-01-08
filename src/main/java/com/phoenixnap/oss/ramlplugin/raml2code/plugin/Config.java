@@ -112,7 +112,7 @@ public class Config {
 	}
 
 	public static String getPojoPackage() {
-		return basePackage + NamingHelper.getDefaultModelPackage();
+		return getBasePackage() + NamingHelper.getDefaultModelPackage();
 	}
 	
 	protected static void resetFields() {
