@@ -30,43 +30,41 @@ import com.sun.codemodel.JDefinedClass;
  *
  */
 public abstract class SpringConfigurableRule implements ConfigurableRule<JCodeModel, JDefinedClass, ApiResourceMetadata> {
-	
- 	public static final String CALLABLE_RESPONSE_CONFIGURATION = "callableResponse";
 
- 	public static final String PARAMETER_JAVADOC_CONFIGURATION = "addParameterJavadoc";
- 			
- 	public static final String ARRAY_PARAMETER_CONFIGURATION = "allowArrayParameters";
+	public static final String CALLABLE_RESPONSE_CONFIGURATION = "callableResponse";
 
- 	public static final String SIMPLE_RETURN_TYPES = "simpleReturnTypes";
+	public static final String PARAMETER_JAVADOC_CONFIGURATION = "addParameterJavadoc";
 
+	public static final String ARRAY_PARAMETER_CONFIGURATION = "allowArrayParameters";
 
-    public static final String SHORTCUT_METHOD_MAPPINGS = "useShortcutMethodMappings";
+	public static final String SIMPLE_RETURN_TYPES = "simpleReturnTypes";
 
+	public static final String SHORTCUT_METHOD_MAPPINGS = "useShortcutMethodMappings";
 
-    private boolean callableResponse = false;
-    private boolean addParameterJavadoc = false;
-    private boolean allowArrayParameters = true;
-    /**
-     * Can only be set to true if <b>SpringControllerInterface</b> is used for now
-     */
-    private boolean simpleReturnTypes = false;
-    private boolean useShortcutMethodMappings = false;
+	private boolean callableResponse = false;
+	private boolean addParameterJavadoc = false;
+	private boolean allowArrayParameters = true;
+	/**
+	 * Can only be set to true if <b>SpringControllerInterface</b> is used for
+	 * now
+	 */
+	private boolean simpleReturnTypes = false;
+	private boolean useShortcutMethodMappings = false;
 
-
-    @Override
-    public void applyConfiguration(Map<String, String> configuration) {
-        if(!CollectionUtils.isEmpty(configuration)) {
-            if(configuration.containsKey(CALLABLE_RESPONSE_CONFIGURATION)) {
-                setCallableResponse(BooleanUtils.toBoolean(configuration.get(CALLABLE_RESPONSE_CONFIGURATION)));
-            }
-            if(configuration.containsKey(PARAMETER_JAVADOC_CONFIGURATION)) {
-            	setAddParameterJavadoc(BooleanUtils.toBoolean(configuration.get(PARAMETER_JAVADOC_CONFIGURATION)));
-            }
-            if(configuration.containsKey(ARRAY_PARAMETER_CONFIGURATION)) {
-            	setAllowArrayParameters(BooleanUtils.toBoolean(configuration.get(ARRAY_PARAMETER_CONFIGURATION)));
-            }
-        }
-    }
+	@Override
+	public void applyConfiguration(Map<String, String> configuration) {
+		if (!CollectionUtils.isEmpty(configuration)) {
+			if (configuration.containsKey(CALLABLE_RESPONSE_CONFIGURATION)) {
+				setCallableResponse(BooleanUtils.toBoolean(configuration.get(CALLABLE_RESPONSE_CONFIGURATION)));
+			}
+			if (configuration.containsKey(PARAMETER_JAVADOC_CONFIGURATION)) {
+				setAddParameterJavadoc(BooleanUtils.toBoolean(configuration.get(PARAMETER_JAVADOC_CONFIGURATION)));
+			}
+			if (configuration.containsKey(ARRAY_PARAMETER_CONFIGURATION)) {
+				setAllowArrayParameters(BooleanUtils.toBoolean(configuration.get(ARRAY_PARAMETER_CONFIGURATION)));
+			}
+		}
+	}
 
 	public boolean isAddParameterJavadoc() {
 		return addParameterJavadoc;
@@ -83,7 +81,7 @@ public abstract class SpringConfigurableRule implements ConfigurableRule<JCodeMo
 	public void setAllowArrayParameters(boolean allowArrayParameters) {
 		this.allowArrayParameters = allowArrayParameters;
 	}
-	
+
 	public boolean isCallableResponse() {
 		return callableResponse;
 	}
@@ -92,18 +90,19 @@ public abstract class SpringConfigurableRule implements ConfigurableRule<JCodeMo
 		this.callableResponse = callableResponse;
 	}
 
-    public boolean isUseShortcutMethodMappings() {
-        return useShortcutMethodMappings;
-    }
+	public boolean isUseShortcutMethodMappings() {
+		return useShortcutMethodMappings;
+	}
 
-    public void setUseShortcutMethodMappings(boolean useShortcutMethodMappings) {
-        this.useShortcutMethodMappings = useShortcutMethodMappings;
-    }
-    public boolean isSimpleReturnTypes() {
-        return simpleReturnTypes;
-    }
+	public void setUseShortcutMethodMappings(boolean useShortcutMethodMappings) {
+		this.useShortcutMethodMappings = useShortcutMethodMappings;
+	}
 
-    public void setSimpleReturnTypes(boolean simpleReturnTypes) {
-        this.simpleReturnTypes = simpleReturnTypes;
-    }
+	public boolean isSimpleReturnTypes() {
+		return simpleReturnTypes;
+	}
+
+	public void setSimpleReturnTypes(boolean simpleReturnTypes) {
+		this.simpleReturnTypes = simpleReturnTypes;
+	}
 }

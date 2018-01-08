@@ -19,22 +19,22 @@ public class Issue32RulesTest extends GitHubAbstractRuleTestBase {
 	public static void init() throws InvalidRamlResourceException {
 		loadRaml("issue-32.raml");
 	}
-	
-    @Test
-    public void applySpring4ControllerStubRule_shouldCreate_validCode() throws Exception {
-        rule = new Spring4ControllerStubRule();
-        rule.apply(getControllerMetadata(), jCodeModel);
-    }
 
-    @Test
-    public void applySpring4ControllerInterfaceRule_shouldCreate_validCode() throws Exception {
-        rule = new Spring4ControllerInterfaceRule();
-        rule.apply(getControllerMetadata(), jCodeModel);
-    }
+	@Test
+	public void applySpring4ControllerStubRule_shouldCreate_validCode() throws Exception {
+		rule = new Spring4ControllerStubRule();
+		rule.apply(getControllerMetadata(), jCodeModel);
+	}
 
-    @Test
-    public void applySpring4ControllerDecoratorRule_shouldCreate_validCode() throws Exception {
-        rule = new Spring4ControllerDecoratorRule();
-        rule.apply(getControllerMetadata(), jCodeModel);
-    }
+	@Test
+	public void applySpring4ControllerInterfaceRule_shouldCreate_validCode() throws Exception {
+		rule = new Spring4ControllerInterfaceRule();
+		rule.apply(getControllerMetadata(), jCodeModel);
+	}
+
+	@Test
+	public void applySpring4ControllerDecoratorRule_shouldCreate_validCode() throws Exception {
+		rule = new Spring4ControllerDecoratorRule();
+		rule.apply(getControllerMetadata(), jCodeModel);
+	}
 }

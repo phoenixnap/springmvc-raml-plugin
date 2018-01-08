@@ -19,40 +19,26 @@ import com.sun.codemodel.JDefinedClass;
 import com.sun.codemodel.JPackage;
 
 /**
- * Generates an interface declaration based on the controller name in ApiControllerMetadata.
- * <br>
- * INPUT:
- * <pre class="code">
- * #%RAML 0.8
- * title: myapi
- * mediaType: application/json
- * baseUri: /
- * /base:
- * </pre>
- *
- * OUTPUT:
- * <pre class="code">
- * public interface BaseClient {
- *
- * }
- * </pre>
+ * Generates an interface declaration based on the controller name in
+ * ApiControllerMetadata. <br>
  *
  * @author Aleksandar Stojsavljevic
+ * 
  * @since 0.8.6
  */
-public class SpringFeignClientInterfaceDeclarationRule implements Rule<JPackage,JDefinedClass, ApiResourceMetadata> {
+public class SpringFeignClientInterfaceDeclarationRule implements Rule<JPackage, JDefinedClass, ApiResourceMetadata> {
 
-    @Override
-    public JDefinedClass apply(ApiResourceMetadata controllerMetadata, JPackage generatableType) {
-    	
-        String controllerClassName = controllerMetadata.getResourceName().concat("Client");
-        JDefinedClass definedClass;
-        try {
-            definedClass = generatableType._interface(controllerClassName);
-        } catch (JClassAlreadyExistsException e1) {
-            definedClass = generatableType._getClass(controllerClassName);
-        }
-        return definedClass;
-    }
+	@Override
+	public JDefinedClass apply(ApiResourceMetadata controllerMetadata, JPackage generatableType) {
+
+		String controllerClassName = controllerMetadata.getResourceName().concat("Client");
+		JDefinedClass definedClass;
+		try {
+			definedClass = generatableType._interface(controllerClassName);
+		} catch (JClassAlreadyExistsException e1) {
+			definedClass = generatableType._getClass(controllerClassName);
+		}
+		return definedClass;
+	}
 
 }

@@ -22,9 +22,9 @@ import java.util.Map;
  */
 public interface RamlResponse {
 
-    Map<String, RamlMimeType> getBody();
+	Map<String, RamlMimeType> getBody();
 
-    boolean hasBody();
+	boolean hasBody();
 
-    String getDescription();
+	String getDescription();
 }

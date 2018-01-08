@@ -20,23 +20,21 @@ import java.util.List;
 public class InvalidRamlException extends RuntimeException {
 
 	private static final long serialVersionUID = 770865086433357483L;
-    private final List<?> errors;
-    private final String ramlFileUrl;
+	private final List<?> errors;
+	private final String ramlFileUrl;
 
-    public InvalidRamlException(String ramlFileUrl, List<?> errors) {
-        this.errors = errors;
-        this.ramlFileUrl = ramlFileUrl;
-    }
+	public InvalidRamlException(String ramlFileUrl, List<?> errors) {
+		this.errors = errors;
+		this.ramlFileUrl = ramlFileUrl;
+	}
 
-    @Override
-    public String getMessage() {
-        return this.toString();
-    }
+	@Override
+	public String getMessage() {
+		return this.toString();
+	}
 
-    @Override
-    public String toString() {
-        return getClass().getSimpleName() + " on raml file " + ramlFileUrl + " {" +
-                "errors=" + errors +
-                '}';
-    }
+	@Override
+	public String toString() {
+		return getClass().getSimpleName() + " on raml file " + ramlFileUrl + " {" + "errors=" + errors + '}';
+	}
 }

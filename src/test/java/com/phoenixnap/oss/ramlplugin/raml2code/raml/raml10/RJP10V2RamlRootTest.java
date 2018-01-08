@@ -41,48 +41,48 @@ import com.phoenixnap.oss.ramlplugin.raml2code.rules.RamlLoader;
  */
 public class RJP10V2RamlRootTest extends AbstractRuleTestBase {
 
-    private static RamlRoot ramlRoot, ramlRootEmptyValues, ramlSchemaRoot;
+	private static RamlRoot ramlRoot, ramlRootEmptyValues, ramlSchemaRoot;
 
-    @BeforeClass
-    public static void initRamlRoot() throws InvalidRamlResourceException {
-        ramlRoot = RamlLoader.loadRamlFromFile(AbstractRuleTestBase.RESOURCE_BASE + "raml-root-test-v10.raml");
-        ramlRootEmptyValues = RamlLoader.loadRamlFromFile(AbstractRuleTestBase.RESOURCE_BASE + "raml-root-test-emptyValues-v10.raml");
-        ramlSchemaRoot = RamlLoader.loadRamlFromFile(AbstractRuleTestBase.RESOURCE_BASE + "raml-root-schemas-test-v10.raml");
-    }
+	@BeforeClass
+	public static void initRamlRoot() throws InvalidRamlResourceException {
+		ramlRoot = RamlLoader.loadRamlFromFile(AbstractRuleTestBase.RESOURCE_BASE + "raml-root-test-v10.raml");
+		ramlRootEmptyValues = RamlLoader.loadRamlFromFile(AbstractRuleTestBase.RESOURCE_BASE + "raml-root-test-emptyValues-v10.raml");
+		ramlSchemaRoot = RamlLoader.loadRamlFromFile(AbstractRuleTestBase.RESOURCE_BASE + "raml-root-schemas-test-v10.raml");
+	}
 
-    @Test
-    public void factoryShouldCreateRamlRootFromFile() {
-        assertThat(ramlRoot, is(notNullValue()));
-        assertThat(ramlRootEmptyValues, is(notNullValue()));
-    }
+	@Test
+	public void factoryShouldCreateRamlRootFromFile() {
+		assertThat(ramlRoot, is(notNullValue()));
+		assertThat(ramlRootEmptyValues, is(notNullValue()));
+	}
 
-    @Test
-    public void ramlRootShouldReflectBaseUri() {
-        assertThat(ramlRoot.getBaseUri(), equalTo("api"));
-    }
+	@Test
+	public void ramlRootShouldReflectBaseUri() {
+		assertThat(ramlRoot.getBaseUri(), equalTo("api"));
+	}
 
-    @Test
-    public void ramlRootShouldHandleEmptyBaseUriWithoutException() {
-        assertThat(ramlRootEmptyValues.getBaseUri(), isEmptyOrNullString());
-    }
+	@Test
+	public void ramlRootShouldHandleEmptyBaseUriWithoutException() {
+		assertThat(ramlRootEmptyValues.getBaseUri(), isEmptyOrNullString());
+	}
 
-    @Test
-    public void ramlRootShouldReflectMediaType() {
-        assertThat(ramlRoot.getMediaType(), equalTo("application/json"));
-    }
+	@Test
+	public void ramlRootShouldReflectMediaType() {
+		assertThat(ramlRoot.getMediaType(), equalTo("application/json"));
+	}
 
-    @Test
-    public void ramlRootShouldHandleEmptyMediaTypeWithoutException() {
-        assertThat(ramlRootEmptyValues.getMediaType(), isEmptyOrNullString());
-    }
+	@Test
+	public void ramlRootShouldHandleEmptyMediaTypeWithoutException() {
+		assertThat(ramlRootEmptyValues.getMediaType(), isEmptyOrNullString());
+	}
 
-    @Test
-    public void ramlRootShouldReflectSchemas() {
-        Map<String, String> personSchema = ramlSchemaRoot.getSchemas().get(0);
-        assertThat(personSchema, notNullValue());
-        assertThat(personSchema.keySet().iterator().next(), equalTo("person"));
-        assertThat(personSchema.values().iterator().next(), startsWith("{"));
-    }
+	@Test
+	public void ramlRootShouldReflectSchemas() {
+		Map<String, String> personSchema = ramlSchemaRoot.getSchemas().get(0);
+		assertThat(personSchema, notNullValue());
+		assertThat(personSchema.keySet().iterator().next(), equalTo("person"));
+		assertThat(personSchema.values().iterator().next(), startsWith("{"));
+	}
 
 	@Test
 	public void ramlRootShouldReflectDataTypes() {
@@ -113,7 +113,7 @@ public class RJP10V2RamlRootTest extends AbstractRuleTestBase {
 		assertThat(personsDataType.type(), equalTo("array"));
 		assertThat(personsDataType.items().type(), equalTo("Person"));
 	}
-	
+
 	@Test
 	public void ramlRootShouldReflectDataTypesFromLibraries() {
 		Map<String, RamlDataType> dataTypes = ramlRoot.getTypes();
@@ -132,7 +132,7 @@ public class RJP10V2RamlRootTest extends AbstractRuleTestBase {
 		StringTypeDeclaration artist = (StringTypeDeclaration) personDataType.properties().get(1);
 		assertThat(artist.name(), equalTo("artist"));
 		assertThat(artist.required(), equalTo(true));
-		
+
 		ObjectTypeDeclaration album = (ObjectTypeDeclaration) personDataType.properties().get(2);
 		assertThat(album.name(), equalTo("album"));
 		assertThat(album.required(), equalTo(false));
@@ -142,12 +142,13 @@ public class RJP10V2RamlRootTest extends AbstractRuleTestBase {
 		assertThat(year.example().value(), equalTo("1991"));
 		assertThat(year.required(), equalTo(false));
 	}
-	
+
 	@Test
 	public void ramlRootShouldReflectDataTypesFromAllLibraries() {
 		Map<String, RamlDataType> dataTypes = ramlRoot.getTypes();
 
-		// this data type is defined in library that is referenced in another library (and not in a root raml)
+		// this data type is defined in library that is referenced in another
+		// library (and not in a root raml)
 		ObjectTypeDeclaration albumDataType = (ObjectTypeDeclaration) dataTypes.get("Album").getType();
 
 		assertThat(albumDataType.displayName().value(), equalTo("Album"));
@@ -162,7 +163,7 @@ public class RJP10V2RamlRootTest extends AbstractRuleTestBase {
 		StringTypeDeclaration artist = (StringTypeDeclaration) albumDataType.properties().get(1);
 		assertThat(artist.name(), equalTo("artist"));
 		assertThat(artist.required(), equalTo(true));
-		
+
 		StringTypeDeclaration studio = (StringTypeDeclaration) albumDataType.properties().get(2);
 		assertThat(studio.name(), equalTo("studio"));
 		assertThat(studio.required(), equalTo(false));
@@ -173,56 +174,57 @@ public class RJP10V2RamlRootTest extends AbstractRuleTestBase {
 		assertThat(year.required(), equalTo(false));
 	}
 
-    @Test
-    public void ramlRootShouldHandleEmptySchemasWithoutException() {
-        assertThat(ramlRootEmptyValues.getSchemas(), is(emptyIterable()));
-    }
+	@Test
+	public void ramlRootShouldHandleEmptySchemasWithoutException() {
+		assertThat(ramlRootEmptyValues.getSchemas(), is(emptyIterable()));
+	}
 
-    @Test
-    public void ramlRootShouldReflectToplevelResources() {
-        assertThat(ramlRoot.getResources(), is(mapWithSize(4)));
-        assertThat(ramlRoot.getResources().keySet(), hasItems("/persons", "/managers", "/defaultType", "/songs"));
+	@Test
+	public void ramlRootShouldReflectToplevelResources() {
+		assertThat(ramlRoot.getResources(), is(mapWithSize(4)));
+		assertThat(ramlRoot.getResources().keySet(), hasItems("/persons", "/managers", "/defaultType", "/songs"));
 
-        Iterable<Object> topLevelItems = ramlRoot.getResources().values().stream().collect(Collectors.toList());
-        assertThat(topLevelItems, everyItem(is(anything())));
+		Iterable<Object> topLevelItems = ramlRoot.getResources().values().stream().collect(Collectors.toList());
+		assertThat(topLevelItems, everyItem(is(anything())));
 
-        Iterable<RamlResource> topLevelRamlResources = ramlRoot.getResources().values().stream().collect(Collectors.toList());
-        assertThat(topLevelRamlResources, everyItem(isA(RamlResource.class)));
-    }
+		Iterable<RamlResource> topLevelRamlResources = ramlRoot.getResources().values().stream().collect(Collectors.toList());
+		assertThat(topLevelRamlResources, everyItem(isA(RamlResource.class)));
+	}
 
-    @Test
-    public void ramlRootShouldReflectToplevelResourceByNameIgnoringSlashes() {
-    	//Note: The following 2 assertions were removed since they were changed to maintain equivalence with the Raml08 getResource behaviour, 
-    	//which will not return these resources if no preceding slash is supplied
-        //assertThat(ramlRoot.getResource("persons"), is(notNullValue()));  
-    	//assertThat(ramlRoot.getResource("persons/"), is(notNullValue()));
-        assertThat(ramlRoot.getResource("/persons"), is(notNullValue()));
-        assertThat(ramlRoot.getResource("/persons/"), is(notNullValue()));
-    }
-    
-    @Test
-    public void ramlRootShouldReflectBodyWhenDefaultMediaTypeSet() {
-        assertThat(ramlRoot.getResource("/defaultType"), is(notNullValue()));
-        Map<String, RamlMimeType> body = ramlRoot.getResource("/defaultType").getAction(RamlActionType.GET).getResponses().get("200").getBody();
-        assertThat(body.isEmpty(), is(false)); 
-    }
+	@Test
+	public void ramlRootShouldReflectToplevelResourceByNameIgnoringSlashes() {
+		// Note: The following 2 assertions were removed since they were changed
+		// to maintain equivalence with the Raml08 getResource behaviour,
+		// which will not return these resources if no preceding slash is
+		// supplied
+		// assertThat(ramlRoot.getResource("persons"), is(notNullValue()));
+		// assertThat(ramlRoot.getResource("persons/"), is(notNullValue()));
+		assertThat(ramlRoot.getResource("/persons"), is(notNullValue()));
+		assertThat(ramlRoot.getResource("/persons/"), is(notNullValue()));
+	}
 
-    @Test
-    public void ramlRootShouldHandleEmptyToplevelResourcesWithoutException() {
-        assertThat(ramlRootEmptyValues.getResources(), is(emptyMap()));
-    }
+	@Test
+	public void ramlRootShouldReflectBodyWhenDefaultMediaTypeSet() {
+		assertThat(ramlRoot.getResource("/defaultType"), is(notNullValue()));
+		Map<String, RamlMimeType> body = ramlRoot.getResource("/defaultType").getAction(RamlActionType.GET).getResponses().get("200")
+				.getBody();
+		assertThat(body.isEmpty(), is(false));
+	}
+
+	@Test
+	public void ramlRootShouldHandleEmptyToplevelResourcesWithoutException() {
+		assertThat(ramlRootEmptyValues.getResources(), is(emptyMap()));
+	}
 
 	@Test
 	public void factoryShouldReflectDocumentation() {
 		List<RamlDocumentationItem> documentation = ((RJP10V2RamlRoot) ramlRoot).getDocumentation();
 
-		assertThat(((RJP10V2RamlDocumentationItem) documentation.get(0)).getDocumentationItem().title().value(),
-				equalTo("Home"));
+		assertThat(((RJP10V2RamlDocumentationItem) documentation.get(0)).getDocumentationItem().title().value(), equalTo("Home"));
 		assertThat(((RJP10V2RamlDocumentationItem) documentation.get(0)).getDocumentationItem().content().value(),
 				startsWith("Welcome to the _Sample API_ Documentation."));
 
-		assertThat(((RJP10V2RamlDocumentationItem) documentation.get(1)).getDocumentationItem().title().value(),
-				equalTo("Legal"));
+		assertThat(((RJP10V2RamlDocumentationItem) documentation.get(1)).getDocumentationItem().title().value(), equalTo("Legal"));
 		assertThat(((RJP10V2RamlDocumentationItem) documentation.get(1)).getDocumentationItem().content().value(),
 				startsWith("CWIE (c) All Rights Reserved"));
 

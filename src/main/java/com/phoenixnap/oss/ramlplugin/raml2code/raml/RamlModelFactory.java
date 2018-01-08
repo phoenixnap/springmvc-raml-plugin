@@ -28,48 +28,49 @@ import com.phoenixnap.oss.ramlplugin.raml2code.data.RamlFormParameter;
  */
 public interface RamlModelFactory {
 
-    RamlRoot buildRamlRoot(String ramlFileUrl);
+	RamlRoot buildRamlRoot(String ramlFileUrl);
 
-    RamlResource createRamlResource(Object resource);
+	RamlResource createRamlResource(Object resource);
 
-    RamlAction createRamlAction(Object action);
+	RamlAction createRamlAction(Object action);
 
-    RamlDocumentationItem createRamlDocumentationItem(Object documentationItem);
+	RamlDocumentationItem createRamlDocumentationItem(Object documentationItem);
 
-    RamlResponse createRamlResponse(Object response);
+	RamlResponse createRamlResponse(Object response);
 
-    RamlMimeType createRamlMimeType(Object mimeType);
+	RamlMimeType createRamlMimeType(Object mimeType);
 
-    RamlHeader createRamlHeader(Object haeder);
+	RamlHeader createRamlHeader(Object haeder);
 
-    RamlQueryParameter createRamlQueryParameter(Object queryParameter);
+	RamlQueryParameter createRamlQueryParameter(Object queryParameter);
 
-    RamlFormParameter createRamlFormParameter(Object formParameter);
+	RamlFormParameter createRamlFormParameter(Object formParameter);
 
-    List<RamlFormParameter> createRamlFormParameters(List<? extends Object> formParameters);
+	List<RamlFormParameter> createRamlFormParameters(List<? extends Object> formParameters);
 
-    List<RamlSecurityReference> createRamlSecurityReferences(List<? extends Object> securityReferences);
+	List<RamlSecurityReference> createRamlSecurityReferences(List<? extends Object> securityReferences);
 
-    RamlSecurityReference createRamlSecurityReference(Object securityReference);
+	RamlSecurityReference createRamlSecurityReference(Object securityReference);
 
-    RamlParamType createRamlParamType(Object paramType);
+	RamlParamType createRamlParamType(Object paramType);
 
-    default <SK, TK, SV, TV> Map<TK, TV> transformToUnmodifiableMap(Collection<SV> source, Map<TK, TV> target, Function<SV, TV> valueTransformer, Function<SV, TK> keyTransformer) {
-        if (source == null) {
-            target.clear();
-        } else if (target.size() != source.size()) {
-            target.clear();
-            for (SV value: source) {
-                TV targetValue = valueTransformer.apply(value);
-                TK targetKey = keyTransformer.apply(value);
-                target.put(targetKey, targetValue);
-            }
-        }
-        return Collections.unmodifiableMap(target);
-    }
+	default <SK, TK, SV, TV> Map<TK, TV> transformToUnmodifiableMap(Collection<SV> source, Map<TK, TV> target,
+			Function<SV, TV> valueTransformer, Function<SV, TK> keyTransformer) {
+		if (source == null) {
+			target.clear();
+		} else if (target.size() != source.size()) {
+			target.clear();
+			for (SV value : source) {
+				TV targetValue = valueTransformer.apply(value);
+				TK targetKey = keyTransformer.apply(value);
+				target.put(targetKey, targetValue);
+			}
+		}
+		return Collections.unmodifiableMap(target);
+	}
 
-    default <T> T identity(T object) {
-        return object;
-    }
+	default <T> T identity(T object) {
+		return object;
+	}
 
 }

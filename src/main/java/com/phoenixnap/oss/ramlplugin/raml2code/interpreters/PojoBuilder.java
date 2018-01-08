@@ -49,23 +49,26 @@ import com.sun.codemodel.JMod;
 import com.sun.codemodel.JVar;
 
 /**
- * Builder pattern for POJO generation using jCodeModel. Provides basic utility methods including extension and
- * getter/setter generation
+ * Builder pattern for POJO generation using jCodeModel. Provides basic utility
+ * methods including extension and getter/setter generation
  * 
  * @author kurtpa
  * @since 0.10.0
  *
  */
 public class PojoBuilder extends AbstractBuilder {
-	
+
 	protected static final Logger logger = LoggerFactory.getLogger(PojoBuilder.class);
 
 	/**
 	 * Constructor allowing chaining of JCodeModels
 	 * 
-	 * @param config The Configuration object which controls generation
-	 * @param pojoModel Existing Codemodel to append to
-	 * @param className Class to be created
+	 * @param config
+	 *            The Configuration object which controls generation
+	 * @param pojoModel
+	 *            Existing Codemodel to append to
+	 * @param className
+	 *            Class to be created
 	 * 
 	 */
 	public PojoBuilder(JCodeModel pojoModel, String className) {
@@ -93,12 +96,14 @@ public class PojoBuilder extends AbstractBuilder {
 	/**
 	 * Sets this Pojo's name
 	 * 
-	 * @param pojoPackage The Package used to create POJO
-	 * @param className Class to be created
+	 * @param pojoPackage
+	 *            The Package used to create POJO
+	 * @param className
+	 *            Class to be created
 	 * @return This instance
 	 */
 	public PojoBuilder withName(String pojoPackage, String className) {
-		if(!NamingHelper.isValidJavaClassName(className)) {
+		if (!NamingHelper.isValidJavaClassName(className)) {
 			className = NamingHelper.cleanNameForJava(className);
 		}
 
@@ -107,7 +112,7 @@ public class PojoBuilder extends AbstractBuilder {
 		if (this.pojoPackage == null) {
 			withPackage(pojoPackage);
 		}
-		
+
 		// Builders should only have 1 active pojo under their responsibility
 		if (this.pojo != null) {
 			throw new IllegalStateException("Class already created");
@@ -146,44 +151,46 @@ public class PojoBuilder extends AbstractBuilder {
 		if (pojo != null && !pojo.fullName().equals(Object.class.getName())) {
 			JClass parent = pojo._extends();
 			if (parent != null) {
-				//Our parent has a parent, lets check if it has it
+				// Our parent has a parent, lets check if it has it
 				if (parentContainsField(parent, name)) {
 					return true;
 				} else {
 					if (parent instanceof JDefinedClass) {
-						return ((JDefinedClass)parent).fields().containsKey(name);
+						return ((JDefinedClass) parent).fields().containsKey(name);
 					}
 				}
 			}
 		}
-		
+
 		return false;
 	}
 
-	public PojoBuilder withField(String name, String type, String comment, RamlTypeValidations validations, TypeDeclaration typeDeclaration) {
+	public PojoBuilder withField(String name, String type, String comment, RamlTypeValidations validations,
+			TypeDeclaration typeDeclaration) {
 		pojoCreationCheck();
 		logger.debug("Adding field: " + name + " to " + this.pojo.name());
 
 		JClass resolvedType = resolveType(type);
-		
+
 		try {
-			//If this class is a collection (List)- lets add an import
-			if (resolvedType.fullName().startsWith(List.class.getName() +"<")) {
+			// If this class is a collection (List)- lets add an import
+			if (resolvedType.fullName().startsWith(List.class.getName() + "<")) {
 				resolvedType = this.pojo.owner().ref(List.class).narrow(resolvedType.getTypeParameters().get(0));
 			}
-			//If this class is a collection (Set) - lets add an import
-			if (resolvedType.fullName().startsWith(Set.class.getName() +"<")) {
+			// If this class is a collection (Set) - lets add an import
+			if (resolvedType.fullName().startsWith(Set.class.getName() + "<")) {
 				resolvedType = this.pojo.owner().ref(Set.class).narrow(resolvedType.getTypeParameters().get(0));
 			}
 		} catch (Exception ex) {
-			//skip import
+			// skip import
 		}
-		
-		//lets ignore this if parent contains it and we will use parent's in the constructor
+
+		// lets ignore this if parent contains it and we will use parent's in
+		// the constructor
 		if (parentContainsField(this.pojo, name)) {
 			return this;
 		}
-		
+
 		JExpression jExpression = null;
 		if (StringUtils.hasText(typeDeclaration.defaultValue())) {
 			if (resolvedType.name().equals(Integer.class.getSimpleName())) {
@@ -204,37 +211,35 @@ public class PojoBuilder extends AbstractBuilder {
 					&& ((JDefinedClass) resolvedType).getClassType().equals(ClassType.ENUM)) {
 				jExpression = JExpr.direct(resolvedType.name() + "." + NamingHelper.cleanNameForJavaEnum(typeDeclaration.defaultValue()));
 			}
-		} else if(resolvedType.fullName().startsWith(List.class.getName() +"<")){
+		} else if (resolvedType.fullName().startsWith(List.class.getName() + "<")) {
 			JClass narrowedListClass = this.pojoModel.ref(ArrayList.class).narrow(resolvedType.getTypeParameters().get(0));
 			jExpression = JExpr._new(narrowedListClass);
 		}
-		
 
 		// Add private variable
 		JFieldVar field = this.pojo.field(JMod.PRIVATE, resolvedType, toJavaName(name), jExpression);
 		if (Config.getPojoConfig().isIncludeJsr303Annotations() && validations != null) {
-			
+
 			// check if field is complex object so we can mark it with @Valid
 			boolean isPOJO = type.startsWith(this.pojo._package().name() + ".");
-			if (!isPOJO
-					&& resolvedType.getClass().getName().equals("com.sun.codemodel.JNarrowedClass")
+			if (!isPOJO && resolvedType.getClass().getName().equals("com.sun.codemodel.JNarrowedClass")
 					&& resolvedType.getTypeParameters().size() == 1) {
 				JClass typeClass = resolvedType.getTypeParameters().get(0);
 				isPOJO = typeClass.fullName().startsWith(this.pojo._package().name() + ".");
 			}
-			
+
 			validations.annotateFieldJSR303(field, isPOJO);
 		}
-		
+
 		if (resolvedType.name().equals(Date.class.getSimpleName())) {
 			JAnnotationUse jAnnotationUse = field.annotate(JsonFormat.class);
 			String format = null;
-			if(typeDeclaration instanceof DateTimeTypeDeclaration) {
+			if (typeDeclaration instanceof DateTimeTypeDeclaration) {
 				format = ((DateTimeTypeDeclaration) typeDeclaration).format();
 			}
 			RamlTypeHelper.annotateDateWithPattern(jAnnotationUse, typeDeclaration.type(), format);
 		}
-		
+
 		if (StringUtils.hasText(comment)) {
 			field.javadoc().add(comment);
 		}
@@ -254,7 +259,7 @@ public class PojoBuilder extends AbstractBuilder {
 		setter.javadoc().addParam(field.name()).add("the new " + field.name());
 
 		// Add with method
-		if(Config.getPojoConfig().isGenerateBuilders()) {
+		if (Config.getPojoConfig().isGenerateBuilders()) {
 			JMethod wither = this.pojo.method(JMod.PUBLIC, this.pojo, "with" + fieldName);
 			wither.param(field.type(), field.name());
 			wither.body().assign(JExpr._this().ref(field.name()), JExpr.ref(field.name()))._return(JExpr._this());
@@ -354,7 +359,8 @@ public class PojoBuilder extends AbstractBuilder {
 	}
 
 	/**
-	 * Generates implementations for hashCode(), equals() and toString() methods if the plugin has been configured to do so.
+	 * Generates implementations for hashCode(), equals() and toString() methods
+	 * if the plugin has been configured to do so.
 	 */
 	public void withOverridenMethods() {
 		if (Config.getPojoConfig().isIncludeHashcodeAndEquals()) {
@@ -366,28 +372,38 @@ public class PojoBuilder extends AbstractBuilder {
 		}
 	}
 
-    private void withToString() {
-        pojoCreationCheck();
+	private void withToString() {
+		pojoCreationCheck();
 
-        JMethod toString = this.pojo.method(JMod.PUBLIC, String.class, "toString");
+		JMethod toString = this.pojo.method(JMod.PUBLIC, String.class, "toString");
 
-        Class<?> toStringBuilderClass = org.apache.commons.lang3.builder.ToStringBuilder.class;
-        if (!Config.getPojoConfig().isUseCommonsLang3()) {
-            toStringBuilderClass = org.apache.commons.lang.builder.ToStringBuilder.class;
-        }
+		Class<?> toStringBuilderClass = org.apache.commons.lang3.builder.ToStringBuilder.class;
+		if (!Config.getPojoConfig().isUseCommonsLang3()) {
+			toStringBuilderClass = org.apache.commons.lang.builder.ToStringBuilder.class;
+		}
 
-        JClass toStringBuilderRef = this.pojo.owner().ref(toStringBuilderClass);
+		JClass toStringBuilderRef = this.pojo.owner().ref(toStringBuilderClass);
 
-        JInvocation toStringBuilderInvocation = appendFieldsToString(getNonTransientAndNonStaticFields(), toStringBuilderRef);
+		JInvocation toStringBuilderInvocation = appendFieldsToString(getNonTransientAndNonStaticFields(), toStringBuilderRef);
 
-        toString.body()._return(toStringBuilderInvocation.invoke("toString"));
-    }
+		toString.body()._return(toStringBuilderInvocation.invoke("toString"));
+	}
 
 	private JInvocation appendFieldsToString(Map<String, JFieldVar> nonTransientAndNonStaticFields, JClass toStringBuilderRef) {
 		JInvocation invocation = JExpr._new(toStringBuilderRef).arg(JExpr._this());
 		Iterator<Map.Entry<String, JFieldVar>> iterator = nonTransientAndNonStaticFields.entrySet().iterator();
-	
-		if (!this.pojo._extends().name().equals(Object.class.getSimpleName())) { // If this POJO has a superclass, append the superclass toString() method.
+
+		if (!this.pojo._extends().name().equals(Object.class.getSimpleName())) { // If
+																					// this
+																					// POJO
+																					// has
+																					// a
+																					// superclass,
+																					// append
+																					// the
+																					// superclass
+																					// toString()
+																					// method.
 			invocation = invocation.invoke("appendSuper").arg(JExpr._super().invoke("toString"));
 		}
 
@@ -399,27 +415,37 @@ public class PojoBuilder extends AbstractBuilder {
 		return invocation;
 	}
 
-    //Ada
+	// Ada
 	private void withHashCode() {
-        JMethod hashCode = this.pojo.method(JMod.PUBLIC, int.class, "hashCode");
+		JMethod hashCode = this.pojo.method(JMod.PUBLIC, int.class, "hashCode");
 
-        Class<?> hashCodeBuilderClass = org.apache.commons.lang3.builder.HashCodeBuilder.class;
-        if (!Config.getPojoConfig().isUseCommonsLang3()) {
-        	hashCodeBuilderClass = org.apache.commons.lang.builder.HashCodeBuilder.class;
-        }
+		Class<?> hashCodeBuilderClass = org.apache.commons.lang3.builder.HashCodeBuilder.class;
+		if (!Config.getPojoConfig().isUseCommonsLang3()) {
+			hashCodeBuilderClass = org.apache.commons.lang.builder.HashCodeBuilder.class;
+		}
 
-        JClass hashCodeBuilderRef = this.pojo.owner().ref(hashCodeBuilderClass);
+		JClass hashCodeBuilderRef = this.pojo.owner().ref(hashCodeBuilderClass);
 
-        JInvocation hashCodeBuilderInvocation = appendFieldsToHashCode(getNonTransientAndNonStaticFields(), hashCodeBuilderRef);
+		JInvocation hashCodeBuilderInvocation = appendFieldsToHashCode(getNonTransientAndNonStaticFields(), hashCodeBuilderRef);
 
-        hashCode.body()._return(hashCodeBuilderInvocation.invoke("toHashCode"));
-    }
+		hashCode.body()._return(hashCodeBuilderInvocation.invoke("toHashCode"));
+	}
 
 	private JInvocation appendFieldsToHashCode(Map<String, JFieldVar> nonTransientAndNonStaticFields, JClass hashCodeBuilderRef) {
 		JInvocation invocation = JExpr._new(hashCodeBuilderRef);
 		Iterator<Map.Entry<String, JFieldVar>> iterator = nonTransientAndNonStaticFields.entrySet().iterator();
 
-		if (!this.pojo._extends().name().equals(Object.class.getSimpleName())) { // If this POJO has a superclass, append the superclass hashCode() method.
+		if (!this.pojo._extends().name().equals(Object.class.getSimpleName())) { // If
+																					// this
+																					// POJO
+																					// has
+																					// a
+																					// superclass,
+																					// append
+																					// the
+																					// superclass
+																					// hashCode()
+																					// method.
 			invocation = invocation.invoke("appendSuper").arg(JExpr._super().invoke("hashCode"));
 		}
 
@@ -432,40 +458,51 @@ public class PojoBuilder extends AbstractBuilder {
 	}
 
 	private void withEquals() {
-        JMethod equals = this.pojo.method(JMod.PUBLIC, boolean.class, "equals");
-        JVar otherObject = equals.param(Object.class, "other");
+		JMethod equals = this.pojo.method(JMod.PUBLIC, boolean.class, "equals");
+		JVar otherObject = equals.param(Object.class, "other");
 
-        Class<?> equalsBuilderClass = org.apache.commons.lang3.builder.EqualsBuilder.class;
-        if (!Config.getPojoConfig().isUseCommonsLang3()) {
-            equalsBuilderClass = org.apache.commons.lang.builder.EqualsBuilder.class;
-        }
+		Class<?> equalsBuilderClass = org.apache.commons.lang3.builder.EqualsBuilder.class;
+		if (!Config.getPojoConfig().isUseCommonsLang3()) {
+			equalsBuilderClass = org.apache.commons.lang.builder.EqualsBuilder.class;
+		}
 
-        JBlock body = equals.body();
+		JBlock body = equals.body();
 
-        body._if(otherObject.eq(JExpr._null()))._then()._return(JExpr.FALSE);
-        body._if(otherObject.eq(JExpr._this()))._then()._return(JExpr.TRUE);
-        body._if(JExpr._this().invoke("getClass").ne(otherObject.invoke("getClass")))._then()._return(JExpr.FALSE);
+		body._if(otherObject.eq(JExpr._null()))._then()._return(JExpr.FALSE);
+		body._if(otherObject.eq(JExpr._this()))._then()._return(JExpr.TRUE);
+		body._if(JExpr._this().invoke("getClass").ne(otherObject.invoke("getClass")))._then()._return(JExpr.FALSE);
 
-        JVar otherObjectVar = body.decl(this.pojo, "otherObject").init(JExpr.cast(this.pojo, otherObject));
+		JVar otherObjectVar = body.decl(this.pojo, "otherObject").init(JExpr.cast(this.pojo, otherObject));
 
-        JClass equalsBuilderRef = this.pojo.owner().ref(equalsBuilderClass);
+		JClass equalsBuilderRef = this.pojo.owner().ref(equalsBuilderClass);
 
-        JInvocation equalsBuilderInvocation = appendFieldsToEquals(getNonTransientAndNonStaticFields(), otherObjectVar, equalsBuilderRef);
+		JInvocation equalsBuilderInvocation = appendFieldsToEquals(getNonTransientAndNonStaticFields(), otherObjectVar, equalsBuilderRef);
 
-        body._return(equalsBuilderInvocation.invoke("isEquals"));
-    }
+		body._return(equalsBuilderInvocation.invoke("isEquals"));
+	}
 
-	private JInvocation appendFieldsToEquals(Map<String, JFieldVar> nonTransientAndNonStaticFields, JVar otherObject, JClass equalsBuilderRef) {
+	private JInvocation appendFieldsToEquals(Map<String, JFieldVar> nonTransientAndNonStaticFields, JVar otherObject,
+			JClass equalsBuilderRef) {
 		JInvocation invocation = JExpr._new(equalsBuilderRef);
 		Iterator<Map.Entry<String, JFieldVar>> iterator = nonTransientAndNonStaticFields.entrySet().iterator();
 
-		if (!this.pojo._extends().name().equals(Object.class.getSimpleName())) {// If this POJO has a superclass, append the superclass equals() method.
+		if (!this.pojo._extends().name().equals(Object.class.getSimpleName())) {// If
+																				// this
+																				// POJO
+																				// has
+																				// a
+																				// superclass,
+																				// append
+																				// the
+																				// superclass
+																				// equals()
+																				// method.
 			invocation = invocation.invoke("appendSuper").arg(JExpr._super().invoke("equals").arg(otherObject));
 		}
 
 		while (iterator.hasNext()) {
 			Map.Entry<String, JFieldVar> pair = iterator.next();
-				invocation = invocation.invoke("append").arg(pair.getValue()).arg(otherObject.ref(pair.getKey()));
+			invocation = invocation.invoke("append").arg(pair.getValue()).arg(otherObject.ref(pair.getKey()));
 		}
 
 		return invocation;

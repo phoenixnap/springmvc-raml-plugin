@@ -12,7 +12,6 @@
  */
 package com.phoenixnap.oss.ramlplugin.raml2code.raml.raml10;
 
-
 import org.raml.v2.api.model.v10.api.DocumentationItem;
 
 import com.phoenixnap.oss.ramlplugin.raml2code.raml.RamlDocumentationItem;
@@ -25,17 +24,18 @@ import com.phoenixnap.oss.ramlplugin.raml2code.raml.RamlDocumentationItem;
  */
 public class RJP10V2RamlDocumentationItem implements RamlDocumentationItem {
 
-    private final DocumentationItem documentationItem;
+	private final DocumentationItem documentationItem;
 
 	public RJP10V2RamlDocumentationItem(DocumentationItem documentationItem) {
-        this.documentationItem = documentationItem;
-    }
+		this.documentationItem = documentationItem;
+	}
 
-    /**
-     * Expose internal representation only package private
-     * @return the internal model
-     */
-    DocumentationItem getDocumentationItem() {
-        return documentationItem;
-    }
+	/**
+	 * Expose internal representation only package private
+	 * 
+	 * @return the internal model
+	 */
+	DocumentationItem getDocumentationItem() {
+		return documentationItem;
+	}
 }

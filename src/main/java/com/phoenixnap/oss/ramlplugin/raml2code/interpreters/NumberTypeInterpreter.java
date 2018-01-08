@@ -43,7 +43,6 @@ public class NumberTypeInterpreter extends BaseTypeInterpreter {
 		return Collections.singleton(NumberTypeDeclaration.class);
 	}
 
-
 	@Override
 	public RamlInterpretationResult interpret(RamlRoot document, TypeDeclaration type, JCodeModel builderModel, boolean property) {
 		RamlInterpretationResult result = new RamlInterpretationResult(type.required());
@@ -54,27 +53,28 @@ public class NumberTypeInterpreter extends BaseTypeInterpreter {
 			String format = numberType.format();
 			RamlTypeValidations validations = result.getValidations();
 			validations.withMinMax(numberType.minimum(), numberType.maximum());
-			
+
 			if (!StringUtils.hasText(format)) {
-				//format not supplied. Defaulting to long if it's integer since it's safer
+				// format not supplied. Defaulting to long if it's integer since
+				// it's safer
 				if (type instanceof IntegerTypeDeclaration) {
 					resolvedType = Long.class.getSimpleName();
 				} else {
 					resolvedType = Double.class.getSimpleName();
 				}
-				 
+
 			} else {
 				resolvedType = SchemaHelper.mapSimpleType(RamlParamType.NUMBER, format).getSimpleName();
 			}
 		}
-		
+
 		if (resolvedType.equals(Double.class.getSimpleName()) && Config.getPojoConfig().isUseBigDecimals()) {
 			resolvedType = BigDecimal.class.getName();
 		}
 		if (resolvedType.equals(Long.class.getSimpleName()) && Config.getPojoConfig().isUseBigIntegers()) {
 			resolvedType = BigInteger.class.getName();
 		}
-		
+
 		result.setResolvedClass(CodeModelHelper.findFirstClassBySimpleName(builderModel, resolvedType));
 		return result;
 	}

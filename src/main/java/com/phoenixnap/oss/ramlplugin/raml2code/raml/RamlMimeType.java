@@ -25,13 +25,14 @@ import com.phoenixnap.oss.ramlplugin.raml2code.data.RamlFormParameter;
  */
 public interface RamlMimeType {
 
-    Map<String, List<RamlFormParameter>> getFormParameters();
+	Map<String, List<RamlFormParameter>> getFormParameters();
 
-    String getSchema();
-    
-    /**
-     * The Raml data type associated with this schema
-     * @return The RamlDataType (type:) that this mime encapsulates
-     */
-    RamlDataType getType();
+	String getSchema();
+
+	/**
+	 * The Raml data type associated with this schema
+	 * 
+	 * @return The RamlDataType (type:) that this mime encapsulates
+	 */
+	RamlDataType getType();
 }

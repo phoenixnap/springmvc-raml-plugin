@@ -21,26 +21,26 @@ import java.math.BigDecimal;
  * @author Aleksandar Stojsavljevic
  * @since 0.8.1
  */
-public abstract class RamlAbstractParam { //extends AbstractParam {
+public abstract class RamlAbstractParam { // extends AbstractParam {
 
-    public abstract boolean isRequired();
+	public abstract boolean isRequired();
 
-    public abstract RamlParamType getType();
-    
-    public abstract String getFormat();
+	public abstract RamlParamType getType();
 
-    public abstract String getExample();
+	public abstract String getFormat();
 
-    public abstract String getDescription();
+	public abstract String getExample();
 
-    public abstract String getDisplayName();
+	public abstract String getDescription();
+
+	public abstract String getDisplayName();
 
 	public abstract String getName();
 
 	public abstract String getDefaultValue();
 
 	public abstract String getPattern();
-	
+
 	public abstract Integer getMinLength();
 
 	public abstract Integer getMaxLength();
@@ -50,13 +50,14 @@ public abstract class RamlAbstractParam { //extends AbstractParam {
 	public abstract BigDecimal getMaximum();
 
 	/**
-	 * Convenience method for easier processing. Non supporting parameters are assumed to be single.
+	 * Convenience method for easier processing. Non supporting parameters are
+	 * assumed to be single.
 	 * 
-	 * @return True if this is an array/repeatable parameter. Default to false if no implementation found
+	 * @return True if this is an array/repeatable parameter. Default to false
+	 *         if no implementation found
 	 */
-	public boolean isRepeat () {
+	public boolean isRepeat() {
 		return false;
 	}
-	
-	
+
 }

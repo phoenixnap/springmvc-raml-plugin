@@ -21,7 +21,7 @@ package com.phoenixnap.oss.ramlplugin.raml2code.raml;
  */
 public abstract class RamlQueryParameter extends RamlAbstractParam {
 
-    public abstract boolean isRepeat();
+	public abstract boolean isRepeat();
 
 	public abstract String getDefaultValue();
 }

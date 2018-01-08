@@ -20,21 +20,21 @@ import com.sun.codemodel.JPackage;
  */
 public class ImplementsControllerInferfaceRuleTest extends AbstractRuleTestBase {
 
-    private ImplementsControllerInterfaceRule rule;
+	private ImplementsControllerInterfaceRule rule;
 
-    @Test
-    public void applyRule_shouldCreate_classImplementsInterfaceExpression() throws JClassAlreadyExistsException {
+	@Test
+	public void applyRule_shouldCreate_classImplementsInterfaceExpression() throws JClassAlreadyExistsException {
 
-        JPackage jPackage = jCodeModel.rootPackage();
-        JDefinedClass jInterface = jPackage._interface("MyInterface");
-        JDefinedClass jClass = jPackage._class("MyClass");
+		JPackage jPackage = jCodeModel.rootPackage();
+		JDefinedClass jInterface = jPackage._interface("MyInterface");
+		JDefinedClass jClass = jPackage._class("MyClass");
 
-        rule = new ImplementsControllerInterfaceRule(jInterface);
-        rule.apply(getControllerMetadata(), jClass);
+		rule = new ImplementsControllerInterfaceRule(jInterface);
+		rule.apply(getControllerMetadata(), jClass);
 
-        assertThat(jClass, is(notNullValue()));
-        assertThat(jClass.name(), equalTo("MyClass"));
-        assertThat(serializeModel(), containsString("public class MyClass"));
-        assertThat(serializeModel(), containsString("implements MyInterface"));
-    }
+		assertThat(jClass, is(notNullValue()));
+		assertThat(jClass.name(), equalTo("MyClass"));
+		assertThat(serializeModel(), containsString("public class MyClass"));
+		assertThat(serializeModel(), containsString("implements MyInterface"));
+	}
 }

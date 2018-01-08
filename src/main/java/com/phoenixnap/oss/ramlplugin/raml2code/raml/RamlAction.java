@@ -23,23 +23,23 @@ import java.util.Map;
  */
 public interface RamlAction {
 
-    RamlActionType getType();
+	RamlActionType getType();
 
-    Map<String, RamlQueryParameter> getQueryParameters();
+	Map<String, RamlQueryParameter> getQueryParameters();
 
-    Map<String, RamlResponse> getResponses();
+	Map<String, RamlResponse> getResponses();
 
-    RamlResource getResource();
+	RamlResource getResource();
 
-    Map<String, RamlHeader> getHeaders();
+	Map<String, RamlHeader> getHeaders();
 
-    Map<String, RamlMimeType> getBody();
+	Map<String, RamlMimeType> getBody();
 
-    boolean hasBody();
+	boolean hasBody();
 
-    String getDescription();
-    
-    String getDisplayName();
-    
-    List<RamlSecurityReference> getSecuredBy();
+	String getDescription();
+
+	String getDisplayName();
+
+	List<RamlSecurityReference> getSecuredBy();
 }

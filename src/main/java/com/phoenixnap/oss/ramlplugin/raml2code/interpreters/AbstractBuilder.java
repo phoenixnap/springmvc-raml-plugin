@@ -32,8 +32,8 @@ import com.sun.codemodel.JMod;
 import com.sun.codemodel.JPackage;
 
 /**
- * Builder pattern for POJO generation using jCodeModel. Provides basic utility methods including extension and
- * getter/setter generation
+ * Builder pattern for POJO generation using jCodeModel. Provides basic utility
+ * methods including extension and getter/setter generation
  * 
  * @author kurtpa
  * @since 0.10.0
@@ -42,18 +42,19 @@ import com.sun.codemodel.JPackage;
 public class AbstractBuilder {
 
 	protected static final Logger logger = LoggerFactory.getLogger(AbstractBuilder.class);
-	
+
 	protected transient LinkedHashMap<String, JDefinedClass> codeModels = new LinkedHashMap<>();
 	protected JCodeModel pojoModel = null;
 	protected JDefinedClass pojo = null;
 	protected JPackage pojoPackage = null;
-	
 
 	/**
 	 * Constructor allowing chaining of JCodeModels
 	 * 
-	 * @param config The Configuration object which controls generation
-	 * @param pojoModel Existing Codemodel to append to
+	 * @param config
+	 *            The Configuration object which controls generation
+	 * @param pojoModel
+	 *            Existing Codemodel to append to
 	 * 
 	 */
 	public AbstractBuilder(JCodeModel pojoModel) {
@@ -103,11 +104,10 @@ public class AbstractBuilder {
 		JDocComment javadoc = this.pojo.javadoc();
 		// javadoc.add
 		javadoc.add(toJavaComment(classComment));
-		javadoc.add("\n\nGenerated using springmvc-raml-plugin on "
-				+ new SimpleDateFormat("MM/dd/yyyy HH:mm:ss").format(new Date()));
+		javadoc.add("\n\nGenerated using springmvc-raml-plugin on " + new SimpleDateFormat("MM/dd/yyyy HH:mm:ss").format(new Date()));
 		return this;
 	}
-	
+
 	public JCodeModel getCodeModel() {
 		return this.pojoModel;
 	}
@@ -116,9 +116,9 @@ public class AbstractBuilder {
 		return this.pojo;
 	}
 
-
 	/**
-	 * Convenience method to check if the pojo has been created before applying any operators to it
+	 * Convenience method to check if the pojo has been created before applying
+	 * any operators to it
 	 */
 	protected void pojoCreationCheck() {
 		if (this.pojo == null) {
@@ -135,19 +135,16 @@ public class AbstractBuilder {
 	}
 
 	protected JClass resolveType(String type) {
-		//first try exact match
+		// first try exact match
 		JDefinedClass jDefinedClass = pojoModel._getClass(type);
 		if (jDefinedClass != null) {
 			return jDefinedClass;
 		}
 		if (type.contains(".")) {
 			int lastIndexOf = type.lastIndexOf(".");
-			type.substring(lastIndexOf+1);
+			type.substring(lastIndexOf + 1);
 		}
 		return CodeModelHelper.findFirstClassBySimpleName(pojoModel, type);
 	}
-	
-
-    
 
 }

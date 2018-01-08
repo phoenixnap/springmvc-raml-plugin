@@ -12,10 +12,6 @@
  */
 package com.phoenixnap.oss.ramlplugin.raml2code.rules.spring;
 
-import com.phoenixnap.oss.ramlplugin.raml2code.data.ApiActionMetadata;
-import com.phoenixnap.oss.ramlplugin.raml2code.rules.Rule;
-import com.sun.codemodel.JAnnotationUse;
-import com.sun.codemodel.JMethod;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -25,60 +21,49 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
-import static jdk.nashorn.internal.runtime.PropertyDescriptor.GET;
-import static org.springframework.web.bind.annotation.RequestMethod.DELETE;
-import static org.springframework.web.bind.annotation.RequestMethod.PATCH;
-import static org.springframework.web.bind.annotation.RequestMethod.POST;
-import static org.springframework.web.bind.annotation.RequestMethod.PUT;
+import com.phoenixnap.oss.ramlplugin.raml2code.data.ApiActionMetadata;
+import com.phoenixnap.oss.ramlplugin.raml2code.rules.Rule;
+import com.sun.codemodel.JAnnotationUse;
+import com.sun.codemodel.JMethod;
 
 /**
- * Adds one of following: {@literal @}GetMappping, {@literal @}PostMappping, {@literal @}PutMappping, {@literal @}DeleteMappping annotation at method level.
- * <p>
- * INPUT:
- * #%RAML 0.8
- * title: myapi
- * mediaType: application/json
- * baseUri: /api
- * /base:
- * /{id}:
- * get:
- * <p>
- * OUTPUT:
- * {@literal @}GetMapping("{id}")
+ * Adds one of following: {@literal @}GetMappping, {@literal @}PostMappping,
+ * {@literal @}PutMappping, {@literal @}DeleteMappping annotation at method
+ * level.
  *
  * @author yura.nosenko
  * @since 0.10.12
  */
 public class SpringShortcutMappingMethodAnnotationRule implements Rule<JMethod, JAnnotationUse, ApiActionMetadata> {
 
-    @Override
-    public JAnnotationUse apply(ApiActionMetadata endpointMetadata, JMethod generatableType) {
-        JAnnotationUse requestMappingAnnotation;
-        switch (RequestMethod.valueOf(endpointMetadata.getActionType().name())) {
-            case GET:
-                requestMappingAnnotation = generatableType.annotate(GetMapping.class);
-                break;
-            case POST:
-                requestMappingAnnotation = generatableType.annotate(PostMapping.class);
-                break;
-            case PUT:
-                requestMappingAnnotation = generatableType.annotate(PutMapping.class);
-                break;
-            case PATCH:
-                requestMappingAnnotation = generatableType.annotate(PatchMapping.class);
-                break;
-            case DELETE:
-                requestMappingAnnotation = generatableType.annotate(DeleteMapping.class);
-                break;
-            default:
-                requestMappingAnnotation = generatableType.annotate(RequestMapping.class);
-                requestMappingAnnotation.param("method", RequestMethod.valueOf(endpointMetadata.getActionType().name()));
-        }
+	@Override
+	public JAnnotationUse apply(ApiActionMetadata endpointMetadata, JMethod generatableType) {
+		JAnnotationUse requestMappingAnnotation;
+		switch (RequestMethod.valueOf(endpointMetadata.getActionType().name())) {
+			case GET:
+				requestMappingAnnotation = generatableType.annotate(GetMapping.class);
+				break;
+			case POST:
+				requestMappingAnnotation = generatableType.annotate(PostMapping.class);
+				break;
+			case PUT:
+				requestMappingAnnotation = generatableType.annotate(PutMapping.class);
+				break;
+			case PATCH:
+				requestMappingAnnotation = generatableType.annotate(PatchMapping.class);
+				break;
+			case DELETE:
+				requestMappingAnnotation = generatableType.annotate(DeleteMapping.class);
+				break;
+			default:
+				requestMappingAnnotation = generatableType.annotate(RequestMapping.class);
+				requestMappingAnnotation.param("method", RequestMethod.valueOf(endpointMetadata.getActionType().name()));
+		}
 
-        if (StringUtils.isNotBlank(endpointMetadata.getUrl())) {
-            requestMappingAnnotation.param("value", endpointMetadata.getUrl());
-        }
-        return requestMappingAnnotation;
-    }
+		if (StringUtils.isNotBlank(endpointMetadata.getUrl())) {
+			requestMappingAnnotation.param("value", endpointMetadata.getUrl());
+		}
+		return requestMappingAnnotation;
+	}
 
 }

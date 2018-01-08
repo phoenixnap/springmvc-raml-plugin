@@ -26,20 +26,18 @@ import com.sun.codemodel.JDefinedClass;
 import com.sun.codemodel.JMethod;
 
 /**
- * A code generation Rule that provides a standalone Controller interface with Spring4 annotations.
- * The goal is to generate code that does not have to be manually extended by the user.
- * A raml endpoint called /people for example would lead to the following interface only:
+ * A code generation Rule that provides a standalone Controller interface with
+ * Spring4 annotations. The goal is to generate code that does not have to be
+ * manually extended by the user. A raml endpoint called /people for example
+ * would lead to the following interface only:
  *
- * // 1. Controller Interface
- * {@literal @}RestController
- * {@literal @}RequestMapping("/people")
- * interface PeopleController {
- *     {@literal @}RequestMapping(value="", method=RequestMethod.GET)
- *     ResponseEntity getPeople();
- * }
+ * // 1. Controller Interface {@literal @}RestController
+ * {@literal @}RequestMapping("/people") interface PeopleController {
+ * {@literal @}RequestMapping(value="", method=RequestMethod.GET) ResponseEntity
+ * getPeople(); }
  *
- * Now all the user has to do is to implement a this interface.
- * This way he can implement the endpoint without altering the generated code.
+ * Now all the user has to do is to implement a this interface. This way he can
+ * implement the endpoint without altering the generated code.
  *
  * @author armin.weisser
  * @since 0.4.1
@@ -52,17 +50,17 @@ public class Spring4ControllerInterfaceRule extends SpringControllerInterfaceRul
 
 	@Override
 	protected Rule<JMethod, JAnnotationUse, ApiActionMetadata> getResponseBodyAnnotationRule() {
-		return null; //ResponseBody not needed for RestController
+		return null; // ResponseBody not needed for RestController
 	}
 
 	@Override
 	public void applyConfiguration(Map<String, String> configuration) {
 		super.applyConfiguration(configuration);
-		if(!CollectionUtils.isEmpty(configuration)) {
-			if(configuration.containsKey(SHORTCUT_METHOD_MAPPINGS)) {
+		if (!CollectionUtils.isEmpty(configuration)) {
+			if (configuration.containsKey(SHORTCUT_METHOD_MAPPINGS)) {
 				setUseShortcutMethodMappings(BooleanUtils.toBoolean(configuration.get(SHORTCUT_METHOD_MAPPINGS)));
 			}
 		}
 	}
-	
+
 }

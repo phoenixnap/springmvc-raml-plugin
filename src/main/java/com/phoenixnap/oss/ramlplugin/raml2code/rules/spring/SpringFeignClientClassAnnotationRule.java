@@ -20,45 +20,30 @@ import com.sun.codemodel.JAnnotationUse;
 import com.sun.codemodel.JDefinedClass;
 
 /**
- * Adds a {@literal @}FeignClient annotation at class level.
- * The "url" of the {@literal @}FeignClient is the endpoint url from the ApiControllerMetadata instance.
- * <br>
- * 
- * INPUT:
- * <pre class="code">
- * #%RAML 0.8
- * title: myapi
- * mediaType: application/json
- * baseUri: /api
- * /base:
- *   get:
- * </pre>
- * 
- * OUTPUT:
- * <pre class="code">
- * {@literal @}FeignClient(url = "/api/base", name = "baseClient")
- * </pre>
+ * Adds a {@literal @}FeignClient annotation at class level. The "url" of the
+ * {@literal @}FeignClient is the endpoint url from the ApiControllerMetadata
+ * instance. <br>
  * 
  * @author Aleksandar Stojsavljevic
  * @since 0.8.6
  */
 public class SpringFeignClientClassAnnotationRule implements Rule<JDefinedClass, JAnnotationUse, ApiResourceMetadata> {
-    @Override
-    public JAnnotationUse apply(ApiResourceMetadata controllerMetadata, JDefinedClass generatableType) {
-        JAnnotationUse feignClient = generatableType.annotate(FeignClient.class);
-        
-        feignClient.param("url", controllerMetadata.getControllerUrl());
-        feignClient.param("name", getClientName(controllerMetadata));
+	@Override
+	public JAnnotationUse apply(ApiResourceMetadata controllerMetadata, JDefinedClass generatableType) {
+		JAnnotationUse feignClient = generatableType.annotate(FeignClient.class);
 
-        return feignClient;
-    }
-    
-    private String getClientName(ApiResourceMetadata controllerMetadata) {
-    	String name = controllerMetadata.getResourceName();
-    	
-    	if (name == null || name.length() == 0) {
-            return "Client";
-        }
-        return name.substring(0, 1).toLowerCase() + name.substring(1)  + "Client";
-    }
+		feignClient.param("url", controllerMetadata.getControllerUrl());
+		feignClient.param("name", getClientName(controllerMetadata));
+
+		return feignClient;
+	}
+
+	private String getClientName(ApiResourceMetadata controllerMetadata) {
+		String name = controllerMetadata.getResourceName();
+
+		if (name == null || name.length() == 0) {
+			return "Client";
+		}
+		return name.substring(0, 1).toLowerCase() + name.substring(1) + "Client";
+	}
 }

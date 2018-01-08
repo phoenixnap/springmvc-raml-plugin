@@ -33,44 +33,36 @@ import com.sun.codemodel.JAnnotationUse;
 import com.sun.codemodel.JMethod;
 
 /**
- * Adds a {@literal @}RequestMapping annotation at method level.
- * The "value" of the {@literal @}RequestMapping is relativ URL of the current endpoint
- * The "method" attribute is set to the appropriate RequestMethod constant.
+ * Adds a {@literal @}RequestMapping annotation at method level. The "value" of
+ * the {@literal @}RequestMapping is relativ URL of the current endpoint The
+ * "method" attribute is set to the appropriate RequestMethod constant.
  *
- * INPUT:
- * #%RAML 0.8
- * title: myapi
- * mediaType: application/json
- * baseUri: /api
- * /base:
- *   /{id}:
- *     get:
+ * INPUT: #%RAML 0.8 title: myapi mediaType: application/json baseUri: /api
+ * /base: /{id}: get:
  *
- * OUTPUT:
- * {@literal @}RequestMapping(value="{id}", method=RequestMethod.GET)
+ * OUTPUT: {@literal @}RequestMapping(value="{id}", method=RequestMethod.GET)
  *
  * @author armin.weisser
  * @since 0.4.1
  */
 public class SpringRequestMappingMethodAnnotationRule implements Rule<JMethod, JAnnotationUse, ApiActionMetadata> {
-	
+
 	protected static final Logger logger = LoggerFactory.getLogger(SpringRequestMappingMethodAnnotationRule.class);
 
-    @Override
-    public JAnnotationUse apply(ApiActionMetadata endpointMetadata, JMethod generatableType) {
-        JAnnotationUse requestMappingAnnotation = generatableType.annotate(RequestMapping.class);
-        
-        String url = endpointMetadata.getUrl();
-        JAnnotationArrayMember jAnnotationArrayMember = requestMappingAnnotation.paramArray("value");
-        boolean paramSet = false;
-        
-        // collect all optional uri parameters (path variables)
-        Iterator<ApiParameterMetadata> iterator = endpointMetadata.getPathVariables().iterator();
-        List<ApiParameterMetadata> optionalUriParameters = new ArrayList<>();
+	@Override
+	public JAnnotationUse apply(ApiActionMetadata endpointMetadata, JMethod generatableType) {
+		JAnnotationUse requestMappingAnnotation = generatableType.annotate(RequestMapping.class);
+
+		String url = endpointMetadata.getUrl();
+		JAnnotationArrayMember jAnnotationArrayMember = requestMappingAnnotation.paramArray("value");
+		boolean paramSet = false;
+
+		// collect all optional uri parameters (path variables)
+		Iterator<ApiParameterMetadata> iterator = endpointMetadata.getPathVariables().iterator();
+		List<ApiParameterMetadata> optionalUriParameters = new ArrayList<>();
 		while (iterator.hasNext()) {
 			ApiParameterMetadata apiParameterMetadata = iterator.next();
-			if (apiParameterMetadata.isNullable()
-					&& doesURLContainsParamName(url, apiParameterMetadata)) {
+			if (apiParameterMetadata.isNullable() && doesURLContainsParamName(url, apiParameterMetadata)) {
 				optionalUriParameters.add(apiParameterMetadata);
 			}
 		}
@@ -89,14 +81,12 @@ public class SpringRequestMappingMethodAnnotationRule implements Rule<JMethod, J
 			for (int i = 1; i <= optionalUriParameters.size(); i++) {
 				// we need to get all combinations of optional params - since
 				// any combination can be present/missing
-				List<List<ApiParameterMetadata>> combination = combination(optionalUriParameters,
-						i);
+				List<List<ApiParameterMetadata>> combination = combination(optionalUriParameters, i);
 				for (List<ApiParameterMetadata> list : combination) {
 					String urlWithoutParam = url;
 					for (ApiParameterMetadata apiParameterMetadata : list) {
 						// and without it
-						urlWithoutParam = urlWithoutParam
-								.replace(getApiParameterMetadataURLPart(apiParameterMetadata), "");
+						urlWithoutParam = urlWithoutParam.replace(getApiParameterMetadataURLPart(apiParameterMetadata), "");
 						urlWithoutParam = urlWithoutParam.replaceAll("//", "/");
 					}
 					urls.add(urlWithoutParam);
@@ -108,23 +98,23 @@ public class SpringRequestMappingMethodAnnotationRule implements Rule<JMethod, J
 			}
 			paramSet = true;
 		}
-        
-        if(!paramSet) {
-        	requestMappingAnnotation.param("value", url);
-        }
-        
-        requestMappingAnnotation.param("method", RequestMethod.valueOf(endpointMetadata.getActionType().name()));
-        return requestMappingAnnotation;
-    }
-    
-    protected boolean doesURLContainsParamName(String url, ApiParameterMetadata apiParameterMetadata) {
-    	return url.contains(getApiParameterMetadataURLPart(apiParameterMetadata));
-    }
-    
-    protected String getApiParameterMetadataURLPart(ApiParameterMetadata apiParameterMetadata) {
-    	return "{" + apiParameterMetadata.getName() + "}";
-    }
-    
+
+		if (!paramSet) {
+			requestMappingAnnotation.param("value", url);
+		}
+
+		requestMappingAnnotation.param("method", RequestMethod.valueOf(endpointMetadata.getActionType().name()));
+		return requestMappingAnnotation;
+	}
+
+	protected boolean doesURLContainsParamName(String url, ApiParameterMetadata apiParameterMetadata) {
+		return url.contains(getApiParameterMetadataURLPart(apiParameterMetadata));
+	}
+
+	protected String getApiParameterMetadataURLPart(ApiParameterMetadata apiParameterMetadata) {
+		return "{" + apiParameterMetadata.getName() + "}";
+	}
+
 	public static List<List<ApiParameterMetadata>> combination(List<ApiParameterMetadata> values, int size) {
 
 		if (0 == size) {

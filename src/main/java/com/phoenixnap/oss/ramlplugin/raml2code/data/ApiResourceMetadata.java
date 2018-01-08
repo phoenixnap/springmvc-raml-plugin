@@ -24,59 +24,59 @@ import com.phoenixnap.oss.ramlplugin.raml2code.raml.RamlResource;
 import com.phoenixnap.oss.ramlplugin.raml2code.raml.RamlRoot;
 import com.sun.codemodel.JCodeModel;
 
-
 /**
  * 
- * Class containing the data required to successfully generate code for an api rest controller within spring mvc
+ * Class containing the data required to successfully generate code for an api
+ * rest controller within spring mvc
  * 
  * @author Kurt Paris
  * @since 0.2.1
  *
- */	
+ */
 public class ApiResourceMetadata {
-	
+
 	private String controllerUrl;
 	private transient RamlResource resource;
 	private RamlRoot document;
 	private boolean singularizeName = true;
 	private JCodeModel bodyCodeModel;
-	
+
 	Set<ApiActionMetadata> apiCalls = new LinkedHashSet<>();
-	
+
 	public ApiResourceMetadata(JCodeModel bodyCodeModel, String controllerUrl, RamlResource resource, RamlRoot document) {
 		super();
 		this.controllerUrl = controllerUrl;
 		this.resource = resource;
 		this.document = document;
 		this.bodyCodeModel = bodyCodeModel;
-	} 
-	
-	
+	}
+
 	public void addApiCall(RamlResource resource, RamlActionType actionType, RamlAction action, String responseContentType) {
 		apiCalls.add(new ApiActionMetadata(this, resource, actionType, action, responseContentType));
 	}
-	
-    public Set<ApiActionMetadata> getApiCalls() {
+
+	public Set<ApiActionMetadata> getApiCalls() {
 		return Collections.unmodifiableSet(apiCalls);
 	}
-    
-    public String getName() {
-    	if(Config.getResourceDepthInClassNames() != 1 || Config.getResourceTopLevelInClassNames() != 0 || Config.isReverseOrderInClassNames()){
-			return NamingHelper.getAllResourcesNames(controllerUrl, singularizeName, Config.getResourceDepthInClassNames(), Config.getResourceTopLevelInClassNames(), Config.isReverseOrderInClassNames());
+
+	public String getName() {
+		if (Config.getResourceDepthInClassNames() != 1 || Config.getResourceTopLevelInClassNames() != 0
+				|| Config.isReverseOrderInClassNames()) {
+			return NamingHelper.getAllResourcesNames(controllerUrl, singularizeName, Config.getResourceDepthInClassNames(),
+					Config.getResourceTopLevelInClassNames(), Config.isReverseOrderInClassNames());
 		} else {
 			return NamingHelper.getResourceName(resource, singularizeName);
 		}
-    }
-
+	}
 
 	public RamlResource getResource() {
 		return resource;
 	}
-	
+
 	public String getResourceName() {
 		return NamingHelper.getResourceName(resource, singularizeName);
 	}
-	
+
 	public String getResourceUri() {
 		return resource.getUri();
 	}
@@ -85,11 +85,10 @@ public class ApiResourceMetadata {
 		return controllerUrl;
 	}
 
-
 	public String toString() {
-    	return "Controller "+getName()+"["+ getControllerUrl() +"]";
-    	
-    }
+		return "Controller " + getName() + "[" + getControllerUrl() + "]";
+
+	}
 
 	public Set<ApiBodyMetadata> getDependencies() {
 		Set<ApiBodyMetadata> dependencies = new LinkedHashSet<>();
@@ -102,29 +101,26 @@ public class ApiResourceMetadata {
 		return dependencies;
 	}
 
-    public Set<ApiParameterMetadata> getParameters() {
-        Set<ApiParameterMetadata> parameters = new LinkedHashSet<>();
-        for (ApiActionMetadata method : apiCalls) {
-            parameters.addAll(method.getRequestHeaders());
-            parameters.addAll(method.getRequestParameters());
-        }
-        return parameters;
-    }
+	public Set<ApiParameterMetadata> getParameters() {
+		Set<ApiParameterMetadata> parameters = new LinkedHashSet<>();
+		for (ApiActionMetadata method : apiCalls) {
+			parameters.addAll(method.getRequestHeaders());
+			parameters.addAll(method.getRequestParameters());
+		}
+		return parameters;
+	}
 
-    public String getDescription() {
-        return resource.getDescription();
-    }
-
+	public String getDescription() {
+		return resource.getDescription();
+	}
 
 	public RamlRoot getDocument() {
 		return document;
 	}
 
-
 	public void setSingularizeName(boolean singularizeName) {
-		this.singularizeName = singularizeName;		
+		this.singularizeName = singularizeName;
 	}
-
 
 	public JCodeModel getBodyCodeModel() {
 		return this.bodyCodeModel;

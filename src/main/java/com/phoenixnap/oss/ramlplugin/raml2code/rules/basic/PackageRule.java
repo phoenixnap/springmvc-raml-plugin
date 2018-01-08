@@ -21,25 +21,24 @@ import com.sun.codemodel.JCodeModel;
 import com.sun.codemodel.JPackage;
 
 /**
- * Generates a simple package declaration based on the base package defined in ApiControllerMetadata.
- * If no base package is defined the empty root package is used by default.
+ * Generates a simple package declaration based on the base package defined in
+ * ApiControllerMetadata. If no base package is defined the empty root package
+ * is used by default.
  *
- * INPUT:
- * ApiControllerMetadata (with base package set to "my.api"
+ * INPUT: ApiControllerMetadata (with base package set to "my.api"
  *
- * OUTPUT:
- * package my.api;
+ * OUTPUT: package my.api;
  *
  * @author armin.weisser
  * @since 0.4.1
  */
 public class PackageRule implements Rule<JCodeModel, JPackage, ApiResourceMetadata> {
 
-    @Override
-    public JPackage apply(ApiResourceMetadata controllerMetadata, JCodeModel generatableType) {
-        if(StringUtils.hasText(Config.getBasePackage())) {
-            return generatableType._package(Config.getBasePackage());
-        }
-        return generatableType.rootPackage();
-    }
+	@Override
+	public JPackage apply(ApiResourceMetadata controllerMetadata, JCodeModel generatableType) {
+		if (StringUtils.hasText(Config.getBasePackage())) {
+			return generatableType._package(Config.getBasePackage());
+		}
+		return generatableType.rootPackage();
+	}
 }

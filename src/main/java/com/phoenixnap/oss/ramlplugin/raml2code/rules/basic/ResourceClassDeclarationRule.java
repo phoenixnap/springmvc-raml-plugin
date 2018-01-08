@@ -19,45 +19,40 @@ import com.sun.codemodel.JDefinedClass;
 import com.sun.codemodel.JPackage;
 
 /**
- * Generates an class declaration based on the controller name in ApiControllerMetadata.
+ * Generates an class declaration based on the controller name in
+ * ApiControllerMetadata.
  *
- * INPUT:
- * #%RAML 0.8
- * title: myapi
- * mediaType: application/json
- * baseUri: /
- * /base:
+ * INPUT: #%RAML 0.8 title: myapi mediaType: application/json baseUri: / /base:
  *
- * OUTPUT:
- * public class Base{suffix} {
+ * OUTPUT: public class Base{suffix} {
  *
  * }
  *
  * @author kurtpa
  * @since 0.5.0
  */
-public class ResourceClassDeclarationRule implements Rule<JPackage,JDefinedClass, ApiResourceMetadata> {
+public class ResourceClassDeclarationRule implements Rule<JPackage, JDefinedClass, ApiResourceMetadata> {
 
-    private final String classNameSuffix;
+	private final String classNameSuffix;
 
-    public ResourceClassDeclarationRule() {
-        this("");
-    }
+	public ResourceClassDeclarationRule() {
+		this("");
+	}
 
-    public ResourceClassDeclarationRule(String classNameSuffix) {
-        this.classNameSuffix = classNameSuffix;
-    }
+	public ResourceClassDeclarationRule(String classNameSuffix) {
+		this.classNameSuffix = classNameSuffix;
+	}
 
-    @Override
-    public JDefinedClass apply(ApiResourceMetadata controllerMetadata, JPackage generatableType) {
-        String resourceClassName = controllerMetadata.getName() + classNameSuffix;
-        JDefinedClass definedClass;
-        try {
-            definedClass = generatableType._class(resourceClassName);
-        } catch (JClassAlreadyExistsException e1) {
-            definedClass = generatableType._getClass(resourceClassName);
-        }
-        return definedClass;
-    }
+	@Override
+	public JDefinedClass apply(ApiResourceMetadata controllerMetadata, JPackage generatableType) {
+		String resourceClassName = controllerMetadata.getName() + classNameSuffix;
+		JDefinedClass definedClass;
+		try {
+			definedClass = generatableType._class(resourceClassName);
+		} catch (JClassAlreadyExistsException e1) {
+			definedClass = generatableType._getClass(resourceClassName);
+		}
+		return definedClass;
+	}
 
 }

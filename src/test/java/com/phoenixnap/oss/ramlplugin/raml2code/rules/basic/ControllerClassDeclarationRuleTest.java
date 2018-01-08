@@ -20,29 +20,29 @@ import com.sun.codemodel.JPackage;
  */
 public class ControllerClassDeclarationRuleTest extends AbstractRuleTestBase {
 
-    private ControllerClassDeclarationRule rule = new ControllerClassDeclarationRule();
+	private ControllerClassDeclarationRule rule = new ControllerClassDeclarationRule();
 
-    @Test
-    public void applyRule_shouldCreate_validControllerClass() {
-        JPackage jPackage = jCodeModel.rootPackage();
-        JClass jClass = rule.apply(getControllerMetadata(), jPackage);
-        assertThat(jClass, is(notNullValue()));
-        assertThat(jClass.name(), equalTo("BaseController"));
-        assertThat(serializeModel(), containsString("public class BaseController"));
-    }
+	@Test
+	public void applyRule_shouldCreate_validControllerClass() {
+		JPackage jPackage = jCodeModel.rootPackage();
+		JClass jClass = rule.apply(getControllerMetadata(), jPackage);
+		assertThat(jClass, is(notNullValue()));
+		assertThat(jClass.name(), equalTo("BaseController"));
+		assertThat(serializeModel(), containsString("public class BaseController"));
+	}
 
-    @Test
-    public void applyRule_shouldBeIdempotent() {
-        JPackage jPackage = jCodeModel.rootPackage();
+	@Test
+	public void applyRule_shouldBeIdempotent() {
+		JPackage jPackage = jCodeModel.rootPackage();
 
-        JClass jClass1 = rule.apply(getControllerMetadata(), jPackage);
-        String serialized1 = serializeModel();
+		JClass jClass1 = rule.apply(getControllerMetadata(), jPackage);
+		String serialized1 = serializeModel();
 
-        JClass jClass2 = rule.apply(getControllerMetadata(), jPackage);
-        String serialized2 = serializeModel();
+		JClass jClass2 = rule.apply(getControllerMetadata(), jPackage);
+		String serialized2 = serializeModel();
 
-        assertThat(jClass1, equalTo(jClass2));
-        assertEquals(serialized1, serialized2);
-    }
+		assertThat(jClass1, equalTo(jClass2));
+		assertEquals(serialized1, serialized2);
+	}
 
 }

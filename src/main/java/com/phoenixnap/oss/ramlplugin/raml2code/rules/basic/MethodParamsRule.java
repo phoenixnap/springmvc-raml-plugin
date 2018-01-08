@@ -46,33 +46,17 @@ import com.sun.codemodel.JMethod;
 import com.sun.codemodel.JVar;
 
 /**
- * Generates all method parameters needed for an endpoint defined by ApiMappingMetadata.
- * This includes path variables, request parameters and the request body.
+ * Generates all method parameters needed for an endpoint defined by
+ * ApiMappingMetadata. This includes path variables, request parameters and the
+ * request body.
  *
- * INPUT:
- * #%RAML 0.8
- * title: myapi
- * mediaType: application/json
- * baseUri: /
- * /base:
- *   /{id}/elements:
- *     get:
- *       queryParameters:
- *         requiredQueryParam:
- *           type: integer
- *           required: true
- *         optionalQueryParam:
- *           type: string
- *         optionalQueryParam2:
- *           type: number
- *           required: false
+ * INPUT: #%RAML 0.8 title: myapi mediaType: application/json baseUri: / /base:
+ * /{id}/elements: get: queryParameters: requiredQueryParam: type: integer
+ * required: true optionalQueryParam: type: string optionalQueryParam2: type:
+ * number required: false
  *
- * OUTPUT:
- * (String id
- *  , Integer requiredQueryParam
- *  , String optionalQueryParam
- *  , BigDecimal optionalQueryParam2
- * )
+ * OUTPUT: (String id , Integer requiredQueryParam , String optionalQueryParam ,
+ * BigDecimal optionalQueryParam2 )
  *
  * @author armin.weisser
  * @author kurt paris
@@ -82,76 +66,79 @@ public class MethodParamsRule implements Rule<CodeModelHelper.JExtMethod, JMetho
 
 	boolean addParameterJavadoc = false;
 	boolean allowArrayParameters = true;
-	
-	public MethodParamsRule () {
+
+	public MethodParamsRule() {
 		this(false, true);
 	}
-	
+
 	/**
 	 * If set to true, the rule will also add a parameter javadoc entry
 	 * 
-	 * @param addParameterJavadoc Set to true for javadocs for parameters
-	 * @param allowArrayParameters If true we will use the component type for array parameters
+	 * @param addParameterJavadoc
+	 *            Set to true for javadocs for parameters
+	 * @param allowArrayParameters
+	 *            If true we will use the component type for array parameters
 	 */
-	public MethodParamsRule (boolean addParameterJavadoc, boolean allowArrayParameters) {
+	public MethodParamsRule(boolean addParameterJavadoc, boolean allowArrayParameters) {
 		this.addParameterJavadoc = addParameterJavadoc;
 		this.allowArrayParameters = allowArrayParameters;
 	}
-	
-    @Override
-    public JMethod apply(ApiActionMetadata endpointMetadata, CodeModelHelper.JExtMethod generatableType) {
 
-        List<ApiParameterMetadata> parameterMetadataList = new ArrayList<>();
-        parameterMetadataList.addAll(endpointMetadata.getPathVariables());
-        parameterMetadataList.addAll(endpointMetadata.getRequestParameters());
-        parameterMetadataList.addAll(endpointMetadata.getRequestHeaders());
+	@Override
+	public JMethod apply(ApiActionMetadata endpointMetadata, CodeModelHelper.JExtMethod generatableType) {
 
-        parameterMetadataList.forEach( paramMetaData -> {
-            paramQueryForm(paramMetaData, generatableType, endpointMetadata);
-        });
+		List<ApiParameterMetadata> parameterMetadataList = new ArrayList<>();
+		parameterMetadataList.addAll(endpointMetadata.getPathVariables());
+		parameterMetadataList.addAll(endpointMetadata.getRequestParameters());
+		parameterMetadataList.addAll(endpointMetadata.getRequestHeaders());
 
-        if (endpointMetadata.getRequestBody() != null) {
-            paramObjects(endpointMetadata, generatableType);
-        }
+		parameterMetadataList.forEach(paramMetaData -> {
+			paramQueryForm(paramMetaData, generatableType, endpointMetadata);
+		});
 
-       if (Config.isInjectHttpHeadersParameter()) {
-            paramHttpHeaders(generatableType);
-       }
+		if (endpointMetadata.getRequestBody() != null) {
+			paramObjects(endpointMetadata, generatableType);
+		}
 
-        return generatableType.get();
-    }
+		if (Config.isInjectHttpHeadersParameter()) {
+			paramHttpHeaders(generatableType);
+		}
 
-	protected JVar paramQueryForm(ApiParameterMetadata paramMetaData, CodeModelHelper.JExtMethod generatableType, ApiActionMetadata endpointMetadata) {
-		String javaName = NamingHelper.getParameterName(
-				paramMetaData.getDisplayName() != null ? paramMetaData.getDisplayName() : paramMetaData.getName());
-    	if (addParameterJavadoc) {
+		return generatableType.get();
+	}
+
+	protected JVar paramQueryForm(ApiParameterMetadata paramMetaData, CodeModelHelper.JExtMethod generatableType,
+			ApiActionMetadata endpointMetadata) {
+		String javaName = NamingHelper
+				.getParameterName(paramMetaData.getDisplayName() != null ? paramMetaData.getDisplayName() : paramMetaData.getName());
+		if (addParameterJavadoc) {
 			String paramComment = "";
 			if (paramMetaData.getRamlParam() != null && StringUtils.hasText(paramMetaData.getRamlParam().getDescription())) {
-				 paramComment = NamingHelper.cleanForJavadoc(paramMetaData.getRamlParam().getDescription());
+				paramComment = NamingHelper.cleanForJavadoc(paramMetaData.getRamlParam().getDescription());
 			}
-	    	generatableType.get().javadoc().addParam(javaName + " " + paramComment);
-    	}
+			generatableType.get().javadoc().addParam(javaName + " " + paramComment);
+		}
 
-    	JClass type = null;
-    	if(paramMetaData.getRamlParam() instanceof RJP10V2RamlUriParameter && paramMetaData.isNullable()) {
-    		// for optional uri parameters use java.util.Optional since Spring doesn't support optional uri parameters
-    		type = generatableType.owner().ref(Optional.class).narrow(paramMetaData.getType());
-    	}
-    	if(type == null) {
-    		type = generatableType.owner().ref(paramMetaData.getType());
-    	}
-    	
-    	if (!allowArrayParameters && paramMetaData.isArray() ) {
-    		type = generatableType.owner().ref(paramMetaData.getType().getComponentType());
-    	} else {
-    		//TODO should this be blank?
-    	}
-    	
+		JClass type = null;
+		if (paramMetaData.getRamlParam() instanceof RJP10V2RamlUriParameter && paramMetaData.isNullable()) {
+			// for optional uri parameters use java.util.Optional since Spring
+			// doesn't support optional uri parameters
+			type = generatableType.owner().ref(Optional.class).narrow(paramMetaData.getType());
+		}
+		if (type == null) {
+			type = generatableType.owner().ref(paramMetaData.getType());
+		}
+
+		if (!allowArrayParameters && paramMetaData.isArray()) {
+			type = generatableType.owner().ref(paramMetaData.getType().getComponentType());
+		} else {
+			// TODO should this be blank?
+		}
+
 		// data types as query parameters
 		RamlAbstractParam ramlParam = paramMetaData.getRamlParam();
 		if (ramlParam.getType() == RamlParamType.DATA_TYPE && ramlParam instanceof RJP10V2RamlQueryParameter) {
-			JClass jc = findFirstClassBySimpleName(paramMetaData.getCodeModel(),
-					((RJP10V2RamlQueryParameter) ramlParam).getRawType());
+			JClass jc = findFirstClassBySimpleName(paramMetaData.getCodeModel(), ((RJP10V2RamlQueryParameter) ramlParam).getRawType());
 			return generatableType.get().param(jc, paramMetaData.getName());
 		}
 
@@ -160,8 +147,7 @@ public class MethodParamsRule implements Rule<CodeModelHelper.JExtMethod, JMetho
 			jVar.annotate(Pattern.class).param("regexp", paramMetaData.getRamlParam().getPattern());
 		}
 
-		if (paramMetaData.getRamlParam().getMinLength() != null
-				|| paramMetaData.getRamlParam().getMaxLength() != null) {
+		if (paramMetaData.getRamlParam().getMinLength() != null || paramMetaData.getRamlParam().getMaxLength() != null) {
 			JAnnotationUse jAnnotationUse = jVar.annotate(Size.class);
 			if (paramMetaData.getRamlParam().getMinLength() != null) {
 				jAnnotationUse.param("min", paramMetaData.getRamlParam().getMinLength());
@@ -178,29 +164,29 @@ public class MethodParamsRule implements Rule<CodeModelHelper.JExtMethod, JMetho
 			jVar.annotate(Max.class).param("value", paramMetaData.getRamlParam().getMaximum().longValue());
 		}
 		return jVar;
-    }
+	}
 
-    protected JVar paramObjects(ApiActionMetadata endpointMetadata, CodeModelHelper.JExtMethod generatableType) {
-        String requestBodyName = endpointMetadata.getRequestBody().getName();
-        boolean array = endpointMetadata.getRequestBody().isArray();
-        
-        List<JCodeModel> codeModels = new ArrayList<>();
-        if (endpointMetadata.getRequestBody().getCodeModel()!=null){
-            codeModels.add(endpointMetadata.getRequestBody().getCodeModel());
-        }
-        
-        if ( generatableType.owner()!=null){
-            codeModels.add(generatableType.owner());
-        }
-                
-        JClass requestBodyType = findFirstClassBySimpleName(codeModels.toArray(new JCodeModel[codeModels.size()]), requestBodyName);
-        if (allowArrayParameters && array) {
-            JClass arrayType = generatableType.owner().ref(List.class);
-            requestBodyType = arrayType.narrow(requestBodyType);
-        } 
-        if (addParameterJavadoc) {
-        	generatableType.get().javadoc().addParam(uncapitalize(requestBodyName) + " The Request Body Payload");
-        }
+	protected JVar paramObjects(ApiActionMetadata endpointMetadata, CodeModelHelper.JExtMethod generatableType) {
+		String requestBodyName = endpointMetadata.getRequestBody().getName();
+		boolean array = endpointMetadata.getRequestBody().isArray();
+
+		List<JCodeModel> codeModels = new ArrayList<>();
+		if (endpointMetadata.getRequestBody().getCodeModel() != null) {
+			codeModels.add(endpointMetadata.getRequestBody().getCodeModel());
+		}
+
+		if (generatableType.owner() != null) {
+			codeModels.add(generatableType.owner());
+		}
+
+		JClass requestBodyType = findFirstClassBySimpleName(codeModels.toArray(new JCodeModel[codeModels.size()]), requestBodyName);
+		if (allowArrayParameters && array) {
+			JClass arrayType = generatableType.owner().ref(List.class);
+			requestBodyType = arrayType.narrow(requestBodyType);
+		}
+		if (addParameterJavadoc) {
+			generatableType.get().javadoc().addParam(uncapitalize(requestBodyName) + " The Request Body Payload");
+		}
 		JVar param = generatableType.get().param(requestBodyType, uncapitalize(requestBodyName));
 		if (!RamlActionType.PATCH.equals(endpointMetadata.getActionType())) {
 			// skip Valid annotation for PATCH actions since it's a partial
@@ -208,14 +194,14 @@ public class MethodParamsRule implements Rule<CodeModelHelper.JExtMethod, JMetho
 			param.annotate(Valid.class);
 		}
 		return param;
-    }
+	}
 
-   protected JVar paramHttpHeaders(CodeModelHelper.JExtMethod generatableType) {
-      JVar paramHttpHeaders = generatableType.get().param(HttpHeaders.class, "httpHeaders");
-      if (addParameterJavadoc) {
-          generatableType.get().javadoc().addParam("httpHeaders The HTTP headers for the request");
-      }
-      return paramHttpHeaders;
-   }
+	protected JVar paramHttpHeaders(CodeModelHelper.JExtMethod generatableType) {
+		JVar paramHttpHeaders = generatableType.get().param(HttpHeaders.class, "httpHeaders");
+		if (addParameterJavadoc) {
+			generatableType.get().javadoc().addParam("httpHeaders The HTTP headers for the request");
+		}
+		return paramHttpHeaders;
+	}
 
 }

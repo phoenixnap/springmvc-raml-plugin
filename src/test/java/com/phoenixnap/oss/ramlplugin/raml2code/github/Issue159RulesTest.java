@@ -11,7 +11,7 @@ import com.phoenixnap.oss.ramlplugin.raml2code.rules.Spring4RestTemplateClientRu
  * @since 0.10.5
  */
 public class Issue159RulesTest extends GitHubAbstractRuleTestBase {
-	
+
 	public Issue159RulesTest() {
 		TestConfig.setResourceDepthInClassNames(2);
 	}

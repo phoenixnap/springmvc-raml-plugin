@@ -31,20 +31,18 @@ import org.springframework.util.CollectionUtils;
 import java.util.Map;
 
 /**
- * A code generation Rule that provides a standalone Controller interface with Spring4 annotations.
- * The goal is to generate code that does not have to be manually extended by the user.
- * A raml endpoint called /people for example would lead to the following interface only:
+ * A code generation Rule that provides a standalone Controller interface with
+ * Spring4 annotations. The goal is to generate code that does not have to be
+ * manually extended by the user. A raml endpoint called /people for example
+ * would lead to the following interface only:
  *
- * // 1. Controller Interface
- * {@literal @}RestController
- * {@literal @}RequestMapping("/people")
- * interface PeopleController {
- *     {@literal @}RequestMapping(value="", method=RequestMethod.GET)
- *     ResponseEntity getPeople();
- * }
+ * // 1. Controller Interface {@literal @}RestController
+ * {@literal @}RequestMapping("/people") interface PeopleController {
+ * {@literal @}RequestMapping(value="", method=RequestMethod.GET) ResponseEntity
+ * getPeople(); }
  *
- * Now all the user has to do is to implement a this interface.
- * This way he can implement the endpoint without altering the generated code.
+ * Now all the user has to do is to implement a this interface. This way he can
+ * implement the endpoint without altering the generated code.
  *
  * @author armin.weisser
  * @author kurt paris
@@ -52,44 +50,36 @@ import java.util.Map;
  */
 public abstract class SpringControllerInterfaceRule extends SpringConfigurableRule {
 
-    @Override
-    public final JDefinedClass apply(ApiResourceMetadata metadata, JCodeModel generatableType) {
+	@Override
+	public final JDefinedClass apply(ApiResourceMetadata metadata, JCodeModel generatableType) {
 
-        GenericJavaClassRule generator = new GenericJavaClassRule()
-                .setPackageRule(new PackageRule())
-                .setClassCommentRule(new ClassCommentRule())
-                .addClassAnnotationRule(getControllerAnnotationRule())
-                .addClassAnnotationRule(new SpringValidatedClassAnnotationRule())
-                .addClassAnnotationRule(new SpringRequestMappingClassAnnotationRule())
-                .setClassRule(new ControllerInterfaceDeclarationRule())
-                .setMethodCommentRule(new MethodCommentRule())
-                .addMethodAnnotationRule(isUseShortcutMethodMappings() ?
-                        new SpringShortcutMappingMethodAnnotationRule() : new SpringRequestMappingMethodAnnotationRule())
-                .addMethodAnnotationRule(getResponseBodyAnnotationRule())
-                .setMethodSignatureRule(new ControllerMethodSignatureRule(
-                        isCallableResponse() ? new SpringCallableResponseEntityRule() :
-                                        isSimpleReturnTypes() ? new SpringObjectReturnTypeRule() :
-                                        new SpringResponseEntityRule(),
-                        new SpringMethodParamsRule(isAddParameterJavadoc(), isAllowArrayParameters()))
-                );
-        return generator.apply(metadata, generatableType);
-    }
+		GenericJavaClassRule generator = new GenericJavaClassRule().setPackageRule(new PackageRule())
+				.setClassCommentRule(new ClassCommentRule()).addClassAnnotationRule(getControllerAnnotationRule())
+				.addClassAnnotationRule(new SpringValidatedClassAnnotationRule())
+				.addClassAnnotationRule(new SpringRequestMappingClassAnnotationRule())
+				.setClassRule(new ControllerInterfaceDeclarationRule()).setMethodCommentRule(new MethodCommentRule())
+				.addMethodAnnotationRule(isUseShortcutMethodMappings() ? new SpringShortcutMappingMethodAnnotationRule()
+						: new SpringRequestMappingMethodAnnotationRule())
+				.addMethodAnnotationRule(getResponseBodyAnnotationRule())
+				.setMethodSignatureRule(new ControllerMethodSignatureRule(
+						isCallableResponse() ? new SpringCallableResponseEntityRule()
+								: isSimpleReturnTypes() ? new SpringObjectReturnTypeRule() : new SpringResponseEntityRule(),
+						new SpringMethodParamsRule(isAddParameterJavadoc(), isAllowArrayParameters())));
+		return generator.apply(metadata, generatableType);
+	}
 
-    @Override
-    public void applyConfiguration(Map<String, String> configuration) {
-        super.applyConfiguration(configuration);
-        if(!CollectionUtils.isEmpty(configuration)) {
-            if(configuration.containsKey(SIMPLE_RETURN_TYPES)) {
-                setSimpleReturnTypes(BooleanUtils.toBoolean(configuration.get(SIMPLE_RETURN_TYPES)));
-            }
-        }
-    }
+	@Override
+	public void applyConfiguration(Map<String, String> configuration) {
+		super.applyConfiguration(configuration);
+		if (!CollectionUtils.isEmpty(configuration)) {
+			if (configuration.containsKey(SIMPLE_RETURN_TYPES)) {
+				setSimpleReturnTypes(BooleanUtils.toBoolean(configuration.get(SIMPLE_RETURN_TYPES)));
+			}
+		}
+	}
 
 	protected abstract Rule<JDefinedClass, JAnnotationUse, ApiResourceMetadata> getControllerAnnotationRule();
-	
+
 	protected abstract Rule<JMethod, JAnnotationUse, ApiActionMetadata> getResponseBodyAnnotationRule();
-	
+
 }
-	
-	
-	

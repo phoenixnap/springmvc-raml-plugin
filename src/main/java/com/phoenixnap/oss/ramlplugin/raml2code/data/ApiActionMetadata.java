@@ -41,10 +41,9 @@ import com.phoenixnap.oss.ramlplugin.raml2code.raml.RamlUriParameter;
 import com.phoenixnap.oss.ramlplugin.raml2code.raml.raml10.RJP10V2RamlQueryParameter;
 import com.sun.codemodel.JCodeModel;
 
-
-
 /**
- * Class containing the data required to successfully generate code for an api call within a controller
+ * Class containing the data required to successfully generate code for an api
+ * call within a controller
  *
  * @author Kurt Paris
  * @since 0.2.1
@@ -66,7 +65,8 @@ public class ApiActionMetadata {
 
 	private String responseContentTypeFilter;
 
-	public ApiActionMetadata(ApiResourceMetadata parent, RamlResource resource, RamlActionType actionType, RamlAction action, String responseContentTypeFilter) {
+	public ApiActionMetadata(ApiResourceMetadata parent, RamlResource resource, RamlActionType actionType, RamlAction action,
+			String responseContentTypeFilter) {
 		super();
 		this.parent = parent;
 		this.resource = resource;
@@ -79,8 +79,8 @@ public class ApiActionMetadata {
 
 	@Override
 	public String toString() {
-		return "Method " + getName() + "  Verb [" + actionType + "] Url [" + getUrl() + "] \nConsumes ["
-				+ getConsumes() + "] Produces [" + getProduces() + "] with Schema [" + null + "] \nPath Vars ["
+		return "Method " + getName() + "  Verb [" + actionType + "] Url [" + getUrl() + "] \nConsumes [" + getConsumes() + "] Produces ["
+				+ getProduces() + "] with Schema [" + null + "] \nPath Vars ["
 				+ StringUtils.collectionToCommaDelimitedString(getPathVariables()) + "] \nRequest Params ["
 				+ StringUtils.collectionToCommaDelimitedString(getRequestParameters()) + "] \nRequest Headers ["
 				+ StringUtils.collectionToCommaDelimitedString(getRequestHeaders()) + "] \n";
@@ -88,10 +88,10 @@ public class ApiActionMetadata {
 	}
 
 	public Set<ApiParameterMetadata> getPathVariables() {
-	// FIXME Alex - comment this out!
-//		if (pathVariables != null) {
-//			return pathVariables;
-//		}
+		// FIXME Alex - comment this out!
+		// if (pathVariables != null) {
+		// return pathVariables;
+		// }
 		pathVariables = new LinkedHashSet<>();
 
 		RamlResource targetResource = action.getResource();
@@ -122,7 +122,6 @@ public class ApiActionMetadata {
 		return requestHeaders;
 	}
 
-
 	private void parseRequest(JCodeModel codeModel) {
 
 		if (action.getQueryParameters() != null && !action.getQueryParameters().isEmpty()) {
@@ -140,8 +139,7 @@ public class ApiActionMetadata {
 		}
 	}
 
-	private void collectQueryParams(JCodeModel codeModel,
-			Entry<String, RamlQueryParameter> queryParameter) {
+	private void collectQueryParams(JCodeModel codeModel, Entry<String, RamlQueryParameter> queryParameter) {
 
 		if (queryParameter.getValue() instanceof RJP10V2RamlQueryParameter) {
 
@@ -160,15 +158,14 @@ public class ApiActionMetadata {
 			collectRequestParamsForMime(action.getBody().get(MediaType.APPLICATION_FORM_URLENCODED_VALUE));
 		}
 
-		if (doesActionTypeSupportRequestBody(actionType) 
-				&& (mime.getKey().toLowerCase().contains("json") 
-						|| mime.getKey().toLowerCase().equals("body"))) {
+		if (doesActionTypeSupportRequestBody(actionType)
+				&& (mime.getKey().toLowerCase().contains("json") || mime.getKey().toLowerCase().equals("body"))) {
 			// Continue here!
 			String schema = mime.getValue().getSchema();
 			RamlDataType type = mime.getValue().getType();
-			//prefer type if we have it.
+			// prefer type if we have it.
 			ApiBodyMetadata requestBody = null;
-			
+
 			String name = StringUtils.capitalize(getName()) + "Request";
 			if (type != null && type.getType() != null && !(type.getType() instanceof JSONTypeDeclaration)) {
 				requestBody = RamlTypeHelper.mapTypeToPojo(codeModel, parent.getDocument(), type.getType());
@@ -180,21 +177,24 @@ public class ApiActionMetadata {
 			}
 		}
 	}
-	
+
 	/**
-	 * Method to check if a specific action type supports payloads in the body of the request
+	 * Method to check if a specific action type supports payloads in the body
+	 * of the request
 	 * 
-	 * @param target The target Verb to check
+	 * @param target
+	 *            The target Verb to check
 	 * @return If true, the verb supports a payload in the request body
 	 */
 	private boolean doesActionTypeSupportRequestBody(RamlActionType target) {
 		return target.equals(RamlActionType.POST) || target.equals(RamlActionType.PUT) || target.equals(RamlActionType.PATCH);
 	}
-	
+
 	/**
 	 * Method to check if a specific action type supports multipart mime request
 	 *
-	 * @param target The target Verb to check
+	 * @param target
+	 *            The target Verb to check
 	 * @return If true, the verb supports multipart mime request
 	 */
 	private boolean doesActionTypeSupportMultipartMime(RamlActionType target) {
@@ -202,7 +202,8 @@ public class ApiActionMetadata {
 	}
 
 	private void collectRequestParamsForMime(RamlMimeType requestBody) {
-		if(requestBody == null) return;
+		if (requestBody == null)
+			return;
 		for (Entry<String, List<RamlFormParameter>> params : requestBody.getFormParameters().entrySet()) {
 			for (RamlFormParameter param : params.getValue()) {
 				requestParameters.add(new ApiParameterMetadata(params.getKey(), param, null));
@@ -216,21 +217,31 @@ public class ApiActionMetadata {
 		if (response != null && response.getBody() != null && !response.getBody().isEmpty()) {
 			for (Entry<String, RamlMimeType> body : response.getBody().entrySet()) {
 				if (responseContentTypeFilter == null || body.getKey().equals(responseContentTypeFilter)) {
-					if (body.getKey().toLowerCase().contains("json") 
-							|| body.getKey().toLowerCase().equals("body")) { //if we have a json type we need to return an object
+					if (body.getKey().toLowerCase().contains("json") || body.getKey().toLowerCase().equals("body")) { // if
+																														// we
+																														// have
+																														// a
+																														// json
+																														// type
+																														// we
+																														// need
+																														// to
+																														// return
+																														// an
+																														// object
 						// Continue here!
 						ApiBodyMetadata responseBody = null;
-						
+
 						RamlDataType type = body.getValue().getType();
 						String schema = body.getValue().getSchema();
-						//prefer type if we have it.
+						// prefer type if we have it.
 						String name = StringUtils.capitalize(getName()) + "Response";
 						if (type != null && type.getType() != null && !(type.getType() instanceof JSONTypeDeclaration)) {
 							responseBody = RamlTypeHelper.mapTypeToPojo(codeModel, parent.getDocument(), type.getType());
 						} else if (StringUtils.hasText(schema)) {
 							responseBody = SchemaHelper.mapSchemaToPojo(parent.getDocument(), schema, Config.getPojoPackage(), name, null);
 						}
-						
+
 						if (responseBody != null) {
 							this.responseBody.put(body.getKey(), responseBody);
 						}
@@ -246,7 +257,8 @@ public class ApiActionMetadata {
 
 	public String getName() {
 		String name = NamingHelper.getActionName(this);
-//		String name = NamingHelper.getActionName(parent.getResource(), resource, actionType);
+		// String name = NamingHelper.getActionName(parent.getResource(),
+		// resource, actionType);
 		if (responseContentTypeFilter != null) {
 			name += NamingHelper.convertContentTypeToQualifier(responseContentTypeFilter);
 		}
@@ -281,7 +293,7 @@ public class ApiActionMetadata {
 				if (MediaType.APPLICATION_FORM_URLENCODED_VALUE.equals(key)) {
 					continue;
 				}
-				
+
 				if (first) {
 					first = false;
 					out = "";
@@ -291,8 +303,8 @@ public class ApiActionMetadata {
 				if (key.equals("body")) {
 					try {
 						out += parent.getDocument().getMediaType();
-					} catch (Exception ex) {						
-						// skip						
+					} catch (Exception ex) {
+						// skip
 					}
 				} else {
 					out += key;

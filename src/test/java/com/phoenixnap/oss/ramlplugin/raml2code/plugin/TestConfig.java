@@ -3,7 +3,7 @@ package com.phoenixnap.oss.ramlplugin.raml2code.plugin;
 import com.phoenixnap.oss.ramlplugin.raml2code.rules.TestPojoConfig;
 
 public class TestConfig {
-	
+
 	public static void resetConfig() {
 		Config.resetFields();
 		Config.setPojoConfig(new TestPojoConfig());

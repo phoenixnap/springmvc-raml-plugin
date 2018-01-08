@@ -12,8 +12,6 @@
  */
 package com.phoenixnap.oss.ramlplugin.raml2code.raml.raml10;
 
-
-
 import org.raml.v2.api.model.v10.security.SecuritySchemeRef;
 
 import com.phoenixnap.oss.ramlplugin.raml2code.raml.RamlSecurityReference;
@@ -30,15 +28,15 @@ public class RJP10V2RamlSecurityReference implements RamlSecurityReference {
 
 	public RJP10V2RamlSecurityReference(SecuritySchemeRef securityReferenceRef) {
 		this.securitySchemeRef = securityReferenceRef;
-    }
+	}
 
-    @Override
-    public String getName() {
+	@Override
+	public String getName() {
 		if (this.securitySchemeRef == null) {
 			return null;
 		}
 		return this.securitySchemeRef.name();
-    }
+	}
 
 	SecuritySchemeRef getSecuritySchemeRef() {
 		return this.securitySchemeRef;

@@ -28,97 +28,98 @@ import com.sun.codemodel.JPackage;
  */
 public class SpringRulesTest extends AbstractRuleTestBase {
 
-    @Test
-    public void applyRestControllerAnnotationRule_shouldCreate_validClassAnnotation() throws JClassAlreadyExistsException {
-        SpringRestControllerAnnotationRule rule = new SpringRestControllerAnnotationRule();
+	@Test
+	public void applyRestControllerAnnotationRule_shouldCreate_validClassAnnotation() throws JClassAlreadyExistsException {
+		SpringRestControllerAnnotationRule rule = new SpringRestControllerAnnotationRule();
 
-        JPackage jPackage = jCodeModel.rootPackage();
-        JDefinedClass jClass = jPackage._class(JMod.PUBLIC, "MyClass");
-        rule.apply(getControllerMetadata(), jClass);
+		JPackage jPackage = jCodeModel.rootPackage();
+		JDefinedClass jClass = jPackage._class(JMod.PUBLIC, "MyClass");
+		rule.apply(getControllerMetadata(), jClass);
 
-        assertThat(jClass, is(notNullValue()));
-        assertThat(jClass.name(), equalTo("MyClass"));
-        assertThat(serializeModel(), containsString("import org.springframework.web.bind.annotation.RestController;"));
-        assertThat(serializeModel(), containsString("@RestController"));
-    }
+		assertThat(jClass, is(notNullValue()));
+		assertThat(jClass.name(), equalTo("MyClass"));
+		assertThat(serializeModel(), containsString("import org.springframework.web.bind.annotation.RestController;"));
+		assertThat(serializeModel(), containsString("@RestController"));
+	}
 
-    @Test
-    public void applyRequestMappingAnnotationRule_shouldCreate_validClassAnnotation() throws JClassAlreadyExistsException {
-        SpringRequestMappingClassAnnotationRule rule = new SpringRequestMappingClassAnnotationRule();
+	@Test
+	public void applyRequestMappingAnnotationRule_shouldCreate_validClassAnnotation() throws JClassAlreadyExistsException {
+		SpringRequestMappingClassAnnotationRule rule = new SpringRequestMappingClassAnnotationRule();
 
-        JPackage jPackage = jCodeModel.rootPackage();
-        JDefinedClass jClass = jPackage._class(JMod.PUBLIC, "MyClass");
-        rule.apply(getControllerMetadata(), jClass);
+		JPackage jPackage = jCodeModel.rootPackage();
+		JDefinedClass jClass = jPackage._class(JMod.PUBLIC, "MyClass");
+		rule.apply(getControllerMetadata(), jClass);
 
-        assertThat(jClass, is(notNullValue()));
-        assertThat(jClass.name(), equalTo("MyClass"));
-        assertThat(serializeModel(), containsString("import org.springframework.web.bind.annotation.RequestMapping;"));
-        assertThat(serializeModel(), containsString("@RequestMapping(value = \"/api/base\", produces = \"application/json\")"));
-    }
+		assertThat(jClass, is(notNullValue()));
+		assertThat(jClass.name(), equalTo("MyClass"));
+		assertThat(serializeModel(), containsString("import org.springframework.web.bind.annotation.RequestMapping;"));
+		assertThat(serializeModel(), containsString("@RequestMapping(value = \"/api/base\", produces = \"application/json\")"));
+	}
 
-    @Test
-    public void applyRequestMappingAnnotationRule_shouldCreate_validMethodAnnotation() throws JClassAlreadyExistsException {
-        SpringRequestMappingMethodAnnotationRule rule = new SpringRequestMappingMethodAnnotationRule();
+	@Test
+	public void applyRequestMappingAnnotationRule_shouldCreate_validMethodAnnotation() throws JClassAlreadyExistsException {
+		SpringRequestMappingMethodAnnotationRule rule = new SpringRequestMappingMethodAnnotationRule();
 
-        JPackage jPackage = jCodeModel.rootPackage();
-        JDefinedClass jClass = jPackage._class(JMod.PUBLIC, "MyClass");
-        JMethod jMethod = jClass.method(JMod.PUBLIC, Object.class, "getBase");
-        rule.apply(getEndpointMetadata(), jMethod);
+		JPackage jPackage = jCodeModel.rootPackage();
+		JDefinedClass jClass = jPackage._class(JMod.PUBLIC, "MyClass");
+		JMethod jMethod = jClass.method(JMod.PUBLIC, Object.class, "getBase");
+		rule.apply(getEndpointMetadata(), jMethod);
 
-        assertThat(serializeModel(), containsString("import org.springframework.web.bind.annotation.RequestMapping;"));
-        assertThat(serializeModel(), containsString("@RequestMapping(value = \"\", method = RequestMethod.GET)"));
-    }
+		assertThat(serializeModel(), containsString("import org.springframework.web.bind.annotation.RequestMapping;"));
+		assertThat(serializeModel(), containsString("@RequestMapping(value = \"\", method = RequestMethod.GET)"));
+	}
 
-    @Test
-    public void applyDelegateFieldDeclarationRule_shouldCreate_validAutowiredField() throws JClassAlreadyExistsException {
-        SpringDelegateFieldDeclerationRule rule = new SpringDelegateFieldDeclerationRule("delegate");
+	@Test
+	public void applyDelegateFieldDeclarationRule_shouldCreate_validAutowiredField() throws JClassAlreadyExistsException {
+		SpringDelegateFieldDeclerationRule rule = new SpringDelegateFieldDeclerationRule("delegate");
 
-        JPackage jPackage = jCodeModel.rootPackage();
-        JDefinedClass jClass = jPackage._class(JMod.PUBLIC, "MyClass");
-        jClass._implements(Serializable.class);
-        rule.apply(getControllerMetadata(), jClass);
+		JPackage jPackage = jCodeModel.rootPackage();
+		JDefinedClass jClass = jPackage._class(JMod.PUBLIC, "MyClass");
+		jClass._implements(Serializable.class);
+		rule.apply(getControllerMetadata(), jClass);
 
-        assertThat(serializeModel(), containsString("import org.springframework.beans.factory.annotation.Autowired;"));
-        assertThat(serializeModel(), containsString("@Autowired"));
-        assertThat(serializeModel(), containsString("private Serializable delegate;"));
-    }
+		assertThat(serializeModel(), containsString("import org.springframework.beans.factory.annotation.Autowired;"));
+		assertThat(serializeModel(), containsString("@Autowired"));
+		assertThat(serializeModel(), containsString("private Serializable delegate;"));
+	}
 
-    @Test
-    public void applySpringMethodParamsRule_shouldCreate_validMethodParams() throws JClassAlreadyExistsException {
+	@Test
+	public void applySpringMethodParamsRule_shouldCreate_validMethodParams() throws JClassAlreadyExistsException {
 
-        SpringMethodParamsRule rule = new SpringMethodParamsRule();
-        JDefinedClass jClass = jCodeModel.rootPackage()._class("TestController");
-        JMethod jMethod = jClass.method(JMod.PUBLIC, ResponseEntity.class, "getBaseById");
-        jMethod = rule.apply(getEndpointMetadata(2), ext(jMethod, jCodeModel));
+		SpringMethodParamsRule rule = new SpringMethodParamsRule();
+		JDefinedClass jClass = jCodeModel.rootPackage()._class("TestController");
+		JMethod jMethod = jClass.method(JMod.PUBLIC, ResponseEntity.class, "getBaseById");
+		jMethod = rule.apply(getEndpointMetadata(2), ext(jMethod, jCodeModel));
 
-        assertThat(jMethod.params(), hasSize(1));
-        String serializeModel = serializeModel();
-        assertThat(serializeModel, containsString("import org.springframework.web.bind.annotation.PathVariable;"));
-        assertThat(serializeModel, containsString("public ResponseEntity getBaseById("));
-        assertThat(serializeModel, containsString("@PathVariable"));
-        assertThat(serializeModel, containsString("String id) {"));
-    }
-    
-    @Test
-    public void applySpringMethodBodyRule_shouldCreate_valid_body() throws JClassAlreadyExistsException {
-        SpringRestClientMethodBodyRule rule = new SpringRestClientMethodBodyRule("restTemplate", "baseUrl");
-        
-        JPackage jPackage = jCodeModel.rootPackage();
-        JDefinedClass jClass = jPackage._class(JMod.PUBLIC, "MyClass");
-        JMethod jMethod = jClass.method(JMod.PUBLIC, Object.class, "getBase");                
-        jMethod.param(jCodeModel._ref(String.class), "id");
-        rule.apply(getEndpointMetadata(2), CodeModelHelper.ext(jMethod, jCodeModel));
+		assertThat(jMethod.params(), hasSize(1));
+		String serializeModel = serializeModel();
+		assertThat(serializeModel, containsString("import org.springframework.web.bind.annotation.PathVariable;"));
+		assertThat(serializeModel, containsString("public ResponseEntity getBaseById("));
+		assertThat(serializeModel, containsString("@PathVariable"));
+		assertThat(serializeModel, containsString("String id) {"));
+	}
 
-        String serializeModel = serializeModel();        
-        //ensure that we are adding the ACCEPT headers
-        assertThat(serializeModel, containsString("httpHeaders.setAccept(acceptsList);"));
-        //ensure that we are concatinating the base URL with the request URI to form the full url 
-        assertThat(serializeModel, containsString("String url = baseUrl.concat(\"/base/{id}\""));
-        //ensure that we are setting url paths vars in the uri
-        assertThat(serializeModel, containsString("uriComponents = uriComponents.expand(uriParamMap)"));
-        //ensure that the exchange invocation is as expected 
-        assertThat(serializeModel, containsString("return this.restTemplate.exchange(uriComponents.encode().toUri(), HttpMethod.GET, httpEntity, NamedResponseType.class);"));
-    }
+	@Test
+	public void applySpringMethodBodyRule_shouldCreate_valid_body() throws JClassAlreadyExistsException {
+		SpringRestClientMethodBodyRule rule = new SpringRestClientMethodBodyRule("restTemplate", "baseUrl");
 
+		JPackage jPackage = jCodeModel.rootPackage();
+		JDefinedClass jClass = jPackage._class(JMod.PUBLIC, "MyClass");
+		JMethod jMethod = jClass.method(JMod.PUBLIC, Object.class, "getBase");
+		jMethod.param(jCodeModel._ref(String.class), "id");
+		rule.apply(getEndpointMetadata(2), CodeModelHelper.ext(jMethod, jCodeModel));
+
+		String serializeModel = serializeModel();
+		// ensure that we are adding the ACCEPT headers
+		assertThat(serializeModel, containsString("httpHeaders.setAccept(acceptsList);"));
+		// ensure that we are concatinating the base URL with the request URI to
+		// form the full url
+		assertThat(serializeModel, containsString("String url = baseUrl.concat(\"/base/{id}\""));
+		// ensure that we are setting url paths vars in the uri
+		assertThat(serializeModel, containsString("uriComponents = uriComponents.expand(uriParamMap)"));
+		// ensure that the exchange invocation is as expected
+		assertThat(serializeModel, containsString(
+				"return this.restTemplate.exchange(uriComponents.encode().toUri(), HttpMethod.GET, httpEntity, NamedResponseType.class);"));
+	}
 
 }

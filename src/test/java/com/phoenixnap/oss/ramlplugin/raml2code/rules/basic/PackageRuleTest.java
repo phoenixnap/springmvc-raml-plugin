@@ -17,43 +17,43 @@ import com.sun.codemodel.JPackage;
  */
 public class PackageRuleTest extends AbstractRuleTestBase {
 
-    private final PackageRule rule = new PackageRule();
+	private final PackageRule rule = new PackageRule();
 
-    @Test
-    public void applyPackageRule_shouldCreate_validBasePackage() {
-        JPackage jPackage = rule.apply(getControllerMetadata(), jCodeModel);
-        assertThat(jPackage, is(notNullValue()));
-        assertThat(jPackage.name(), equalTo("com.gen.test"));
-    }
+	@Test
+	public void applyPackageRule_shouldCreate_validBasePackage() {
+		JPackage jPackage = rule.apply(getControllerMetadata(), jCodeModel);
+		assertThat(jPackage, is(notNullValue()));
+		assertThat(jPackage.name(), equalTo("com.gen.test"));
+	}
 
-    @Test
-    public void applyPackageRule_shouldCreate_emptyBasePackage_onNullPackage() {
-    	String emptyBasePackage = "     ";
-    	TestConfig.setBasePackage(emptyBasePackage);
-        
-        JPackage jPackage = rule.apply(getControllerMetadata(), jCodeModel);
-        assertThat(jPackage, is(notNullValue()));
-        assertThat(jPackage.name(), equalTo(""));
-    }
+	@Test
+	public void applyPackageRule_shouldCreate_emptyBasePackage_onNullPackage() {
+		String emptyBasePackage = "     ";
+		TestConfig.setBasePackage(emptyBasePackage);
 
-    @Test
-    public void applyPackageRule_shouldCreate_emptyBasePackage_onEmptyPackage() {
-    	String emptyBasePackage = "     ";
-    	TestConfig.setBasePackage(emptyBasePackage);
-        
-        JPackage jPackage = rule.apply(getControllerMetadata(), jCodeModel);
-        assertThat(jPackage, is(notNullValue()));
-        assertThat(jPackage.name(), equalTo(""));
-    }
+		JPackage jPackage = rule.apply(getControllerMetadata(), jCodeModel);
+		assertThat(jPackage, is(notNullValue()));
+		assertThat(jPackage.name(), equalTo(""));
+	}
 
-    @Test
-    public void applyPackageRule_shouldCreate_emptyBasePackage_onWhitespacePackage() {
-        String emptyBasePackage = "     ";
-        TestConfig.setBasePackage(emptyBasePackage);
-        
-        JPackage jPackage = rule.apply(getControllerMetadata(), jCodeModel);
-        assertThat(jPackage, is(notNullValue()));
-        assertThat(jPackage.name(), equalTo(""));
-    }
+	@Test
+	public void applyPackageRule_shouldCreate_emptyBasePackage_onEmptyPackage() {
+		String emptyBasePackage = "     ";
+		TestConfig.setBasePackage(emptyBasePackage);
+
+		JPackage jPackage = rule.apply(getControllerMetadata(), jCodeModel);
+		assertThat(jPackage, is(notNullValue()));
+		assertThat(jPackage.name(), equalTo(""));
+	}
+
+	@Test
+	public void applyPackageRule_shouldCreate_emptyBasePackage_onWhitespacePackage() {
+		String emptyBasePackage = "     ";
+		TestConfig.setBasePackage(emptyBasePackage);
+
+		JPackage jPackage = rule.apply(getControllerMetadata(), jCodeModel);
+		assertThat(jPackage, is(notNullValue()));
+		assertThat(jPackage.name(), equalTo(""));
+	}
 
 }

@@ -26,19 +26,18 @@ import com.sun.codemodel.JDefinedClass;
  * @since 0.5.0
  */
 public class ClassAnnotationRule implements Rule<JDefinedClass, JAnnotationUse, ApiResourceMetadata> {
-	
+
 	/**
-	 *  Annotation to support
+	 * Annotation to support
 	 */
 	private Class<? extends Annotation> annotationType;
-	
-	public ClassAnnotationRule (Class<? extends Annotation> annotationType) {
+
+	public ClassAnnotationRule(Class<? extends Annotation> annotationType) {
 		this.annotationType = annotationType;
 	}
-	
-	
-    @Override
-    public JAnnotationUse apply(ApiResourceMetadata controllerMetadata, JDefinedClass generatableType) {    	
-        return generatableType.annotate(annotationType);
-    }
+
+	@Override
+	public JAnnotationUse apply(ApiResourceMetadata controllerMetadata, JDefinedClass generatableType) {
+		return generatableType.annotate(annotationType);
+	}
 }

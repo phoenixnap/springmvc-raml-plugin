@@ -13,24 +13,24 @@ import com.phoenixnap.oss.ramlplugin.raml2code.rules.GitHubAbstractRuleTestBase;
  * @since 0.4.2
  */
 public class Issue156RulesTest extends GitHubAbstractRuleTestBase {
-	
-	@Test
-    public void versionCheck_shouldReportUnsupportedVersion() throws Exception {
-        try {
-        	loadRaml("issue-156-unsupported.raml");
-            fail();
-        } catch (UnsupportedRamlVersionException urve) {
-            // ok
-        }
-    }
 
-    @Test
-    public void versionCheck_shouldReportErrorAsInvalidRamlError() throws Exception {
-        try {
-        	loadRaml("issue-156-normal_invalidity.raml");
-            fail();
-        } catch (InvalidRamlException ire) {
-            // ok
-        }
-    }
+	@Test
+	public void versionCheck_shouldReportUnsupportedVersion() throws Exception {
+		try {
+			loadRaml("issue-156-unsupported.raml");
+			fail();
+		} catch (UnsupportedRamlVersionException urve) {
+			// ok
+		}
+	}
+
+	@Test
+	public void versionCheck_shouldReportErrorAsInvalidRamlError() throws Exception {
+		try {
+			loadRaml("issue-156-normal_invalidity.raml");
+			fail();
+		} catch (InvalidRamlException ire) {
+			// ok
+		}
+	}
 }

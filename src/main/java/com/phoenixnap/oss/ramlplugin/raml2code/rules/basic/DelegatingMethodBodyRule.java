@@ -23,20 +23,13 @@ import com.sun.codemodel.JMethod;
 
 /**
  * Generates a method body that delegates the method call to a private field.
- * The field is not setup in this rule, so you must make sure, that this field exists in the generated code,
- * befor applying this rule.
+ * The field is not setup in this rule, so you must make sure, that this field
+ * exists in the generated code, befor applying this rule.
  *
- * INPUT:
- * #%RAML 0.8
- * title: myapi
- * mediaType: application/json
- * baseUri: /
- * /base:
- *   /{id}
- *     get:
+ * INPUT: #%RAML 0.8 title: myapi mediaType: application/json baseUri: / /base:
+ * /{id} get:
  *
- * OUTPUT:
- * return this.delegate.getBaseById(id);
+ * OUTPUT: return this.delegate.getBaseById(id);
  *
  * The name of the field can be configured. Default is "delegate".
  *
@@ -45,20 +38,20 @@ import com.sun.codemodel.JMethod;
  */
 public class DelegatingMethodBodyRule implements Rule<JExtMethod, JMethod, ApiActionMetadata> {
 
-    private String delegateFieldName = "delegate";
+	private String delegateFieldName = "delegate";
 
-    public DelegatingMethodBodyRule(String delegateFieldName) {
-        if(StringUtils.hasText(delegateFieldName)) {
-            this.delegateFieldName = delegateFieldName;
-        }
-    }
+	public DelegatingMethodBodyRule(String delegateFieldName) {
+		if (StringUtils.hasText(delegateFieldName)) {
+			this.delegateFieldName = delegateFieldName;
+		}
+	}
 
-    @Override
-    public JMethod apply(ApiActionMetadata endpointMetadata, JExtMethod generatableType) {
-    	JMethod jMethod = generatableType.get();
-        JInvocation jInvocation = JExpr._this().ref(delegateFieldName).invoke(jMethod);
-        jMethod.params().forEach(p -> jInvocation.arg(p));
-        jMethod.body()._return(jInvocation);
-        return jMethod;
-    }
+	@Override
+	public JMethod apply(ApiActionMetadata endpointMetadata, JExtMethod generatableType) {
+		JMethod jMethod = generatableType.get();
+		JInvocation jInvocation = JExpr._this().ref(delegateFieldName).invoke(jMethod);
+		jMethod.params().forEach(p -> jInvocation.arg(p));
+		jMethod.body()._return(jInvocation);
+		return jMethod;
+	}
 }

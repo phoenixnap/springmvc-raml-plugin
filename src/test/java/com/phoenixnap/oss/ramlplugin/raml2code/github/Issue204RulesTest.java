@@ -11,11 +11,11 @@ import com.phoenixnap.oss.ramlplugin.raml2code.rules.Spring4ControllerInterfaceR
  */
 public class Issue204RulesTest extends GitHubAbstractRuleTestBase {
 
-    @Test
-    public void applySpring4ControllerInterfaceRule_shouldCreate_valid_class_inheritance() throws Exception {
-    	loadRaml("issue-204.raml");
-        rule = new Spring4ControllerInterfaceRule();
-        rule.apply(getControllerMetadata(), jCodeModel);
+	@Test
+	public void applySpring4ControllerInterfaceRule_shouldCreate_valid_class_inheritance() throws Exception {
+		loadRaml("issue-204.raml");
+		rule = new Spring4ControllerInterfaceRule();
+		rule.apply(getControllerMetadata(), jCodeModel);
 		verifyGeneratedCode("Issue204Spring4ControllerStub");
-    }
+	}
 }

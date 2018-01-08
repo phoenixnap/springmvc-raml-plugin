@@ -30,38 +30,38 @@ import com.phoenixnap.oss.ramlplugin.raml2code.raml.RamlParamType;
  */
 public class RJP10V2RamlHeader extends RamlHeader {
 
-    private static RJP10V2RamlModelFactory ramlModelFactory = new RJP10V2RamlModelFactory();
+	private static RJP10V2RamlModelFactory ramlModelFactory = new RJP10V2RamlModelFactory();
 
-    private final TypeDeclaration header;
+	private final TypeDeclaration header;
 
-    public RJP10V2RamlHeader(TypeDeclaration header) {
-        this.header = header;
-    }
+	public RJP10V2RamlHeader(TypeDeclaration header) {
+		this.header = header;
+	}
 
-    @Override
-    public String getDisplayName() {
-        return RamlTypeHelper.getDisplayName(header);
-    }
+	@Override
+	public String getDisplayName() {
+		return RamlTypeHelper.getDisplayName(header);
+	}
 
-    @Override
-    public RamlParamType getType() {
-        return ramlModelFactory.createRamlParamType(header.type());
-    }
+	@Override
+	public RamlParamType getType() {
+		return ramlModelFactory.createRamlParamType(header.type());
+	}
 
-    @Override
-    public boolean isRequired() {
-        return RamlTypeHelper.isRequired(header);
-    }
+	@Override
+	public boolean isRequired() {
+		return RamlTypeHelper.isRequired(header);
+	}
 
-    @Override
-    public String getExample() {
-        return RamlTypeHelper.getExample(header);
-    }
+	@Override
+	public String getExample() {
+		return RamlTypeHelper.getExample(header);
+	}
 
-    @Override
-    public String getDescription() {
-        return RamlTypeHelper.getDescription(header);
-    }
+	@Override
+	public String getDescription() {
+		return RamlTypeHelper.getDescription(header);
+	}
 
 	@Override
 	public String getDefaultValue() {
@@ -69,13 +69,13 @@ public class RJP10V2RamlHeader extends RamlHeader {
 	}
 
 	@Override
-   public String getPattern() {
-      if (header instanceof StringTypeDeclaration) {
-         return ((StringTypeDeclaration) header).pattern();
-      }
-      return null;
-   }
-	
+	public String getPattern() {
+		if (header instanceof StringTypeDeclaration) {
+			return ((StringTypeDeclaration) header).pattern();
+		}
+		return null;
+	}
+
 	@Override
 	public String getFormat() {
 		return RamlTypeHelper.getFormat(this.header);

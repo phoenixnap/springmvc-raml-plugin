@@ -19,26 +19,24 @@ import com.sun.codemodel.JDefinedClass;
 /**
  * Generates an implements expression based on a given JDefinedClass.
  *
- * INPUT:
- * JDefinedClass interfaceType
+ * INPUT: JDefinedClass interfaceType
  *
- * OUTPUT:
- * implements {@literal <}interfaceType{@literal >}
+ * OUTPUT: implements {@literal <}interfaceType{@literal >}
  *
  * @author armin.weisser
  * @since 0.4.1
  */
 public class ImplementsControllerInterfaceRule implements Rule<JDefinedClass, JDefinedClass, ApiResourceMetadata> {
 
-    private final JDefinedClass interfaceType;
+	private final JDefinedClass interfaceType;
 
-    public ImplementsControllerInterfaceRule(JDefinedClass interfaceType) {
-        this.interfaceType = interfaceType;
-    }
+	public ImplementsControllerInterfaceRule(JDefinedClass interfaceType) {
+		this.interfaceType = interfaceType;
+	}
 
-    @Override
-    public JDefinedClass apply(ApiResourceMetadata controllerMetadata, JDefinedClass generatableType) {
-        return generatableType._implements(this.interfaceType);
-    }
+	@Override
+	public JDefinedClass apply(ApiResourceMetadata controllerMetadata, JDefinedClass generatableType) {
+		return generatableType._implements(this.interfaceType);
+	}
 
 }

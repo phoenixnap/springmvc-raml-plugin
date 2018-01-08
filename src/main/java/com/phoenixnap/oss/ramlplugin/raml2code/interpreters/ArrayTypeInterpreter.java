@@ -39,28 +39,33 @@ public class ArrayTypeInterpreter extends BaseTypeInterpreter {
 		return Collections.singleton(ArrayTypeDeclaration.class);
 	}
 
-
 	@Override
 	public RamlInterpretationResult interpret(RamlRoot document, TypeDeclaration type, JCodeModel builderModel, boolean property) {
 		RamlInterpretationResult result = new RamlInterpretationResult(type.required());
-		
-		typeCheck(type);		
+
+		typeCheck(type);
 		if (type instanceof ArrayTypeDeclaration) {
 			ArrayTypeDeclaration arrayType = (ArrayTypeDeclaration) type;
-			
+
 			RamlTypeValidations validations = result.getValidations();
 			validations.withLenghts(arrayType.minItems(), arrayType.maxItems());
-			
-			//Lets check if we've already handled this class before.
+
+			// Lets check if we've already handled this class before.
 			if (builderModel != null) {
 				String arrayItem = arrayType.items().name();
 				if (!StringUtils.isEmpty(arrayItem) && arrayItem.endsWith("[]")) {
 					arrayItem = arrayItem.substring(0, arrayItem.length() - 2);
 				}
-				JClass searchedClass = CodeModelHelper.findFirstClassBySimpleName(builderModel,
-						arrayItem);
-				if (!searchedClass.getClass().getSimpleName().contains("JDirectClass")) { //WTF can't we use this dude pff
-					//we've already handled this pojo in the model, no need to re-interpret
+				JClass searchedClass = CodeModelHelper.findFirstClassBySimpleName(builderModel, arrayItem);
+				if (!searchedClass.getClass().getSimpleName().contains("JDirectClass")) { // WTF
+																							// can't
+																							// we
+																							// use
+																							// this
+																							// dude
+																							// pff
+					// we've already handled this pojo in the model, no need to
+					// re-interpret
 					JClass collection = resolveCollectionClass(arrayType, searchedClass, builderModel);
 					result.setCodeModel(builderModel);
 					result.setResolvedClass(collection);
@@ -72,12 +77,13 @@ public class ArrayTypeInterpreter extends BaseTypeInterpreter {
 			}
 			TypeDeclaration arrayContentsType = arrayType.items();
 
-			//Lets process the array base class first
-			RamlInterpretationResult childResult = RamlInterpreterFactory.getInterpreterForType(arrayContentsType).interpret(document, arrayContentsType, builderModel, false);
+			// Lets process the array base class first
+			RamlInterpretationResult childResult = RamlInterpreterFactory.getInterpreterForType(arrayContentsType).interpret(document,
+					arrayContentsType, builderModel, false);
 			JClass collection = resolveCollectionClass(arrayType, childResult.getResolvedClassOrBuiltOrObject(), builderModel);
 			result.setResolvedClass(collection);
 		}
-		
+
 		return result;
 	}
 

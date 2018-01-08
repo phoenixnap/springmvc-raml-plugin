@@ -26,54 +26,28 @@ import com.sun.codemodel.JDefinedClass;
 import com.sun.codemodel.JType;
 
 /**
- * Creates a {@link ResponseEntity} as a return type for an endpoint.
- * If the endpoint declares a response body the first type of the response body will used as return type instead.
- * <br>
- * INPUT:
- * <pre class="code">
- * #%RAML 0.8
- * title: myapi
- * mediaType: application/json
- * baseUri: /
- *
- * /base:
- *   get:
- *   /{id}:
- *     get:
- *       responses:
- *         200:
- *           body:
- *             application/json:
- *               schema: NamedResponseType
- *               ...
- * </pre>
- * OUTPUT:
- * <pre class="code">
- * ResponseEntity{@literal <}NamedResponseType{@literal >}
- * </pre>
- * OR:
- * <pre class="code">
- * ResponseEntity{@literal <}List{@literal <}NamedResponseType{@literal >}{@literal >} (if the NamedResponseType is an "array")
- * </pre>
+ * Creates a {@link ResponseEntity} as a return type for an endpoint. If the
+ * endpoint declares a response body the first type of the response body will
+ * used as return type instead. <br>
  * 
  * @author Aleksandar Stojsavljevic
  * @since 0.8.6
  */
 public class SpringFeignClientResponseTypeRule implements Rule<JDefinedClass, JType, ApiActionMetadata> {
 
-    @Override
-    public JType apply(ApiActionMetadata endpointMetadata, JDefinedClass generatableType) {
-        JClass responseEntity = generatableType.owner().ref(ResponseEntity.class);
-        if (!endpointMetadata.getResponseBody().isEmpty()) {
-            ApiBodyMetadata apiBodyMetadata = endpointMetadata.getResponseBody().values().iterator().next();
-            JClass genericType = findFirstClassBySimpleName(apiBodyMetadata.getCodeModel(), apiBodyMetadata.getName());
-            if (apiBodyMetadata.isArray()) {
-                JClass arrayType = generatableType.owner().ref(List.class);
-                responseEntity = responseEntity.narrow(arrayType.narrow(genericType));
-            } else {
-                responseEntity = responseEntity.narrow(genericType);
-            }
-        }
-        return responseEntity;
-    }
+	@Override
+	public JType apply(ApiActionMetadata endpointMetadata, JDefinedClass generatableType) {
+		JClass responseEntity = generatableType.owner().ref(ResponseEntity.class);
+		if (!endpointMetadata.getResponseBody().isEmpty()) {
+			ApiBodyMetadata apiBodyMetadata = endpointMetadata.getResponseBody().values().iterator().next();
+			JClass genericType = findFirstClassBySimpleName(apiBodyMetadata.getCodeModel(), apiBodyMetadata.getName());
+			if (apiBodyMetadata.isArray()) {
+				JClass arrayType = generatableType.owner().ref(List.class);
+				responseEntity = responseEntity.narrow(arrayType.narrow(genericType));
+			} else {
+				responseEntity = responseEntity.narrow(genericType);
+			}
+		}
+		return responseEntity;
+	}
 }

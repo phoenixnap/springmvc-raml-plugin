@@ -15,44 +15,48 @@ package com.phoenixnap.oss.ramlplugin.raml2code.raml;
 import java.util.Map;
 
 /**
- * Abstract Representation of a Raml Resource.
- * RamlResourceRoot is an element that can contain other resources.
+ * Abstract Representation of a Raml Resource. RamlResourceRoot is an element
+ * that can contain other resources.
  * 
  * @author armin.weisser
  * @since 0.8.1
  */
 public interface RamlResourceRoot {
 
-    /**
-     * Given a path with more than one segment the getResource(String) method will recursively lookup a matching resource.
-     * @param path a relative or absolute URI
-     * @return the child RamlResource that matches the given path.
-     */
-    default RamlResource getResource(String path) {
-        String[] segments = path.split("/");
-        RamlResourceRoot current = this;
-        RamlResource resource = null;
-        boolean first = true;
-        for(String segment: segments) {
-            if(segment != null && !"".equals(segment)) {
-            	String segmentToCheck = segment;
-            	if ((first && path.startsWith("/")) 
-            			|| !first) {
-            		segmentToCheck = "/" + segmentToCheck; 
-            	}
-                resource = current.getResources().get(segmentToCheck);
-                if (resource == null) { //if a part of the url isnt found we need to return null since the entire part isnt found
-                	return null;
-                }
-                current = resource;
-            }
-            first = false;
-        }
-        return resource;
-    }
+	/**
+	 * Given a path with more than one segment the getResource(String) method
+	 * will recursively lookup a matching resource.
+	 * 
+	 * @param path
+	 *            a relative or absolute URI
+	 * @return the child RamlResource that matches the given path.
+	 */
+	default RamlResource getResource(String path) {
+		String[] segments = path.split("/");
+		RamlResourceRoot current = this;
+		RamlResource resource = null;
+		boolean first = true;
+		for (String segment : segments) {
+			if (segment != null && !"".equals(segment)) {
+				String segmentToCheck = segment;
+				if ((first && path.startsWith("/")) || !first) {
+					segmentToCheck = "/" + segmentToCheck;
+				}
+				resource = current.getResources().get(segmentToCheck);
+				if (resource == null) { // if a part of the url isnt found we
+										// need to return null since the entire
+										// part isnt found
+					return null;
+				}
+				current = resource;
+			}
+			first = false;
+		}
+		return resource;
+	}
 
-    /**
-     * @return all direct child resources of this resource.
-     */
-    Map<String, RamlResource> getResources();
+	/**
+	 * @return all direct child resources of this resource.
+	 */
+	Map<String, RamlResource> getResources();
 }

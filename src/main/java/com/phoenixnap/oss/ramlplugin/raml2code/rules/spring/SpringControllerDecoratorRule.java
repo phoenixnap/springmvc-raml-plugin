@@ -33,32 +33,28 @@ import com.sun.codemodel.JDefinedClass;
 import com.sun.codemodel.JMethod;
 
 /**
- * A code generation Rule that provides a Spring4 Controller based on a decorator pattern.
- * The goal is to generate code that does not have to be manually extended by the user.
- * A raml endpoint called /people for example implies two generated artefacts:
+ * A code generation Rule that provides a Spring4 Controller based on a
+ * decorator pattern. The goal is to generate code that does not have to be
+ * manually extended by the user. A raml endpoint called /people for example
+ * implies two generated artefacts:
  *
- * // 1. Controller Interface
- * interface PeopleController {
- *     ResponseEntity getPeople();
- * }
+ * // 1. Controller Interface interface PeopleController { ResponseEntity
+ * getPeople(); }
  *
- * // 2. A Decorator that implements the Controller Interface
- * // and delegates to another instance of a class implementing the very same controller interface.
- * {@literal @}RestController
- * {@literal @}RequestMapping("/people")
+ * // 2. A Decorator that implements the Controller Interface // and delegates
+ * to another instance of a class implementing the very same controller
+ * interface. {@literal @}RestController {@literal @}RequestMapping("/people")
  * class PeopleControllerDecorator implements PeopleController {
  *
- *     {@literal @}Autowired
- *     PeopleController peopleControllerDelegate;
+ * {@literal @}Autowired PeopleController peopleControllerDelegate;
  *
- *     {@literal @}RequestMapping(value="", method=RequestMethod.GET)
- *     public ResponseEntity getPeople() {
- *         return this.peopleControllerDelegate.getPeople();
- *     }
- * }
+ * {@literal @}RequestMapping(value="", method=RequestMethod.GET) public
+ * ResponseEntity getPeople() { return
+ * this.peopleControllerDelegate.getPeople(); } }
  *
- * Now all the user has to do is to implement a Spring-Bean called "PeopleControllerDelegate".
- * This way he can implement the endpoint without altering the generated code.
+ * Now all the user has to do is to implement a Spring-Bean called
+ * "PeopleControllerDelegate". This way he can implement the endpoint without
+ * altering the generated code.
  *
  * @author armin.weisser
  * @author kurtpa
@@ -66,42 +62,37 @@ import com.sun.codemodel.JMethod;
  */
 public abstract class SpringControllerDecoratorRule extends SpringConfigurableRule {
 
-    @Override
-    public final JDefinedClass apply(ApiResourceMetadata metadata, JCodeModel generatableType) {
+	@Override
+	public final JDefinedClass apply(ApiResourceMetadata metadata, JCodeModel generatableType) {
 
-        JDefinedClass generatedInterface = new GenericJavaClassRule()
-                .setPackageRule(new PackageRule())
-                .setClassCommentRule(new ClassCommentRule())
-                .setClassRule(new ControllerInterfaceDeclarationRule())
-                .setMethodCommentRule(new MethodCommentRule())
-                .setMethodSignatureRule(new ControllerMethodSignatureRule(
-                        isCallableResponse() ? new SpringCallableResponseEntityRule() :  new SpringResponseEntityRule(),
+		JDefinedClass generatedInterface = new GenericJavaClassRule().setPackageRule(new PackageRule())
+				.setClassCommentRule(new ClassCommentRule()).setClassRule(new ControllerInterfaceDeclarationRule())
+				.setMethodCommentRule(new MethodCommentRule())
+				.setMethodSignatureRule(new ControllerMethodSignatureRule(
+						isCallableResponse() ? new SpringCallableResponseEntityRule() : new SpringResponseEntityRule(),
 						new MethodParamsRule(isAddParameterJavadoc(), isAllowArrayParameters())))
-                .apply(metadata, generatableType);
+				.apply(metadata, generatableType);
 
-        String delegateFieldName = StringUtils.uncapitalize(generatedInterface.name()+"Delegate");
+		String delegateFieldName = StringUtils.uncapitalize(generatedInterface.name() + "Delegate");
 
-        GenericJavaClassRule delegateGenerator = new GenericJavaClassRule()
-                .setPackageRule(new PackageRule())
-                .setClassCommentRule(new ClassCommentRule())
-                .addClassAnnotationRule(getControllerAnnotationRule())
-                .addClassAnnotationRule(new SpringRequestMappingClassAnnotationRule())
-                .addClassAnnotationRule(new SpringValidatedClassAnnotationRule())
-                .setClassRule(new ControllerClassDeclarationRule("Decorator"))
-                .setImplementsExtendsRule(new ImplementsControllerInterfaceRule(generatedInterface))
-                .addFieldDeclarationRule(new SpringDelegateFieldDeclerationRule(delegateFieldName))
-                .setMethodCommentRule(new MethodCommentRule())
-                .addMethodAnnotationRule(new SpringRequestMappingMethodAnnotationRule())
-                .addMethodAnnotationRule(getResponseBodyAnnotationRule())
-                .setMethodSignatureRule(new ControllerMethodSignatureRule(
-                        isCallableResponse() ? new SpringCallableResponseEntityRule() :  new SpringResponseEntityRule(),
-                        new SpringMethodParamsRule(isAddParameterJavadoc(), isAllowArrayParameters())))
-                .setMethodBodyRule(new DelegatingMethodBodyRule(delegateFieldName));
+		GenericJavaClassRule delegateGenerator = new GenericJavaClassRule().setPackageRule(new PackageRule())
+				.setClassCommentRule(new ClassCommentRule()).addClassAnnotationRule(getControllerAnnotationRule())
+				.addClassAnnotationRule(new SpringRequestMappingClassAnnotationRule())
+				.addClassAnnotationRule(new SpringValidatedClassAnnotationRule())
+				.setClassRule(new ControllerClassDeclarationRule("Decorator"))
+				.setImplementsExtendsRule(new ImplementsControllerInterfaceRule(generatedInterface))
+				.addFieldDeclarationRule(new SpringDelegateFieldDeclerationRule(delegateFieldName))
+				.setMethodCommentRule(new MethodCommentRule()).addMethodAnnotationRule(new SpringRequestMappingMethodAnnotationRule())
+				.addMethodAnnotationRule(getResponseBodyAnnotationRule())
+				.setMethodSignatureRule(new ControllerMethodSignatureRule(
+						isCallableResponse() ? new SpringCallableResponseEntityRule() : new SpringResponseEntityRule(),
+						new SpringMethodParamsRule(isAddParameterJavadoc(), isAllowArrayParameters())))
+				.setMethodBodyRule(new DelegatingMethodBodyRule(delegateFieldName));
 
-        return delegateGenerator.apply(metadata, generatableType);
-    }
-    
-    protected abstract Rule<JDefinedClass, JAnnotationUse, ApiResourceMetadata> getControllerAnnotationRule();
-    
-    protected abstract Rule<JMethod, JAnnotationUse, ApiActionMetadata> getResponseBodyAnnotationRule();
+		return delegateGenerator.apply(metadata, generatableType);
+	}
+
+	protected abstract Rule<JDefinedClass, JAnnotationUse, ApiResourceMetadata> getControllerAnnotationRule();
+
+	protected abstract Rule<JMethod, JAnnotationUse, ApiActionMetadata> getResponseBodyAnnotationRule();
 }

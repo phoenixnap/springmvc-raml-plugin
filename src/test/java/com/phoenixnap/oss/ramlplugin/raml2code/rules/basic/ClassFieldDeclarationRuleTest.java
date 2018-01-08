@@ -18,56 +18,53 @@ import com.sun.codemodel.JPackage;
 /**
  * 
  * 
- * @author  kris galea
- * @since   0.5.0
+ * @author kris galea
+ * @since 0.5.0
  *
  */
-public class ClassFieldDeclarationRuleTest extends AbstractRuleTestBase{
+public class ClassFieldDeclarationRuleTest extends AbstractRuleTestBase {
 
-    @Test
-    public void applyClassFieldDeclarationRule_shouldCreate_validAutowiredField() throws JClassAlreadyExistsException {
-        ClassFieldDeclarationRule rule = new ClassFieldDeclarationRule("field",String.class);
+	@Test
+	public void applyClassFieldDeclarationRule_shouldCreate_validAutowiredField() throws JClassAlreadyExistsException {
+		ClassFieldDeclarationRule rule = new ClassFieldDeclarationRule("field", String.class);
 
-        JPackage jPackage = jCodeModel.rootPackage();
-        JDefinedClass jClass = jPackage._class(JMod.PUBLIC, "MyClass");        
-        jClass._implements(Serializable.class);
-        rule.apply(getControllerMetadata(), jClass);
+		JPackage jPackage = jCodeModel.rootPackage();
+		JDefinedClass jClass = jPackage._class(JMod.PUBLIC, "MyClass");
+		jClass._implements(Serializable.class);
+		rule.apply(getControllerMetadata(), jClass);
 
-        assertThat(serializeModel(), containsString("import org.springframework.beans.factory.annotation.Autowired;"));
-        assertThat(serializeModel(), containsString("@Autowired"));
-        assertThat(serializeModel(), containsString("private String field;"));
-    }
-    
-    @Test
-    public void applyClassFieldDeclarationRule_shouldCreate_validNonAutowiredField() throws JClassAlreadyExistsException {
-        ClassFieldDeclarationRule rule = new ClassFieldDeclarationRule("field",String.class, false);
+		assertThat(serializeModel(), containsString("import org.springframework.beans.factory.annotation.Autowired;"));
+		assertThat(serializeModel(), containsString("@Autowired"));
+		assertThat(serializeModel(), containsString("private String field;"));
+	}
 
-        JPackage jPackage = jCodeModel.rootPackage();
-        JDefinedClass jClass = jPackage._class(JMod.PUBLIC, "MyClass");        
-        jClass._implements(Serializable.class);
-        rule.apply(getControllerMetadata(), jClass);
+	@Test
+	public void applyClassFieldDeclarationRule_shouldCreate_validNonAutowiredField() throws JClassAlreadyExistsException {
+		ClassFieldDeclarationRule rule = new ClassFieldDeclarationRule("field", String.class, false);
 
-        assertFalse(serializeModel().contains("import org.springframework.beans.factory.annotation.Autowired;"));
-        assertFalse((serializeModel().contains("@Autowired")));
-        assertThat(serializeModel(), containsString("private String field;"));
-    }
-    
-    
-    @Test
-    public void applyClassFieldDeclarationRule_shouldCreate_validValueAnnotedField() throws JClassAlreadyExistsException {
-        ClassFieldDeclarationRule rule = new ClassFieldDeclarationRule("field",String.class, "${sample}");
+		JPackage jPackage = jCodeModel.rootPackage();
+		JDefinedClass jClass = jPackage._class(JMod.PUBLIC, "MyClass");
+		jClass._implements(Serializable.class);
+		rule.apply(getControllerMetadata(), jClass);
 
-        JPackage jPackage = jCodeModel.rootPackage();
-        JDefinedClass jClass = jPackage._class(JMod.PUBLIC, "MyClass");        
-        jClass._implements(Serializable.class);
-        rule.apply(getControllerMetadata(), jClass);
+		assertFalse(serializeModel().contains("import org.springframework.beans.factory.annotation.Autowired;"));
+		assertFalse((serializeModel().contains("@Autowired")));
+		assertThat(serializeModel(), containsString("private String field;"));
+	}
 
-        assertFalse(serializeModel().contains("import org.springframework.beans.factory.annotation.Autowired;"));
-        assertFalse((serializeModel().contains("@Autowired")));
-        assertThat(serializeModel(), containsString("@Value(\"${sample}\")"));
-        assertThat(serializeModel(), containsString("private String field;"));
-    }
-    
+	@Test
+	public void applyClassFieldDeclarationRule_shouldCreate_validValueAnnotedField() throws JClassAlreadyExistsException {
+		ClassFieldDeclarationRule rule = new ClassFieldDeclarationRule("field", String.class, "${sample}");
+
+		JPackage jPackage = jCodeModel.rootPackage();
+		JDefinedClass jClass = jPackage._class(JMod.PUBLIC, "MyClass");
+		jClass._implements(Serializable.class);
+		rule.apply(getControllerMetadata(), jClass);
+
+		assertFalse(serializeModel().contains("import org.springframework.beans.factory.annotation.Autowired;"));
+		assertFalse((serializeModel().contains("@Autowired")));
+		assertThat(serializeModel(), containsString("@Value(\"${sample}\")"));
+		assertThat(serializeModel(), containsString("private String field;"));
+	}
+
 }
-
-

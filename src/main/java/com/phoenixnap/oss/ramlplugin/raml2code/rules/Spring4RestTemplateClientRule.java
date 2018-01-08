@@ -37,77 +37,69 @@ import com.sun.codemodel.JDefinedClass;
 
 /**
  * 
- * Builds a client from a parsed RAML document. The resulting code makes use of 
- * Spring's REST template and sets the Accept and Content-type headers accordingly.
- * Query string params as well as URI params are also resolved. The following url is generatable : 
+ * Builds a client from a parsed RAML document. The resulting code makes use of
+ * Spring's REST template and sets the Accept and Content-type headers
+ * accordingly. Query string params as well as URI params are also resolved. The
+ * following url is generatable :
  * 
- *  Uri : /account/{accountId}?hasQueryParams=true
- *  HTTP Method: PUT
+ * Uri : /account/{accountId}?hasQueryParams=true HTTP Method: PUT
  *
- *  Request body: 
- *  
- *  {
- *      accountName:name       
- *  }
- *  
- *  results in a client method
- *  
- *   
+ * Request body:
+ * 
+ * { accountName:name }
+ * 
+ * results in a client method
+ * 
+ * 
  *
  * @author kurt paris
  * @author kristian galea
  * @since 0.5.0
  */
 public class Spring4RestTemplateClientRule implements ConfigurableRule<JCodeModel, JDefinedClass, ApiResourceMetadata> {
-    
- 	public static final String ARRAY_PARAMETER_CONFIGURATION = "allowArrayParameters";
-	
+
+	public static final String ARRAY_PARAMETER_CONFIGURATION = "allowArrayParameters";
+
 	String restTemplateFieldName = "restTemplate";
-	
+
 	String baseUrlFieldName = "baseUrl";
-	
+
 	String baseUrlConfigurationPath = "${client.url}";
-	
+
 	String restTemplateQualifierBeanName;
-	
+
 	boolean allowArrayParameters = true;
-	
-    @Override
-    public final JDefinedClass apply(ApiResourceMetadata metadata, JCodeModel generatableType) {
 
-        JDefinedClass generatedInterface = new GenericJavaClassRule()
-                .setPackageRule(new PackageRule())
-                .setClassCommentRule(new ClassCommentRule())
-                .setClassRule(new ClientInterfaceDeclarationRule())  //MODIFIED
-                .setMethodCommentRule(new MethodCommentRule())
-                .setMethodSignatureRule(new ControllerMethodSignatureRule(
-                        new SpringResponseEntityRule(),
-                        new MethodParamsRule(true, allowArrayParameters)))
-                .apply(metadata, generatableType);
+	@Override
+	public final JDefinedClass apply(ApiResourceMetadata metadata, JCodeModel generatableType) {
 
-        
-        GenericJavaClassRule clientGenerator = new GenericJavaClassRule()
-                .setPackageRule(new PackageRule())
-                .setClassCommentRule(new ClassCommentRule())
-                .addClassAnnotationRule(new ClassAnnotationRule(Component.class))                
-                .setClassRule(new ResourceClassDeclarationRule(ClientInterfaceDeclarationRule.CLIENT_SUFFIX + "Impl"))   //MODIFIED
-                .setImplementsExtendsRule(new ImplementsControllerInterfaceRule(generatedInterface))
-                .addFieldDeclarationRule(new ClassFieldDeclarationRule(restTemplateFieldName, RestTemplate.class, true, restTemplateQualifierBeanName)) //Modified
-                .addFieldDeclarationRule(new ClassFieldDeclarationRule(baseUrlFieldName, String.class, getBaseUrlConfigurationName())) //
-                .setMethodCommentRule(new MethodCommentRule())                
-                .setMethodSignatureRule(new ControllerMethodSignatureRule(
-                        new SpringResponseEntityRule(),
-                        new MethodParamsRule(false, allowArrayParameters)))
-                .setMethodBodyRule(new SpringRestClientMethodBodyRule(restTemplateFieldName, baseUrlFieldName));
+		JDefinedClass generatedInterface = new GenericJavaClassRule().setPackageRule(new PackageRule())
+				.setClassCommentRule(new ClassCommentRule()).setClassRule(new ClientInterfaceDeclarationRule()) // MODIFIED
+				.setMethodCommentRule(new MethodCommentRule())
+				.setMethodSignatureRule(
+						new ControllerMethodSignatureRule(new SpringResponseEntityRule(), new MethodParamsRule(true, allowArrayParameters)))
+				.apply(metadata, generatableType);
 
-        return clientGenerator.apply(metadata, generatableType);
-    }
+		GenericJavaClassRule clientGenerator = new GenericJavaClassRule().setPackageRule(new PackageRule())
+				.setClassCommentRule(new ClassCommentRule()).addClassAnnotationRule(new ClassAnnotationRule(Component.class))
+				.setClassRule(new ResourceClassDeclarationRule(ClientInterfaceDeclarationRule.CLIENT_SUFFIX + "Impl")) // MODIFIED
+				.setImplementsExtendsRule(new ImplementsControllerInterfaceRule(generatedInterface))
+				.addFieldDeclarationRule(
+						new ClassFieldDeclarationRule(restTemplateFieldName, RestTemplate.class, true, restTemplateQualifierBeanName)) // Modified
+				.addFieldDeclarationRule(new ClassFieldDeclarationRule(baseUrlFieldName, String.class, getBaseUrlConfigurationName())) //
+				.setMethodCommentRule(new MethodCommentRule())
+				.setMethodSignatureRule(new ControllerMethodSignatureRule(new SpringResponseEntityRule(),
+						new MethodParamsRule(false, allowArrayParameters)))
+				.setMethodBodyRule(new SpringRestClientMethodBodyRule(restTemplateFieldName, baseUrlFieldName));
+
+		return clientGenerator.apply(metadata, generatableType);
+	}
 
 	private String getBaseUrlConfigurationName() {
-		if(!this.baseUrlConfigurationPath.startsWith("${")) {
+		if (!this.baseUrlConfigurationPath.startsWith("${")) {
 			this.baseUrlConfigurationPath = "${" + this.baseUrlConfigurationPath;
 		}
-		if(!this.baseUrlConfigurationPath.endsWith("}")) {
+		if (!this.baseUrlConfigurationPath.endsWith("}")) {
 			this.baseUrlConfigurationPath = this.baseUrlConfigurationPath + "}";
 		}
 		return baseUrlConfigurationPath;
@@ -115,24 +107,23 @@ public class Spring4RestTemplateClientRule implements ConfigurableRule<JCodeMode
 
 	@Override
 	public void applyConfiguration(Map<String, String> configuration) {
-		if(!CollectionUtils.isEmpty(configuration)) {
-			if(configuration.containsKey("restTemplateFieldName")) {
+		if (!CollectionUtils.isEmpty(configuration)) {
+			if (configuration.containsKey("restTemplateFieldName")) {
 				this.restTemplateFieldName = configuration.get("restTemplateFieldName");
 			}
-			
-			if(configuration.containsKey("restTemplateQualifierBeanName")) {
-                this.restTemplateQualifierBeanName = configuration.get("restTemplateQualifierBeanName");
-            }
-			
-			if(configuration.containsKey("baseUrlConfigurationPath")) {
+
+			if (configuration.containsKey("restTemplateQualifierBeanName")) {
+				this.restTemplateQualifierBeanName = configuration.get("restTemplateQualifierBeanName");
+			}
+
+			if (configuration.containsKey("baseUrlConfigurationPath")) {
 				this.baseUrlConfigurationPath = configuration.get("baseUrlConfigurationPath");
 			}
-			if(configuration.containsKey(ARRAY_PARAMETER_CONFIGURATION)) {
-            	allowArrayParameters = BooleanUtils.toBoolean(configuration.get(ARRAY_PARAMETER_CONFIGURATION));
-            }
-			
+			if (configuration.containsKey(ARRAY_PARAMETER_CONFIGURATION)) {
+				allowArrayParameters = BooleanUtils.toBoolean(configuration.get(ARRAY_PARAMETER_CONFIGURATION));
+			}
+
 		}
 	}
-    
-    
+
 }

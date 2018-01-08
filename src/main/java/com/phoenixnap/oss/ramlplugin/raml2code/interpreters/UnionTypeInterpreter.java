@@ -38,104 +38,108 @@ import com.sun.codemodel.JCodeModel;
  */
 public class UnionTypeInterpreter extends BaseTypeInterpreter {
 
-    protected static final Logger logger = LoggerFactory.getLogger(UnionTypeInterpreter.class);
+	protected static final Logger logger = LoggerFactory.getLogger(UnionTypeInterpreter.class);
 
-    @Override
-    public Set<Class<? extends TypeDeclaration>> getSupportedTypes() {
-        return Collections.singleton(UnionTypeDeclaration.class);
-    }
+	@Override
+	public Set<Class<? extends TypeDeclaration>> getSupportedTypes() {
+		return Collections.singleton(UnionTypeDeclaration.class);
+	}
 
-    private String getClassName(TypeDeclaration type) {
-        UnionTypeDeclaration objectType = (UnionTypeDeclaration) type;
-        String name = StringUtils.capitalize(objectType.name());
+	private String getClassName(TypeDeclaration type) {
+		UnionTypeDeclaration objectType = (UnionTypeDeclaration) type;
+		String name = StringUtils.capitalize(objectType.name());
 
-        // For mime types we need to take the type not the name
-        try {
-            MimeType.valueOf(name);
-            name = objectType.type();
-        } catch (Exception ex) {
-            // not a valid mimetype do nothing
-            logger.debug("mime: " + name);
-        }
-        return name;
-    }
+		// For mime types we need to take the type not the name
+		try {
+			MimeType.valueOf(name);
+			name = objectType.type();
+		} catch (Exception ex) {
+			// not a valid mimetype do nothing
+			logger.debug("mime: " + name);
+		}
+		return name;
+	}
 
-    private TypeDeclaration getParent(UnionTypeDeclaration objectType, String typeName, RamlRoot document) {
-        Map<String, RamlDataType> types = document.getTypes();
+	private TypeDeclaration getParent(UnionTypeDeclaration objectType, String typeName, RamlRoot document) {
+		Map<String, RamlDataType> types = document.getTypes();
 
-        TypeDeclaration parent = null;
+		TypeDeclaration parent = null;
 
-        if (!RamlTypeHelper.isBaseObject(typeName)) {
-            parent = types.get(typeName).getType();
-        } else if (objectType.parentTypes() != null && objectType.parentTypes().size() > 0) {
-            TypeDeclaration tempParent = objectType.parentTypes().get(0); // java doesnt support multiple parents take first;
-            if (!RamlTypeHelper.isBaseObject(tempParent.name())) {
-                parent = types.get(tempParent.name()).getType();
-            }
-        } else {
-            parent = null;
-        }
-        return parent;
-    }
+		if (!RamlTypeHelper.isBaseObject(typeName)) {
+			parent = types.get(typeName).getType();
+		} else if (objectType.parentTypes() != null && objectType.parentTypes().size() > 0) {
+			TypeDeclaration tempParent = objectType.parentTypes().get(0); // java
+																			// doesnt
+																			// support
+																			// multiple
+																			// parents
+																			// take
+																			// first;
+			if (!RamlTypeHelper.isBaseObject(tempParent.name())) {
+				parent = types.get(tempParent.name()).getType();
+			}
+		} else {
+			parent = null;
+		}
+		return parent;
+	}
 
-    @Override
-    public RamlInterpretationResult interpret(RamlRoot document, TypeDeclaration type, JCodeModel builderModel,
-                                              boolean property) {
-        RamlInterpretationResult result = new RamlInterpretationResult(type.required());
-        typeCheck(type);
+	@Override
+	public RamlInterpretationResult interpret(RamlRoot document, TypeDeclaration type, JCodeModel builderModel, boolean property) {
+		RamlInterpretationResult result = new RamlInterpretationResult(type.required());
+		typeCheck(type);
 
-        String name = getClassName(type);
+		String name = getClassName(type);
 
-        UnionTypeDeclaration objectType = (UnionTypeDeclaration) type;
-        String typeName = objectType.type();
+		UnionTypeDeclaration objectType = (UnionTypeDeclaration) type;
+		String typeName = objectType.type();
 
-        // Lets check if we've already handled this class before.
-        if (builderModel != null) {
-            JClass searchedClass = builderModel._getClass(Config.getPojoPackage() + "." + name);
-            if (searchedClass != null) {
-                // we've already handled this pojo in the model, no need to re-interpret
-                result.setCodeModel(builderModel);
-                result.setResolvedClass(searchedClass);
-                return result;
-            }
-        } else {
-            builderModel = new JCodeModel();
-            result.setCodeModel(builderModel);
-        }
+		// Lets check if we've already handled this class before.
+		if (builderModel != null) {
+			JClass searchedClass = builderModel._getClass(Config.getPojoPackage() + "." + name);
+			if (searchedClass != null) {
+				// we've already handled this pojo in the model, no need to
+				// re-interpret
+				result.setCodeModel(builderModel);
+				result.setResolvedClass(searchedClass);
+				return result;
+			}
+		} else {
+			builderModel = new JCodeModel();
+			result.setCodeModel(builderModel);
+		}
 
-        PojoBuilder builder = new PojoBuilder(builderModel, name);
-        result.setBuilder(builder);
+		PojoBuilder builder = new PojoBuilder(builderModel, name);
+		result.setBuilder(builder);
 
-        TypeDeclaration parent = getParent(objectType, typeName, document);
+		TypeDeclaration parent = getParent(objectType, typeName, document);
 
-        if (parent != null && !(parent.name().equals(name))) { //add cyclic dependency check
-            RamlInterpretationResult childResult = RamlInterpreterFactory
-                    .getInterpreterForType(parent)
-                    .interpret(document, parent, builderModel, false);
-            String childType = childResult.getResolvedClassOrBuiltOrObject().name();
+		if (parent != null && !(parent.name().equals(name))) { // add cyclic
+																// dependency
+																// check
+			RamlInterpretationResult childResult = RamlInterpreterFactory.getInterpreterForType(parent).interpret(document, parent,
+					builderModel, false);
+			String childType = childResult.getResolvedClassOrBuiltOrObject().name();
 
-            builder.extendsClass(childType);
-        }
+			builder.extendsClass(childType);
+		}
 
-        for (TypeDeclaration objectProperty : objectType.of()) {
-            RamlInterpretationResult childResult =
-                    RamlInterpreterFactory
-                            .getInterpreterForType(objectProperty).interpret(
-                            document, objectProperty, builderModel, true);
+		for (TypeDeclaration objectProperty : objectType.of()) {
+			RamlInterpretationResult childResult = RamlInterpreterFactory.getInterpreterForType(objectProperty).interpret(document,
+					objectProperty, builderModel, true);
 
-            String childType = childResult.getResolvedClassOrBuiltOrObject().fullName();
-            builder.withField(objectProperty.name(), childType,
-                    RamlTypeHelper.getDescription(objectProperty),
-                    childResult.getValidations(), objectProperty);
-        }
-        // Add a constructor with all fields
-        builder.withCompleteConstructor();
+			String childType = childResult.getResolvedClassOrBuiltOrObject().fullName();
+			builder.withField(objectProperty.name(), childType, RamlTypeHelper.getDescription(objectProperty), childResult.getValidations(),
+					objectProperty);
+		}
+		// Add a constructor with all fields
+		builder.withCompleteConstructor();
 
 		// Add overriden hashCode(), equals() and toString() methods
 		builder.withOverridenMethods();
 
-        return result;
+		return result;
 
-    }
+	}
 
 }

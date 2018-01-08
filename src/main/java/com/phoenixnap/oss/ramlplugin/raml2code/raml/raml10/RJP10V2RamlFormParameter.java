@@ -30,59 +30,60 @@ import com.phoenixnap.oss.ramlplugin.raml2code.raml.RamlParamType;
  */
 public class RJP10V2RamlFormParameter extends RamlFormParameter {
 
-    private static RJP10V2RamlModelFactory ramlModelFactory = new RJP10V2RamlModelFactory();
+	private static RJP10V2RamlModelFactory ramlModelFactory = new RJP10V2RamlModelFactory();
 
-    private final TypeDeclaration formParameter;
+	private final TypeDeclaration formParameter;
 
-    public RJP10V2RamlFormParameter(TypeDeclaration formParameter) {
-        this.formParameter = formParameter;
-    }
+	public RJP10V2RamlFormParameter(TypeDeclaration formParameter) {
+		this.formParameter = formParameter;
+	}
 
-    /**
-     * Expose internal representation only package private
-     * @return the internal model
-     */
-    TypeDeclaration getFormParameter() {
-        return formParameter;
-    }
+	/**
+	 * Expose internal representation only package private
+	 * 
+	 * @return the internal model
+	 */
+	TypeDeclaration getFormParameter() {
+		return formParameter;
+	}
 
-    @Override
-    public boolean isRequired() {
-        return RamlTypeHelper.isRequired(formParameter);
-    }
+	@Override
+	public boolean isRequired() {
+		return RamlTypeHelper.isRequired(formParameter);
+	}
 
-    @Override
-    public RamlParamType getType() {
-        return ramlModelFactory.createRamlParamType(formParameter.type());
-    }
+	@Override
+	public RamlParamType getType() {
+		return ramlModelFactory.createRamlParamType(formParameter.type());
+	}
 
-    @Override
-    public String getExample() {
-        return RamlTypeHelper.getExample(formParameter);
-    }
+	@Override
+	public String getExample() {
+		return RamlTypeHelper.getExample(formParameter);
+	}
 
-    @Override
-    public String getDescription() {
-        return RamlTypeHelper.getDescription(formParameter);
-    }
+	@Override
+	public String getDescription() {
+		return RamlTypeHelper.getDescription(formParameter);
+	}
 
-    @Override
-    public String getDisplayName() {
-        return RamlTypeHelper.getDisplayName(formParameter);
-    }
+	@Override
+	public String getDisplayName() {
+		return RamlTypeHelper.getDisplayName(formParameter);
+	}
 
 	@Override
 	public String getDefaultValue() {
 		return formParameter.defaultValue();
 	}
 
-   @Override
-   public String getPattern() {
-      if (formParameter instanceof StringTypeDeclaration) {
-         return ((StringTypeDeclaration) formParameter).pattern();
-      }
-      return null;
-   }
+	@Override
+	public String getPattern() {
+		if (formParameter instanceof StringTypeDeclaration) {
+			return ((StringTypeDeclaration) formParameter).pattern();
+		}
+		return null;
+	}
 
 	@Override
 	public boolean isRepeat() {

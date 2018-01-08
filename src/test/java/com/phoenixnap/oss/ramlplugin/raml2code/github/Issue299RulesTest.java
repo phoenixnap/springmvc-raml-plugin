@@ -11,11 +11,11 @@ import com.phoenixnap.oss.ramlplugin.raml2code.rules.Spring4ControllerDecoratorR
  */
 public class Issue299RulesTest extends GitHubAbstractRuleTestBase {
 
-    @Test
-    public void verify_method_naming() throws Exception {
-    	loadRaml("issue-299.raml");
-        rule = new Spring4ControllerDecoratorRule();
-        rule.apply(getControllerMetadata(), jCodeModel);
+	@Test
+	public void verify_method_naming() throws Exception {
+		loadRaml("issue-299.raml");
+		rule = new Spring4ControllerDecoratorRule();
+		rule.apply(getControllerMetadata(), jCodeModel);
 		verifyGeneratedCode("Issue299Spring4ControllerDecorator");
-    }
+	}
 }

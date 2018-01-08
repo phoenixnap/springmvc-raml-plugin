@@ -22,7 +22,7 @@ import org.raml.v2.api.model.v10.datamodel.TypeDeclaration;
  *
  */
 public interface RamlDataType {
-	
+
 	TypeDeclaration getType();
 
 }

@@ -20,29 +20,34 @@ import com.phoenixnap.oss.ramlplugin.raml2code.raml.RamlRoot;
 import com.sun.codemodel.JCodeModel;
 
 /**
- * Builder pattern for POJO generation using jCodeModel. Provides basic utility methods including extension and
- * getter/setter generation
+ * Builder pattern for POJO generation using jCodeModel. Provides basic utility
+ * methods including extension and getter/setter generation
  * 
  * @author kurtpa
  * @since 0.10.0
  *
  */
 public interface RamlTypeInterpreter {
-	
+
 	/**
 	 * The supported TypeDeclarations which this Interpreter can process
 	 * 
 	 * @return Set of TypeDeclarations
 	 */
 	Set<Class<? extends TypeDeclaration>> getSupportedTypes();
-	
+
 	/**
 	 * Interprets the type declaration and returns a RamlInterpretationResult
 	 * 
-	 * @param document The RAML document being parsed
-	 * @param type The particular node/type being interpreted
-	 * @param builderModel The JCodeModel where code is being stored
-	 * @param property When parsing properties inside a type this should be flagged to true
+	 * @param document
+	 *            The RAML document being parsed
+	 * @param type
+	 *            The particular node/type being interpreted
+	 * @param builderModel
+	 *            The JCodeModel where code is being stored
+	 * @param property
+	 *            When parsing properties inside a type this should be flagged
+	 *            to true
 	 * @return a {@link RamlInterpretationResult}
 	 */
 	RamlInterpretationResult interpret(RamlRoot document, TypeDeclaration type, JCodeModel builderModel, boolean property);

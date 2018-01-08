@@ -13,11 +13,11 @@
 package com.phoenixnap.oss.ramlplugin.raml2code.raml;
 
 /**
- * Enumeration of a Raml Action Types 
+ * Enumeration of a Raml Action Types
  * 
  * @author armin.weisser
  * @since 0.8.1
  */
 public enum RamlActionType {
-    GET, POST, PUT, DELETE, HEAD, PATCH, OPTIONS, TRACE
+	GET, POST, PUT, DELETE, HEAD, PATCH, OPTIONS, TRACE
 }

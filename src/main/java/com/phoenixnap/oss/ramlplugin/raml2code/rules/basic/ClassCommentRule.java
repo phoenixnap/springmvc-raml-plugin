@@ -19,22 +19,22 @@ import com.sun.codemodel.JDefinedClass;
 import com.sun.codemodel.JDocComment;
 
 /**
- * Generates a simple class comment.
- * If no description is provided by the RAML spec a simple "No description" is added as class level comment.
+ * Generates a simple class comment. If no description is provided by the RAML
+ * spec a simple "No description" is added as class level comment.
  *
  * @author armin.weisser
  * @since 0.4.1
  */
 public class ClassCommentRule implements Rule<JDefinedClass, JDocComment, ApiResourceMetadata> {
 
-    @Override
-    public JDocComment apply(ApiResourceMetadata controllerMetadata, JDefinedClass generatableType) {
-        String comments = "No description";
-        if(controllerMetadata.getDescription() != null) {
-            comments = controllerMetadata.getDescription();
-        }
-        generatableType.javadoc().append(comments);
-        generatableType.javadoc().append("\n(Generated with springmvc-raml-parser v."+ CodeModelHelper.getVersion()+")");
-        return generatableType.javadoc();
-    }
+	@Override
+	public JDocComment apply(ApiResourceMetadata controllerMetadata, JDefinedClass generatableType) {
+		String comments = "No description";
+		if (controllerMetadata.getDescription() != null) {
+			comments = controllerMetadata.getDescription();
+		}
+		generatableType.javadoc().append(comments);
+		generatableType.javadoc().append("\n(Generated with springmvc-raml-parser v." + CodeModelHelper.getVersion() + ")");
+		return generatableType.javadoc();
+	}
 }

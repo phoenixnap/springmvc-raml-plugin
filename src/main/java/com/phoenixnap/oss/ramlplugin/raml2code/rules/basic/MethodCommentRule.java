@@ -18,19 +18,19 @@ import com.sun.codemodel.JDocComment;
 import com.sun.codemodel.JMethod;
 
 /**
- * A simple method comment.
- * If no description is provided by the RAML spec for this enpoint a simple "No description" is added as method comment.
+ * A simple method comment. If no description is provided by the RAML spec for
+ * this enpoint a simple "No description" is added as method comment.
  *
  * @author armin.weisser
  * @since 0.4.1
  */
-public class MethodCommentRule implements Rule<JMethod,JDocComment,ApiActionMetadata> {
-    @Override
-    public JDocComment apply(ApiActionMetadata endpointMetadata, JMethod generatableType) {
-        String comments = "No description";
-        if(endpointMetadata.getDescription() != null) {
-            comments = endpointMetadata.getDescription();
-        }
-        return generatableType.javadoc().append(comments);
-    }
+public class MethodCommentRule implements Rule<JMethod, JDocComment, ApiActionMetadata> {
+	@Override
+	public JDocComment apply(ApiActionMetadata endpointMetadata, JMethod generatableType) {
+		String comments = "No description";
+		if (endpointMetadata.getDescription() != null) {
+			comments = endpointMetadata.getDescription();
+		}
+		return generatableType.javadoc().append(comments);
+	}
 }

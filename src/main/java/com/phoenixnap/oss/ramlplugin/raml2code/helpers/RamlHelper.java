@@ -22,15 +22,16 @@ import com.phoenixnap.oss.ramlplugin.raml2code.raml.RamlResponse;
  *
  */
 public class RamlHelper {
-	
+
 	/**
 	 * Gets the successful response from an action (200 or 201)
 	 * 
-	 * @param action The action to parse
+	 * @param action
+	 *            The action to parse
 	 * @return The Successful response or null if not found
 	 */
 	public static RamlResponse getSuccessfulResponse(RamlAction action) {
-		String[] successfulResponses = new String[] {"200", "201", "202"};
+		String[] successfulResponses = new String[] { "200", "201", "202" };
 		for (String code : successfulResponses) {
 			if (action != null && !CollectionUtils.isEmpty(action.getResponses()) && action.getResponses().containsKey(code)) {
 				return action.getResponses().get(code);

@@ -34,7 +34,7 @@ import com.phoenixnap.oss.ramlplugin.raml2code.raml.raml10.RJP10V2RamlModelFacto
  * @since 0.10.3
  */
 public class RamlLoader {
-	
+
 	/**
 	 * Class Logger
 	 */
@@ -43,9 +43,14 @@ public class RamlLoader {
 	/**
 	 * Loads a RAML document from a file. This method will
 	 * 
-	 * @param ramlFileUrl The path to the file, this can either be a resource on the class path (in which case the classpath: prefix should be omitted) or a file on disk (in which case the file: prefix should be included)
+	 * @param ramlFileUrl
+	 *            The path to the file, this can either be a resource on the
+	 *            class path (in which case the classpath: prefix should be
+	 *            omitted) or a file on disk (in which case the file: prefix
+	 *            should be included)
 	 * @return Built Raml model
-	 * @throws InvalidRamlResourceException If the Raml Provided isnt correct for the required parser
+	 * @throws InvalidRamlResourceException
+	 *             If the Raml Provided isnt correct for the required parser
 	 */
 	public static RamlRoot loadRamlFromFile(String ramlFileUrl) {
 		try {
@@ -55,23 +60,23 @@ public class RamlLoader {
 			return null;
 		}
 	}
-	
+
 	private static RamlModelFactory createRamlModelFactoryFor(String ramlURL) {
 		RamlModelResult ramlModelResult = new RamlModelBuilder().buildApi(ramlURL);
-		
+
 		if (ramlModelResult.hasErrors()) {
-			if(logger.isErrorEnabled()) {
-				logger.error("Loaded RAML has validation errors: {}", StringUtils
-						.collectionToCommaDelimitedString(ramlModelResult.getValidationResults()));
+			if (logger.isErrorEnabled()) {
+				logger.error("Loaded RAML has validation errors: {}",
+						StringUtils.collectionToCommaDelimitedString(ramlModelResult.getValidationResults()));
 			}
 			throw new InvalidRamlException(ramlURL, ramlModelResult.getValidationResults());
 		}
-		
+
 		if (!ramlModelResult.isVersion10()) {
 			logger.error("Unsupported version detected!");
 			throw new UnsupportedRamlVersionException(RamlVersion.V10);
 		}
-		
+
 		logger.info("RJP10V2RamlModelFactory Instantiated");
 		return new RJP10V2RamlModelFactory();
 	}

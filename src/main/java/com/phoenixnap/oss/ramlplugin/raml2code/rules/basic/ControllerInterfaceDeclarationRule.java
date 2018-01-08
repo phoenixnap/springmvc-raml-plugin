@@ -19,37 +19,32 @@ import com.sun.codemodel.JDefinedClass;
 import com.sun.codemodel.JPackage;
 
 /**
- * Generates an interface declaration based on the controller name in ApiControllerMetadata.
+ * Generates an interface declaration based on the controller name in
+ * ApiControllerMetadata.
  *
- * INPUT:
- * #%RAML 0.8
- * title: myapi
- * mediaType: application/json
- * baseUri: /
- * /base:
+ * INPUT: #%RAML 0.8 title: myapi mediaType: application/json baseUri: / /base:
  *
- * OUTPUT:
- * public interface BaseController {
+ * OUTPUT: public interface BaseController {
  *
  * }
  *
  * @author armin.weisser
  * @since 0.4.1
  */
-public class ControllerInterfaceDeclarationRule implements Rule<JPackage,JDefinedClass, ApiResourceMetadata> {
+public class ControllerInterfaceDeclarationRule implements Rule<JPackage, JDefinedClass, ApiResourceMetadata> {
 
 	public static final String CONTROLLER_SUFFIX = "Controller";
-	
-    @Override
-    public JDefinedClass apply(ApiResourceMetadata controllerMetadata, JPackage generatableType) {
-        String controllerClassName = controllerMetadata.getName() + CONTROLLER_SUFFIX;
-        JDefinedClass definedClass;
-        try {
-            definedClass = generatableType._interface(controllerClassName);
-        } catch (JClassAlreadyExistsException e1) {
-            definedClass = generatableType._getClass(controllerClassName);
-        }
-        return definedClass;
-    }
+
+	@Override
+	public JDefinedClass apply(ApiResourceMetadata controllerMetadata, JPackage generatableType) {
+		String controllerClassName = controllerMetadata.getName() + CONTROLLER_SUFFIX;
+		JDefinedClass definedClass;
+		try {
+			definedClass = generatableType._interface(controllerClassName);
+		} catch (JClassAlreadyExistsException e1) {
+			definedClass = generatableType._getClass(controllerClassName);
+		}
+		return definedClass;
+	}
 
 }

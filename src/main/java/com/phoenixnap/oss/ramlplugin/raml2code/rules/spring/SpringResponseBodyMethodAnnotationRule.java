@@ -20,18 +20,19 @@ import com.sun.codemodel.JAnnotationUse;
 import com.sun.codemodel.JMethod;
 
 /**
- * Adds a @ResponseBody annotation to the method if there is response body declared in this endpoints metadata.
+ * Adds a @ResponseBody annotation to the method if there is response body
+ * declared in this endpoints metadata.
  *
  * @author armin.weisser
  * @since 0.4.1
  */
 public class SpringResponseBodyMethodAnnotationRule implements Rule<JMethod, JAnnotationUse, ApiActionMetadata> {
-    @Override
-    public JAnnotationUse apply(ApiActionMetadata endpointMetadata, JMethod generatableType) {
-        if (!endpointMetadata.getResponseBody().isEmpty()) {
-            return generatableType.annotate(ResponseBody.class);
-        }
-        return null;
-    }
+	@Override
+	public JAnnotationUse apply(ApiActionMetadata endpointMetadata, JMethod generatableType) {
+		if (!endpointMetadata.getResponseBody().isEmpty()) {
+			return generatableType.annotate(ResponseBody.class);
+		}
+		return null;
+	}
 
 }

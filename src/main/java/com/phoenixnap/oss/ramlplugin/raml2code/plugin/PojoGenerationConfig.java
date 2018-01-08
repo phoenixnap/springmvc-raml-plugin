@@ -152,7 +152,6 @@ public class PojoGenerationConfig extends DefaultGenerationConfig {
 	@Parameter(required = false, readonly = true, defaultValue = "false")
 	protected Boolean useBigIntegers = Boolean.FALSE;
 
-
 	@Override
 	public boolean isUseBigDecimals() {
 		if (useBigDecimals != null) {

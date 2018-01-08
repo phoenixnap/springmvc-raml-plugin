@@ -17,23 +17,12 @@ import org.springframework.cloud.netflix.feign.FeignClient;
 import com.phoenixnap.oss.ramlplugin.raml2code.rules.spring.SpringFeignClientInterfaceDecoratorRule;
 
 /**
- * A code generation Rule that provides a standalone {@link FeignClient}.
- * The goal is to generate code that does not have to be manually extended by the user.
- * <br>
- * A raml endpoint called /people exposed on http://somehost:8080 for example would lead to the 
- * following interface:
+ * A code generation Rule that provides a standalone {@link FeignClient}. The
+ * goal is to generate code that does not have to be manually extended by the
+ * user. <br>
  *
- * <pre class="code">
- * {@literal @}FeignClient(url = "http://somehost:8080/people", name = "feignClientPeople")
- * interface PeopleFeignClient {
- * 
- *     {@literal @}RequestMapping(value="", method=RequestMethod.GET)
- *     ResponseEntity{@literal <}com.gen.test.model.People{@literal >} getPeople();
- * }
- * </pre>
- *
- * Now all the user has to do is to autowire this interface.
- * This way he can invoke remote endpoint.
+ * Now all the user has to do is to autowire this interface. This way he can
+ * invoke remote endpoint.
  *
  * @author Aleksandar Stojsavljevic
  * @since 0.8.6

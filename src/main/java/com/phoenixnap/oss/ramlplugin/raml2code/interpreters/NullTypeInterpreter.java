@@ -32,7 +32,7 @@ import com.sun.codemodel.JCodeModel;
 public class NullTypeInterpreter extends BaseTypeInterpreter {
 
 	private Set<Class<? extends TypeDeclaration>> set;
-	
+
 	@Override
 	public Set<Class<? extends TypeDeclaration>> getSupportedTypes() {
 		if (set == null) {
@@ -41,7 +41,6 @@ public class NullTypeInterpreter extends BaseTypeInterpreter {
 		}
 		return set;
 	}
-
 
 	@Override
 	public RamlInterpretationResult interpret(RamlRoot document, TypeDeclaration type, JCodeModel builderModel, boolean property) {

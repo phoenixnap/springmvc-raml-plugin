@@ -20,16 +20,18 @@ import com.sun.codemodel.JAnnotationUse;
 import com.sun.codemodel.JDefinedClass;
 
 /**
- * Adds the {@literal @}Controller or {@literal @}RestController (depending on Spring Version - 4 by default) annotation to the given JDefinedClass
+ * Adds the {@literal @}Controller or {@literal @}RestController (depending on
+ * Spring Version - 4 by default) annotation to the given JDefinedClass
+ *
  *
  * @author kurt paris
  * @author armin.weisser
  * @since 0.4.1
  */
 public class SpringRestControllerAnnotationRule implements Rule<JDefinedClass, JAnnotationUse, ApiResourceMetadata> {
-	
-    @Override
-    public JAnnotationUse apply(ApiResourceMetadata controllerMetadata, JDefinedClass generatableType) {
-        return generatableType.annotate(RestController.class);
-    }
+
+	@Override
+	public JAnnotationUse apply(ApiResourceMetadata controllerMetadata, JDefinedClass generatableType) {
+		return generatableType.annotate(RestController.class);
+	}
 }

@@ -12,7 +12,6 @@
  */
 package com.phoenixnap.oss.ramlplugin.raml2code.raml;
 
-
 import java.util.Map;
 
 /**
@@ -23,25 +22,25 @@ import java.util.Map;
  */
 public interface RamlResource extends RamlResourceRoot {
 
-    String getRelativeUri();
+	String getRelativeUri();
 
-    Map<RamlActionType, RamlAction> getActions();
+	Map<RamlActionType, RamlAction> getActions();
 
-    Map<String, RamlUriParameter> getUriParameters();
+	Map<String, RamlUriParameter> getUriParameters();
 
-    void addUriParameter(String name, RamlUriParameter uriParameter);
+	void addUriParameter(String name, RamlUriParameter uriParameter);
 
-    Map<String, RamlUriParameter> getResolvedUriParameters();
+	Map<String, RamlUriParameter> getResolvedUriParameters();
 
-    String getUri();
+	String getUri();
 
-    String getDescription();
-    
-    String getDisplayName();
+	String getDescription();
 
-    RamlResource getParentResource();
+	String getDisplayName();
 
-    String getParentUri();
+	RamlResource getParentResource();
 
-    RamlAction getAction(RamlActionType actionType);
+	String getParentUri();
+
+	RamlAction getAction(RamlActionType actionType);
 }

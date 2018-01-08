@@ -26,40 +26,41 @@ import com.sun.codemodel.JFieldVar;
  */
 /**
  * 
- * Class containing the validation information that should be applied to a particular type
+ * Class containing the validation information that should be applied to a
+ * particular type
  * 
  * @author kurtpa
  * @since 0.10.2
  *
  */
 public class RamlTypeValidations {
-	
+
 	Integer minLength;
 	Integer maxLength;
 	Double minimum;
 	Double maximum;
 	String pattern;
 	Boolean required;
-	
-	public RamlTypeValidations (Boolean required) {
+
+	public RamlTypeValidations(Boolean required) {
 		if (required == null || required == true) {
 			this.required = true;
 		} else {
 			this.required = false;
 		}
 	}
-	
+
 	public RamlTypeValidations withLenghts(Integer minLength, Integer maxLength) {
 		this.minLength = minLength;
 		this.maxLength = maxLength;
 		return this;
 	}
-	
+
 	public RamlTypeValidations withPattern(String pattern) {
 		this.pattern = pattern;
 		return this;
 	}
-	
+
 	public Integer getMinLength() {
 		return minLength;
 	}
@@ -79,7 +80,8 @@ public class RamlTypeValidations {
 	/**
 	 * Adds validation annotations to the supplied field
 	 * 
-	 * @param field to add annotations to
+	 * @param field
+	 *            to add annotations to
 	 */
 	public void annotateFieldJSR303(JFieldVar field, boolean addValidAnnotation) {
 		if (isRequired()) {
@@ -90,29 +92,29 @@ public class RamlTypeValidations {
 			annotation.param("regexp", getPattern());
 		}
 		if (getMinLength() != null || getMaxLength() != null) {
-			JAnnotationUse annotation = field.annotate(Size.class); 
+			JAnnotationUse annotation = field.annotate(Size.class);
 
-            if (getMinLength() != null ) {
-                annotation.param("min", getMinLength());
-            } 
+			if (getMinLength() != null) {
+				annotation.param("min", getMinLength());
+			}
 
-            if (getMaxLength() != null ) {
-                annotation.param("max", getMaxLength());
-            }
+			if (getMaxLength() != null) {
+				annotation.param("max", getMaxLength());
+			}
 		}
-		if(addValidAnnotation) {
+		if (addValidAnnotation) {
 			field.annotate(Valid.class);
 		}
-		
-        if (minimum != null ) {
-        	JAnnotationUse annotation = field.annotate(DecimalMin.class); 
-            annotation.param("value", String.valueOf(minimum));
-        }
 
-        if (maximum != null ) {
-        	 JAnnotationUse annotation = field.annotate(DecimalMax.class);
-            annotation.param("value", String.valueOf(maximum));
-        }
+		if (minimum != null) {
+			JAnnotationUse annotation = field.annotate(DecimalMin.class);
+			annotation.param("value", String.valueOf(minimum));
+		}
+
+		if (maximum != null) {
+			JAnnotationUse annotation = field.annotate(DecimalMax.class);
+			annotation.param("value", String.valueOf(maximum));
+		}
 	}
 
 	public RamlTypeValidations withMinMax(Double minimum, Double maximum) {
@@ -120,6 +122,5 @@ public class RamlTypeValidations {
 		this.maximum = maximum;
 		return this;
 	}
-	
 
 }

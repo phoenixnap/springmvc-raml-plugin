@@ -20,6 +20,6 @@ package com.phoenixnap.oss.ramlplugin.raml2code.raml;
  */
 public interface RamlSecurityReference {
 
-    String getName();
+	String getName();
 
 }

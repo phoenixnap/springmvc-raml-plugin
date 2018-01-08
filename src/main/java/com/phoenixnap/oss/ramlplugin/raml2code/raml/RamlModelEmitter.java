@@ -19,5 +19,5 @@ package com.phoenixnap.oss.ramlplugin.raml2code.raml;
  * @since 0.8.1
  */
 public interface RamlModelEmitter {
-    String dump(RamlRoot ramlRoot);
+	String dump(RamlRoot ramlRoot);
 }

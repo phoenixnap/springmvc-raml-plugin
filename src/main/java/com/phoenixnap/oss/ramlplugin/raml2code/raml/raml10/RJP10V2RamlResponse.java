@@ -29,42 +29,40 @@ import com.phoenixnap.oss.ramlplugin.raml2code.raml.RamlResponse;
  */
 public class RJP10V2RamlResponse implements RamlResponse {
 
-    private static RJP10V2RamlModelFactory ramlModelFactory = new RJP10V2RamlModelFactory();
+	private static RJP10V2RamlModelFactory ramlModelFactory = new RJP10V2RamlModelFactory();
 
-    private final Response response;
+	private final Response response;
 
-    private Map<String, RamlMimeType> body = new LinkedHashMap<>();
+	private Map<String, RamlMimeType> body = new LinkedHashMap<>();
 
-    public RJP10V2RamlResponse(Response response) {
-        this.response = response;
-        ramlModelFactory.transformToUnmodifiableMap(
-				this.response.body(), this.body,
-                ramlModelFactory::createRamlMimeType,
+	public RJP10V2RamlResponse(Response response) {
+		this.response = response;
+		ramlModelFactory.transformToUnmodifiableMap(this.response.body(), this.body, ramlModelFactory::createRamlMimeType,
 				r -> RamlTypeHelper.getName(r));
-    }
+	}
 
-    /**
-     * Expose internal representation only package private
-     * @return the internal model
-     */
-    Response getResponse() {
+	/**
+	 * Expose internal representation only package private
+	 * 
+	 * @return the internal model
+	 */
+	Response getResponse() {
 		return this.response;
-    }
+	}
 
-    @Override
-    public Map<String, RamlMimeType> getBody() {
+	@Override
+	public Map<String, RamlMimeType> getBody() {
 		return this.body;
-    }
+	}
 
-    @Override
-    public boolean hasBody() {
+	@Override
+	public boolean hasBody() {
 		return !this.response.body().isEmpty();
-    }
+	}
 
-    @Override
-    public String getDescription() {
+	@Override
+	public String getDescription() {
 		return (this.response.description() == null) ? null : this.response.description().value();
-    }
-
+	}
 
 }

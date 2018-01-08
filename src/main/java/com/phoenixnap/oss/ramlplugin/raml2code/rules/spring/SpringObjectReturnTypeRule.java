@@ -24,51 +24,37 @@ import static com.phoenixnap.oss.ramlplugin.raml2code.helpers.CodeModelHelper.fi
 import java.util.List;
 
 /**
- * Creates an Object as a return type for an endpoint.
- * If the endpoint declares a response body the first type of the response body will used as return type instead.
- * If the endpoints response body is an "array" th
+ * Creates an Object as a return type for an endpoint. If the endpoint declares
+ * a response body the first type of the response body will used as return type
+ * instead. If the endpoints response body is an "array" th
  *
- * #%RAML 0.8
- * title: myapi
- * mediaType: application/json
- * baseUri: /
+ * #%RAML 0.8 title: myapi mediaType: application/json baseUri: /
  *
- * /base:
- *   get:
- *   /{id}:
- *     get:
- *       responses:
- *         200:
- *           body:
- *             application/json:
- *               schema: NamedResponseType
- *               ...
+ * /base: get: /{id}: get: responses: 200: body: application/json: schema:
+ * NamedResponseType ...
  *
- * OUTPUT:
- * NamedResponseType
+ * OUTPUT: NamedResponseType
  *
- * OR:
- * ArrayList{@literal <}NamedResponseType{@literal >} (if the NamedResponseType is an "array")
+ * OR: ArrayList{@literal <}NamedResponseType{@literal >} (if the
+ * NamedResponseType is an "array")
  *
  * @author yuranos
  */
 public class SpringObjectReturnTypeRule implements Rule<JDefinedClass, JType, ApiActionMetadata> {
 
-    @Override
-    public JType apply(ApiActionMetadata endpointMetadata, JDefinedClass generatableType) {
-        if (!endpointMetadata.getResponseBody().isEmpty()) {
-            ApiBodyMetadata apiBodyMetadata =
-                    endpointMetadata.getResponseBody().values().iterator().next();
-            JClass returnType =
-                    findFirstClassBySimpleName(apiBodyMetadata.getCodeModel(), apiBodyMetadata.getName());
-            if (apiBodyMetadata.isArray()) {
-                JClass arrayType = generatableType.owner().ref(List.class);
-                return arrayType.narrow(returnType);
-            }
-            return returnType;
+	@Override
+	public JType apply(ApiActionMetadata endpointMetadata, JDefinedClass generatableType) {
+		if (!endpointMetadata.getResponseBody().isEmpty()) {
+			ApiBodyMetadata apiBodyMetadata = endpointMetadata.getResponseBody().values().iterator().next();
+			JClass returnType = findFirstClassBySimpleName(apiBodyMetadata.getCodeModel(), apiBodyMetadata.getName());
+			if (apiBodyMetadata.isArray()) {
+				JClass arrayType = generatableType.owner().ref(List.class);
+				return arrayType.narrow(returnType);
+			}
+			return returnType;
 
-        }
-        return generatableType.owner().ref(Object.class);
-    }
+		}
+		return generatableType.owner().ref(Object.class);
+	}
 
 }

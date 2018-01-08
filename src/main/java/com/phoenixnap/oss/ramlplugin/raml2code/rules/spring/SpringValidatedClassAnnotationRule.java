@@ -9,8 +9,8 @@ import com.sun.codemodel.JAnnotationUse;
 import com.sun.codemodel.JDefinedClass;
 
 public class SpringValidatedClassAnnotationRule implements Rule<JDefinedClass, JAnnotationUse, ApiResourceMetadata> {
-   @Override
-   public JAnnotationUse apply(ApiResourceMetadata controllerMetadata, JDefinedClass generatableType) {
-      return generatableType.annotate(Validated.class);
-   }
+	@Override
+	public JAnnotationUse apply(ApiResourceMetadata controllerMetadata, JDefinedClass generatableType) {
+		return generatableType.annotate(Validated.class);
+	}
 }

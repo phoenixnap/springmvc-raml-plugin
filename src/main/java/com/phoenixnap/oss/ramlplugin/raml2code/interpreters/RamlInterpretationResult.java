@@ -23,55 +23,62 @@ import com.sun.codemodel.JCodeModel;
  *
  */
 public class RamlInterpretationResult {
-	
+
 	/**
-	 * The Object responsible for any generated POJOs following this interpretation
+	 * The Object responsible for any generated POJOs following this
+	 * interpretation
 	 */
 	private AbstractBuilder builder;
-	
+
 	/**
 	 * The object containing any validation information extracted for this node
 	 */
 	private RamlTypeValidations validations;
-	
+
 	/**
 	 * The Code model used to store generated code
 	 * 
 	 */
 	private JCodeModel codeModel;
-	
+
 	/**
 	 * The class linked to in cases where generation was completed previously
 	 */
 	private JClass resolvedClass;
-	
+
 	public RamlInterpretationResult() {
-		this(true); //by default everything in raml is required unless specified otherwise
+		this(true); // by default everything in raml is required unless
+					// specified otherwise
 	}
-	
+
 	public RamlInterpretationResult(Boolean required) {
 		validations = new RamlTypeValidations(required);
 	}
-	
+
 	public AbstractBuilder getBuilder() {
 		return builder;
 	}
+
 	public void setBuilder(AbstractBuilder builder) {
 		this.builder = builder;
 	}
+
 	public JCodeModel getCodeModel() {
 		return codeModel;
 	}
+
 	public void setCodeModel(JCodeModel codeModel) {
 		this.codeModel = codeModel;
 	}
+
 	public JClass getResolvedClass() {
 		return resolvedClass;
 	}
+
 	public void setResolvedClass(JClass resolvedClass) {
 		this.resolvedClass = resolvedClass;
 	}
-	
+
 	public JClass getResolvedClassOrBuiltOrObject() {
 		if (getResolvedClass() != null) {
 			return getResolvedClass();
@@ -81,10 +88,11 @@ public class RamlInterpretationResult {
 			return codeModel.ref(Object.class);
 		}
 	}
-	
+
 	public RamlTypeValidations getValidations() {
 		return validations;
 	}
+
 	public void setValidations(RamlTypeValidations validations) {
 		this.validations = validations;
 	}

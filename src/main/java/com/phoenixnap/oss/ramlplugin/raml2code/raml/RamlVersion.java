@@ -17,26 +17,26 @@ package com.phoenixnap.oss.ramlplugin.raml2code.raml;
  */
 public enum RamlVersion {
 
-    V08("#%RAML 0.8"),
-    V10("#%RAML 1.0");
+	V08("#%RAML 0.8"), V10("#%RAML 1.0");
 
-    private final String identifier;
+	private final String identifier;
 
-    RamlVersion(String identifier) {
-        this.identifier = identifier;
-    }
+	RamlVersion(String identifier) {
+		this.identifier = identifier;
+	}
 
-    /**
-     *
-     * @param raml content to parse the RAML version from
-     * @return RamlVersion that fits to the raml content, null otherwise
-     */
-    public static RamlVersion forRaml(String raml) {
-        if(raml.startsWith(V08.identifier)) {
-            return V08;
-        } else if(raml.startsWith(V10.identifier)) {
-            return V10;
-        }
-        return null;
-    }
+	/**
+	 *
+	 * @param raml
+	 *            content to parse the RAML version from
+	 * @return RamlVersion that fits to the raml content, null otherwise
+	 */
+	public static RamlVersion forRaml(String raml) {
+		if (raml.startsWith(V08.identifier)) {
+			return V08;
+		} else if (raml.startsWith(V10.identifier)) {
+			return V10;
+		}
+		return null;
+	}
 }

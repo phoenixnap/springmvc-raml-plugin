@@ -37,10 +37,12 @@ import com.sun.codemodel.JType;
  * @since 0.4.1
  */
 public abstract class CodeModelHelper {
-	
+
 	/**
 	 * Returns the string equivalent of the code model element
-	 * @param type The element to stringify
+	 * 
+	 * @param type
+	 *            The element to stringify
 	 * @return the element as a string (generated code)
 	 */
 	public static String getElementAsString(JDeclaration type) {
@@ -49,102 +51,111 @@ public abstract class CodeModelHelper {
 		type.declare(jFormatter);
 		return builder.toString();
 	}
-	
-	/**
-     *	Searches inside a JCodeModel for a class with a specified name ignoring package
-     *
-     * @param codeModel[] The codemodels which we will look inside
-     * @param simpleClassName The class name to search for
-     * @return the first class in any package that matches the simple class name.
-     */
-    public static JClass findFirstClassBySimpleName(JCodeModel codeModel, String simpleClassName) {
-    	return findFirstClassBySimpleName(codeModel == null ? new JCodeModel[]{new JCodeModel()} : new JCodeModel[]{codeModel}, simpleClassName);
-    }
 
-    /**
-     *	Searches inside a JCodeModel for a class with a specified name ignoring package
-     *
-     * @param codeModels The codemodels which we will look inside
-     * @param simpleClassName The class name to search for
-     * @return the first class in any package that matches the simple class name.
-     */
-    public static JClass findFirstClassBySimpleName(JCodeModel[] codeModels, String simpleClassName) {
-    	if (codeModels != null && codeModels.length > 0) {
-    		for (JCodeModel codeModel : codeModels) {
-		        Iterator<JPackage> packages = codeModel.packages();
-		        while(packages.hasNext()) {
-		            JPackage jPackage = packages.next();
-		            Iterator<JDefinedClass> classes = jPackage.classes();
-		            while(classes.hasNext()) {
-		                JDefinedClass aClass = classes.next();
-		                if(aClass.name().equals(simpleClassName)) {
-		                    return aClass;
-		                }
-		            }
-		        }
-    		}
-    		//Is this a simple type?
-    		JType parseType;
+	/**
+	 * Searches inside a JCodeModel for a class with a specified name ignoring
+	 * package
+	 *
+	 * @param codeModel[]
+	 *            The codemodels which we will look inside
+	 * @param simpleClassName
+	 *            The class name to search for
+	 * @return the first class in any package that matches the simple class
+	 *         name.
+	 */
+	public static JClass findFirstClassBySimpleName(JCodeModel codeModel, String simpleClassName) {
+		return findFirstClassBySimpleName(codeModel == null ? new JCodeModel[] { new JCodeModel() } : new JCodeModel[] { codeModel },
+				simpleClassName);
+	}
+
+	/**
+	 * Searches inside a JCodeModel for a class with a specified name ignoring
+	 * package
+	 *
+	 * @param codeModels
+	 *            The codemodels which we will look inside
+	 * @param simpleClassName
+	 *            The class name to search for
+	 * @return the first class in any package that matches the simple class
+	 *         name.
+	 */
+	public static JClass findFirstClassBySimpleName(JCodeModel[] codeModels, String simpleClassName) {
+		if (codeModels != null && codeModels.length > 0) {
+			for (JCodeModel codeModel : codeModels) {
+				Iterator<JPackage> packages = codeModel.packages();
+				while (packages.hasNext()) {
+					JPackage jPackage = packages.next();
+					Iterator<JDefinedClass> classes = jPackage.classes();
+					while (classes.hasNext()) {
+						JDefinedClass aClass = classes.next();
+						if (aClass.name().equals(simpleClassName)) {
+							return aClass;
+						}
+					}
+				}
+			}
+			// Is this a simple type?
+			JType parseType;
 			try {
 				parseType = codeModels[0].parseType(simpleClassName);
 				if (parseType != null) {
-	    			if (parseType.isPrimitive()) {
-	    				return parseType.boxify();	    			
-	    			} else if (parseType instanceof JClass){
-	    				return (JClass) parseType;
-	    			}
+					if (parseType.isPrimitive()) {
+						return parseType.boxify();
+					} else if (parseType instanceof JClass) {
+						return (JClass) parseType;
+					}
 				}
 			} catch (ClassNotFoundException e) {
-				; //Do nothing we will throw an exception further down
+				; // Do nothing we will throw an exception further down
 			}
-			
+
 			JClass boxedPrimitive = codeModels[0].ref("java.lang." + simpleClassName);
 			if (boxedPrimitive != null) {
 				return boxedPrimitive;
 			}
-    			
+
 			throw new InvalidCodeModelException("No unique class found for simple class name " + simpleClassName);
-    	}
-    	
-    	throw new InvalidCodeModelException("No code models provided for " + simpleClassName);
-    	
-    }
+		}
 
-    public static JExtMethod ext(JMethod jMethod, JCodeModel jCodeModel) {
-        return new JExtMethod(jMethod, jCodeModel);
-    }
+		throw new InvalidCodeModelException("No code models provided for " + simpleClassName);
 
-    public static String getVersion() {
-        try {
-            Properties prop = new Properties();
-            InputStream in = Thread.currentThread().getContextClassLoader().getResourceAsStream("parser.properties");
-            prop.load(in);
-            in.close();
-            return prop.getProperty("parser.version");
-        } catch (IOException e) {
-            return "???";
-        }
-    }
+	}
 
-    /**
-     * Helper class because JMethod does not expose it's JCodeModel.
-     */
-    public static class JExtMethod {
+	public static JExtMethod ext(JMethod jMethod, JCodeModel jCodeModel) {
+		return new JExtMethod(jMethod, jCodeModel);
+	}
 
-        private final JMethod jMethod;
-        private final JCodeModel owner;
+	public static String getVersion() {
+		try {
+			Properties prop = new Properties();
+			InputStream in = Thread.currentThread().getContextClassLoader().getResourceAsStream("parser.properties");
+			prop.load(in);
+			in.close();
+			return prop.getProperty("parser.version");
+		} catch (IOException e) {
+			return "???";
+		}
+	}
 
-        public JExtMethod(JMethod jMethod, JCodeModel jCodeModel) {
-            this.jMethod = jMethod;
-            this.owner = jCodeModel;
-        }
+	/**
+	 * Helper class because JMethod does not expose it's JCodeModel.
+	 */
+	public static class JExtMethod {
 
-        public JMethod get() {
-            return jMethod;
-        }
+		private final JMethod jMethod;
+		private final JCodeModel owner;
 
-        public JCodeModel owner() {
-            return owner;
-        }
-    }
+		public JExtMethod(JMethod jMethod, JCodeModel jCodeModel) {
+			this.jMethod = jMethod;
+			this.owner = jCodeModel;
+		}
+
+		public JMethod get() {
+			return jMethod;
+		}
+
+		public JCodeModel owner() {
+			return owner;
+		}
+	}
 }

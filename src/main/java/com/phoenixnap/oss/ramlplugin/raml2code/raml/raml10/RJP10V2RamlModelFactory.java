@@ -34,97 +34,97 @@ import com.phoenixnap.oss.ramlplugin.raml2code.raml.RamlSecurityReference;
  */
 public class RJP10V2RamlModelFactory implements RamlModelFactory {
 
-    @Override
-    public RamlRoot buildRamlRoot(String ramlFileUrl) {
-        RamlModelResult ramlModelResult = new RamlModelBuilder().buildApi(ramlFileUrl);
-        if (ramlModelResult.hasErrors()) {
-            List<String> errors = ramlModelResult.getValidationResults()
-                    .stream()
-                    .map(validationResult -> validationResult.getMessage())
-                    .collect(Collectors.toList());
-            throw new InvalidRamlResourceException(ramlFileUrl, errors);
-        }
+	@Override
+	public RamlRoot buildRamlRoot(String ramlFileUrl) {
+		RamlModelResult ramlModelResult = new RamlModelBuilder().buildApi(ramlFileUrl);
+		if (ramlModelResult.hasErrors()) {
+			List<String> errors = ramlModelResult.getValidationResults().stream().map(validationResult -> validationResult.getMessage())
+					.collect(Collectors.toList());
+			throw new InvalidRamlResourceException(ramlFileUrl, errors);
+		}
 
-        // The Api is created by RamlModelBuilder during runtime via a yagi ModelProxyBuilder.
-        // In org.raml.v2 there is no direct implementation for Api interface during compile time.
-        Api api = ramlModelResult.getApiV10();
-        return new RJP10V2RamlRoot(api);
-    }
+		// The Api is created by RamlModelBuilder during runtime via a yagi
+		// ModelProxyBuilder.
+		// In org.raml.v2 there is no direct implementation for Api interface
+		// during compile time.
+		Api api = ramlModelResult.getApiV10();
+		return new RJP10V2RamlRoot(api);
+	}
 
-    @Override
-    public RamlResource createRamlResource(Object resource) {
-        if(resource == null) {
-            return null;
-        }
-        return new RJP10V2RamlResource((Resource)resource);
-    }
+	@Override
+	public RamlResource createRamlResource(Object resource) {
+		if (resource == null) {
+			return null;
+		}
+		return new RJP10V2RamlResource((Resource) resource);
+	}
 
-    @Override
-    public RamlAction createRamlAction(Object action) {
-    	if (action == null) {
-            return null;
-        }
-        return new RJP10V2RamlAction((Method) action);
-    }
+	@Override
+	public RamlAction createRamlAction(Object action) {
+		if (action == null) {
+			return null;
+		}
+		return new RJP10V2RamlAction((Method) action);
+	}
 
-    @Override
-    public RamlDocumentationItem createRamlDocumentationItem(Object documentationItem) {
+	@Override
+	public RamlDocumentationItem createRamlDocumentationItem(Object documentationItem) {
 		return new RJP10V2RamlDocumentationItem((DocumentationItem) documentationItem);
-    }
+	}
 
-    @Override
-    public RamlResponse createRamlResponse(Object response) {
-    	if(response == null) {
-            return null;
-        }
-        return new RJP10V2RamlResponse((Response)response);
-    }
+	@Override
+	public RamlResponse createRamlResponse(Object response) {
+		if (response == null) {
+			return null;
+		}
+		return new RJP10V2RamlResponse((Response) response);
+	}
 
-    @Override
-    public RamlMimeType createRamlMimeType(Object mimeType) {
-    	if(mimeType == null) {
-            return null;
-        }
-        return new RJP10V2RamlMimeType((TypeDeclaration) mimeType);
-    }
+	@Override
+	public RamlMimeType createRamlMimeType(Object mimeType) {
+		if (mimeType == null) {
+			return null;
+		}
+		return new RJP10V2RamlMimeType((TypeDeclaration) mimeType);
+	}
 
-    @Override
-    public RamlHeader createRamlHeader(Object haeder) {
-    	if(haeder == null) {
-            return null;
-        }
-        return new RJP10V2RamlHeader((TypeDeclaration) haeder);
-    }
+	@Override
+	public RamlHeader createRamlHeader(Object haeder) {
+		if (haeder == null) {
+			return null;
+		}
+		return new RJP10V2RamlHeader((TypeDeclaration) haeder);
+	}
 
-    @Override
-    public RamlQueryParameter createRamlQueryParameter(Object queryParameter) {
-    	if(queryParameter == null) {
-            return null;
-        }
-        return new RJP10V2RamlQueryParameter((TypeDeclaration)queryParameter);
-    }
+	@Override
+	public RamlQueryParameter createRamlQueryParameter(Object queryParameter) {
+		if (queryParameter == null) {
+			return null;
+		}
+		return new RJP10V2RamlQueryParameter((TypeDeclaration) queryParameter);
+	}
 
-    @Override
+	@Override
 	public List<RamlFormParameter> createRamlFormParameters(List<? extends Object> formParameters) {
 		return formParameters.stream().map(this::createRamlFormParameter).collect(Collectors.toList());
-    }
+	}
 
-    @Override
+	@Override
 	public RamlFormParameter createRamlFormParameter(Object formParameter) {
 		return new RJP10V2RamlFormParameter((TypeDeclaration) formParameter);
-    }
+	}
 
-    @Override
-    public List<RamlSecurityReference> createRamlSecurityReferences(List<? extends Object> securityReferences) {
+	@Override
+	public List<RamlSecurityReference> createRamlSecurityReferences(List<? extends Object> securityReferences) {
 		return securityReferences.stream().map(this::createRamlSecurityReference).collect(Collectors.toList());
-    }
+	}
 
-    @Override
-    public RamlSecurityReference createRamlSecurityReference(Object securityReference) {
+	@Override
+	public RamlSecurityReference createRamlSecurityReference(Object securityReference) {
 		return new RJP10V2RamlSecurityReference((SecuritySchemeRef) securityReference);
-    }
+	}
 
-    @Override
+	@Override
 	public RamlParamType createRamlParamType(Object paramType) {
 		if (paramType == null) {
 			return RamlParamType.STRING;

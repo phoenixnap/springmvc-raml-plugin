@@ -30,46 +30,47 @@ import com.phoenixnap.oss.ramlplugin.raml2code.raml.RamlUriParameter;
  */
 public class RJP10V2RamlUriParameter extends RamlUriParameter {
 
-    private static RJP10V2RamlModelFactory ramlModelFactory = new RJP10V2RamlModelFactory();
+	private static RJP10V2RamlModelFactory ramlModelFactory = new RJP10V2RamlModelFactory();
 
-    private final TypeDeclaration uriParameter;
+	private final TypeDeclaration uriParameter;
 
-    public RJP10V2RamlUriParameter(TypeDeclaration uriParameter) {
-        this.uriParameter = uriParameter;
-    }
+	public RJP10V2RamlUriParameter(TypeDeclaration uriParameter) {
+		this.uriParameter = uriParameter;
+	}
 
-    /**
-     * Expose internal representation only package private
-     * @return the internal model
-     */
-    TypeDeclaration getUriParameter() {
-        return uriParameter;
-    }
+	/**
+	 * Expose internal representation only package private
+	 * 
+	 * @return the internal model
+	 */
+	TypeDeclaration getUriParameter() {
+		return uriParameter;
+	}
 
-    @Override
-    public String getDisplayName() {
+	@Override
+	public String getDisplayName() {
 		return RamlTypeHelper.getDisplayName(this.uriParameter);
-    }
+	}
 
-    @Override
-    public RamlParamType getType() {
+	@Override
+	public RamlParamType getType() {
 		return ramlModelFactory.createRamlParamType(this.uriParameter.type());
-    }
+	}
 
-    @Override
-    public boolean isRequired() {
+	@Override
+	public boolean isRequired() {
 		return RamlTypeHelper.isRequired(this.uriParameter);
-    }
+	}
 
-    @Override
-    public String getExample() {
+	@Override
+	public String getExample() {
 		return RamlTypeHelper.getExample(this.uriParameter);
-    }
+	}
 
-    @Override
-    public String getDescription() {
+	@Override
+	public String getDescription() {
 		return RamlTypeHelper.getDescription(this.uriParameter);
-    }
+	}
 
 	@Override
 	public String getDefaultValue() {
@@ -77,13 +78,13 @@ public class RJP10V2RamlUriParameter extends RamlUriParameter {
 	}
 
 	@Override
-   public String getPattern() {
-       if (uriParameter instanceof StringTypeDeclaration) {
-            return ((StringTypeDeclaration) uriParameter).pattern();
-         }
-         return null;
-   }
-	
+	public String getPattern() {
+		if (uriParameter instanceof StringTypeDeclaration) {
+			return ((StringTypeDeclaration) uriParameter).pattern();
+		}
+		return null;
+	}
+
 	@Override
 	public String getFormat() {
 		return RamlTypeHelper.getFormat(this.uriParameter);

@@ -10,7 +10,7 @@ import com.phoenixnap.oss.ramlplugin.raml2code.rules.spring.SpringFeignClientInt
  */
 public class SpringFeignClientRulesTest extends AbstractRuleTestBase {
 
-    @Test
+	@Test
 	public void applySpringFeignClient_shouldCreate_validCode() throws Exception {
 
 		loadRaml("test-feign-client.raml");
@@ -25,9 +25,9 @@ public class SpringFeignClientRulesTest extends AbstractRuleTestBase {
 
 		loadRaml("test-default-values.raml");
 
-        rule = new SpringFeignClientInterfaceDecoratorRule();
-        rule.apply(getControllerMetadata(), jCodeModel);
+		rule = new SpringFeignClientInterfaceDecoratorRule();
+		rule.apply(getControllerMetadata(), jCodeModel);
 		verifyGeneratedCode("FeignClientDefaultValues");
-    }
-    
+	}
+
 }

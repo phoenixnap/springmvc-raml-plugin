@@ -46,127 +46,128 @@ public abstract class AbstractRuleTestBase {
 	public static final boolean VISUALISE_CODE = false;
 	public static final String RESOURCE_BASE = "ramls/";
 	public static final String VALIDATOR_BASE = "validations/";
-    public static final String LINE_END = System.getProperty("line.separator");
-    public static RamlRoot RAML;
+	public static final String LINE_END = System.getProperty("line.separator");
+	public static RamlRoot RAML;
 
-    protected static final Logger logger = LoggerFactory.getLogger(AbstractRuleTestBase.class);
-    
-    protected JCodeModel jCodeModel;
+	protected static final Logger logger = LoggerFactory.getLogger(AbstractRuleTestBase.class);
 
-    protected RamlParser defaultRamlParser;
-    
-    protected Rule<JCodeModel, JDefinedClass, ApiResourceMetadata> rule;
+	protected JCodeModel jCodeModel;
 
-    private ApiResourceMetadata controllerMetadata;
+	protected RamlParser defaultRamlParser;
 
-    public AbstractRuleTestBase() {
-        defaultRamlParser = new RamlParser("/api");
-    }
+	protected Rule<JCodeModel, JDefinedClass, ApiResourceMetadata> rule;
 
-    @BeforeClass
-    public static void initRaml() throws InvalidRamlResourceException {
-    	TestConfig.resetConfig();
-        RAML = RamlLoader.loadRamlFromFile(RESOURCE_BASE + "test-single-controller.raml");
-    }
+	private ApiResourceMetadata controllerMetadata;
+
+	public AbstractRuleTestBase() {
+		defaultRamlParser = new RamlParser("/api");
+	}
+
+	@BeforeClass
+	public static void initRaml() throws InvalidRamlResourceException {
+		TestConfig.resetConfig();
+		RAML = RamlLoader.loadRamlFromFile(RESOURCE_BASE + "test-single-controller.raml");
+	}
 
 	@Before
-    public void setupModel() {
-        jCodeModel = new JCodeModel();
-    }
+	public void setupModel() {
+		jCodeModel = new JCodeModel();
+	}
 
-    protected void initControllerMetadata(RamlParser par) {
-        controllerMetadata = par.extractControllers(jCodeModel, RAML).iterator().next();
-    }
+	protected void initControllerMetadata(RamlParser par) {
+		controllerMetadata = par.extractControllers(jCodeModel, RAML).iterator().next();
+	}
 
-    protected ApiResourceMetadata getControllerMetadata() {
-        if(controllerMetadata == null) {
-            initControllerMetadata(defaultRamlParser);
-        }
-        return controllerMetadata;
-    }
+	protected ApiResourceMetadata getControllerMetadata() {
+		if (controllerMetadata == null) {
+			initControllerMetadata(defaultRamlParser);
+		}
+		return controllerMetadata;
+	}
 
 	protected Set<ApiResourceMetadata> getAllControllersMetadata() {
 		return defaultRamlParser.extractControllers(jCodeModel, RAML);
 	}
 
-    protected ApiActionMetadata getEndpointMetadata() {
-        return getEndpointMetadata(1);
-    }
+	protected ApiActionMetadata getEndpointMetadata() {
+		return getEndpointMetadata(1);
+	}
 
-    protected ApiActionMetadata getEndpointMetadata(int number) {
-        return getControllerMetadata().getApiCalls().stream().skip(number-1).findFirst().get();
-    }
+	protected ApiActionMetadata getEndpointMetadata(int number) {
+		return getControllerMetadata().getApiCalls().stream().skip(number - 1).findFirst().get();
+	}
 
-    protected String serializeModel() {
-    	return serializeModel(jCodeModel);
-    }
-    
-    protected String serializeModel(JCodeModel jCodeModel) {
-        ByteArrayOutputStream bos = new ByteArrayOutputStream();
-        try {
-            jCodeModel.build(new SingleStreamCodeWriter(bos));
-        } catch (IOException e) {
-            assertThat(e.getMessage(), is(nullValue()));
-        }
-        return bos.toString();
-    }
+	protected String serializeModel() {
+		return serializeModel(jCodeModel);
+	}
 
-    @After
-    public void printCode() {
-    	if (VISUALISE_CODE) {
-    		logger.debug(serializeModel());
-    	}
-    }
-    
-    protected void verifyGeneratedCode(String name) throws Exception {
-    	verifyGeneratedCode(name, serializeModel());
-    }
+	protected String serializeModel(JCodeModel jCodeModel) {
+		ByteArrayOutputStream bos = new ByteArrayOutputStream();
+		try {
+			jCodeModel.build(new SingleStreamCodeWriter(bos));
+		} catch (IOException e) {
+			assertThat(e.getMessage(), is(nullValue()));
+		}
+		return bos.toString();
+	}
 
-    protected void verifyGeneratedCode(String name, String generatedCode) throws Exception {
-    	String removedSerialVersionUID = removeSerialVersionUID(generatedCode);
-        String expectedCode = getTextFromFile(VALIDATOR_BASE + name + ".java.txt");
+	@After
+	public void printCode() {
+		if (VISUALISE_CODE) {
+			logger.debug(serializeModel());
+		}
+	}
 
-        try {
-            MatcherAssert.assertThat(name + " is not generated correctly.", removedSerialVersionUID, new IsEqualIgnoringLeadingAndEndingWhiteSpaces(expectedCode));
-        } catch (AssertionError e) {
-            // We let assertEquals fail here instead, because better IDE support for multi line string diff.
-            assertEquals(expectedCode, removedSerialVersionUID);
-        }
-    }
+	protected void verifyGeneratedCode(String name) throws Exception {
+		verifyGeneratedCode(name, serializeModel());
+	}
 
+	protected void verifyGeneratedCode(String name, String generatedCode) throws Exception {
+		String removedSerialVersionUID = removeSerialVersionUID(generatedCode);
+		String expectedCode = getTextFromFile(VALIDATOR_BASE + name + ".java.txt");
 
-    protected String getTextFromFile(String resourcePath) throws Exception {
-        URI uri = getUri(resourcePath);
-        return new String(Files.readAllBytes(Paths.get(uri)), StandardCharsets.UTF_8);
-    }
+		try {
+			MatcherAssert.assertThat(name + " is not generated correctly.", removedSerialVersionUID,
+					new IsEqualIgnoringLeadingAndEndingWhiteSpaces(expectedCode));
+		} catch (AssertionError e) {
+			// We let assertEquals fail here instead, because better IDE support
+			// for multi line string diff.
+			assertEquals(expectedCode, removedSerialVersionUID);
+		}
+	}
 
-    protected URI getUri(String resourcePath) throws URISyntaxException {
-        URL resource = getClass().getClassLoader().getResource(resourcePath);
-        return resource.toURI();
-    }
+	protected String getTextFromFile(String resourcePath) throws Exception {
+		URI uri = getUri(resourcePath);
+		return new String(Files.readAllBytes(Paths.get(uri)), StandardCharsets.UTF_8);
+	}
 
-    public static class IsEqualIgnoringLeadingAndEndingWhiteSpaces extends IsEqualIgnoringWhiteSpace {
+	protected URI getUri(String resourcePath) throws URISyntaxException {
+		URL resource = getClass().getClassLoader().getResource(resourcePath);
+		return resource.toURI();
+	}
 
-        public IsEqualIgnoringLeadingAndEndingWhiteSpaces(String string) {
-            super(string);
-        }
+	public static class IsEqualIgnoringLeadingAndEndingWhiteSpaces extends IsEqualIgnoringWhiteSpace {
 
-        public String stripSpace(String toBeStripped) {
-            String result = "";
-            BufferedReader bufReader = new BufferedReader(new StringReader(toBeStripped));
-            String line;
-            try {
-                while( (line=bufReader.readLine()) != null ) {
-                    result += super.stripSpace(line);
-                }
-            } catch (IOException e) {
-                return e.getMessage();
-            }
-            return result;
-        }
-    }
-    
-    protected String removeSerialVersionUID(String serializedModel) throws IOException {
+		public IsEqualIgnoringLeadingAndEndingWhiteSpaces(String string) {
+			super(string);
+		}
+
+		public String stripSpace(String toBeStripped) {
+			String result = "";
+			BufferedReader bufReader = new BufferedReader(new StringReader(toBeStripped));
+			String line;
+			try {
+				while ((line = bufReader.readLine()) != null) {
+					result += super.stripSpace(line);
+				}
+			} catch (IOException e) {
+				return e.getMessage();
+			}
+			return result;
+		}
+	}
+
+	protected String removeSerialVersionUID(String serializedModel) throws IOException {
 
 		BufferedReader bufReader = new BufferedReader(new StringReader(serializedModel));
 		StringWriter stringWriter = new StringWriter();
@@ -181,9 +182,9 @@ public abstract class AbstractRuleTestBase {
 		bufWriter.close();
 		return stringWriter.toString();
 	}
-    
-    public static void loadRaml(String ramlFileName) {
+
+	public static void loadRaml(String ramlFileName) {
 		RAML = RamlLoader.loadRamlFromFile(RESOURCE_BASE + ramlFileName);
 	}
-    
+
 }

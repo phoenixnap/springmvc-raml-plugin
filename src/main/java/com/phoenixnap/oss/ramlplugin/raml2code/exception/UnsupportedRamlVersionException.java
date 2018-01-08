@@ -11,7 +11,7 @@ public class UnsupportedRamlVersionException extends RuntimeException {
 
 	private static final long serialVersionUID = -2773078854396182834L;
 
-    public UnsupportedRamlVersionException(RamlVersion... supportedVersions) {
-        super("RAML Version is not supported. Supported versions are " + Arrays.asList(supportedVersions));
-    }
+	public UnsupportedRamlVersionException(RamlVersion... supportedVersions) {
+		super("RAML Version is not supported. Supported versions are " + Arrays.asList(supportedVersions));
+	}
 }

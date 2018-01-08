@@ -24,35 +24,35 @@ import com.sun.codemodel.JFieldVar;
 import com.sun.codemodel.JMod;
 
 /**
- * Creates a private field declaration with a Spring {@literal @}Autowired annotation.
- * The type of the field is derived from the super class of the given JDefinedClass.
- * The name of the field can be injected by the caller. Default is "delegate".
+ * Creates a private field declaration with a Spring {@literal @}Autowired
+ * annotation. The type of the field is derived from the super class of the
+ * given JDefinedClass. The name of the field can be injected by the caller.
+ * Default is "delegate".
  *
- * EXAMPLE OUTPUT:
- * {@literal @}Autowired
- * BaseClass delegate;
+ * EXAMPLE OUTPUT: {@literal @}Autowired BaseClass delegate;
  *
  * @author armin.weisser
  * @since 0.4.1
  */
 public class SpringDelegateFieldDeclerationRule implements Rule<JDefinedClass, JFieldVar, ApiResourceMetadata> {
 
-    private String delegateFieldName = "delegate";
+	private String delegateFieldName = "delegate";
 
-    public SpringDelegateFieldDeclerationRule(String delegateFieldName) {
-        if(StringUtils.hasText(delegateFieldName)) {
-            this.delegateFieldName = delegateFieldName;
-        }
-    }
+	public SpringDelegateFieldDeclerationRule(String delegateFieldName) {
+		if (StringUtils.hasText(delegateFieldName)) {
+			this.delegateFieldName = delegateFieldName;
+		}
+	}
 
-    @Override
-    public JFieldVar apply(ApiResourceMetadata controllerMetadata, JDefinedClass generatableType) {
-        if(!generatableType._implements().hasNext()) {
-            throw new RuleCanNotProcessModelException("The class "+generatableType.fullName()+ " does not implement a super class that can be delegated to.");
-        }
-        JClass controllerInterface = generatableType._implements().next();
-        JFieldVar field = generatableType.field(JMod.PRIVATE, controllerInterface, delegateFieldName);
-        field.annotate(Autowired.class);
-        return field;
-    }
+	@Override
+	public JFieldVar apply(ApiResourceMetadata controllerMetadata, JDefinedClass generatableType) {
+		if (!generatableType._implements().hasNext()) {
+			throw new RuleCanNotProcessModelException(
+					"The class " + generatableType.fullName() + " does not implement a super class that can be delegated to.");
+		}
+		JClass controllerInterface = generatableType._implements().next();
+		JFieldVar field = generatableType.field(JMod.PRIVATE, controllerInterface, delegateFieldName);
+		field.annotate(Autowired.class);
+		return field;
+	}
 }

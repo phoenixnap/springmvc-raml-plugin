@@ -8,11 +8,11 @@ import org.junit.Test;
  */
 public class Spring4RestTemplateClientRulesTest extends AbstractRuleTestBase {
 
-    @Test
-    public void applySpring4SpringTemplateClient_shouldCreate_validCode() throws Exception {
-        rule = new Spring4RestTemplateClientRule();
-        rule.apply(getControllerMetadata(), jCodeModel);
-        verifyGeneratedCode("Spring4BaseClient");
-    }
-    
+	@Test
+	public void applySpring4SpringTemplateClient_shouldCreate_validCode() throws Exception {
+		rule = new Spring4RestTemplateClientRule();
+		rule.apply(getControllerMetadata(), jCodeModel);
+		verifyGeneratedCode("Spring4BaseClient");
+	}
+
 }

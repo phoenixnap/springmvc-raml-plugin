@@ -23,11 +23,11 @@ import java.util.Map;
  */
 public interface RamlRoot extends RamlResourceRoot {
 
-    String getMediaType();
+	String getMediaType();
 
-    List<Map<String, String>> getSchemas();
+	List<Map<String, String>> getSchemas();
 
-    String getBaseUri();
+	String getBaseUri();
 
 	Map<String, RamlDataType> getTypes();
 }

@@ -12,7 +12,6 @@
  */
 package com.phoenixnap.oss.ramlplugin.raml2code.raml;
 
-
 /**
  * Abstract Representation of a Raml Uri Parameter
  * 

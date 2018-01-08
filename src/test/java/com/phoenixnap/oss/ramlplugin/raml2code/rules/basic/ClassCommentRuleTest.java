@@ -18,15 +18,15 @@ import com.sun.codemodel.JDocComment;
  */
 public class ClassCommentRuleTest extends AbstractRuleTestBase {
 
-    private ClassCommentRule rule = new ClassCommentRule();
+	private ClassCommentRule rule = new ClassCommentRule();
 
-    @Test
-    public void applyRule_shouldCreate_validClassComment() throws JClassAlreadyExistsException {
+	@Test
+	public void applyRule_shouldCreate_validClassComment() throws JClassAlreadyExistsException {
 
-        JDefinedClass jClass = jCodeModel.rootPackage()._class("BaseController");
-        JDocComment jDocComment = rule.apply(getControllerMetadata(), jClass);
-        assertNotNull(jDocComment);
-        assertThat(serializeModel(), containsString("* The BaseController class"));
-    }
+		JDefinedClass jClass = jCodeModel.rootPackage()._class("BaseController");
+		JDocComment jDocComment = rule.apply(getControllerMetadata(), jClass);
+		assertNotNull(jDocComment);
+		assertThat(serializeModel(), containsString("* The BaseController class"));
+	}
 
 }

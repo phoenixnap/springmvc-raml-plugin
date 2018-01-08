@@ -23,50 +23,42 @@ import com.sun.codemodel.JMod;
 import com.sun.codemodel.JType;
 
 /**
- * Generates a method signature for an endpoint defined by an ApiMappingMetadata instance.
+ * Generates a method signature for an endpoint defined by an ApiMappingMetadata
+ * instance.
  *
- * INPUT:
- * #%RAML 0.8
- * title: myapi
- * mediaType: application/json
- * baseUri: /
- * /base:
- *   /{id}
- *     get:
+ * INPUT: #%RAML 0.8 title: myapi mediaType: application/json baseUri: / /base:
+ * /{id} get:
  *
- * OUTPUT:
- * public ResponseType getBaseById(String id)
+ * OUTPUT: public ResponseType getBaseById(String id)
  *
- * OR:
- * public ResponseType{@literal <}MyType{@literal >} getBaseById({@literal @}PathVariable String id)
+ * OR: public ResponseType{@literal <}MyType{@literal >}
+ * getBaseById({@literal @}PathVariable String id)
  *
- * OR:
- * public MyType getBaseById({@literal @}PathVariable String id)
+ * OR: public MyType getBaseById({@literal @}PathVariable String id)
  *
- * The parameter and return type configuration depends on the underlying paramsRule and responseTypeRule.
+ * The parameter and return type configuration depends on the underlying
+ * paramsRule and responseTypeRule.
  *
  * @author armin.weisser
  * @since 0.4.1
  */
 public class ControllerMethodSignatureRule implements Rule<JDefinedClass, JMethod, ApiActionMetadata> {
 
-    private Rule<JDefinedClass, JType, ApiActionMetadata> responseTypeRule;
-    private Rule<CodeModelHelper.JExtMethod, JMethod, ApiActionMetadata> paramsRule;
+	private Rule<JDefinedClass, JType, ApiActionMetadata> responseTypeRule;
+	private Rule<CodeModelHelper.JExtMethod, JMethod, ApiActionMetadata> paramsRule;
 
-    public ControllerMethodSignatureRule(
-            Rule<JDefinedClass, JType, ApiActionMetadata> responseTypeRule,
-            Rule<CodeModelHelper.JExtMethod, JMethod, ApiActionMetadata> paramsRule)
-    {
-        this.responseTypeRule = responseTypeRule;
-        this.paramsRule = paramsRule;
-    }
+	public ControllerMethodSignatureRule(Rule<JDefinedClass, JType, ApiActionMetadata> responseTypeRule,
+			Rule<CodeModelHelper.JExtMethod, JMethod, ApiActionMetadata> paramsRule) {
+		this.responseTypeRule = responseTypeRule;
+		this.paramsRule = paramsRule;
+	}
 
-    @Override
-    public JMethod apply(ApiActionMetadata endpointMetadata, JDefinedClass generatableType) {
-        JType responseType = responseTypeRule.apply(endpointMetadata, generatableType);
-        JMethod jMethod = generatableType.method(JMod.PUBLIC, responseType, endpointMetadata.getName());
-        jMethod = paramsRule.apply(endpointMetadata, ext(jMethod, generatableType.owner()));
-        return jMethod;
-    }
+	@Override
+	public JMethod apply(ApiActionMetadata endpointMetadata, JDefinedClass generatableType) {
+		JType responseType = responseTypeRule.apply(endpointMetadata, generatableType);
+		JMethod jMethod = generatableType.method(JMod.PUBLIC, responseType, endpointMetadata.getName());
+		jMethod = paramsRule.apply(endpointMetadata, ext(jMethod, generatableType.owner()));
+		return jMethod;
+	}
 
 }

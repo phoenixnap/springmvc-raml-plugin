@@ -24,19 +24,18 @@ import com.sun.codemodel.JFieldVar;
 import com.sun.codemodel.JMod;
 
 /**
- * Creates a private field declaration for a RestTemplateClass with a Spring {@literal @}Autowired annotation or a {@literal @}Value
- * annotation with a customizable value.
+ * Creates a private field declaration for a RestTemplateClass with a Spring
+ * {@literal @}Autowired annotation or a {@literal @}Value annotation with a
+ * customizable value.
  * 
- * The name of the field can be injected by the caller. Default is "restTemplate".
+ * The name of the field can be injected by the caller. Default is
+ * "restTemplate".
  *
- * EXAMPLE OUTPUT:
- * {@literal @}Autowired
- * BaseClass className;
+ * EXAMPLE OUTPUT: {@literal @}Autowired BaseClass className;
  * 
- * or 
+ * or
  * 
- * {@literal @}Value("${some.value}"
- * String className
+ * {@literal @}Value("${some.value}" String className
  *
  * @author kurtpa
  * @author krisg
@@ -44,74 +43,73 @@ import com.sun.codemodel.JMod;
  */
 public class ClassFieldDeclarationRule implements Rule<JDefinedClass, JFieldVar, ApiResourceMetadata> {
 
-    private String fieldName = "restTemplate";
+	private String fieldName = "restTemplate";
 
-    private Class<?> fieldClazz;
-    
-    private boolean autowire = true;
-    
-    private boolean valueAnnotation = false;
-    
-    private boolean qualifierAnnotation = false;
-    
-    private String qualifier;
-    
-    private String valueAnnotationValue;
-    
-    public ClassFieldDeclarationRule(String restTemplateFieldName, Class<?> fieldClazz, String valueAnnotationValue) {
-        this(restTemplateFieldName, fieldClazz);
-        this.autowire = false;
-        this.valueAnnotation = true;
-        this.valueAnnotationValue = valueAnnotationValue;                
-    }
-    
-    public ClassFieldDeclarationRule(String restTemplateFieldName, Class<?> fieldClazz, boolean autowire) {
-    	this(restTemplateFieldName, fieldClazz);
-    	this.autowire = autowire;
-    }
-    
-    public ClassFieldDeclarationRule(String restTemplateFieldName, Class<?> fieldClazz, boolean autowire, String qualifierBeanName) {
-        this(restTemplateFieldName, fieldClazz);
-        if (qualifierBeanName != null){
-            this.qualifierAnnotation = true;
-            this.qualifier = qualifierBeanName;
-        }
-        this.autowire = autowire;
-    }
-    
-    public ClassFieldDeclarationRule(String restTemplateFieldName, Class<?> fieldClazz) {
-    	if (fieldClazz != null) {
-        	this.fieldClazz = fieldClazz;
-        } else {
-        	throw new IllegalStateException("Class not specified"); 
-        }
-    	if(StringUtils.hasText(restTemplateFieldName)) {
-            this.fieldName = restTemplateFieldName;
-        } else {
-        	this.fieldName = StringUtils.unqualify(fieldClazz.getSimpleName());
-        }
-        
-    }
+	private Class<?> fieldClazz;
 
-    @Override
-    public JFieldVar apply(ApiResourceMetadata controllerMetadata, JDefinedClass generatableType) {
-        JFieldVar field = generatableType.field(JMod.PRIVATE, this.fieldClazz, this.fieldName);
-        
-        //add @Autowired field annoation
-        if (autowire) {
-        	field.annotate(Autowired.class);
-        }
-        
-        //add @Qualifier("qualifierBeanName")
-        if (qualifierAnnotation && !StringUtils.isEmpty(qualifier)){
-            field.annotate(Qualifier.class).param("value", qualifier);
-        }
-        
-        //add @Value(value="") annotation to the field 
-        if (valueAnnotation){
-            field.annotate(Value.class).param("value", valueAnnotationValue);
-        }
-        return field;
-    }
+	private boolean autowire = true;
+
+	private boolean valueAnnotation = false;
+
+	private boolean qualifierAnnotation = false;
+
+	private String qualifier;
+
+	private String valueAnnotationValue;
+
+	public ClassFieldDeclarationRule(String restTemplateFieldName, Class<?> fieldClazz, String valueAnnotationValue) {
+		this(restTemplateFieldName, fieldClazz);
+		this.autowire = false;
+		this.valueAnnotation = true;
+		this.valueAnnotationValue = valueAnnotationValue;
+	}
+
+	public ClassFieldDeclarationRule(String restTemplateFieldName, Class<?> fieldClazz, boolean autowire) {
+		this(restTemplateFieldName, fieldClazz);
+		this.autowire = autowire;
+	}
+
+	public ClassFieldDeclarationRule(String restTemplateFieldName, Class<?> fieldClazz, boolean autowire, String qualifierBeanName) {
+		this(restTemplateFieldName, fieldClazz);
+		if (qualifierBeanName != null) {
+			this.qualifierAnnotation = true;
+			this.qualifier = qualifierBeanName;
+		}
+		this.autowire = autowire;
+	}
+
+	public ClassFieldDeclarationRule(String restTemplateFieldName, Class<?> fieldClazz) {
+		if (fieldClazz != null) {
+			this.fieldClazz = fieldClazz;
+		} else {
+			throw new IllegalStateException("Class not specified");
+		}
+		if (StringUtils.hasText(restTemplateFieldName)) {
+			this.fieldName = restTemplateFieldName;
+		} else {
+			this.fieldName = StringUtils.unqualify(fieldClazz.getSimpleName());
+		}
+
+	}
+
+	@Override
+	public JFieldVar apply(ApiResourceMetadata controllerMetadata, JDefinedClass generatableType) {
+		JFieldVar field = generatableType.field(JMod.PRIVATE, this.fieldClazz, this.fieldName);
+
+		// add @Autowired field annoation
+		if (autowire) {
+			field.annotate(Autowired.class);
+		}
+
+		// add @Qualifier("qualifierBeanName")
+		if (qualifierAnnotation && !StringUtils.isEmpty(qualifier)) {
+			field.annotate(Qualifier.class).param("value", qualifier);
+		}
+
+		// add @Value(value="") annotation to the field
+		if (valueAnnotation) {
+			field.annotate(Value.class).param("value", valueAnnotationValue);
+		}
+		return field;
+	}
 }
-

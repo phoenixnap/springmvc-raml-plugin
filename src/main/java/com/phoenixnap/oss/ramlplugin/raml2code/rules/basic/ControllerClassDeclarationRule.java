@@ -13,17 +13,12 @@
 package com.phoenixnap.oss.ramlplugin.raml2code.rules.basic;
 
 /**
- * Generates an class declaration based on the controller name in ApiControllerMetadata.
+ * Generates an class declaration based on the controller name in
+ * ApiControllerMetadata.
  *
- * INPUT:
- * #%RAML 0.8
- * title: myapi
- * mediaType: application/json
- * baseUri: /
- * /base:
+ * INPUT: #%RAML 0.8 title: myapi mediaType: application/json baseUri: / /base:
  *
- * OUTPUT:
- * public class BaseController {
+ * OUTPUT: public class BaseController {
  *
  * }
  *
@@ -33,12 +28,12 @@ package com.phoenixnap.oss.ramlplugin.raml2code.rules.basic;
  */
 public class ControllerClassDeclarationRule extends ResourceClassDeclarationRule {
 
-    public ControllerClassDeclarationRule() {
-        this("");
-    }
+	public ControllerClassDeclarationRule() {
+		this("");
+	}
 
-    public ControllerClassDeclarationRule(String classNameSuffix) {
-        super(ControllerInterfaceDeclarationRule.CONTROLLER_SUFFIX + classNameSuffix);
-    }
+	public ControllerClassDeclarationRule(String classNameSuffix) {
+		super(ControllerInterfaceDeclarationRule.CONTROLLER_SUFFIX + classNameSuffix);
+	}
 
 }

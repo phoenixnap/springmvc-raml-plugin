@@ -21,46 +21,42 @@ import com.sun.codemodel.JDefinedClass;
 import com.sun.codemodel.JMethod;
 
 /**
- * A code generation Rule that provides a Spring4 Controller based on a decorator pattern.
- * The goal is to generate code that does not have to be manually extended by the user.
- * A raml endpoint called /people for example implies two generated artefacts:
+ * A code generation Rule that provides a Spring4 Controller based on a
+ * decorator pattern. The goal is to generate code that does not have to be
+ * manually extended by the user. A raml endpoint called /people for example
+ * implies two generated artefacts:
  *
- * // 1. Controller Interface
- * interface PeopleController {
- *     ResponseEntity getPeople();
- * }
+ * // 1. Controller Interface interface PeopleController { ResponseEntity
+ * getPeople(); }
  *
- * // 2. A Decorator that implements the Controller Interface
- * // and delegates to another instance of a class implementing the very same controller interface.
- * {@literal @}RestController
- * {@literal @}RequestMapping("/people")
+ * // 2. A Decorator that implements the Controller Interface // and delegates
+ * to another instance of a class implementing the very same controller
+ * interface. {@literal @}RestController {@literal @}RequestMapping("/people")
  * class PeopleControllerDecorator implements PeopleController {
  *
- *     {@literal @}Autowired
- *     PeopleController peopleControllerDelegate;
+ * {@literal @}Autowired PeopleController peopleControllerDelegate;
  *
- *     {@literal @}RequestMapping(value="", method=RequestMethod.GET)
- *     public ResponseEntity getPeople() {
- *         return this.peopleControllerDelegate.getPeople();
- *     }
- * }
+ * {@literal @}RequestMapping(value="", method=RequestMethod.GET) public
+ * ResponseEntity getPeople() { return
+ * this.peopleControllerDelegate.getPeople(); } }
  *
- * Now all the user has to do is to implement a Spring-Bean called "PeopleControllerDelegate".
- * This way he can implement the endpoint without altering the generated code.
+ * Now all the user has to do is to implement a Spring-Bean called
+ * "PeopleControllerDelegate". This way he can implement the endpoint without
+ * altering the generated code.
  *
  * @author armin.weisser
  * @author kurtpa
  * @since 0.4.1
  */
 public class Spring4ControllerDecoratorRule extends SpringControllerDecoratorRule {
-    
+
 	@Override
 	protected Rule<JDefinedClass, JAnnotationUse, ApiResourceMetadata> getControllerAnnotationRule() {
 		return new SpringRestControllerAnnotationRule();
 	}
-	
+
 	@Override
 	protected Rule<JMethod, JAnnotationUse, ApiActionMetadata> getResponseBodyAnnotationRule() {
-		return null; //ResponseBody not needed for RestController
+		return null; // ResponseBody not needed for RestController
 	}
 }

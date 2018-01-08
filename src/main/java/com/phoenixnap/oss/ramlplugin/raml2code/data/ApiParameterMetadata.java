@@ -26,8 +26,9 @@ import com.phoenixnap.oss.ramlplugin.raml2code.raml.RamlUriParameter;
 import com.sun.codemodel.JCodeModel;
 
 /**
- * Data object containing information kept at runtime for Api Call Parameters. This class is used by the RAML generator
- * and serves as a middle layer to store information extracted from the source in a way that makes sense to the
+ * Data object containing information kept at runtime for Api Call Parameters.
+ * This class is used by the RAML generator and serves as a middle layer to
+ * store information extracted from the source in a way that makes sense to the
  * generator
  * 
  * 
@@ -51,14 +52,15 @@ public class ApiParameterMetadata {
 	 * The Java Type of the parameter
 	 */
 	private Class<?> type;
-	
+
 	/**
 	 * A format narrowing the allowed data for this parameter
 	 */
 	private String format;
 
 	/**
-	 * If the type contains generics, this is the type of the generic as defined in the code.
+	 * If the type contains generics, this is the type of the generic as defined
+	 * in the code.
 	 */
 	private Type genericType;
 
@@ -83,12 +85,14 @@ public class ApiParameterMetadata {
 	private String displayName;
 
 	private JCodeModel codeModel;
-	
+
 	/**
 	 * Default constructor that creates a metadata object from a Raml parameter
 	 * 
-	 * @param name	The name of this parameter if different in annotation
-	 * @param param Java Parameter representation
+	 * @param name
+	 *            The name of this parameter if different in annotation
+	 * @param param
+	 *            Java Parameter representation
 	 * @param codeModel
 	 */
 	public ApiParameterMetadata(String name, RamlAbstractParam param, JCodeModel codeModel) {
@@ -97,7 +101,6 @@ public class ApiParameterMetadata {
 		if (param == null) {
 			throw new NullArgumentException("param");
 		}
-
 
 		if (param instanceof RamlUriParameter) {
 			this.resourceId = true;
@@ -108,22 +111,21 @@ public class ApiParameterMetadata {
 
 		this.name = name;
 		this.displayName = param.getDisplayName();
-		
+
 		this.format = param.getFormat();
 		this.type = SchemaHelper.mapSimpleType(param.getType(), this.format);
-		
-		//If it's a repeatable parameter simply convert to an array of type
-		if(param.isRepeat()) {
+
+		// If it's a repeatable parameter simply convert to an array of type
+		if (param.isRepeat()) {
 			this.type = Array.newInstance(this.type, 0).getClass();
 		}
-		
+
 		this.genericType = null;
 
 		this.example = StringUtils.hasText(param.getExample()) ? param.getExample() : null;
 		this.setRamlParam(param);
 		this.codeModel = codeModel;
 	}
-
 
 	/**
 	 * The Java Type of the parameter
@@ -153,10 +155,11 @@ public class ApiParameterMetadata {
 	}
 
 	/**
-	 * Is this parameter the identifying parameter to the rest resource. If true then this parameter should end up as
-	 * part of the URL
+	 * Is this parameter the identifying parameter to the rest resource. If true
+	 * then this parameter should end up as part of the URL
 	 * 
-	 * @return a boolean which if true implies that this parameter is part of the url/id of the resource
+	 * @return a boolean which if true implies that this parameter is part of
+	 *         the url/id of the resource
 	 */
 	public boolean isResourceId() {
 		return resourceId;
@@ -203,10 +206,10 @@ public class ApiParameterMetadata {
 	private void setRamlParam(RamlAbstractParam ramlParam) {
 		this.ramlParam = ramlParam;
 	}
-	
 
 	/**
 	 * Quick check to see if this is an array type or not
+	 * 
 	 * @return true if this is an array/list or false if it's a single object
 	 */
 	public boolean isArray() {

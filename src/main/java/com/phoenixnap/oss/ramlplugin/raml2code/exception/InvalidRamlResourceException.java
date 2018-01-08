@@ -18,27 +18,25 @@ import java.util.List;
  * @author aweisser
  */
 public class InvalidRamlResourceException extends RuntimeException {
-    /**
+	/**
 	 * 
 	 */
 	private static final long serialVersionUID = 770865086433357482L;
 	private final List<String> errors;
-    private final String ramlFileUrl;
+	private final String ramlFileUrl;
 
-    public InvalidRamlResourceException(String ramlFileUrl, List<String> errors) {
-        this.errors = errors;
-        this.ramlFileUrl = ramlFileUrl;
-    }
+	public InvalidRamlResourceException(String ramlFileUrl, List<String> errors) {
+		this.errors = errors;
+		this.ramlFileUrl = ramlFileUrl;
+	}
 
-    @Override
-    public String getMessage() {
-        return this.toString();
-    }
+	@Override
+	public String getMessage() {
+		return this.toString();
+	}
 
-    @Override
-    public String toString() {
-        return "InvalidRamlResourceException on raml file " +ramlFileUrl+" {" +
-                "errors=" + errors +
-                '}';
-    }
+	@Override
+	public String toString() {
+		return "InvalidRamlResourceException on raml file " + ramlFileUrl + " {" + "errors=" + errors + '}';
+	}
 }

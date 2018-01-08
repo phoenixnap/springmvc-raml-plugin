@@ -32,25 +32,24 @@ import com.phoenixnap.oss.ramlplugin.raml2code.raml.RamlMimeType;
  */
 public class RJP10V2RamlMimeType implements RamlMimeType {
 
-
 	private static RJP10V2RamlModelFactory ramlModelFactory = new RJP10V2RamlModelFactory();
 
-    private final TypeDeclaration mimeType;
+	private final TypeDeclaration mimeType;
 
 	private Map<String, List<RamlFormParameter>> formParameters;
 
+	public RJP10V2RamlMimeType(TypeDeclaration mimeType) {
+		this.mimeType = mimeType;
+	}
 
-    public RJP10V2RamlMimeType(TypeDeclaration mimeType) {
-        this.mimeType = mimeType;
-    }
-
-    /**
-     * Expose internal representation only package private
-     * @return the internal model
-     */
-    TypeDeclaration getMimeType() {
-        return mimeType;
-    }
+	/**
+	 * Expose internal representation only package private
+	 * 
+	 * @return the internal model
+	 */
+	TypeDeclaration getMimeType() {
+		return mimeType;
+	}
 
 	@Override
 	public Map<String, List<RamlFormParameter>> getFormParameters() {
@@ -71,19 +70,19 @@ public class RJP10V2RamlMimeType implements RamlMimeType {
 		return list;
 	}
 
-    @Override
-    public String getSchema() {
-    	return mimeType.type();
-    	// FIXME Alex
-//    	if (RamlTypeHelper.isSchemaType(mimeType)) {
-//    		return ((ExternalTypeDeclaration) mimeType).schemaContent();
-//    	} else {
-//    		return null;
-//    	}
-    }
+	@Override
+	public String getSchema() {
+		return mimeType.type();
+		// FIXME Alex
+		// if (RamlTypeHelper.isSchemaType(mimeType)) {
+		// return ((ExternalTypeDeclaration) mimeType).schemaContent();
+		// } else {
+		// return null;
+		// }
+	}
 
 	@Override
 	public RamlDataType getType() {
-   		return new RJP10V2RamlDataType(mimeType);
+		return new RJP10V2RamlDataType(mimeType);
 	}
 }

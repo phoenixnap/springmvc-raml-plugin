@@ -36,43 +36,28 @@ import com.sun.codemodel.JDefinedClass;
 import com.sun.codemodel.JVar;
 
 /**
- * Generates all method parameters with Spring annotations needed for an endpoint defined by ApiMappingMetadata.
- * This includes path variables, request parameters and the request body.
+ * Generates all method parameters with Spring annotations needed for an
+ * endpoint defined by ApiMappingMetadata. This includes path variables, request
+ * parameters and the request body.
  *
- * INPUT:
- * #%RAML 0.8
- * title: myapi
- * mediaType: application/json
- * baseUri: /
- * /base:
- *   /{id}/elements:
- *     get:
- *       queryParameters:
- *         requiredQueryParam:
- *           type: integer
- *           required: true
- *         optionalQueryParam:
- *           type: string
- *           default: "someDefault"
- *         optionalQueryParam2:
- *           type: number
- *           required: false
- *           default: 3
+ * INPUT: #%RAML 0.8 title: myapi mediaType: application/json baseUri: / /base:
+ * /{id}/elements: get: queryParameters: requiredQueryParam: type: integer
+ * required: true optionalQueryParam: type: string default: "someDefault"
+ * optionalQueryParam2: type: number required: false default: 3
  *
- * OUTPUT:
- * ({@literal @}PathVariable String id
- *  , {@literal @}RequestParam Integer requiredQueryParam
- *  , {@literal @}RequestParam(required=false, defaultValue = "someDefault") String optionalQueryParam
- *  , {@literal @}RequestParam(required=false, defaultValue = "3") BigDecimal optionalQueryParam2
- * )
+ * OUTPUT: ({@literal @}PathVariable String id , {@literal @}RequestParam
+ * Integer requiredQueryParam , {@literal @}RequestParam(required=false,
+ * defaultValue = "someDefault") String optionalQueryParam ,
+ * {@literal @}RequestParam(required=false, defaultValue = "3") BigDecimal
+ * optionalQueryParam2 )
  *
  * @author armin.weisser
  * @author Aleksandar Stojsavljevic
  * @since 0.4.1
  */
 public class SpringMethodParamsRule extends MethodParamsRule {
-	
-    public SpringMethodParamsRule() {
+
+	public SpringMethodParamsRule() {
 		super();
 	}
 
@@ -81,7 +66,8 @@ public class SpringMethodParamsRule extends MethodParamsRule {
 	}
 
 	@Override
-	protected JVar paramQueryForm(ApiParameterMetadata paramMetaData, CodeModelHelper.JExtMethod generatableType, ApiActionMetadata endpointMetadata) {
+	protected JVar paramQueryForm(ApiParameterMetadata paramMetaData, CodeModelHelper.JExtMethod generatableType,
+			ApiActionMetadata endpointMetadata) {
 		JVar jVar = super.paramQueryForm(paramMetaData, generatableType, endpointMetadata);
 		JAnnotationUse jAnnotationUse;
 		if (paramMetaData.getRamlParam() != null && paramMetaData.getRamlParam() instanceof RamlUriParameter) {
@@ -118,12 +104,15 @@ public class SpringMethodParamsRule extends MethodParamsRule {
 			if (!paramMetaData.getName().equals(jVar.name())) {
 				jAnnotationUse.param("name", paramMetaData.getName());
 			}
-            // In RAML parameters are optional unless the required attribute is included and its value set to 'true'.
-            // In Spring a parameter is required by default unlesse the required attribute is included and its value is set to 'false'
-            // So we just need to set required=false if the RAML "required" parameter is not set or explicitly set to false.
+			// In RAML parameters are optional unless the required attribute is
+			// included and its value set to 'true'.
+			// In Spring a parameter is required by default unlesse the required
+			// attribute is included and its value is set to 'false'
+			// So we just need to set required=false if the RAML "required"
+			// parameter is not set or explicitly set to false.
 			if (!paramMetaData.getRamlParam().isRequired()) {
-                jAnnotationUse.param("required", false);
-            }
+				jAnnotationUse.param("required", false);
+			}
 
 			if (StringUtils.hasText(paramMetaData.getRamlParam().getDefaultValue())) {
 				jAnnotationUse.param("defaultValue", paramMetaData.getRamlParam().getDefaultValue());
@@ -137,12 +126,12 @@ public class SpringMethodParamsRule extends MethodParamsRule {
 				RJP10V2RamlQueryParameter queryParameter = (RJP10V2RamlQueryParameter) paramMetaData.getRamlParam();
 				if (StringUtils.hasText(queryParameter.getRawType())) {
 					jAnnotationUse = jVar.annotate(DateTimeFormat.class);
-					RamlTypeHelper.annotateDateWithPattern(jAnnotationUse,
-							queryParameter.getRawType(), queryParameter.getFormat());
+					RamlTypeHelper.annotateDateWithPattern(jAnnotationUse, queryParameter.getRawType(), queryParameter.getFormat());
 				}
 			}
-			//In most cases will be JReferencedClass - for a primitive/boxed primitive
-			if(jVar.type() instanceof JDefinedClass) {
+			// In most cases will be JReferencedClass - for a primitive/boxed
+			// primitive
+			if (jVar.type() instanceof JDefinedClass) {
 				boolean isPOJO = ((JDefinedClass) jVar.type())._package().name().startsWith(Config.getBasePackage());
 				if (isPOJO) {
 					jVar.annotate(Valid.class);
@@ -153,18 +142,18 @@ public class SpringMethodParamsRule extends MethodParamsRule {
 		}
 	}
 
-    @Override
-    protected JVar paramObjects(ApiActionMetadata endpointMetadata, CodeModelHelper.JExtMethod generatableType) {
-        JVar param = super.paramObjects(endpointMetadata, generatableType);
-        param.annotate(RequestBody.class);
-        return param;
-    }
+	@Override
+	protected JVar paramObjects(ApiActionMetadata endpointMetadata, CodeModelHelper.JExtMethod generatableType) {
+		JVar param = super.paramObjects(endpointMetadata, generatableType);
+		param.annotate(RequestBody.class);
+		return param;
+	}
 
-    @Override
-    protected JVar paramHttpHeaders(CodeModelHelper.JExtMethod generatableType) {
-        JVar paramHttpHeaders = super.paramHttpHeaders(generatableType);
-        paramHttpHeaders.annotate(RequestHeader.class);
-        return paramHttpHeaders;
-    }
+	@Override
+	protected JVar paramHttpHeaders(CodeModelHelper.JExtMethod generatableType) {
+		JVar paramHttpHeaders = super.paramHttpHeaders(generatableType);
+		paramHttpHeaders.annotate(RequestHeader.class);
+		return paramHttpHeaders;
+	}
 
 }
