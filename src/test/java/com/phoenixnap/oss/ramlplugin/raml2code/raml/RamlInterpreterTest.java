@@ -28,7 +28,6 @@ import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
 
 import org.apache.commons.lang3.ArrayUtils;
-import org.junit.After;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -62,8 +61,6 @@ import com.sun.codemodel.writer.SingleStreamCodeWriter;
  * @author aweisser
  */
 public class RamlInterpreterTest extends AbstractRuleTestBase {
-
-	private static boolean VISUALISE_MODEL_TO_CONSOLE = true;
 
 	protected static final Logger logger = LoggerFactory.getLogger(RamlInterpreterTest.class);
 
@@ -490,13 +487,6 @@ public class RamlInterpreterTest extends AbstractRuleTestBase {
 		return (JDefinedClass) CodeModelHelper.findFirstClassBySimpleName(jCodeModel, pojoName);
 	}
 
-	@After
-	public void visualiseTest() {
-		if (VISUALISE_MODEL_TO_CONSOLE) {
-			visualiseModel(jCodeModel);
-		}
-	}
-
 	private void checkModelWithInheritance(JCodeModel codeModel) {
 		checkModel(codeModel);
 
@@ -516,10 +506,6 @@ public class RamlInterpreterTest extends AbstractRuleTestBase {
 		assertThat(person, instanceOf(JDefinedClass.class));
 
 		checkThatClassContainsAllFields(person, "id", "firstname", "lastname", "serialVersionUID");
-	}
-
-	private void visualiseModel(JCodeModel codeModel) {
-		System.out.println(serialiseModel(codeModel));
 	}
 
 	private String serialiseModel(JCodeModel codeModel) {

@@ -33,7 +33,7 @@ public class SchemaHelperTest {
 
 	protected static final Logger logger = LoggerFactory.getLogger(SchemaHelperTest.class);
 
-	private static boolean VISUALISE_MODEL_TO_CONSOLE = true;
+	private static boolean VISUALISE_MODEL_TO_CONSOLE = false;
 
 	@Before
 	public void before() {
