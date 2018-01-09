@@ -489,7 +489,7 @@ public class SpringMvcEndpointGeneratorMojo extends AbstractMojo {
 			throw new MojoExecutionException(e, "Supplied RAML has failed validation and cannot be loaded.", e.toString());
 		}
 
-		this.getLog().info("Endpoint Generation Complete in:" + (System.currentTimeMillis() - startTime) + "ms");
+		this.getLog().info("Endpoint Generation Completed in:" + (System.currentTimeMillis() - startTime) + "ms");
 	}
 
 }

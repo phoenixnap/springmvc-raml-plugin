@@ -38,7 +38,7 @@ import com.phoenixnap.oss.ramlplugin.raml2code.raml.RamlActionType;
 import com.phoenixnap.oss.ramlplugin.raml2code.raml.RamlResource;
 
 /**
- * Class containing methods relating to naming converntions and string cleanup
+ * Class containing methods relating to naming conventions and string cleanup
  * for naming
  * 
  * @author Kurt Paris
