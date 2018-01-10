@@ -356,6 +356,14 @@ Configuration:
 - **com.phoenixnap.oss.ramlapisync.generation.rules.SpringFeignClientInterfaceRule**:
 Creates a standalone `org.springframework.cloud.netflix.feign.FeignClient` (REST client) for each top level endpoint.
 
+```
+Configuration:
+  class.annotation.feign.name.all: sets the "name" attribute in all @FeignClient annotations (This is useful with Eureka)
+  class.annotation.feign.name.<ClassName>: sets the "name" attribute in @FeignClient on Interface called <ClassName> 
+  class.annotation.feign.url.all: sets the "url" attribute in all @FeignClient annotations (This is useful with Eureka - set empty)
+  class.annotation.feign.url.<ClassName>: sets the "url" attribute in @FeignClient on Interface called <ClassName> 
+```
+
 ## Contributing
 [Pull requests][] are welcome; Be a good citizen and create unit tests for any bugs squished or features added
 
