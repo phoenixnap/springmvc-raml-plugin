@@ -12,6 +12,7 @@
  */
 package com.phoenixnap.oss.ramlapisync.generation.rules.spring;
 
+import com.phoenixnap.oss.ramlapisync.generation.rules.ConfigurableRule;
 import org.springframework.cloud.netflix.feign.FeignClient;
 
 import com.phoenixnap.oss.ramlapisync.data.ApiResourceMetadata;
@@ -24,6 +25,9 @@ import com.phoenixnap.oss.ramlapisync.generation.rules.basic.PackageRule;
 import com.phoenixnap.oss.ramlapisync.generation.rules.basic.SpringFeignClientInterfaceDeclarationRule;
 import com.sun.codemodel.JCodeModel;
 import com.sun.codemodel.JDefinedClass;
+
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * A code generation Rule that provides a standalone {@link FeignClient}.
@@ -47,15 +51,20 @@ import com.sun.codemodel.JDefinedClass;
  * @author Aleksandar Stojsavljevic
  * @since 0.8.6
  */
-public class SpringFeignClientInterfaceDecoratorRule implements Rule<JCodeModel, JDefinedClass, ApiResourceMetadata> {
+public class SpringFeignClientInterfaceDecoratorRule implements ConfigurableRule<JCodeModel, JDefinedClass, ApiResourceMetadata> {
+
+    private Map<String, String> configuration = new HashMap<>();
 	
 	@Override
     public final JDefinedClass apply(ApiResourceMetadata metadata, JCodeModel generatableType) {
 
+        SpringFeignClientClassAnnotationRule sfcca = new SpringFeignClientClassAnnotationRule();
+        sfcca.applyConfiguration(configuration);
+
         GenericJavaClassRule generator = new GenericJavaClassRule()
                 .setPackageRule(new PackageRule())
                 .setClassCommentRule(new ClassCommentRule())
-                .addClassAnnotationRule(new SpringFeignClientClassAnnotationRule())
+                .addClassAnnotationRule(sfcca)
                 .setClassRule(new SpringFeignClientInterfaceDeclarationRule())
                 .setMethodCommentRule(new MethodCommentRule())
                 .addMethodAnnotationRule(new SpringRequestMappingMethodAnnotationRule())
@@ -64,5 +73,10 @@ public class SpringFeignClientInterfaceDecoratorRule implements Rule<JCodeModel,
                         new SpringMethodParamsRule())
                 );
         return generator.apply(metadata, generatableType);
+    }
+
+    @Override
+    public void applyConfiguration(Map<String, String> configuration) {
+        this.configuration = configuration;
     }
 }
