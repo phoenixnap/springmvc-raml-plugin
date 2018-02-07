@@ -34,13 +34,6 @@ The SpringMVC-RAML plugin is released under version 2.0 of the [Apache License][
 ## Contributing
 [Pull requests][] are welcome; Be a good citizen and create unit tests for any bugs squished or features added
 
-[Pull requests]: http://help.github.com/send-pull-requests
-[Apache License]: http://www.apache.org/licenses/LICENSE-2.0
-[Git]: http://help.github.com/set-up-git-redirect
-[JDK8 build]: http://www.oracle.com/technetwork/java/javase/downloads
-[Maven]: http://maven.apache.org/
-[Issue]: https://github.com/phoenixnap/springmvc-raml-plugin/issues
-
 
 ## Usage - Generating SpringMVC Server Endpoints from a RAML file
 
@@ -177,3 +170,12 @@ Configuration:
 
 - **com.phoenixnap.oss.ramlapisync.generation.rules.SpringFeignClientInterfaceRule**:
 Creates a standalone `org.springframework.cloud.netflix.feign.FeignClient` (REST client) for each top level endpoint.
+
+
+[Pull requests]: http://help.github.com/send-pull-requests
+[Apache License]: http://www.apache.org/licenses/LICENSE-2.0
+[Git]: http://help.github.com/set-up-git-redirect
+[JDK8 build]: http://www.oracle.com/technetwork/java/javase/downloads
+[Maven]: http://maven.apache.org/
+[Issue]: https://github.com/phoenixnap/springmvc-raml-plugin/issues
+[GenerationConfig]: https://github.com/phoenixnap/springmvc-raml-plugin/blob/v20/src/main/java/com/phoenixnap/oss/ramlplugin/raml2code/plugin/PojoGenerationConfig.java
