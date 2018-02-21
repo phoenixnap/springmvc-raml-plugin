@@ -219,7 +219,7 @@
 			</plugins>
 		</pluginManagement>
 	
-		<plugins>
+		<!-- <plugins>
 			<plugin>
 				<groupId>net.revelc.code.formatter</groupId>
 				<artifactId>formatter-maven-plugin</artifactId>
@@ -235,7 +235,7 @@
 					</execution>
 				</executions>
 			</plugin>
-		</plugins>
+		</plugins> -->
 		
 		<resources>
 			<resource>

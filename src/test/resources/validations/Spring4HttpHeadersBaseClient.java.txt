@@ -177,7 +177,16 @@ public class BaseClientImpl
             httpHeaders.add("X-Another-Header", xAnotherHeader.toString());
         }
         String url = baseUrl.concat("/base/{id}/elements");
-        UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl(url).queryParam("requiredQueryParam", requiredQueryParam).queryParam("optionalQueryParam", optionalQueryParam).queryParam("optionalQueryParam2", optionalQueryParam2);
+        UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl(url);
+        if (requiredQueryParam!= null) {
+            builder.queryParam("requiredQueryParam", requiredQueryParam);
+        }
+        if (optionalQueryParam!= null) {
+            builder.queryParam("optionalQueryParam", optionalQueryParam);
+        }
+        if (optionalQueryParam2 != null) {
+            builder.queryParam("optionalQueryParam2", optionalQueryParam2);
+        }
         UriComponents uriComponents = builder.build();
         HttpEntity httpEntity = new HttpEntity(httpHeaders);
         Map<String, Object> uriParamMap = new HashMap();

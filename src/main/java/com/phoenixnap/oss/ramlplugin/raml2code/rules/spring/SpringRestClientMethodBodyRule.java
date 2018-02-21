@@ -170,17 +170,22 @@ public class SpringRestClientMethodBodyRule implements Rule<CodeModelHelper.JExt
 		JClass builderClass = owner.ref(UriComponentsBuilder.class);
 		JExpression builderInit = builderClass.staticInvoke("fromHttpUrl").arg(url);
 
+		// Add these to the code model
+		uriBuilderVar = body.decl(builderClass, "builder", builderInit);
+
 		// If we have any Query Parameters, we will use the URIBuilder to encode
 		// them in the URL
 		if (!CollectionUtils.isEmpty(endpointMetadata.getRequestParameters())) {
 			// iterate over the parameters and add calls to .queryParam
 			for (ApiParameterMetadata parameter : endpointMetadata.getRequestParameters()) {
-				builderInit = builderInit.invoke("queryParam").arg(parameter.getName())
+				// we need to check if param is not null in order to prevent
+				// client for sending that param (that will be read as empty
+				// string instead of null)
+				body._if(methodParamMap.get(NamingHelper.getParameterName(parameter.getName())).ne(JExpr._null()))._then().block()
+						.invoke(uriBuilderVar, "queryParam").arg(parameter.getName())
 						.arg(methodParamMap.get(NamingHelper.getParameterName(parameter.getName())));
 			}
 		}
-		// Add these to the code model
-		uriBuilderVar = body.decl(builderClass, "builder", builderInit);
 
 		JClass componentClass = owner.ref(UriComponents.class);
 		JExpression component = uriBuilderVar.invoke("build");
