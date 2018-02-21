@@ -1,0 +1,22 @@
+#%RAML 1.0
+
+title: Delete does not generate body parameter
+version: 1.0
+
+types: 
+  DeleteObject: 
+    properties: 
+      id: number
+      name: string
+
+/test:
+  delete:
+    queryParameters: 
+      test1: number
+      test2: string
+    headers: 
+      X-test1: number
+      X-test2: string
+    body: 
+      application/json:
+        type: DeleteObject

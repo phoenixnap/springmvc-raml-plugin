@@ -1,0 +1,177 @@
+-----------------------------------com.gen.test.model.DeleteObject.java-----------------------------------
+
+package com.gen.test.model;
+
+import java.io.Serializable;
+import org.apache.commons.lang.builder.EqualsBuilder;
+import org.apache.commons.lang.builder.HashCodeBuilder;
+import org.apache.commons.lang.builder.ToStringBuilder;
+
+public class DeleteObject implements Serializable
+{
+
+    private Double id;
+    private String name;
+
+    /**
+     * Creates a new DeleteObject.
+     * 
+     */
+    public DeleteObject() {
+        super();
+    }
+
+    /**
+     * Creates a new DeleteObject.
+     * 
+     */
+    public DeleteObject(Double id, String name) {
+        super();
+        this.id = id;
+        this.name = name;
+    }
+
+    /**
+     * Returns the id.
+     * 
+     * @return
+     *     id
+     */
+    public Double getId() {
+        return id;
+    }
+
+    /**
+     * Set the id.
+     * 
+     * @param id
+     *     the new id
+     */
+    public void setId(Double id) {
+        this.id = id;
+    }
+
+    /**
+     * Returns the name.
+     * 
+     * @return
+     *     name
+     */
+    public String getName() {
+        return name;
+    }
+
+    /**
+     * Set the name.
+     * 
+     * @param name
+     *     the new name
+     */
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public int hashCode() {
+        return new HashCodeBuilder().append(id).append(name).toHashCode();
+    }
+
+    public boolean equals(Object other) {
+        if (other == null) {
+            return false;
+        }
+        if (other == this) {
+            return true;
+        }
+        if (this.getClass()!= other.getClass()) {
+            return false;
+        }
+        DeleteObject otherObject = ((DeleteObject) other);
+        return new EqualsBuilder().append(id, otherObject.id).append(name, otherObject.name).isEquals();
+    }
+
+    public String toString() {
+        return new ToStringBuilder(this).append("id", id).append("name", name).toString();
+    }
+
+}
+-----------------------------------com.gen.test.TestController.java-----------------------------------
+
+package com.gen.test;
+
+import java.math.BigDecimal;
+import javax.validation.Valid;
+import com.gen.test.model.DeleteObject;
+import org.springframework.http.ResponseEntity;
+
+
+/**
+ * No description
+ * (Generated with springmvc-raml-parser v.${project.version})
+ * 
+ */
+public interface TestController {
+
+
+    /**
+     * No description
+     * 
+     */
+    public ResponseEntity<?> deleteTest(BigDecimal test1, String test2, BigDecimal xTest1, String xTest2,
+        @Valid
+        DeleteObject deleteObject);
+
+}
+-----------------------------------com.gen.test.TestControllerDecorator.java-----------------------------------
+
+package com.gen.test;
+
+import java.math.BigDecimal;
+import javax.validation.Valid;
+import com.gen.test.model.DeleteObject;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestHeader;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
+
+
+/**
+ * No description
+ * (Generated with springmvc-raml-parser v.${project.version})
+ * 
+ */
+@RestController
+@RequestMapping("/api/test")
+@Validated
+public class TestControllerDecorator
+    implements TestController
+{
+
+    @Autowired
+    private TestController testControllerDelegate;
+
+    /**
+     * No description
+     * 
+     */
+    @RequestMapping(value = "", method = RequestMethod.DELETE)
+    public ResponseEntity<?> deleteTest(
+        @RequestParam
+        BigDecimal test1,
+        @RequestParam
+        String test2,
+        @RequestHeader(name = "X-test1")
+        BigDecimal xTest1,
+        @RequestHeader(name = "X-test2")
+        String xTest2,
+        @Valid
+        @RequestBody
+        DeleteObject deleteObject) {
+        return this.testControllerDelegate.deleteTest(test1, test2, xTest1, xTest2, deleteObject);
+    }
+
+}
