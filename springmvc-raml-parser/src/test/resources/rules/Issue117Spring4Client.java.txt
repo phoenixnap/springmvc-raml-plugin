@@ -66,7 +66,13 @@ public class FileClientImpl
         acceptsList.add(MediaType.valueOf("application/json"));
         httpHeaders.setAccept(acceptsList);
         String url = baseUrl.concat("/files");
-        UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl(url).queryParam("notArray", notArray).queryParam("stringArray", stringArray);
+        UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl(url);
+        if (notArray!= null) {
+            builder.queryParam("notArray", notArray);
+        }
+        if (stringArray!= null) {
+            builder.queryParam("stringArray", stringArray);
+        }
         UriComponents uriComponents = builder.build();
         HttpEntity httpEntity = new HttpEntity(httpHeaders);
         return this.restTemplate.exchange(uriComponents.encode().toUri(), HttpMethod.GET, httpEntity, Object.class);
