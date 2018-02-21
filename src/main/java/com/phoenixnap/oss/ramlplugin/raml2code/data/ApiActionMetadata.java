@@ -187,7 +187,8 @@ public class ApiActionMetadata {
 	 * @return If true, the verb supports a payload in the request body
 	 */
 	private boolean doesActionTypeSupportRequestBody(RamlActionType target) {
-		return target.equals(RamlActionType.POST) || target.equals(RamlActionType.PUT) || target.equals(RamlActionType.PATCH);
+		return target.equals(RamlActionType.POST) || target.equals(RamlActionType.PUT) || target.equals(RamlActionType.PATCH)
+				|| target.equals(RamlActionType.DELETE);
 	}
 
 	/**
