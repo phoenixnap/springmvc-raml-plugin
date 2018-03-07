@@ -20,6 +20,7 @@ import java.util.List;
 import java.util.Set;
 
 import org.apache.commons.lang.NullArgumentException;
+import org.springframework.core.annotation.AnnotationUtils;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -166,22 +167,21 @@ public class ApiParameterMetadata {
 			throw new NullArgumentException("param");
 		}
 
-		RequestParam requestParam = param.getAnnotation(RequestParam.class);
+		RequestParam requestParam = AnnotationUtils.getAnnotation(param, RequestParam.class);
 		if (requestParam != null) {
 			annotatedName = requestParam.value();
 			nullable = !requestParam.required();
 		}
 
-		PathVariable pathVariable = param.getAnnotation(PathVariable.class);
+		PathVariable pathVariable = AnnotationUtils.getAnnotation(param, PathVariable.class);
 		if (pathVariable != null) {
 			resourceId = true;
 			annotatedName = pathVariable.value();
 		}
 
-		RequestBody requestBody = param.getAnnotation(RequestBody.class);
+		RequestBody requestBody = AnnotationUtils.getAnnotation(param, RequestBody.class);
 		if (requestBody != null) {
 			nullable = !requestBody.required();
-
 		}
 
 		this.name = resolveParameterName(annotatedName, param);
@@ -191,7 +191,7 @@ public class ApiParameterMetadata {
 			this.genericType = JavaTypeHelper.inferGenericType(param.getParameterizedType());
 		}
 
-		Example parameterExample = param.getAnnotation(Example.class);
+		Example parameterExample = AnnotationUtils.getAnnotation(param, Example.class);
 		if (parameterExample != null && StringUtils.hasText(parameterExample.value())) {
 			this.example = parameterExample.value();
 		}
