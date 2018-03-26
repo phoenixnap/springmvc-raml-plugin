@@ -62,7 +62,7 @@ Then simply include the following code in the POM of the project you wish to gen
 		...
 	</generationConfig>
 	<seperateMethodsByContentType>false</seperateMethodsByContentType>
-	<rule>com.phoenixnap.oss.ramlapisync.generation.rules.Spring4ControllerStubRule</rule>
+	<rule>com.phoenixnap.oss.ramlplugin.raml2code.rules.Spring4ControllerStubRule</rule>
 	<ruleConfiguration>			
 	</ruleConfiguration>
   </configuration>
@@ -124,7 +124,7 @@ Then simply include the following code in the POM of the project you wish to gen
 (optional) This is a key/value map for configuration of individual rules. Not all rules support configuration.
 
 ### rule
-(optional, default: com.phoenixnap.oss.ramlapisync.generation.rules.Spring4ControllerStubRule) The rule class to be used for code generation.
+(optional, default: com.phoenixnap.oss.ramlplugin.raml2code.rules.Spring4ControllerStubRule) The rule class to be used for code generation.
 
 #### Available Rules
 - **com.phoenixnap.oss.ramlapisync.generation.rule.Spring4ControllerStubRule**:
@@ -137,7 +137,7 @@ Configuration:
 	callableResponse: [OPTIONAL] set to 'true' to support asynchronous callables. Default: 'false'
 ```
 
-- **com.phoenixnap.oss.ramlapisync.generation.rules.Spring4ControllerDecoratorRule**:
+- **com.phoenixnap.oss.ramlplugin.raml2code.rules.Spring4ControllerDecoratorRule**:
 Creates a controller interface and a decorator with Spring MVC annotations for each top level endpoint.
 The decorator implements the controller interface and delegates all method calls to an @Autowired ControllerDelegate.
 So all you have to do is to provide an ControllerDelegate class which implements the controller interface.
@@ -147,7 +147,7 @@ Configuration:
 	callableResponse: [OPTIONAL] set to 'true' to support asynchronous callables. Default: 'false'
 ```
 
-- **com.phoenixnap.oss.ramlapisync.generation.rules.Spring4ControllerInterfaceRule**:
+- **com.phoenixnap.oss.ramlplugin.raml2code.rules.Spring4ControllerInterfaceRule**:
 Creates an single interface with Spring MVC annotations for each top level endpoint.
 All you have to do is to provide an implementation for the controller interface
 
@@ -158,7 +158,7 @@ Configuration:
 	useShortcutMethodMappings: [OPTIONAL] set to 'true' to generate new shortcut method annotations(e.g. @PutMapping, @GetMapping) instead of old-style @RequestMapping. Default: 'false'
 ```
 
-- **com.phoenixnap.oss.ramlapisync.generation.rules.Spring4RestTemplateClientRule**:
+- **com.phoenixnap.oss.ramlplugin.raml2code.rules.Spring4RestTemplateClientRule**:
 Creates a single interface as well as a client implementation using the Spring RestTemplate. The client assumes that a RestTemplate is available to be autowired.
 
 ```
@@ -168,7 +168,7 @@ Configuration:
 	restTemplateQualifierBeanName: [OPTIONAL] The name of the bean for the rest template used in the generated client. Default: NONE
 ```
 
-- **com.phoenixnap.oss.ramlapisync.generation.rules.SpringFeignClientInterfaceRule**:
+- **com.phoenixnap.oss.ramlplugin.raml2code.rules.SpringFeignClientInterfaceRule**:
 Creates a standalone `org.springframework.cloud.netflix.feign.FeignClient` (REST client) for each top level endpoint.
 
 
