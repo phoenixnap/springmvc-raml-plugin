@@ -1,0 +1,290 @@
+-----------------------------------com.gen.test.model.Client.java-----------------------------------
+
+package com.gen.test.model;
+
+import java.io.Serializable;
+import org.apache.commons.lang.builder.EqualsBuilder;
+import org.apache.commons.lang.builder.HashCodeBuilder;
+import org.apache.commons.lang.builder.ToStringBuilder;
+
+public class Client implements Serializable
+{
+
+    private String test;
+
+    /**
+     * Creates a new Client.
+     * 
+     */
+    public Client() {
+        super();
+    }
+
+    /**
+     * Creates a new Client.
+     * 
+     */
+    public Client(String test) {
+        super();
+        this.test = test;
+    }
+
+    /**
+     * Returns the test.
+     * 
+     * @return
+     *     test
+     */
+    public String getTest() {
+        return test;
+    }
+
+    /**
+     * Set the test.
+     * 
+     * @param test
+     *     the new test
+     */
+    public void setTest(String test) {
+        this.test = test;
+    }
+
+    public int hashCode() {
+        return new HashCodeBuilder().append(test).toHashCode();
+    }
+
+    public boolean equals(Object other) {
+        if (other == null) {
+            return false;
+        }
+        if (other == this) {
+            return true;
+        }
+        if (this.getClass()!= other.getClass()) {
+            return false;
+        }
+        Client otherObject = ((Client) other);
+        return new EqualsBuilder().append(test, otherObject.test).isEquals();
+    }
+
+    public String toString() {
+        return new ToStringBuilder(this).append("test", test).toString();
+    }
+
+}
+-----------------------------------com.gen.test.model.Credit.java-----------------------------------
+
+package com.gen.test.model;
+
+import java.io.Serializable;
+import org.apache.commons.lang.builder.EqualsBuilder;
+import org.apache.commons.lang.builder.HashCodeBuilder;
+import org.apache.commons.lang.builder.ToStringBuilder;
+
+public class Credit implements Serializable
+{
+
+
+    /**
+     * Creates a new Credit.
+     * 
+     */
+    public Credit() {
+        super();
+    }
+
+    public int hashCode() {
+        return new HashCodeBuilder().toHashCode();
+    }
+
+    public boolean equals(Object other) {
+        if (other == null) {
+            return false;
+        }
+        if (other == this) {
+            return true;
+        }
+        if (this.getClass()!= other.getClass()) {
+            return false;
+        }
+        Credit otherObject = ((Credit) other);
+        return new EqualsBuilder().isEquals();
+    }
+
+    public String toString() {
+        return new ToStringBuilder(this).toString();
+    }
+
+}
+-----------------------------------com.gen.test.model.Resource.java-----------------------------------
+
+package com.gen.test.model;
+
+import java.io.Serializable;
+import org.apache.commons.lang.builder.EqualsBuilder;
+import org.apache.commons.lang.builder.HashCodeBuilder;
+import org.apache.commons.lang.builder.ToStringBuilder;
+
+public class Resource implements Serializable
+{
+
+    /**
+     * Creates a new Resource.
+     * 
+     */
+    public Resource() {
+        super();
+    }
+
+    public int hashCode() {
+        return new HashCodeBuilder().toHashCode();
+    }
+
+    public boolean equals(Object other) {
+        if (other == null) {
+            return false;
+        }
+        if (other == this) {
+            return true;
+        }
+        if (this.getClass()!= other.getClass()) {
+            return false;
+        }
+        Resource otherObject = ((Resource) other);
+        return new EqualsBuilder().isEquals();
+    }
+
+    public String toString() {
+        return new ToStringBuilder(this).toString();
+    }
+
+}
+-----------------------------------com.gen.test.ClientClient.java-----------------------------------
+
+package com.gen.test;
+
+import com.gen.test.model.Client;
+import com.gen.test.model.Credit;
+import com.gen.test.model.Resource;
+import org.springframework.http.ResponseEntity;
+
+
+/**
+ * No description
+ * (Generated with springmvc-raml-parser v.@project.version@)
+ * 
+ */
+public interface ClientClient {
+
+
+    /**
+     * No description
+     * 
+     */
+    public ResponseEntity<Client> getClient();
+
+    /**
+     * No description
+     * 
+     */
+    public ResponseEntity<Resource> getResource();
+
+    /**
+     * No description
+     * 
+     */
+    public ResponseEntity<Credit> getCredit();
+
+}
+-----------------------------------com.gen.test.ClientClientImpl.java-----------------------------------
+
+package com.gen.test;
+
+import java.util.ArrayList;
+import com.gen.test.model.Client;
+import com.gen.test.model.Credit;
+import com.gen.test.model.Resource;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpMethod;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Component;
+import org.springframework.web.client.RestTemplate;
+import org.springframework.web.util.UriComponents;
+import org.springframework.web.util.UriComponentsBuilder;
+
+
+/**
+ * No description
+ * (Generated with springmvc-raml-parser v.@project.version@)
+ * 
+ */
+@Component
+public class ClientClientImpl
+    implements ClientClient
+{
+
+    @Value("${client.url}")
+    private String baseUrl;
+    @Autowired
+    private RestTemplate clientCredentialsRestTemplate;
+    @Autowired
+    private RestTemplate authorizationCodeRestTemplate;
+    @Autowired
+    private RestTemplate implicitRestTemplate;
+
+    /**
+     * No description
+     * 
+     */
+    public ResponseEntity<Client> getClient() {
+        HttpHeaders httpHeaders = new HttpHeaders();
+        //  Add Accepts Headers and Body Content-Type
+        ArrayList<MediaType> acceptsList = new ArrayList<MediaType>();
+        acceptsList.add(MediaType.valueOf("application/json"));
+        httpHeaders.setAccept(acceptsList);
+        String url = baseUrl.concat("/root/clients");
+        UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl(url);
+        UriComponents uriComponents = builder.build();
+        HttpEntity httpEntity = new HttpEntity(httpHeaders);
+        return this.clientCredentialsRestTemplate.exchange(uriComponents.encode().toUri(), HttpMethod.GET, httpEntity, Client.class);
+    }
+
+    /**
+     * No description
+     * 
+     */
+    public ResponseEntity<Resource> getResource() {
+        HttpHeaders httpHeaders = new HttpHeaders();
+        //  Add Accepts Headers and Body Content-Type
+        ArrayList<MediaType> acceptsList = new ArrayList<MediaType>();
+        acceptsList.add(MediaType.valueOf("application/json"));
+        httpHeaders.setAccept(acceptsList);
+        String url = baseUrl.concat("/root/clients/resources");
+        UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl(url);
+        UriComponents uriComponents = builder.build();
+        HttpEntity httpEntity = new HttpEntity(httpHeaders);
+        return this.authorizationCodeRestTemplate.exchange(uriComponents.encode().toUri(), HttpMethod.GET, httpEntity, Resource.class);
+    }
+
+    /**
+     * No description
+     * 
+     */
+    public ResponseEntity<Credit> getCredit() {
+        HttpHeaders httpHeaders = new HttpHeaders();
+        //  Add Accepts Headers and Body Content-Type
+        ArrayList<MediaType> acceptsList = new ArrayList<MediaType>();
+        acceptsList.add(MediaType.valueOf("application/json"));
+        httpHeaders.setAccept(acceptsList);
+        String url = baseUrl.concat("/root/clients/customers/credits");
+        UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl(url);
+        UriComponents uriComponents = builder.build();
+        HttpEntity httpEntity = new HttpEntity(httpHeaders);
+        return this.implicitRestTemplate.exchange(uriComponents.encode().toUri(), HttpMethod.GET, httpEntity, Credit.class);
+    }
+
+}

@@ -142,10 +142,10 @@ public class SampleUnitClientImpl
     implements SampleUnitClient
 {
 
-    @Autowired
-    private RestTemplate restTemplate;
     @Value("${client.url}")
     private String baseUrl;
+    @Autowired
+    private RestTemplate restTemplate;
 
     /**
      * Retrieves  samples

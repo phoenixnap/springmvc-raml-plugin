@@ -12,6 +12,7 @@
  */
 package com.phoenixnap.oss.ramlplugin.raml2code.raml;
 
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -43,4 +44,6 @@ public interface RamlResource extends RamlResourceRoot {
 	String getParentUri();
 
 	RamlAction getAction(RamlActionType actionType);
+
+	List<RamlSecurityReference> getSecuredBy();
 }

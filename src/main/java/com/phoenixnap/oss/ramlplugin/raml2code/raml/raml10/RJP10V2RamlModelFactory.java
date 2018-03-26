@@ -11,6 +11,7 @@ import org.raml.v2.api.model.v10.bodies.Response;
 import org.raml.v2.api.model.v10.datamodel.TypeDeclaration;
 import org.raml.v2.api.model.v10.methods.Method;
 import org.raml.v2.api.model.v10.resources.Resource;
+import org.raml.v2.api.model.v10.security.SecurityScheme;
 import org.raml.v2.api.model.v10.security.SecuritySchemeRef;
 
 import com.phoenixnap.oss.ramlplugin.raml2code.data.RamlFormParameter;
@@ -26,6 +27,7 @@ import com.phoenixnap.oss.ramlplugin.raml2code.raml.RamlResource;
 import com.phoenixnap.oss.ramlplugin.raml2code.raml.RamlResponse;
 import com.phoenixnap.oss.ramlplugin.raml2code.raml.RamlRoot;
 import com.phoenixnap.oss.ramlplugin.raml2code.raml.RamlSecurityReference;
+import com.phoenixnap.oss.ramlplugin.raml2code.raml.RamlSecurityScheme;
 
 /**
  * @author aweisser
@@ -122,6 +124,16 @@ public class RJP10V2RamlModelFactory implements RamlModelFactory {
 	@Override
 	public RamlSecurityReference createRamlSecurityReference(Object securityReference) {
 		return new RJP10V2RamlSecurityReference((SecuritySchemeRef) securityReference);
+	}
+
+	@Override
+	public List<RamlSecurityScheme> createRamlSecuritySchemes(List<? extends Object> securitySchemes) {
+		return securitySchemes.stream().map(this::createRamlSecurityScheme).collect(Collectors.toList());
+	}
+
+	@Override
+	public RamlSecurityScheme createRamlSecurityScheme(Object securityReference) {
+		return new RJP10V2RamlSecurityScheme((SecurityScheme) securityReference);
 	}
 
 	@Override

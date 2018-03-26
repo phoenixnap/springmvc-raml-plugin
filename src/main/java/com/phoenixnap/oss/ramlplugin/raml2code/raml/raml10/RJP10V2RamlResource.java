@@ -17,6 +17,7 @@ import com.phoenixnap.oss.ramlplugin.raml2code.helpers.RamlTypeHelper;
 import com.phoenixnap.oss.ramlplugin.raml2code.raml.RamlAction;
 import com.phoenixnap.oss.ramlplugin.raml2code.raml.RamlActionType;
 import com.phoenixnap.oss.ramlplugin.raml2code.raml.RamlResource;
+import com.phoenixnap.oss.ramlplugin.raml2code.raml.RamlSecurityReference;
 import com.phoenixnap.oss.ramlplugin.raml2code.raml.RamlUriParameter;
 
 /**
@@ -190,5 +191,10 @@ public class RJP10V2RamlResource implements RamlResource {
 
 	Resource getResource() {
 		return this.delegate;
+	}
+
+	@Override
+	public List<RamlSecurityReference> getSecuredBy() {
+		return ramlModelFactory.createRamlSecurityReferences(this.delegate.securedBy());
 	}
 }

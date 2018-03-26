@@ -43,7 +43,7 @@ import com.sun.codemodel.writer.SingleStreamCodeWriter;
  */
 public abstract class AbstractRuleTestBase {
 
-	public static final boolean VISUALISE_CODE = false;
+	public static final boolean VISUALISE_CODE = true;
 	public static final String RESOURCE_BASE = "ramls/";
 	public static final String VALIDATOR_BASE = "validations/";
 	public static final String LINE_END = System.getProperty("line.separator");

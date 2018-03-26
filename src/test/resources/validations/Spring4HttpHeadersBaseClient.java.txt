@@ -121,10 +121,10 @@ public class BaseClientImpl
     implements BaseClient
 {
 
-    @Autowired
-    private RestTemplate restTemplate;
     @Value("${client.url}")
     private String baseUrl;
+    @Autowired
+    private RestTemplate restTemplate;
 
     /**
      * No description

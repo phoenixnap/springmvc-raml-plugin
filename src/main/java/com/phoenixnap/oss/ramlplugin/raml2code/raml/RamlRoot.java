@@ -30,4 +30,8 @@ public interface RamlRoot extends RamlResourceRoot {
 	String getBaseUri();
 
 	Map<String, RamlDataType> getTypes();
+
+	List<RamlSecurityReference> getSecuredBy();
+
+	List<RamlSecurityScheme> getSecuritySchemes();
 }

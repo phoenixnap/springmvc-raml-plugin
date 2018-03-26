@@ -12,6 +12,12 @@
  */
 package com.phoenixnap.oss.ramlplugin.raml2code.raml.raml10;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+
+import org.raml.v2.api.model.v10.datamodel.TypeInstance;
+import org.raml.v2.api.model.v10.datamodel.TypeInstanceProperty;
 import org.raml.v2.api.model.v10.security.SecuritySchemeRef;
 
 import com.phoenixnap.oss.ramlplugin.raml2code.raml.RamlSecurityReference;
@@ -38,7 +44,28 @@ public class RJP10V2RamlSecurityReference implements RamlSecurityReference {
 		return this.securitySchemeRef.name();
 	}
 
-	SecuritySchemeRef getSecuritySchemeRef() {
+	public SecuritySchemeRef getSecuritySchemeRef() {
 		return this.securitySchemeRef;
+	}
+
+	@Override
+	public List<String> getAuthorizationGrants() {
+		if (!"oauth_2_0".equalsIgnoreCase(getName())) {
+			return Collections.emptyList();
+		}
+
+		TypeInstance structuredValue = this.securitySchemeRef.structuredValue();
+		if (structuredValue == null) {
+			return Collections.emptyList();
+		}
+
+		List<String> authorizationGrants = new ArrayList<>();
+		List<TypeInstanceProperty> properties = structuredValue.properties();
+		for (TypeInstanceProperty property : properties) {
+			if ("authorizationGrants".equalsIgnoreCase(property.name())) {
+				authorizationGrants.add(property.value().value().toString());
+			}
+		}
+		return authorizationGrants;
 	}
 }

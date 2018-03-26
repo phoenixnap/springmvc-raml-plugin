@@ -12,14 +12,21 @@
  */
 package com.phoenixnap.oss.ramlplugin.raml2code.rules;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.apache.commons.lang3.BooleanUtils;
 import org.springframework.stereotype.Component;
 import org.springframework.util.CollectionUtils;
+import org.springframework.util.StringUtils;
 import org.springframework.web.client.RestTemplate;
 
+import com.google.common.base.CaseFormat;
+import com.phoenixnap.oss.ramlplugin.raml2code.data.ApiActionMetadata;
 import com.phoenixnap.oss.ramlplugin.raml2code.data.ApiResourceMetadata;
+import com.phoenixnap.oss.ramlplugin.raml2code.helpers.RamlHelper;
 import com.phoenixnap.oss.ramlplugin.raml2code.rules.basic.ClassAnnotationRule;
 import com.phoenixnap.oss.ramlplugin.raml2code.rules.basic.ClassCommentRule;
 import com.phoenixnap.oss.ramlplugin.raml2code.rules.basic.ClassFieldDeclarationRule;
@@ -73,6 +80,16 @@ public class Spring4RestTemplateClientRule implements ConfigurableRule<JCodeMode
 	@Override
 	public final JDefinedClass apply(ApiResourceMetadata metadata, JCodeModel generatableType) {
 
+		List<String> grants = new ArrayList<>();
+		Set<ApiActionMetadata> apiCalls = metadata.getApiCalls();
+		for (ApiActionMetadata actionMetadata : apiCalls) {
+			String grant = RamlHelper.getFirstAuthorizationGrant(actionMetadata.getAction(), actionMetadata.getParent().getDocument());
+			if (!StringUtils.isEmpty(grant)) {
+				grants.add(grant);
+			}
+		}
+		grants = RamlHelper.removeDuplicates(grants);
+
 		JDefinedClass generatedInterface = new GenericJavaClassRule().setPackageRule(new PackageRule())
 				.setClassCommentRule(new ClassCommentRule()).setClassRule(new ClientInterfaceDeclarationRule()) // MODIFIED
 				.setMethodCommentRule(new MethodCommentRule())
@@ -84,13 +101,25 @@ public class Spring4RestTemplateClientRule implements ConfigurableRule<JCodeMode
 				.setClassCommentRule(new ClassCommentRule()).addClassAnnotationRule(new ClassAnnotationRule(Component.class))
 				.setClassRule(new ResourceClassDeclarationRule(ClientInterfaceDeclarationRule.CLIENT_SUFFIX + "Impl")) // MODIFIED
 				.setImplementsExtendsRule(new ImplementsControllerInterfaceRule(generatedInterface))
-				.addFieldDeclarationRule(
-						new ClassFieldDeclarationRule(restTemplateFieldName, RestTemplate.class, true, restTemplateQualifierBeanName)) // Modified
 				.addFieldDeclarationRule(new ClassFieldDeclarationRule(baseUrlFieldName, String.class, getBaseUrlConfigurationName())) //
 				.setMethodCommentRule(new MethodCommentRule())
 				.setMethodSignatureRule(new ControllerMethodSignatureRule(new SpringResponseEntityRule(),
 						new MethodParamsRule(false, allowArrayParameters)))
 				.setMethodBodyRule(new SpringRestClientMethodBodyRule(restTemplateFieldName, baseUrlFieldName));
+		
+		if (grants.isEmpty()) {
+			clientGenerator.addFieldDeclarationRule(
+					new ClassFieldDeclarationRule(restTemplateFieldName, RestTemplate.class, true, restTemplateQualifierBeanName)); // Modified
+		}
+		else {
+			for (String grant : grants) {
+				grant = CaseFormat.LOWER_UNDERSCORE.to(CaseFormat.LOWER_CAMEL, grant);
+
+				clientGenerator.addFieldDeclarationRule(
+						new ClassFieldDeclarationRule(grant + StringUtils.capitalize(restTemplateFieldName), RestTemplate.class,
+						true, StringUtils.isEmpty(restTemplateQualifierBeanName) ? null : restTemplateQualifierBeanName + grant)); // Modified
+			}
+		}
 
 		return clientGenerator.apply(metadata, generatableType);
 	}

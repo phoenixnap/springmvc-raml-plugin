@@ -36,6 +36,7 @@ import com.phoenixnap.oss.ramlplugin.raml2code.data.ApiBodyMetadata;
 import com.phoenixnap.oss.ramlplugin.raml2code.data.ApiParameterMetadata;
 import com.phoenixnap.oss.ramlplugin.raml2code.helpers.CodeModelHelper;
 import com.phoenixnap.oss.ramlplugin.raml2code.helpers.NamingHelper;
+import com.phoenixnap.oss.ramlplugin.raml2code.helpers.RamlHelper;
 import com.phoenixnap.oss.ramlplugin.raml2code.plugin.Config;
 import com.phoenixnap.oss.ramlplugin.raml2code.rules.Rule;
 import com.sun.codemodel.JBlock;
@@ -254,8 +255,16 @@ public class SpringRestClientMethodBodyRule implements Rule<CodeModelHelper.JExt
 			returnExpression = body.decl(paramTypeRefClass, "typeReference", paramTypeRefInit);
 		}
 
+		String restTemplateName = restTemplateFieldName;
+		String grant = RamlHelper.getFirstAuthorizationGrant(endpointMetadata.getAction(),
+				endpointMetadata.getParent().getDocument());
+		if (!StringUtils.isEmpty(grant)) {
+			grant = CaseFormat.LOWER_UNDERSCORE.to(CaseFormat.LOWER_CAMEL, grant);
+			restTemplateName = grant + StringUtils.capitalize(restTemplateFieldName);
+		}
+
 		// build rest template exchange invocation
-		JInvocation jInvocation = JExpr._this().ref(restTemplateFieldName).invoke("exchange");
+		JInvocation jInvocation = JExpr._this().ref(restTemplateName).invoke("exchange");
 
 		jInvocation.arg(uriComponentVar.invoke("encode").invoke("toUri"));
 		jInvocation.arg(httpMethod.staticRef(endpointMetadata.getActionType().name()));
@@ -266,5 +275,4 @@ public class SpringRestClientMethodBodyRule implements Rule<CodeModelHelper.JExt
 
 		return generatableType.get();
 	}
-
 }

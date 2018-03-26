@@ -73,4 +73,8 @@ public interface RamlModelFactory {
 		return object;
 	}
 
+	List<RamlSecurityScheme> createRamlSecuritySchemes(List<? extends Object> securitySchemes);
+
+	RamlSecurityScheme createRamlSecurityScheme(Object securityReference);
+
 }

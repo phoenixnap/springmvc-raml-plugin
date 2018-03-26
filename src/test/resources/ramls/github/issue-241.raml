@@ -1,0 +1,60 @@
+#%RAML 1.0
+
+title: Generating client for more than one authorization grant
+version: 1.0
+
+securitySchemes: 
+  oauth_2_0:
+    description: |
+      Dropbox supports OAuth 2.0 for authenticating all API requests.
+    type: OAuth 2.0
+    describedBy:
+      headers:
+        Authorization:
+          description: |
+             Used to send a valid OAuth 2 access token. Do not use
+             with the "access_token" query string parameter.
+          type: string
+    settings:
+      accessTokenUri: https://www.dropbox.com/1/oauth/authorize
+      authorizationUri: https://www.dropbox.com/1/oauth/authorize
+      authorizationGrants: [ implicit, client_credentials, authorization_code ]
+securedBy: 
+  oauth_2_0
+types: 
+  Client:
+    type: object
+    properties: 
+      test: string
+  Resource: object
+  Credit: object
+  
+/root:    
+  /clients:
+    get:
+      securedBy: 
+        oauth_2_0: 
+          authorizationGrants: client_credentials
+      responses: 
+        200:
+          body: 
+            application/json:
+              type: Client
+    /resources:
+      securedBy: 
+        oauth_2_0:
+          authorizationGrants: authorization_code
+      get:
+        responses: 
+          200:
+            body: 
+              application/json:
+                type: Resource
+    /customers:
+      /credits:
+        get:
+          responses: 
+            200:
+              body: 
+                application/json:
+                  type: Credit

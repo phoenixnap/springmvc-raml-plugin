@@ -12,6 +12,8 @@
  */
 package com.phoenixnap.oss.ramlplugin.raml2code.raml;
 
+import java.util.List;
+
 /**
  * Abstract Representation of a Raml Security Reference
  * 
@@ -21,5 +23,7 @@ package com.phoenixnap.oss.ramlplugin.raml2code.raml;
 public interface RamlSecurityReference {
 
 	String getName();
+
+	List<String> getAuthorizationGrants();
 
 }
