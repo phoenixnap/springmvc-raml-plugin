@@ -219,13 +219,14 @@
 			</plugins>
 		</pluginManagement>
 	
-		<!-- <plugins>
+		<plugins>
 			<plugin>
 				<groupId>net.revelc.code.formatter</groupId>
 				<artifactId>formatter-maven-plugin</artifactId>
 				<version>2.7.1</version>
 				<configuration>
 					<configFile>${project.basedir}/eclipse-formatter-config.xml</configFile>
+					<lineEnding>CRLF</lineEnding>
 				</configuration>
 				<executions>
 					<execution>
@@ -235,7 +236,7 @@
 					</execution>
 				</executions>
 			</plugin>
-		</plugins> -->
+		</plugins>
 		
 		<resources>
 			<resource>

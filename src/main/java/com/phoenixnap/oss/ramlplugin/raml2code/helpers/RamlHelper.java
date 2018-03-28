@@ -78,9 +78,9 @@ public class RamlHelper {
 		if (!grants.isEmpty()) {
 			return grants;
 		}
-		
-		return document.getSecuritySchemes().stream().map(RamlHelper::getAuthorizationGrants)
-				.flatMap(List::stream).collect(Collectors.toList());
+
+		return document.getSecuritySchemes().stream().map(RamlHelper::getAuthorizationGrants).flatMap(List::stream)
+				.collect(Collectors.toList());
 	}
 
 	private static List<String> getAuthorizationGrants(RamlSecurityScheme securityScheme) {
