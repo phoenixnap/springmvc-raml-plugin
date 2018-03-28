@@ -106,18 +106,17 @@ public class Spring4RestTemplateClientRule implements ConfigurableRule<JCodeMode
 				.setMethodSignatureRule(new ControllerMethodSignatureRule(new SpringResponseEntityRule(),
 						new MethodParamsRule(false, allowArrayParameters)))
 				.setMethodBodyRule(new SpringRestClientMethodBodyRule(restTemplateFieldName, baseUrlFieldName));
-		
+
 		if (grants.isEmpty()) {
 			clientGenerator.addFieldDeclarationRule(
 					new ClassFieldDeclarationRule(restTemplateFieldName, RestTemplate.class, true, restTemplateQualifierBeanName)); // Modified
-		}
-		else {
+		} else {
 			for (String grant : grants) {
 				grant = CaseFormat.LOWER_UNDERSCORE.to(CaseFormat.LOWER_CAMEL, grant);
 
 				clientGenerator.addFieldDeclarationRule(
-						new ClassFieldDeclarationRule(grant + StringUtils.capitalize(restTemplateFieldName), RestTemplate.class,
-						true, StringUtils.isEmpty(restTemplateQualifierBeanName) ? null : restTemplateQualifierBeanName + grant)); // Modified
+						new ClassFieldDeclarationRule(grant + StringUtils.capitalize(restTemplateFieldName), RestTemplate.class, true,
+								StringUtils.isEmpty(restTemplateQualifierBeanName) ? null : restTemplateQualifierBeanName + grant)); // Modified
 			}
 		}
 

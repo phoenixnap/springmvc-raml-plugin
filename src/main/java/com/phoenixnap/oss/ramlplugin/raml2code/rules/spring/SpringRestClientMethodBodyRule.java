@@ -256,8 +256,7 @@ public class SpringRestClientMethodBodyRule implements Rule<CodeModelHelper.JExt
 		}
 
 		String restTemplateName = restTemplateFieldName;
-		String grant = RamlHelper.getFirstAuthorizationGrant(endpointMetadata.getAction(),
-				endpointMetadata.getParent().getDocument());
+		String grant = RamlHelper.getFirstAuthorizationGrant(endpointMetadata.getAction(), endpointMetadata.getParent().getDocument());
 		if (!StringUtils.isEmpty(grant)) {
 			grant = CaseFormat.LOWER_UNDERSCORE.to(CaseFormat.LOWER_CAMEL, grant);
 			restTemplateName = grant + StringUtils.capitalize(restTemplateFieldName);
