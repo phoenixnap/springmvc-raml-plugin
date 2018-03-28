@@ -12,7 +12,9 @@
  */
 package com.phoenixnap.oss.ramlplugin.raml2code.interpreters;
 
+import java.util.ArrayList;
 import java.util.Collections;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -91,6 +93,17 @@ public class ObjectTypeInterpreter extends BaseTypeInterpreter {
 			// not a valid mimetype do nothing
 			logger.debug("mime: " + name);
 		}
+
+		// check if there is a discriminator and child data types
+		List<RamlDataType> childTypes = new ArrayList<>();
+		if (!StringUtils.isEmpty(objectType.discriminator())) {
+			for (RamlDataType ramlDataType : document.getTypes().values()) {
+				if (name.equals(ramlDataType.getType().type())) {
+					childTypes.add(ramlDataType);
+				}
+			}
+		}
+
 		// Lets check if we've already handled this class before.
 		if (builderModel != null) {
 			JClass searchedClass = builderModel._getClass(Config.getPojoPackage() + "." + NamingHelper.convertToClassName(name));
@@ -152,6 +165,11 @@ public class ObjectTypeInterpreter extends BaseTypeInterpreter {
 
 		// Add overriden hashCode(), equals() and toString() methods
 		builder.withOverridenMethods();
+
+		if (!childTypes.isEmpty()) {
+			// Add @JsonTypeInfo and @JsonSubTypes to support discriminator
+			builder.withJsonDiscriminator(childTypes, objectType.discriminator());
+		}
 
 		return result;
 	}

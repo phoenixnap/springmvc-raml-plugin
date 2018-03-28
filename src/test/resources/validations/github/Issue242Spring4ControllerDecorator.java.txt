@@ -1,0 +1,177 @@
+-----------------------------------com.gen.test.model.Person.java-----------------------------------
+
+package com.gen.test.model;
+
+import java.io.Serializable;
+import com.fasterxml.jackson.annotation.JsonSubTypes;
+import com.fasterxml.jackson.annotation.JsonTypeInfo;
+import org.apache.commons.lang.builder.EqualsBuilder;
+import org.apache.commons.lang.builder.HashCodeBuilder;
+import org.apache.commons.lang.builder.ToStringBuilder;
+
+@JsonTypeInfo(property = "kind", use = JsonTypeInfo.Id.NAME, include = JsonTypeInfo.As.EXISTING_PROPERTY, visible = true)
+@JsonSubTypes({
+    @JsonSubTypes.Type(value = User.class, name = "usr"),
+    @JsonSubTypes.Type(value = Employee.class, name = "emp")
+})
+public class Person implements Serializable
+{
+
+    private String kind;
+    private String name;
+
+    /**
+     * Creates a new Person.
+     * 
+     */
+    public Person() {
+        super();
+    }
+
+    /**
+     * Creates a new Person.
+     * 
+     */
+    public Person(String kind, String name) {
+        super();
+        this.kind = kind;
+        this.name = name;
+    }
+
+    /**
+     * Returns the kind.
+     * 
+     * @return
+     *     kind
+     */
+    public String getKind() {
+        return kind;
+    }
+
+    /**
+     * Set the kind.
+     * 
+     * @param kind
+     *     the new kind
+     */
+    public void setKind(String kind) {
+        this.kind = kind;
+    }
+
+    /**
+     * Returns the name.
+     * 
+     * @return
+     *     name
+     */
+    public String getName() {
+        return name;
+    }
+
+    /**
+     * Set the name.
+     * 
+     * @param name
+     *     the new name
+     */
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public int hashCode() {
+        return new HashCodeBuilder().append(kind).append(name).toHashCode();
+    }
+
+    public boolean equals(Object other) {
+        if (other == null) {
+            return false;
+        }
+        if (other == this) {
+            return true;
+        }
+        if (this.getClass()!= other.getClass()) {
+            return false;
+        }
+        Person otherObject = ((Person) other);
+        return new EqualsBuilder().append(kind, otherObject.kind).append(name, otherObject.name).isEquals();
+    }
+
+    public String toString() {
+        return new ToStringBuilder(this).append("kind", kind).append("name", name).toString();
+    }
+
+}
+-----------------------------------com.gen.test.BookController.java-----------------------------------
+
+package com.gen.test;
+
+import java.math.BigDecimal;
+import javax.validation.Valid;
+import com.gen.test.model.Person;
+import org.springframework.http.ResponseEntity;
+
+
+/**
+ * No description
+ * (Generated with springmvc-raml-parser v.@project.version@)
+ * 
+ */
+public interface BookController {
+
+
+    /**
+     * No description
+     * 
+     */
+    public ResponseEntity<?> updatePerson(BigDecimal bookId,
+        @Valid
+        Person person);
+
+}
+-----------------------------------com.gen.test.BookControllerDecorator.java-----------------------------------
+
+package com.gen.test;
+
+import java.math.BigDecimal;
+import javax.validation.Valid;
+import com.gen.test.model.Person;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RestController;
+
+
+/**
+ * No description
+ * (Generated with springmvc-raml-parser v.@project.version@)
+ * 
+ */
+@RestController
+@RequestMapping("/api/books")
+@Validated
+public class BookControllerDecorator
+    implements BookController
+{
+
+    @Autowired
+    private BookController bookControllerDelegate;
+
+    /**
+     * No description
+     * 
+     */
+    @RequestMapping(value = "/{bookId}", method = RequestMethod.PUT)
+    public ResponseEntity<?> updatePerson(
+        @PathVariable
+        BigDecimal bookId,
+        @Valid
+        @RequestBody
+        Person person) {
+        return this.bookControllerDelegate.updatePerson(bookId, person);
+    }
+
+}

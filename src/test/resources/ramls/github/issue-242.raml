@@ -1,0 +1,36 @@
+#%RAML 1.0
+title: API
+version: 1.0
+
+types:
+  Person:
+    type: object
+    discriminator: kind # refers to the `kind` property of object `Person`
+    properties:
+      kind: string # contains name of the kind of a `Person` instance
+      name: string
+  Employee: # kind can equal `Employee`; default value for `discriminatorValue`
+    type: Person
+    discriminatorValue: emp
+    properties:
+      employeeId: integer
+  User: # kind can equal `User`; default value for `discriminatorValue`
+    type: Person
+    discriminatorValue: usr
+    properties:
+      userId: integer
+  Separate:
+    type: object
+    properties: 
+      blah: string
+
+/books:
+  /{bookId}:
+    uriParameters: 
+      bookId: number
+    put:
+      body: 
+        application/json:
+          type: Person
+      responses: 
+        200:

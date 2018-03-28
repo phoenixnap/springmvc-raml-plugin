@@ -29,11 +29,16 @@ import org.slf4j.LoggerFactory;
 import org.springframework.util.StringUtils;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonSubTypes;
+import com.fasterxml.jackson.annotation.JsonTypeInfo;
+import com.fasterxml.jackson.annotation.JsonTypeInfo.As;
 import com.phoenixnap.oss.ramlplugin.raml2code.helpers.CodeModelHelper;
 import com.phoenixnap.oss.ramlplugin.raml2code.helpers.NamingHelper;
 import com.phoenixnap.oss.ramlplugin.raml2code.helpers.RamlTypeHelper;
 import com.phoenixnap.oss.ramlplugin.raml2code.plugin.Config;
+import com.phoenixnap.oss.ramlplugin.raml2code.raml.RamlDataType;
 import com.sun.codemodel.ClassType;
+import com.sun.codemodel.JAnnotationArrayMember;
 import com.sun.codemodel.JAnnotationUse;
 import com.sun.codemodel.JBlock;
 import com.sun.codemodel.JClass;
@@ -369,6 +374,23 @@ public class PojoBuilder extends AbstractBuilder {
 		}
 		if (Config.getPojoConfig().isIncludeToString()) {
 			withToString();
+		}
+	}
+
+	public void withJsonDiscriminator(List<RamlDataType> childTypes, String discriminator) {
+		this.pojo.annotate(JsonTypeInfo.class).param("property", discriminator).param("use", JsonTypeInfo.Id.NAME)
+				.param("include", As.EXISTING_PROPERTY).param("visible", true);
+
+		JAnnotationUse param = this.pojo.annotate(JsonSubTypes.class).param("value", discriminator);
+		JAnnotationArrayMember jAnnotationArrayMember = param.paramArray("value");
+		for (RamlDataType childType : childTypes) {
+			String discriminatorValue = childType.getDiscriminatorValue();
+			if (StringUtils.isEmpty(discriminatorValue)) {
+				// default value for discriminator is the name of the type
+				discriminatorValue = childType.getType().name();
+			}
+			jAnnotationArrayMember.annotate(JsonSubTypes.Type.class).param("value", resolveType(childType.getType().name())).param("name",
+					discriminatorValue);
 		}
 	}
 
