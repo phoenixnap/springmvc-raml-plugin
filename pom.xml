@@ -226,7 +226,6 @@
 				<version>2.7.1</version>
 				<configuration>
 					<configFile>${project.basedir}/eclipse-formatter-config.xml</configFile>
-					<lineEnding>CRLF</lineEnding>
 				</configuration>
 				<executions>
 					<execution>
