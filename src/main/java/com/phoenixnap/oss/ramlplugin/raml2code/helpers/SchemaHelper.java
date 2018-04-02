@@ -85,6 +85,8 @@ public class SchemaHelper {
 	 *
 	 * @param param
 	 *            The Type to map
+	 * @param format
+	 *            Number format specified
 	 * @return The Java Class which maps to this Simple RAML ParamType or string
 	 *         if one is not found
 	 */
@@ -323,9 +325,6 @@ public class SchemaHelper {
 	 *            The class name
 	 * @param schema
 	 *            The JSON Schema representing this class
-	 * @param config
-	 *            JsonSchema2Pojo configuration. if null a default config will
-	 *            be used
 	 * @param annotator
 	 *            JsonSchema2Pojo annotator. if null a default annotator will be
 	 *            used

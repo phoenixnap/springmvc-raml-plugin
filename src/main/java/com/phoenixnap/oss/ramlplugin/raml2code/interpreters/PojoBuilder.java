@@ -68,8 +68,6 @@ public class PojoBuilder extends AbstractBuilder {
 	/**
 	 * Constructor allowing chaining of JCodeModels
 	 * 
-	 * @param config
-	 *            The Configuration object which controls generation
 	 * @param pojoModel
 	 *            Existing Codemodel to append to
 	 * @param className

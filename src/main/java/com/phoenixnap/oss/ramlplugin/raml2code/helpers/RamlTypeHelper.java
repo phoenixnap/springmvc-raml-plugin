@@ -87,9 +87,6 @@ public class RamlTypeHelper {
 	 * encapsulates it along with some metadata into an {@link ApiBodyMetadata}
 	 * object.
 	 * 
-	 * @param config
-	 *            Object containing the configuration relating to Pojo Code
-	 *            generation
 	 * @param pojoCodeModel
 	 *            The code model containing the classes generated during
 	 *            generation
