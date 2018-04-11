@@ -188,7 +188,7 @@ public class MethodParamsRule implements Rule<CodeModelHelper.JExtMethod, JMetho
 			generatableType.get().javadoc().addParam(uncapitalize(requestBodyName) + " The Request Body Payload");
 		}
 		JVar param = generatableType.get().param(requestBodyType, uncapitalize(requestBodyName));
-		if (!RamlActionType.PATCH.equals(endpointMetadata.getActionType())) {
+		if (Config.getPojoConfig().isIncludeJsr303Annotations() && !RamlActionType.PATCH.equals(endpointMetadata.getActionType())) {
 			// skip Valid annotation for PATCH actions since it's a partial
 			// update so some required fields might be omitted
 			param.annotate(Valid.class);

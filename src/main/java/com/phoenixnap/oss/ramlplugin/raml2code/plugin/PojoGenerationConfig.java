@@ -41,8 +41,8 @@ public class PojoGenerationConfig extends DefaultGenerationConfig {
 	 * We will pass on this configuration to the jsonschema2pojo library for
 	 * creation of JSR303 Annotations
 	 */
-	@Parameter(required = false, readonly = true, defaultValue = "false")
-	protected Boolean includeJsr303Annotations = Boolean.FALSE;
+	@Parameter(required = false, readonly = true, defaultValue = "true")
+	protected Boolean includeJsr303Annotations = Boolean.TRUE;
 
 	/**
 	 * We will pass on this configuration to the jsonschema2pojo library for

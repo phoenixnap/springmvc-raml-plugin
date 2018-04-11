@@ -3,6 +3,7 @@
 package com.gen.test.model;
 
 import java.io.Serializable;
+import javax.validation.constraints.NotNull;
 import org.apache.commons.lang.builder.EqualsBuilder;
 import org.apache.commons.lang.builder.HashCodeBuilder;
 import org.apache.commons.lang.builder.ToStringBuilder;
@@ -10,6 +11,7 @@ import org.apache.commons.lang.builder.ToStringBuilder;
 public class Message implements Serializable
 {
 
+    @NotNull
     private String value;
 
     /**
@@ -77,6 +79,7 @@ public class Message implements Serializable
 package com.gen.test.model;
 
 import java.io.Serializable;
+import javax.validation.constraints.NotNull;
 import org.apache.commons.lang.builder.EqualsBuilder;
 import org.apache.commons.lang.builder.HashCodeBuilder;
 import org.apache.commons.lang.builder.ToStringBuilder;
@@ -84,7 +87,9 @@ import org.apache.commons.lang.builder.ToStringBuilder;
 public class MessageSubResource implements Serializable
 {
 
+    @NotNull
     private String title;
+    @NotNull
     private String desc;
 
     /**

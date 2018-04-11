@@ -3,6 +3,7 @@
 package com.gen.test.model;
 
 import java.io.Serializable;
+import javax.validation.constraints.NotNull;
 import org.apache.commons.lang.builder.EqualsBuilder;
 import org.apache.commons.lang.builder.HashCodeBuilder;
 import org.apache.commons.lang.builder.ToStringBuilder;
@@ -10,7 +11,9 @@ import org.apache.commons.lang.builder.ToStringBuilder;
 public class Group implements Serializable
 {
 
+    @NotNull
     private Long id;
+    @NotNull
     private String name;
 
     /**
@@ -101,6 +104,7 @@ package com.gen.test.model;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
+import javax.validation.Valid;
 import org.apache.commons.lang.builder.EqualsBuilder;
 import org.apache.commons.lang.builder.HashCodeBuilder;
 import org.apache.commons.lang.builder.ToStringBuilder;
@@ -109,6 +113,7 @@ public class Product implements Serializable
 {
 
     private String id;
+    @Valid
     private List<Group> groups = new ArrayList<Group>();
 
     /**
@@ -198,6 +203,7 @@ package com.gen.test.model;
 
 import java.io.Serializable;
 import java.util.List;
+import javax.validation.constraints.NotNull;
 import org.apache.commons.lang.builder.EqualsBuilder;
 import org.apache.commons.lang.builder.HashCodeBuilder;
 import org.apache.commons.lang.builder.ToStringBuilder;
@@ -207,6 +213,7 @@ public class ProductUpdate
     implements Serializable
 {
 
+    @NotNull
     private Double locationId;
 
     /**

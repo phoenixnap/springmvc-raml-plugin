@@ -3,6 +3,7 @@
 package com.gen.test.model;
 
 import java.io.Serializable;
+import javax.validation.constraints.NotNull;
 import org.apache.commons.lang.builder.EqualsBuilder;
 import org.apache.commons.lang.builder.HashCodeBuilder;
 import org.apache.commons.lang.builder.ToStringBuilder;
@@ -10,7 +11,9 @@ import org.apache.commons.lang.builder.ToStringBuilder;
 public class DeleteObject implements Serializable
 {
 
+    @NotNull
     private Double id;
+    @NotNull
     private String name;
 
     /**

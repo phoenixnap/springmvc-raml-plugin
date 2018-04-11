@@ -3,6 +3,7 @@
 package com.gen.test.model;
 
 import java.io.Serializable;
+import javax.validation.constraints.NotNull;
 import org.apache.commons.lang.builder.EqualsBuilder;
 import org.apache.commons.lang.builder.HashCodeBuilder;
 import org.apache.commons.lang.builder.ToStringBuilder;
@@ -10,7 +11,9 @@ import org.apache.commons.lang.builder.ToStringBuilder;
 public class Employee implements Serializable
 {
 
+    @NotNull
     private String name;
+    @NotNull
     private String skill;
 
     /**
@@ -99,6 +102,7 @@ public class Employee implements Serializable
 package com.gen.test.model;
 
 import java.io.Serializable;
+import javax.validation.constraints.NotNull;
 import org.apache.commons.lang.builder.EqualsBuilder;
 import org.apache.commons.lang.builder.HashCodeBuilder;
 import org.apache.commons.lang.builder.ToStringBuilder;
@@ -108,6 +112,7 @@ public class EmployeeExtended
     implements Serializable
 {
 
+    @NotNull
     private String job;
 
     /**
@@ -177,6 +182,8 @@ package com.gen.test.model;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
+import javax.validation.Valid;
+import javax.validation.constraints.NotNull;
 import org.apache.commons.lang.builder.EqualsBuilder;
 import org.apache.commons.lang.builder.HashCodeBuilder;
 import org.apache.commons.lang.builder.ToStringBuilder;
@@ -184,6 +191,8 @@ import org.apache.commons.lang.builder.ToStringBuilder;
 public class EmployeeRq implements Serializable
 {
 
+    @NotNull
+    @Valid
     private List<Employee> employees = new ArrayList<Employee>();
 
     /**
@@ -253,6 +262,8 @@ package com.gen.test.model;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
+import javax.validation.Valid;
+import javax.validation.constraints.NotNull;
 import org.apache.commons.lang.builder.EqualsBuilder;
 import org.apache.commons.lang.builder.HashCodeBuilder;
 import org.apache.commons.lang.builder.ToStringBuilder;
@@ -260,6 +271,8 @@ import org.apache.commons.lang.builder.ToStringBuilder;
 public class EmployeeRs implements Serializable
 {
 
+    @NotNull
+    @Valid
     private List<EmployeeExtended> employees = new ArrayList<EmployeeExtended>();
 
     /**
