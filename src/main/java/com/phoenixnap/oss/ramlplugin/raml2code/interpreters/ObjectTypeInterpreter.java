@@ -20,6 +20,7 @@ import java.util.Set;
 
 import org.raml.v2.api.model.v10.datamodel.ObjectTypeDeclaration;
 import org.raml.v2.api.model.v10.datamodel.TypeDeclaration;
+import org.raml.v2.api.model.v10.declarations.AnnotationRef;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.util.MimeType;
@@ -151,7 +152,14 @@ public class ObjectTypeInterpreter extends BaseTypeInterpreter {
 			builder.extendsClass(childType);
 		}
 
+		List<String> excludeFieldsFromToString = new ArrayList<>();
 		for (TypeDeclaration objectProperty : objectType.properties()) {
+			List<AnnotationRef> annotations = objectProperty.annotations();
+			for (AnnotationRef annotation : annotations) {
+				if ("(isSensitive)".equals(annotation.name()) && Boolean.TRUE.equals(annotation.structuredValue().value())) {
+					excludeFieldsFromToString.add(objectProperty.name());
+				}
+			}
 			RamlInterpretationResult childResult = RamlInterpreterFactory.getInterpreterForType(objectProperty).interpret(document,
 					objectProperty, builderModel, true);
 			String childType = childResult.getResolvedClassOrBuiltOrObject().fullName();
@@ -164,7 +172,7 @@ public class ObjectTypeInterpreter extends BaseTypeInterpreter {
 		builder.withCompleteConstructor();
 
 		// Add overriden hashCode(), equals() and toString() methods
-		builder.withOverridenMethods();
+		builder.withOverridenMethods(excludeFieldsFromToString);
 
 		if (!childTypes.isEmpty()) {
 			// Add @JsonTypeInfo and @JsonSubTypes to support discriminator

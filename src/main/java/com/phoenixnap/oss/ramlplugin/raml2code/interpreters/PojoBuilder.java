@@ -364,14 +364,17 @@ public class PojoBuilder extends AbstractBuilder {
 	/**
 	 * Generates implementations for hashCode(), equals() and toString() methods
 	 * if the plugin has been configured to do so.
+	 * 
+	 * @param excludeFieldsFromToString
+	 *            list of parameters to exclude from toString() method
 	 */
-	public void withOverridenMethods() {
+	public void withOverridenMethods(List<String> excludeFieldsFromToString) {
 		if (Config.getPojoConfig().isIncludeHashcodeAndEquals()) {
 			withHashCode();
 			withEquals();
 		}
 		if (Config.getPojoConfig().isIncludeToString()) {
-			withToString();
+			withToString(excludeFieldsFromToString);
 		}
 	}
 
@@ -392,7 +395,7 @@ public class PojoBuilder extends AbstractBuilder {
 		}
 	}
 
-	private void withToString() {
+	private void withToString(List<String> excludeFieldsFromToString) {
 		pojoCreationCheck();
 
 		JMethod toString = this.pojo.method(JMod.PUBLIC, String.class, "toString");
@@ -404,7 +407,10 @@ public class PojoBuilder extends AbstractBuilder {
 
 		JClass toStringBuilderRef = this.pojo.owner().ref(toStringBuilderClass);
 
-		JInvocation toStringBuilderInvocation = appendFieldsToString(getNonTransientAndNonStaticFields(), toStringBuilderRef);
+		Map<String, JFieldVar> nonTransientAndNonStaticFields = getNonTransientAndNonStaticFields();
+		nonTransientAndNonStaticFields.keySet().removeAll(excludeFieldsFromToString);
+
+		JInvocation toStringBuilderInvocation = appendFieldsToString(nonTransientAndNonStaticFields, toStringBuilderRef);
 
 		toString.body()._return(toStringBuilderInvocation.invoke("toString"));
 	}
