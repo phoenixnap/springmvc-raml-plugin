@@ -48,7 +48,7 @@ public class PojoGenerationConfigTest {
 		Assert.assertFalse(generationConfig.isUseCommonsLang3());
 		Assert.assertFalse(generationConfig.isGenerateBuilders());
 		Assert.assertTrue(generationConfig.isIncludeAccessors());
-		Assert.assertFalse(generationConfig.isIncludeJsr303Annotations());
+		Assert.assertTrue(generationConfig.isIncludeJsr303Annotations());
 		Assert.assertTrue(generationConfig.isIncludeAdditionalProperties());
 		Assert.assertFalse(generationConfig.isIncludeConstructors());
 		Assert.assertFalse(generationConfig.isConstructorsRequiredPropertiesOnly());

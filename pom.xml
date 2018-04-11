@@ -226,7 +226,7 @@
 				<version>2.7.1</version>
 				<configuration>
 					<configFile>${project.basedir}/eclipse-formatter-config.xml</configFile>
-					<lineEnding>KEEP</lineEnding>
+					<lineEnding>AUTO</lineEnding>
 				</configuration>
 				<executions>
 					<execution>

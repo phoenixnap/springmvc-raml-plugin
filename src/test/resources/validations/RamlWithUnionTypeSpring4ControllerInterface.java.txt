@@ -3,6 +3,8 @@
 package com.gen.test.model;
 
 import java.io.Serializable;
+import javax.validation.Valid;
+import javax.validation.constraints.NotNull;
 import org.apache.commons.lang.builder.EqualsBuilder;
 import org.apache.commons.lang.builder.HashCodeBuilder;
 import org.apache.commons.lang.builder.ToStringBuilder;
@@ -10,7 +12,11 @@ import org.apache.commons.lang.builder.ToStringBuilder;
 public class Device implements Serializable
 {
 
+    @NotNull
+    @Valid
     private com.gen.test.model.Phone Phone;
+    @NotNull
+    @Valid
     private com.gen.test.model.Notebook Notebook;
 
     /**
@@ -99,6 +105,7 @@ public class Device implements Serializable
 package com.gen.test.model;
 
 import java.io.Serializable;
+import javax.validation.constraints.NotNull;
 import org.apache.commons.lang.builder.EqualsBuilder;
 import org.apache.commons.lang.builder.HashCodeBuilder;
 import org.apache.commons.lang.builder.ToStringBuilder;
@@ -106,7 +113,9 @@ import org.apache.commons.lang.builder.ToStringBuilder;
 public class Notebook implements Serializable
 {
 
+    @NotNull
     private String manufacturer;
+    @NotNull
     private Double numberOfUSBPorts;
 
     /**
@@ -195,6 +204,7 @@ public class Notebook implements Serializable
 package com.gen.test.model;
 
 import java.io.Serializable;
+import javax.validation.constraints.NotNull;
 import org.apache.commons.lang.builder.EqualsBuilder;
 import org.apache.commons.lang.builder.HashCodeBuilder;
 import org.apache.commons.lang.builder.ToStringBuilder;
@@ -202,7 +212,9 @@ import org.apache.commons.lang.builder.ToStringBuilder;
 public class Phone implements Serializable
 {
 
+    @NotNull
     private String manufacturer;
+    @NotNull
     private Double numberOfSIMCards;
 
     /**
