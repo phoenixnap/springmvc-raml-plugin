@@ -117,12 +117,12 @@ public class SpringMvcEndpointGeneratorMojo extends AbstractMojo {
 	protected String schemaLocation;
 
 	/**
-	 * A boolean indicating whether the POJOs for unreferenced schemas defined
-	 * in the RAML file should be generated. By default, such schemas are not
-	 * generated.
+	 * A boolean indicating whether the POJOs for unreferenced objects (schemas
+	 * and data types) defined in the RAML file should be generated. By default,
+	 * such schemas/types are not generated.
 	 */
 	@Parameter(required = false, readonly = true, defaultValue = "false")
-	protected Boolean generateUnreferencedSchemas;
+	protected Boolean generateUnreferencedObjects;
 
 	/**
 	 * The explicit base path under which the rest endpoints should be located.
@@ -268,7 +268,7 @@ public class SpringMvcEndpointGeneratorMojo extends AbstractMojo {
 		}
 
 		generateCode(null, controllers, rootDir);
-		if (this.generateUnreferencedSchemas) {
+		if (this.generateUnreferencedObjects) {
 			generateUnreferencedObjects(codeModel, loadRamlFromFile, resolvedRamlPath, rootDir, controllers);
 		}
 
