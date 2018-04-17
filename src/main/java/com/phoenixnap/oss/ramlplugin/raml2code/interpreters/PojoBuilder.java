@@ -150,22 +150,23 @@ public class PojoBuilder extends AbstractBuilder {
 		defaultConstructorBody.invoke("super");
 	}
 
-	private boolean parentContainsField(JClass pojo, String name) {
+	private JFieldVar parentContainsField(JClass pojo, String name) {
 		if (pojo != null && !pojo.fullName().equals(Object.class.getName())) {
 			JClass parent = pojo._extends();
 			if (parent != null) {
 				// Our parent has a parent, lets check if it has it
-				if (parentContainsField(parent, name)) {
-					return true;
+				JFieldVar parentField = parentContainsField(parent, name);
+				if (parentField != null) {
+					return parentField;
 				} else {
 					if (parent instanceof JDefinedClass) {
-						return ((JDefinedClass) parent).fields().containsKey(name);
+						return ((JDefinedClass) parent).fields().get(name);
 					}
 				}
 			}
 		}
 
-		return false;
+		return null;
 	}
 
 	public PojoBuilder withField(String name, String type, String comment, RamlTypeValidations validations,
@@ -186,12 +187,6 @@ public class PojoBuilder extends AbstractBuilder {
 			}
 		} catch (Exception ex) {
 			// skip import
-		}
-
-		// lets ignore this if parent contains it and we will use parent's in
-		// the constructor
-		if (parentContainsField(this.pojo, name)) {
-			return this;
 		}
 
 		JExpression jExpression = null;
@@ -219,20 +214,34 @@ public class PojoBuilder extends AbstractBuilder {
 			jExpression = JExpr._new(narrowedListClass);
 		}
 
-		// Add private variable
-		JFieldVar field = this.pojo.field(JMod.PRIVATE, resolvedType, toJavaName(name), jExpression);
-		if (Config.getPojoConfig().isIncludeJsr303Annotations() && validations != null) {
+		// lets ignore this if parent contains it and we will use parent's in
+		// the constructor
+		JFieldVar parentField = parentContainsField(this.pojo, name);
+		if (parentField != null) {
 
-			// check if field is complex object so we can mark it with @Valid
-			boolean isPOJO = type.startsWith(this.pojo._package().name() + ".");
-			if (!isPOJO && resolvedType.getClass().getName().equals("com.sun.codemodel.JNarrowedClass")
-					&& resolvedType.getTypeParameters().size() == 1) {
-				JClass typeClass = resolvedType.getTypeParameters().get(0);
-				isPOJO = typeClass.fullName().startsWith(this.pojo._package().name() + ".");
+			// Add get method
+			JMethod getterMethod = generateGetterMethod(parentField, name, jExpression);
+
+			// validation
+			if (Config.getPojoConfig().isIncludeJsr303Annotations() && validations != null) {
+
+				// check if field is complex object so we can mark it with
+				// @Valid
+				boolean isPOJO = type.startsWith(this.pojo._package().name() + ".");
+				if (!isPOJO && resolvedType.getClass().getName().equals("com.sun.codemodel.JNarrowedClass")
+						&& resolvedType.getTypeParameters().size() == 1) {
+					JClass typeClass = resolvedType.getTypeParameters().get(0);
+					isPOJO = typeClass.fullName().startsWith(this.pojo._package().name() + ".");
+				}
+
+				validations.annotateFieldJSR303(getterMethod, isPOJO);
 			}
 
-			validations.annotateFieldJSR303(field, isPOJO);
+			return this;
 		}
+
+		// Add protected variable
+		JFieldVar field = this.pojo.field(JMod.PROTECTED, resolvedType, toJavaName(name), jExpression);
 
 		if (resolvedType.name().equals(Date.class.getSimpleName())) {
 			JAnnotationUse jAnnotationUse = field.annotate(JsonFormat.class);
@@ -249,10 +258,19 @@ public class PojoBuilder extends AbstractBuilder {
 		String fieldName = NamingHelper.convertToClassName(name);
 
 		// Add get method
-		JMethod getter = this.pojo.method(JMod.PUBLIC, field.type(), "get" + fieldName);
-		getter.body()._return(field);
-		getter.javadoc().add("Returns the " + name + ".");
-		getter.javadoc().addReturn().add(field.name());
+		JMethod getterMethod = generateGetterMethod(field, name, null);
+		if (Config.getPojoConfig().isIncludeJsr303Annotations() && validations != null) {
+
+			// check if field is complex object so we can mark it with @Valid
+			boolean isPOJO = type.startsWith(this.pojo._package().name() + ".");
+			if (!isPOJO && resolvedType.getClass().getName().equals("com.sun.codemodel.JNarrowedClass")
+					&& resolvedType.getTypeParameters().size() == 1) {
+				JClass typeClass = resolvedType.getTypeParameters().get(0);
+				isPOJO = typeClass.fullName().startsWith(this.pojo._package().name() + ".");
+			}
+
+			validations.annotateFieldJSR303(getterMethod, isPOJO);
+		}
 
 		// Add set method
 		JMethod setter = this.pojo.method(JMod.PUBLIC, this.pojoModel.VOID, "set" + fieldName);
@@ -271,6 +289,23 @@ public class PojoBuilder extends AbstractBuilder {
 		}
 
 		return this;
+	}
+
+	private JMethod generateGetterMethod(JFieldVar field, String fieldName, JExpression defaultValue) {
+
+		String javaName = NamingHelper.convertToClassName(fieldName);
+
+		// Add get method
+		JMethod getter = this.pojo.method(JMod.PUBLIC, field.type(), "get" + javaName);
+		if (defaultValue != null) {
+			JBlock body = getter.body();
+			body._if(field.eq(JExpr._null()))._then()._return(defaultValue);
+		}
+		getter.body()._return(field);
+		getter.javadoc().add("Returns the " + fieldName + ".");
+		getter.javadoc().addReturn().add(field.name());
+
+		return getter;
 	}
 
 	/**

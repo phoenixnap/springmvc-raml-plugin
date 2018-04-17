@@ -10,7 +10,7 @@ import javax.validation.constraints.Size;
 import org.springframework.util.StringUtils;
 
 import com.sun.codemodel.JAnnotationUse;
-import com.sun.codemodel.JFieldVar;
+import com.sun.codemodel.JMethod;
 
 /*
  * Copyright 2002-2017 the original author or authors.
@@ -83,16 +83,16 @@ public class RamlTypeValidations {
 	 * @param field
 	 *            to add annotations to
 	 */
-	public void annotateFieldJSR303(JFieldVar field, boolean addValidAnnotation) {
+	public void annotateFieldJSR303(JMethod getter, boolean addValidAnnotation) {
 		if (isRequired()) {
-			field.annotate(NotNull.class);
+			getter.annotate(NotNull.class);
 		}
 		if (StringUtils.hasText(getPattern())) {
-			JAnnotationUse annotation = field.annotate(Pattern.class);
+			JAnnotationUse annotation = getter.annotate(Pattern.class);
 			annotation.param("regexp", getPattern());
 		}
 		if (getMinLength() != null || getMaxLength() != null) {
-			JAnnotationUse annotation = field.annotate(Size.class);
+			JAnnotationUse annotation = getter.annotate(Size.class);
 
 			if (getMinLength() != null) {
 				annotation.param("min", getMinLength());
@@ -103,16 +103,16 @@ public class RamlTypeValidations {
 			}
 		}
 		if (addValidAnnotation) {
-			field.annotate(Valid.class);
+			getter.annotate(Valid.class);
 		}
 
 		if (minimum != null) {
-			JAnnotationUse annotation = field.annotate(DecimalMin.class);
+			JAnnotationUse annotation = getter.annotate(DecimalMin.class);
 			annotation.param("value", String.valueOf(minimum));
 		}
 
 		if (maximum != null) {
-			JAnnotationUse annotation = field.annotate(DecimalMax.class);
+			JAnnotationUse annotation = getter.annotate(DecimalMax.class);
 			annotation.param("value", String.valueOf(maximum));
 		}
 	}

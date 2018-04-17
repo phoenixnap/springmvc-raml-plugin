@@ -1,0 +1,36 @@
+#%RAML 1.0
+
+title: Problem overriding inherited properties
+
+types: 
+  Person:
+    type: object
+    properties: 
+      notOverriden: string
+      firstName:
+        type: string
+        maxLength: 5
+  User:
+    type: Person
+    properties: 
+      userId: integer
+      firstName:
+        default: Alex
+        minLength: 3
+        pattern: ^[a-zA-Z]+$
+        description: Some property description
+        example: Aleks
+    example: |
+      {
+        "notOverriden": "xx",
+        "firstName": "Aleks",
+        "userId": 23
+      }
+      
+/users:
+  get:
+    responses: 
+      200:
+        body: 
+          application/json:
+            type: User
