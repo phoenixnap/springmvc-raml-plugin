@@ -48,23 +48,23 @@ Then simply include the following code in the POM of the project you wish to gen
 <plugin>
   <groupId>com.phoenixnap.oss</groupId>
   <artifactId>springmvc-raml-plugin</artifactId>
-  <version>x.x.x</version>
+  <version>2.x.x</version>
   <configuration>
     <ramlPath>{path.to.raml.file}</ramlPath>
-	<schemaLocation>{path.to.schema.directory||schema.absolute.url}</schemaLocation>
-	<outputRelativePath>/src/generated</outputRelativePath>
+    <schemaLocation>{path.to.schema.directory||schema.absolute.url}</schemaLocation>
+    <outputRelativePath>/src/generated</outputRelativePath>
     <addTimestampFolder>false</addTimestampFolder>
     <basePackage>com.gen.wow</basePackage>
     <baseUri>/api</baseUri>
     <generateUnreferencedObjects>true</generateUnreferencedObjects>
-	<generationConfig>
-		<includeAdditionalProperties>false</includeAdditionalProperties>
-		...
-	</generationConfig>
-	<seperateMethodsByContentType>false</seperateMethodsByContentType>
-	<rule>com.phoenixnap.oss.ramlplugin.raml2code.rules.Spring4ControllerStubRule</rule>
-	<ruleConfiguration>			
-	</ruleConfiguration>
+    <generationConfig>
+        <includeAdditionalProperties>false</includeAdditionalProperties>
+        ...
+    </generationConfig>
+    <seperateMethodsByContentType>false</seperateMethodsByContentType>
+    <rule>com.phoenixnap.oss.ramlplugin.raml2code.rules.Spring4ControllerStubRule</rule>
+    <ruleConfiguration>			
+    </ruleConfiguration>
   </configuration>
   <executions>
     <execution>
