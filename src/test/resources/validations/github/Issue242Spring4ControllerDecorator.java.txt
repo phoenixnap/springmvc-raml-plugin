@@ -18,10 +18,8 @@ import org.apache.commons.lang.builder.ToStringBuilder;
 public class Person implements Serializable
 {
 
-    @NotNull
-    private String kind;
-    @NotNull
-    private String name;
+    protected String kind;
+    protected String name;
 
     /**
      * Creates a new Person.
@@ -47,6 +45,7 @@ public class Person implements Serializable
      * @return
      *     kind
      */
+    @NotNull
     public String getKind() {
         return kind;
     }
@@ -67,6 +66,7 @@ public class Person implements Serializable
      * @return
      *     name
      */
+    @NotNull
     public String getName() {
         return name;
     }

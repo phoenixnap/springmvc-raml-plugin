@@ -11,10 +11,8 @@ import org.apache.commons.lang.builder.ToStringBuilder;
 public class DeleteObject implements Serializable
 {
 
-    @NotNull
-    private Double id;
-    @NotNull
-    private String name;
+    protected Double id;
+    protected String name;
 
     /**
      * Creates a new DeleteObject.
@@ -40,6 +38,7 @@ public class DeleteObject implements Serializable
      * @return
      *     id
      */
+    @NotNull
     public Double getId() {
         return id;
     }
@@ -60,6 +59,7 @@ public class DeleteObject implements Serializable
      * @return
      *     name
      */
+    @NotNull
     public String getName() {
         return name;
     }

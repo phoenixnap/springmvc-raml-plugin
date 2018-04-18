@@ -16,15 +16,12 @@ public class EventCreate implements Serializable
      * The Name of the event
      * 
      */
-    @NotNull
-    private String eventName;
+    protected String eventName;
     /**
      * The event payload
      * 
      */
-    @NotNull
-    @Valid
-    private EventPayload eventPayload;
+    protected EventPayload eventPayload;
 
     /**
      * Creates a new EventCreate.
@@ -50,6 +47,7 @@ public class EventCreate implements Serializable
      * @return
      *     eventName
      */
+    @NotNull
     public String getEventName() {
         return eventName;
     }
@@ -70,6 +68,8 @@ public class EventCreate implements Serializable
      * @return
      *     eventPayload
      */
+    @NotNull
+    @Valid
     public EventPayload getEventPayload() {
         return eventPayload;
     }

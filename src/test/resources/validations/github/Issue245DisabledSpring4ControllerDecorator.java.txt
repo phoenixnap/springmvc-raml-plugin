@@ -10,9 +10,9 @@ import org.apache.commons.lang.builder.ToStringBuilder;
 public class User implements Serializable
 {
 
-    private String firstName;
-    private String lastName;
-    private String nickName;
+    protected String firstName;
+    protected String lastName;
+    protected String nickName;
 
     /**
      * Creates a new User.
@@ -143,8 +143,7 @@ public interface UserController {
      * No description
      * 
      */
-    public ResponseEntity<?> createUser(
-        User user);
+    public ResponseEntity<?> createUser(User user);
 
 }
 -----------------------------------com.gen.test.UserControllerDecorator.java-----------------------------------

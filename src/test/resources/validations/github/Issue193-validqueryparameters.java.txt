@@ -11,10 +11,8 @@ import org.apache.commons.lang.builder.ToStringBuilder;
 public class Booking implements Serializable
 {
 
-    @NotNull
-    private String firstName;
-    @NotNull
-    private String lastName;
+    protected String firstName;
+    protected String lastName;
 
     /**
      * Creates a new Booking.
@@ -40,6 +38,7 @@ public class Booking implements Serializable
      * @return
      *     firstName
      */
+    @NotNull
     public String getFirstName() {
         return firstName;
     }
@@ -60,6 +59,7 @@ public class Booking implements Serializable
      * @return
      *     lastName
      */
+    @NotNull
     public String getLastName() {
         return lastName;
     }
@@ -110,10 +110,8 @@ import org.apache.commons.lang.builder.ToStringBuilder;
 public class BookingQuery implements Serializable
 {
 
-    @NotNull
-    private String firstName;
-    @NotNull
-    private String lastName;
+    protected String firstName;
+    protected String lastName;
 
     /**
      * Creates a new BookingQuery.
@@ -139,6 +137,7 @@ public class BookingQuery implements Serializable
      * @return
      *     firstName
      */
+    @NotNull
     public String getFirstName() {
         return firstName;
     }
@@ -159,6 +158,7 @@ public class BookingQuery implements Serializable
      * @return
      *     lastName
      */
+    @NotNull
     public String getLastName() {
         return lastName;
     }

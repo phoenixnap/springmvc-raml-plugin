@@ -11,10 +11,8 @@ import org.apache.commons.lang.builder.ToStringBuilder;
 public class Employee implements Serializable
 {
 
-    @NotNull
-    private String name;
-    @NotNull
-    private String skill;
+    protected String name;
+    protected String skill;
 
     /**
      * Creates a new Employee.
@@ -40,6 +38,7 @@ public class Employee implements Serializable
      * @return
      *     name
      */
+    @NotNull
     public String getName() {
         return name;
     }
@@ -60,6 +59,7 @@ public class Employee implements Serializable
      * @return
      *     skill
      */
+    @NotNull
     public String getSkill() {
         return skill;
     }
@@ -112,8 +112,7 @@ public class EmployeeExtended
     implements Serializable
 {
 
-    @NotNull
-    private String job;
+    protected String job;
 
     /**
      * Creates a new EmployeeExtended.
@@ -133,11 +132,34 @@ public class EmployeeExtended
     }
 
     /**
+     * Returns the name.
+     * 
+     * @return
+     *     name
+     */
+    @NotNull
+    public String getName() {
+        return name;
+    }
+
+    /**
+     * Returns the skill.
+     * 
+     * @return
+     *     skill
+     */
+    @NotNull
+    public String getSkill() {
+        return skill;
+    }
+
+    /**
      * Returns the job.
      *
      * @return
      *     job
      */
+    @NotNull
     public String getJob() {
         return job;
     }
@@ -191,9 +213,7 @@ import org.apache.commons.lang.builder.ToStringBuilder;
 public class EmployeeRq implements Serializable
 {
 
-    @NotNull
-    @Valid
-    private List<Employee> employees = new ArrayList<Employee>();
+    protected List<Employee> employees = new ArrayList<Employee>();
 
     /**
      * Creates a new EmployeeRq.
@@ -218,6 +238,8 @@ public class EmployeeRq implements Serializable
      * @return
      *     employees
      */
+    @NotNull
+    @Valid
     public List<Employee> getEmployees() {
         return employees;
     }
@@ -271,9 +293,7 @@ import org.apache.commons.lang.builder.ToStringBuilder;
 public class EmployeeRs implements Serializable
 {
 
-    @NotNull
-    @Valid
-    private List<EmployeeExtended> employees = new ArrayList<EmployeeExtended>();
+    protected List<EmployeeExtended> employees = new ArrayList<EmployeeExtended>();
 
     /**
      * Creates a new EmployeeRs.
@@ -298,6 +318,8 @@ public class EmployeeRs implements Serializable
      * @return
      *     employees
      */
+    @NotNull
+    @Valid
     public List<EmployeeExtended> getEmployees() {
         return employees;
     }

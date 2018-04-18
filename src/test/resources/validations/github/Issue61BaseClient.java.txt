@@ -15,8 +15,7 @@ public class SampleUnit implements Serializable
      * The type string.
      * 
      */
-    @NotNull
-    private String tString;
+    protected String tString;
 
     /**
      * Creates a new SampleUnit.
@@ -41,6 +40,7 @@ public class SampleUnit implements Serializable
      * @return
      *     tString
      */
+    @NotNull
     public String getTString() {
         return tString;
     }

@@ -11,12 +11,9 @@ import org.apache.commons.lang.builder.ToStringBuilder;
 public class Person implements Serializable
 {
 
-    @NotNull
-    private String firstName;
-    @NotNull
-    private String lastName;
-    @NotNull
-    private Double age;
+    protected String firstName;
+    protected String lastName;
+    protected Double age;
 
     /**
      * Creates a new Person.
@@ -43,6 +40,7 @@ public class Person implements Serializable
      * @return
      *     firstName
      */
+    @NotNull
     public String getFirstName() {
         return firstName;
     }
@@ -63,6 +61,7 @@ public class Person implements Serializable
      * @return
      *     lastName
      */
+    @NotNull
     public String getLastName() {
         return lastName;
     }
@@ -83,6 +82,7 @@ public class Person implements Serializable
      * @return
      *     age
      */
+    @NotNull
     public Double getAge() {
         return age;
     }
@@ -135,8 +135,7 @@ public class User
     implements Serializable
 {
 
-    @NotNull
-    private String username;
+    protected String username;
 
     /**
      * Creates a new User.
@@ -156,11 +155,45 @@ public class User
     }
 
     /**
+     * Returns the firstName.
+     * 
+     * @return
+     *     firstName
+     */
+    @NotNull
+    public String getFirstName() {
+        return firstName;
+    }
+
+    /**
+     * Returns the lastName.
+     * 
+     * @return
+     *     lastName
+     */
+    @NotNull
+    public String getLastName() {
+        return lastName;
+    }
+
+    /**
+     * Returns the age.
+     * 
+     * @return
+     *     age
+     */
+    @NotNull
+    public Double getAge() {
+        return age;
+    }
+
+    /**
      * Returns the username.
      * 
      * @return
      *     username
      */
+    @NotNull
     public String getUsername() {
         return username;
     }

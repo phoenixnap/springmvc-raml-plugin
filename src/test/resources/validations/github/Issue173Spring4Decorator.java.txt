@@ -16,9 +16,7 @@ public class TheResourceId implements Serializable
      * The UUID of this resource.
      * 
      */
-    @NotNull
-    @Pattern(regexp = "^[a-fA-F0-9]{8}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{12}$")
-    private String id;
+    protected String id;
 
     /**
      * Creates a new TheResourceId.
@@ -43,6 +41,8 @@ public class TheResourceId implements Serializable
      * @return
      *     id
      */
+    @NotNull
+    @Pattern(regexp = "^[a-fA-F0-9]{8}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{12}$")
     public String getId() {
         return id;
     }
