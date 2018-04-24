@@ -13,13 +13,9 @@ import org.apache.commons.lang.builder.ToStringBuilder;
 public class User implements Serializable
 {
 
-    @NotNull
-    @Size(min = 5, max = 50)
-    private String firstName;
-    @NotNull
-    @Pattern(regexp = "^[a-z]+$")
-    private String lastName;
-    private String nickName;
+    protected String firstName;
+    protected String lastName;
+    protected String nickName;
 
     /**
      * Creates a new User.
@@ -46,6 +42,8 @@ public class User implements Serializable
      * @return
      *     firstName
      */
+    @NotNull
+    @Size(min = 5, max = 50)
     public String getFirstName() {
         return firstName;
     }
@@ -66,6 +64,8 @@ public class User implements Serializable
      * @return
      *     lastName
      */
+    @NotNull
+    @Pattern(regexp = "^[a-z]+$")
     public String getLastName() {
         return lastName;
     }

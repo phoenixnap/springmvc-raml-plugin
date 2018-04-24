@@ -11,8 +11,7 @@ import org.apache.commons.lang.builder.ToStringBuilder;
 public class Client implements Serializable
 {
 
-    @NotNull
-    private String test;
+    protected String test;
 
     /**
      * Creates a new Client.
@@ -37,6 +36,7 @@ public class Client implements Serializable
      * @return
      *     test
      */
+    @NotNull
     public String getTest() {
         return test;
     }

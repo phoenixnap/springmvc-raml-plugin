@@ -11,12 +11,9 @@ import org.apache.commons.lang.builder.ToStringBuilder;
 public class Manager implements Serializable
 {
 
-    @NotNull
-    private String firstName;
-    @NotNull
-    private String lastName;
-    @NotNull
-    private String departman;
+    protected String firstName;
+    protected String lastName;
+    protected String departman;
 
     /**
      * Creates a new Manager.
@@ -43,6 +40,7 @@ public class Manager implements Serializable
      * @return
      *     firstName
      */
+    @NotNull
     public String getFirstName() {
         return firstName;
     }
@@ -63,6 +61,7 @@ public class Manager implements Serializable
      * @return
      *     lastName
      */
+    @NotNull
     public String getLastName() {
         return lastName;
     }
@@ -83,6 +82,7 @@ public class Manager implements Serializable
      * @return
      *     departman
      */
+    @NotNull
     public String getDepartman() {
         return departman;
     }

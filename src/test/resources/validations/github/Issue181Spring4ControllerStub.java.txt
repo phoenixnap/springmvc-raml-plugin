@@ -11,10 +11,8 @@ import org.apache.commons.lang.builder.ToStringBuilder;
 public class User implements Serializable
 {
 
-    @NotNull
-    private String firstName;
-    @NotNull
-    private String lastName;
+    protected String firstName;
+    protected String lastName;
 
     /**
      * Creates a new User.
@@ -40,6 +38,7 @@ public class User implements Serializable
      * @return
      *     firstName
      */
+    @NotNull
     public String getFirstName() {
         return firstName;
     }
@@ -60,6 +59,7 @@ public class User implements Serializable
      * @return
      *     lastName
      */
+    @NotNull
     public String getLastName() {
         return lastName;
     }

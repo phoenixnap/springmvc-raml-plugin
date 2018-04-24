@@ -11,10 +11,8 @@ import org.apache.commons.lang.builder.ToStringBuilder;
 public class User implements Serializable
 {
 
-    @NotNull
-    private Long userId;
-    @NotNull
-    private Long salary;
+    protected Long userId;
+    protected Long salary;
 
     /**
      * Creates a new User.
@@ -40,6 +38,7 @@ public class User implements Serializable
      * @return
      *     userId
      */
+    @NotNull
     public Long getUserId() {
         return userId;
     }
@@ -60,6 +59,7 @@ public class User implements Serializable
      * @return
      *     salary
      */
+    @NotNull
     public Long getSalary() {
         return salary;
     }

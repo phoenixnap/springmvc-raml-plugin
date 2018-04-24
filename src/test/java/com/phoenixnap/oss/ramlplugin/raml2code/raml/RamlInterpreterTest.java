@@ -18,8 +18,13 @@ import java.io.IOException;
 import java.lang.reflect.Field;
 import java.math.BigDecimal;
 import java.math.BigInteger;
+import java.util.Arrays;
 import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import javax.validation.constraints.DecimalMax;
 import javax.validation.constraints.DecimalMin;
@@ -39,6 +44,7 @@ import com.phoenixnap.oss.ramlplugin.raml2code.data.ApiBodyMetadata;
 import com.phoenixnap.oss.ramlplugin.raml2code.data.ApiResourceMetadata;
 import com.phoenixnap.oss.ramlplugin.raml2code.exception.InvalidRamlResourceException;
 import com.phoenixnap.oss.ramlplugin.raml2code.helpers.CodeModelHelper;
+import com.phoenixnap.oss.ramlplugin.raml2code.helpers.NamingHelper;
 import com.phoenixnap.oss.ramlplugin.raml2code.helpers.RamlParser;
 import com.phoenixnap.oss.ramlplugin.raml2code.helpers.RamlTypeHelper;
 import com.phoenixnap.oss.ramlplugin.raml2code.plugin.Config;
@@ -125,9 +131,9 @@ public class RamlInterpreterTest extends AbstractRuleTestBase {
 		JDefinedClass manager = (JDefinedClass) CodeModelHelper.findFirstClassBySimpleName(jCodeModel, "Manager");
 		JDefinedClass department = (JDefinedClass) CodeModelHelper.findFirstClassBySimpleName(jCodeModel, "Department");
 
-		checkIfFieldContainsAnnotation(true, manager, NotNull.class);
-		checkIfFieldContainsAnnotation(true, person, NotNull.class);
-		checkIfFieldContainsAnnotation(true, department, NotNull.class);
+		checkIfGetterContainsAnnotation(true, manager, NotNull.class, "firstname", "lastname", "id", "department", "clearanceLevel");
+		checkIfGetterContainsAnnotation(true, person, NotNull.class, "firstname", "lastname", "id");
+		checkIfGetterContainsAnnotation(true, department, NotNull.class, "name");
 
 	}
 
@@ -150,10 +156,10 @@ public class RamlInterpreterTest extends AbstractRuleTestBase {
 
 		JDefinedClass validation = (JDefinedClass) CodeModelHelper.findFirstClassBySimpleName(jCodeModel, "Validation");
 
-		checkIfFieldContainsAnnotation(true, validation, NotNull.class, "lastname", "pattern", "length", "id", "anEnum", "anotherEnum");
-		checkIfFieldContainsAnnotation(false, validation, NotNull.class, "firstname", "minLength");
-		checkIfFieldContainsAnnotation(true, validation, Size.class, "length", "minLength");
-		checkIfFieldContainsAnnotation(true, validation, Pattern.class, "pattern");
+		checkIfGetterContainsAnnotation(true, validation, NotNull.class, "lastname", "pattern", "length", "id", "anEnum", "anotherEnum");
+		checkIfGetterContainsAnnotation(false, validation, NotNull.class, "firstname", "minLength");
+		checkIfGetterContainsAnnotation(true, validation, Size.class, "length", "minLength");
+		checkIfGetterContainsAnnotation(true, validation, Pattern.class, "pattern");
 
 		checkIfAnnotationHasParameter(validation, Size.class, "length", "min");
 		checkIfAnnotationHasParameter(validation, Size.class, "length", "max");
@@ -177,7 +183,7 @@ public class RamlInterpreterTest extends AbstractRuleTestBase {
 	}
 
 	private void checkIfAnnotationHasParameter(JDefinedClass classToCheck, Class<?> annotationClass, String field, String param) {
-		JAnnotationUse annotation = getAnnotationForField(classToCheck, annotationClass, field);
+		JAnnotationUse annotation = getAnnotationForGetter(classToCheck, annotationClass, field);
 		assertThat(annotation, is(notNullValue()));
 		JAnnotationValue annotationParam = annotation.getAnnotationMembers().get(param);
 		assertThat(annotationParam, is(notNullValue()));
@@ -216,6 +222,27 @@ public class RamlInterpreterTest extends AbstractRuleTestBase {
 		}
 	}
 
+	private void checkIfGetterContainsAnnotation(boolean expected, JDefinedClass classToCheck, Class<?> annotationClass, String... fields) {
+		List<String> expectedMethodNames = Arrays.asList(fields).stream().map(field -> "get" + NamingHelper.convertToClassName(field))
+				.collect(Collectors.toList());
+		Map<String, JMethod> actualMethods = classToCheck.methods().stream()
+				.collect(Collectors.toMap(method -> method.name(), method -> method));
+
+		for (String expectedMethodName : expectedMethodNames) {
+			if (actualMethods.keySet().contains(expectedMethodName)) {
+				boolean found = false;
+				for (JAnnotationUse annotation : actualMethods.get(expectedMethodName).annotations()) {
+					if (annotation.getAnnotationClass().name().equals(annotationClass.getSimpleName())) {
+						found = true;
+					}
+				}
+				assertThat(found, is(expected));
+			} else {
+				fail();
+			}
+		}
+	}
+
 	private JAnnotationUse getAnnotationForField(JDefinedClass classToCheck, Class<?> annotationClass, String field) {
 		for (JFieldVar fieldVar : classToCheck.fields().values()) {
 			if (fieldVar.name().equals(field)) {
@@ -226,6 +253,19 @@ public class RamlInterpreterTest extends AbstractRuleTestBase {
 				}
 			}
 		}
+		return null;
+	}
+
+	private JAnnotationUse getAnnotationForGetter(JDefinedClass classToCheck, Class<?> annotationClass, String field) {
+
+		Optional<JMethod> methodOptional = classToCheck.methods().stream()
+				.filter(method -> method.name().equals("get" + NamingHelper.convertToClassName(field))).findFirst();
+		if (methodOptional.isPresent()) {
+			Optional<JAnnotationUse> findFirst = methodOptional.get().annotations().stream()
+					.filter(annotation -> annotation.getAnnotationClass().name().equals(annotationClass.getSimpleName())).findFirst();
+			return findFirst.get();
+		}
+
 		return null;
 	}
 
@@ -429,23 +469,23 @@ public class RamlInterpreterTest extends AbstractRuleTestBase {
 
 		JFieldVar field = getField(pojo, "dateO");
 		assertThat(field.type().fullName(), is("java.util.Date"));
-		assertAnnotations(field, "yyyy-MM-dd");
+		assertDateFormatAnnotation(field, "yyyy-MM-dd");
 
 		field = getField(pojo, "timeO");
 		assertThat(field.type().fullName(), is("java.util.Date"));
-		assertAnnotations(field, "HH:mm:ss");
+		assertDateFormatAnnotation(field, "HH:mm:ss");
 
 		field = getField(pojo, "dateTO");
 		assertThat(field.type().fullName(), is("java.util.Date"));
-		assertAnnotations(field, "yyyy-MM-dd'T'HH:mm:ss");
+		assertDateFormatAnnotation(field, "yyyy-MM-dd'T'HH:mm:ss");
 
 		field = getField(pojo, "dateT");
 		assertThat(field.type().fullName(), is("java.util.Date"));
-		assertAnnotations(field, "yyyy-MM-dd'T'HH:mm:ssXXX");
+		assertDateFormatAnnotation(field, "yyyy-MM-dd'T'HH:mm:ssXXX");
 
 		field = getField(pojo, "datetimeRFC2616");
 		assertThat(field.type().fullName(), is("java.util.Date"));
-		assertAnnotations(field, "EEE, dd MMM yyyy HH:mm:ss z");
+		assertDateFormatAnnotation(field, "EEE, dd MMM yyyy HH:mm:ss z");
 	}
 
 	private void assertAnnotations(JFieldVar field, String expectedPattern) throws Exception {
@@ -461,6 +501,16 @@ public class RamlInterpreterTest extends AbstractRuleTestBase {
 			} else {
 				fail();
 			}
+		}
+	}
+
+	private void assertDateFormatAnnotation(JFieldVar field, String expectedPattern) throws Exception {
+		assertEquals(1, field.annotations().size());
+		Optional<JAnnotationUse> optionalAnnotation = field.annotations().stream().findFirst();
+		if (optionalAnnotation.isPresent() && JsonFormat.class.getName().equals(optionalAnnotation.get().getAnnotationClass().fullName())) {
+			assertPatternValue(optionalAnnotation.get(), expectedPattern);
+		} else {
+			fail();
 		}
 	}
 

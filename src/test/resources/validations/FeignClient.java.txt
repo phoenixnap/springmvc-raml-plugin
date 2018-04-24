@@ -11,12 +11,9 @@ import org.apache.commons.lang.builder.ToStringBuilder;
 public class Song implements Serializable
 {
 
-    @NotNull
-    private String songId;
-    @NotNull
-    private String songTitle;
-    @NotNull
-    private String artist;
+    protected String songId;
+    protected String songTitle;
+    protected String artist;
 
     /**
      * Creates a new Song.
@@ -43,6 +40,7 @@ public class Song implements Serializable
      * @return
      *     songId
      */
+    @NotNull
     public String getSongId() {
         return songId;
     }
@@ -63,6 +61,7 @@ public class Song implements Serializable
      * @return
      *     songTitle
      */
+    @NotNull
     public String getSongTitle() {
         return songTitle;
     }
@@ -83,6 +82,7 @@ public class Song implements Serializable
      * @return
      *     artist
      */
+    @NotNull
     public String getArtist() {
         return artist;
     }

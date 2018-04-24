@@ -11,10 +11,8 @@ import org.apache.commons.lang.builder.ToStringBuilder;
 public class Object implements Serializable
 {
 
-    @NotNull
-    private Long stuffId;
-    @NotNull
-    private Long coolerId;
+    protected Long stuffId;
+    protected Long coolerId;
 
     /**
      * Creates a new Object.
@@ -40,6 +38,7 @@ public class Object implements Serializable
      * @return
      *     stuffId
      */
+    @NotNull
     public Long getStuffId() {
         return stuffId;
     }
@@ -60,6 +59,7 @@ public class Object implements Serializable
      * @return
      *     coolerId
      */
+    @NotNull
     public Long getCoolerId() {
         return coolerId;
     }

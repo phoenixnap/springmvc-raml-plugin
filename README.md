@@ -48,23 +48,23 @@ Then simply include the following code in the POM of the project you wish to gen
 <plugin>
   <groupId>com.phoenixnap.oss</groupId>
   <artifactId>springmvc-raml-plugin</artifactId>
-  <version>x.x.x</version>
+  <version>2.x.x</version>
   <configuration>
     <ramlPath>{path.to.raml.file}</ramlPath>
-	<schemaLocation>{path.to.schema.directory||schema.absolute.url}</schemaLocation>
-	<outputRelativePath>/src/generated</outputRelativePath>
+    <schemaLocation>{path.to.schema.directory||schema.absolute.url}</schemaLocation>
+    <outputRelativePath>/src/generated</outputRelativePath>
     <addTimestampFolder>false</addTimestampFolder>
     <basePackage>com.gen.wow</basePackage>
     <baseUri>/api</baseUri>
     <generateUnreferencedObjects>true</generateUnreferencedObjects>
-	<generationConfig>
-		<includeAdditionalProperties>false</includeAdditionalProperties>
-		...
-	</generationConfig>
-	<seperateMethodsByContentType>false</seperateMethodsByContentType>
-	<rule>com.phoenixnap.oss.ramlplugin.raml2code.rules.Spring4ControllerStubRule</rule>
-	<ruleConfiguration>			
-	</ruleConfiguration>
+    <generationConfig>
+        <includeAdditionalProperties>false</includeAdditionalProperties>
+        ...
+    </generationConfig>
+    <seperateMethodsByContentType>false</seperateMethodsByContentType>
+    <rule>com.phoenixnap.oss.ramlplugin.raml2code.rules.Spring4ControllerStubRule</rule>
+    <ruleConfiguration>			
+    </ruleConfiguration>
   </configuration>
   <executions>
     <execution>
@@ -82,7 +82,7 @@ Then simply include the following code in the POM of the project you wish to gen
 (required) The path to the file, relative to the project base directory
 
 ### outputRelativePath
-(optional) Relative path where the generated Java classes will be saved to. Package structure folders will be created relative to this path.
+(optional, default: "") Relative path where the generated Java classes will be saved to. Package structure folders will be created relative to this path.
 
 ### addTimestampFolder
 (optional, default: false) Should an extra folder be generated using a timestamp to seperate generations
@@ -94,10 +94,10 @@ Then simply include the following code in the POM of the project you wish to gen
 (optional, default: "") The URI or relative path to the folder/network location containing JSON Schemas
 
 ### baseUri
-(optional) Base URI for generated Spring controllers. This overrules the baseUri attribute from inside the .raml spec.
+(optional, default: "") Base URI for generated Spring controllers. This overrules the baseUri attribute from inside the .raml spec.
 
 ### generateUnreferencedObjects
-(optional) Determines whether POJOs for unreferenced schemas or data types included in the RAML file should be generated.
+(optional, default: false) Determines whether POJOs for unreferenced schemas or data types included in the RAML file should be generated.
 
 ### generationConfig
 (optional) This object contains a map of configuration for the JsonSchema2Pojo generator. The full list of configurable attributes, their description and default values can be found here [GenerationConfig][]

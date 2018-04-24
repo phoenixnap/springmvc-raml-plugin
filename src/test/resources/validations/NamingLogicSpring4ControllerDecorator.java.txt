@@ -11,8 +11,7 @@ import org.apache.commons.lang.builder.ToStringBuilder;
 public class Message implements Serializable
 {
 
-    @NotNull
-    private String value;
+    protected String value;
 
     /**
      * Creates a new Message.
@@ -37,6 +36,7 @@ public class Message implements Serializable
      * @return
      *     value
      */
+    @NotNull
     public String getValue() {
         return value;
     }
@@ -87,10 +87,8 @@ import org.apache.commons.lang.builder.ToStringBuilder;
 public class MessageSubResource implements Serializable
 {
 
-    @NotNull
-    private String title;
-    @NotNull
-    private String desc;
+    protected String title;
+    protected String desc;
 
     /**
      * Creates a new MessageSubResource.
@@ -116,6 +114,7 @@ public class MessageSubResource implements Serializable
      * @return
      *     title
      */
+    @NotNull
     public String getTitle() {
         return title;
     }
@@ -136,6 +135,7 @@ public class MessageSubResource implements Serializable
      * @return
      *     desc
      */
+    @NotNull
     public String getDesc() {
         return desc;
     }
