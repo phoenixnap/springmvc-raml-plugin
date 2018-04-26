@@ -27,6 +27,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.jsonschema2pojo.util.NameHelper;
+import org.raml.v2.api.model.v10.declarations.AnnotationRef;
 import org.raml.v2.internal.utils.Inflector;
 import org.springframework.http.MediaType;
 import org.springframework.util.StringUtils;
@@ -34,6 +35,8 @@ import org.springframework.util.StringUtils;
 import com.phoenixnap.oss.ramlplugin.raml2code.data.ApiActionMetadata;
 import com.phoenixnap.oss.ramlplugin.raml2code.data.ApiBodyMetadata;
 import com.phoenixnap.oss.ramlplugin.raml2code.data.ApiParameterMetadata;
+import com.phoenixnap.oss.ramlplugin.raml2code.plugin.Config;
+import com.phoenixnap.oss.ramlplugin.raml2code.plugin.SpringMvcEndpointGeneratorMojo.LogicForParamsAndMethodsNaming;
 import com.phoenixnap.oss.ramlplugin.raml2code.raml.RamlActionType;
 import com.phoenixnap.oss.ramlplugin.raml2code.raml.RamlResource;
 
@@ -228,11 +231,11 @@ public class NamingHelper {
 	 */
 	public static String getResourceName(RamlResource resource, boolean singularize) {
 		String url = resource.getRelativeUri();
-		if (StringUtils.hasText(url)) {
-			if (url.contains("/") && (url.lastIndexOf("/") < url.length())) {
-				return getResourceName(url.substring(url.lastIndexOf("/") + 1), singularize);
-			}
+
+		if (StringUtils.hasText(url) && url.contains("/") && (url.lastIndexOf("/") < url.length())) {
+			return getResourceName(url.substring(url.lastIndexOf("/") + 1), singularize);
 		}
+
 		return null;
 	}
 
@@ -394,6 +397,17 @@ public class NamingHelper {
 
 	public static String getActionName(ApiActionMetadata apiActionMetadata) {
 
+		if (Config.getLogicForParamsAndMethodsNaming() == LogicForParamsAndMethodsNaming.DISPLAY_NAME
+				&& !StringUtils.isEmpty(apiActionMetadata.getDisplayName())) {
+			return cleanNameForJava(apiActionMetadata.getDisplayName());
+		} else if (Config.getLogicForParamsAndMethodsNaming() == LogicForParamsAndMethodsNaming.ANNOTATION) {
+			for (AnnotationRef annotation : apiActionMetadata.getAnnotations()) {
+				if ("(javaName)".equals(annotation.name())) {
+					return String.valueOf(annotation.structuredValue().value());
+				}
+			}
+		}
+
 		String uri = apiActionMetadata.getResource().getUri();
 		String name = convertActionTypeToIntent(apiActionMetadata.getActionType(), doesUriEndsWithParam(uri));
 
@@ -416,8 +430,7 @@ public class NamingHelper {
 				name = name + "By";
 				if (parameterMetadataList.size() == 1) {
 					ApiParameterMetadata paramMetaData = parameterMetadataList.iterator().next();
-					name = name + StringUtils.capitalize(cleanNameForJava(
-							paramMetaData.getDisplayName() != null ? paramMetaData.getDisplayName() : paramMetaData.getName()));
+					name = name + StringUtils.capitalize(paramMetaData.getJavaName());
 				}
 			}
 

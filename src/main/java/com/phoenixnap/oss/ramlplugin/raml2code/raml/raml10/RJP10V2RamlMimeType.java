@@ -73,12 +73,6 @@ public class RJP10V2RamlMimeType implements RamlMimeType {
 	@Override
 	public String getSchema() {
 		return mimeType.type();
-		// FIXME Alex
-		// if (RamlTypeHelper.isSchemaType(mimeType)) {
-		// return ((ExternalTypeDeclaration) mimeType).schemaContent();
-		// } else {
-		// return null;
-		// }
 	}
 
 	@Override

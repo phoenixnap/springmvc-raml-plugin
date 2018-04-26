@@ -1,6 +1,7 @@
 package com.phoenixnap.oss.ramlplugin.raml2code.plugin;
 
 import com.phoenixnap.oss.ramlplugin.raml2code.helpers.NamingHelper;
+import com.phoenixnap.oss.ramlplugin.raml2code.plugin.SpringMvcEndpointGeneratorMojo.LogicForParamsAndMethodsNaming;
 
 public class Config {
 
@@ -25,6 +26,9 @@ public class Config {
 
 	private static final String DEFAULT_BASE_PACKAGE = "com.gen.test";
 	private static String basePackage = DEFAULT_BASE_PACKAGE;
+
+	private static final LogicForParamsAndMethodsNaming DEFAULT_LOGIC_FOR_PARAMS_AND_METHODS_NAMING = LogicForParamsAndMethodsNaming.DEFAULT;
+	private static LogicForParamsAndMethodsNaming logicForParamsAndMethodsNaming = DEFAULT_LOGIC_FOR_PARAMS_AND_METHODS_NAMING;
 
 	Config() {
 	}
@@ -112,6 +116,17 @@ public class Config {
 		return basePackage;
 	}
 
+	public static LogicForParamsAndMethodsNaming getLogicForParamsAndMethodsNaming() {
+		if (springMvcEndpointGeneratorMojo != null) {
+			return springMvcEndpointGeneratorMojo.logicForParamsAndMethodsNaming;
+		}
+		return logicForParamsAndMethodsNaming;
+	}
+
+	protected static void setLogicForParamsAndMethodsNaming(LogicForParamsAndMethodsNaming logicForParamsAndMethodsNaming) {
+		Config.logicForParamsAndMethodsNaming = logicForParamsAndMethodsNaming;
+	}
+
 	public static String getPojoPackage() {
 		return getBasePackage() + NamingHelper.getDefaultModelPackage();
 	}
@@ -124,5 +139,7 @@ public class Config {
 		setResourceTopLevelInClassNames(DEFAULT_RESOURCE_TOP_LEVEL_IN_CLASS_NAMES);
 		setReverseOrderInClassNames(DEFAULT_REVERSE_ORDER_IN_CLASS_NAMES);
 		setSeperateMethodsByContentType(DEFAULT_SEPERATE_METHODS_BY_CONTENTTYPE);
+		setLogicForParamsAndMethodsNaming(DEFAULT_LOGIC_FOR_PARAMS_AND_METHODS_NAMING);
 	}
+
 }

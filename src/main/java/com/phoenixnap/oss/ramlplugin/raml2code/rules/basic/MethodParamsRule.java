@@ -109,8 +109,9 @@ public class MethodParamsRule implements Rule<CodeModelHelper.JExtMethod, JMetho
 
 	protected JVar paramQueryForm(ApiParameterMetadata paramMetaData, CodeModelHelper.JExtMethod generatableType,
 			ApiActionMetadata endpointMetadata) {
-		String javaName = NamingHelper
-				.getParameterName(paramMetaData.getDisplayName() != null ? paramMetaData.getDisplayName() : paramMetaData.getName());
+
+		String javaName = paramMetaData.getJavaName();
+
 		if (addParameterJavadoc) {
 			String paramComment = "";
 			if (paramMetaData.getRamlParam() != null && StringUtils.hasText(paramMetaData.getRamlParam().getDescription())) {

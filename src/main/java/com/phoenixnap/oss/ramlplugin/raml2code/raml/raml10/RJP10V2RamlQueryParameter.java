@@ -13,11 +13,13 @@
 package com.phoenixnap.oss.ramlplugin.raml2code.raml.raml10;
 
 import java.math.BigDecimal;
+import java.util.List;
 
 import org.raml.v2.api.model.v10.datamodel.ArrayTypeDeclaration;
 import org.raml.v2.api.model.v10.datamodel.NumberTypeDeclaration;
 import org.raml.v2.api.model.v10.datamodel.StringTypeDeclaration;
 import org.raml.v2.api.model.v10.datamodel.TypeDeclaration;
+import org.raml.v2.api.model.v10.declarations.AnnotationRef;
 
 import com.phoenixnap.oss.ramlplugin.raml2code.helpers.RamlTypeHelper;
 import com.phoenixnap.oss.ramlplugin.raml2code.raml.RamlDataType;
@@ -151,5 +153,10 @@ public class RJP10V2RamlQueryParameter extends RamlQueryParameter {
 	@Override
 	public String getName() {
 		return this.queryParameter.name();
+	}
+
+	@Override
+	public List<AnnotationRef> getAnnotations() {
+		return this.queryParameter.annotations();
 	}
 }

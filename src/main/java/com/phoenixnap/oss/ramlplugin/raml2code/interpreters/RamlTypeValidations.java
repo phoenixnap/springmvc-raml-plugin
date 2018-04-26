@@ -78,10 +78,12 @@ public class RamlTypeValidations {
 	}
 
 	/**
-	 * Adds validation annotations to the supplied field
+	 * Adds validation annotations to the supplied method
 	 * 
-	 * @param field
-	 *            to add annotations to
+	 * @param getter
+	 *            getter method to add validation annotation to
+	 * @param addValidAnnotation
+	 *            if {@code @Valid} annotation dhould be added
 	 */
 	public void annotateFieldJSR303(JMethod getter, boolean addValidAnnotation) {
 		if (isRequired()) {

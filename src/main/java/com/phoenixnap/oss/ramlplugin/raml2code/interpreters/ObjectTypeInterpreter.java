@@ -29,6 +29,7 @@ import org.springframework.util.StringUtils;
 import com.phoenixnap.oss.ramlplugin.raml2code.helpers.NamingHelper;
 import com.phoenixnap.oss.ramlplugin.raml2code.helpers.RamlTypeHelper;
 import com.phoenixnap.oss.ramlplugin.raml2code.plugin.Config;
+import com.phoenixnap.oss.ramlplugin.raml2code.plugin.SpringMvcEndpointGeneratorMojo.LogicForParamsAndMethodsNaming;
 import com.phoenixnap.oss.ramlplugin.raml2code.raml.RamlDataType;
 import com.phoenixnap.oss.ramlplugin.raml2code.raml.RamlRoot;
 import com.sun.codemodel.JClass;
@@ -154,16 +155,33 @@ public class ObjectTypeInterpreter extends BaseTypeInterpreter {
 
 		List<String> excludeFieldsFromToString = new ArrayList<>();
 		for (TypeDeclaration objectProperty : objectType.properties()) {
+
+			String fieldName = null;
+			if (Config.getLogicForParamsAndMethodsNaming() == LogicForParamsAndMethodsNaming.DISPLAY_NAME
+					&& objectProperty.displayName() != null) {
+				fieldName = NamingHelper.getParameterName(objectProperty.displayName().value());
+			} else if (Config.getLogicForParamsAndMethodsNaming() == LogicForParamsAndMethodsNaming.ANNOTATION) {
+				for (AnnotationRef annotation : objectProperty.annotations()) {
+					if ("(javaName)".equals(annotation.name())) {
+						fieldName = String.valueOf(annotation.structuredValue().value());
+						break;
+					}
+				}
+			}
+			if (StringUtils.isEmpty(fieldName)) {
+				fieldName = NamingHelper.getParameterName(objectProperty.name());
+			}
+
 			List<AnnotationRef> annotations = objectProperty.annotations();
 			for (AnnotationRef annotation : annotations) {
 				if ("(isSensitive)".equals(annotation.name()) && Boolean.TRUE.equals(annotation.structuredValue().value())) {
-					excludeFieldsFromToString.add(objectProperty.name());
+					excludeFieldsFromToString.add(fieldName);
 				}
 			}
 			RamlInterpretationResult childResult = RamlInterpreterFactory.getInterpreterForType(objectProperty).interpret(document,
 					objectProperty, builderModel, true);
 			String childType = childResult.getResolvedClassOrBuiltOrObject().fullName();
-			builder.withField(objectProperty.name(), childType, RamlTypeHelper.getDescription(objectProperty), childResult.getValidations(),
+			builder.withField(fieldName, childType, RamlTypeHelper.getDescription(objectProperty), childResult.getValidations(),
 					objectProperty);
 
 		}

@@ -13,6 +13,9 @@
 package com.phoenixnap.oss.ramlplugin.raml2code.raml;
 
 import java.math.BigDecimal;
+import java.util.List;
+
+import org.raml.v2.api.model.v10.declarations.AnnotationRef;
 
 /**
  * Abstract Representation of a Raml Parameter
@@ -48,6 +51,8 @@ public abstract class RamlAbstractParam { // extends AbstractParam {
 	public abstract BigDecimal getMinimum();
 
 	public abstract BigDecimal getMaximum();
+
+	public abstract List<AnnotationRef> getAnnotations();
 
 	/**
 	 * Convenience method for easier processing. Non supporting parameters are

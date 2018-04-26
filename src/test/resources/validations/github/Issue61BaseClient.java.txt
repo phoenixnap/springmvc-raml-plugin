@@ -35,7 +35,7 @@ public class SampleUnit implements Serializable
     }
 
     /**
-     * Returns the t_string.
+     * Returns the tString.
      * 
      * @return
      *     tString
@@ -46,7 +46,7 @@ public class SampleUnit implements Serializable
     }
 
     /**
-     * Set the t_string.
+     * Set the tString.
      * 
      * @param tString
      *     the new tString

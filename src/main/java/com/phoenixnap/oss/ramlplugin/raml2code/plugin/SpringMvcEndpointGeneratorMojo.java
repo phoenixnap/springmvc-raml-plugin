@@ -195,6 +195,15 @@ public class SpringMvcEndpointGeneratorMojo extends AbstractMojo {
 	@Parameter(required = false, readonly = true, defaultValue = "false")
 	protected Boolean reverseOrderInClassNames;
 
+	/**
+	 * Logic used for Java names of arguments and methods generation. Possible
+	 * values: <ul> <li>DEFAULT</li><li>DISPLAY_NAME - displayName attribute
+	 * will be cleaned and used</li><li>ANNOTATION - "javaName" annotation will
+	 * be used as is</li> </ul>
+	 */
+	@Parameter(required = false, readonly = true, defaultValue = "DEFAULT")
+	protected LogicForParamsAndMethodsNaming logicForParamsAndMethodsNaming;
+
 	private ClassRealm classRealm;
 
 	private String resolvedSchemaLocation;
@@ -502,6 +511,10 @@ public class SpringMvcEndpointGeneratorMojo extends AbstractMojo {
 		}
 
 		this.getLog().info("Endpoint Generation Completed in:" + (System.currentTimeMillis() - startTime) + "ms");
+	}
+
+	public enum LogicForParamsAndMethodsNaming {
+		DEFAULT, DISPLAY_NAME, ANNOTATION
 	}
 
 }

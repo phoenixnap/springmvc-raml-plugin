@@ -15,6 +15,8 @@ package com.phoenixnap.oss.ramlplugin.raml2code.raml;
 import java.util.List;
 import java.util.Map;
 
+import org.raml.v2.api.model.v10.declarations.AnnotationRef;
+
 /**
  * Abstract Representation of a Raml Action
  * 
@@ -42,4 +44,6 @@ public interface RamlAction {
 	String getDisplayName();
 
 	List<RamlSecurityReference> getSecuredBy();
+
+	List<AnnotationRef> getAnnotations();
 }

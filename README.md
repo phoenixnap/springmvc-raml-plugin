@@ -120,6 +120,9 @@ Then simply include the following code in the POM of the project you wish to gen
 ### reverseOrderInClassNames
 (optional, default: false) Reverse order of resource path that will be included in generated class names. If set to false URI will be included in class name from left to right.
 
+### logicForParamsAndMethodsNaming
+(optional, default: DEFAULT) Logic used for Java names of arguments and methods generation. Possible values: `DEFAULT`, `DISPLAY_NAME` (`displayName` attribute will be cleaned and used), `ANNOTATION` (value of `javaName` annotation will be used as is).
+
 ### ruleConfiguration
 (optional) This is a key/value map for configuration of individual rules. Not all rules support configuration.
 

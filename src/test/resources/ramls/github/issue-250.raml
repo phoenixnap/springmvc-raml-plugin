@@ -1,0 +1,53 @@
+#%RAML 1.0
+title: Better naming control #250
+version: "1.0.0"
+
+annotationTypes: 
+  javaName:
+    type: string
+    allowedTargets: [TypeDeclaration, Method]
+
+types:
+  User:
+    type: object
+    properties:
+      firstName:
+        type: string
+        displayName: firstNameDisplayName
+        (javaName): firstNameJavaName
+        
+/test:
+  /{uriParam}:
+    uriParameters:
+      uriParam:
+        displayName: uriParamDisplayName
+        (javaName): uriParamJavaName
+        type: integer
+    get:
+      displayName: getMethodDisplayName
+      (javaName): getMethodJavaName
+      queryParameters: 
+        queryParam:
+          type: string
+          displayName: queryParamDisplayName
+          (javaName): queryParamJavaName
+      headers: 
+        headerParam: 
+          type: string
+          displayName: headerParamDisplayName
+          (javaName): headerParamJavaName
+      responses:
+        200:
+          body: 
+            application/json:
+              type: User
+    /accept:
+      put:
+        displayName: putMethodDisplayName
+        (javaName): putMethodJavaName
+        body: 
+          application/json:
+            type: User
+        responses:
+          200:
+    

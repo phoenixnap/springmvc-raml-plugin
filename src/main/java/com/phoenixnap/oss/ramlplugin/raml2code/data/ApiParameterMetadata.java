@@ -18,9 +18,13 @@ import java.util.List;
 import java.util.Set;
 
 import org.apache.commons.lang.NullArgumentException;
+import org.raml.v2.api.model.v10.declarations.AnnotationRef;
 import org.springframework.util.StringUtils;
 
+import com.phoenixnap.oss.ramlplugin.raml2code.helpers.NamingHelper;
 import com.phoenixnap.oss.ramlplugin.raml2code.helpers.SchemaHelper;
+import com.phoenixnap.oss.ramlplugin.raml2code.plugin.Config;
+import com.phoenixnap.oss.ramlplugin.raml2code.plugin.SpringMvcEndpointGeneratorMojo.LogicForParamsAndMethodsNaming;
 import com.phoenixnap.oss.ramlplugin.raml2code.raml.RamlAbstractParam;
 import com.phoenixnap.oss.ramlplugin.raml2code.raml.RamlUriParameter;
 import com.sun.codemodel.JCodeModel;
@@ -222,5 +226,28 @@ public class ApiParameterMetadata {
 
 	public JCodeModel getCodeModel() {
 		return codeModel;
+	}
+
+	public List<AnnotationRef> getAnnotations() {
+		return ramlParam.getAnnotations();
+	}
+
+	public String getJavaName() {
+		String javaName = null;
+		if (Config.getLogicForParamsAndMethodsNaming() == LogicForParamsAndMethodsNaming.DISPLAY_NAME
+				&& !StringUtils.isEmpty(this.getDisplayName())) {
+			javaName = NamingHelper.getParameterName(this.getDisplayName());
+		} else if (Config.getLogicForParamsAndMethodsNaming() == LogicForParamsAndMethodsNaming.ANNOTATION) {
+			for (AnnotationRef annotation : this.getAnnotations()) {
+				if ("(javaName)".equals(annotation.name())) {
+					javaName = String.valueOf(annotation.structuredValue().value());
+					break;
+				}
+			}
+		}
+		if (StringUtils.isEmpty(javaName)) {
+			javaName = NamingHelper.getParameterName(this.getName());
+		}
+		return javaName;
 	}
 }
