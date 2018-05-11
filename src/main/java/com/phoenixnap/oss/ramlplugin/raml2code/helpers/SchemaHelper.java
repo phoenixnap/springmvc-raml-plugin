@@ -87,16 +87,18 @@ public class SchemaHelper {
 	 *            The Type to map
 	 * @param format
 	 *            Number format specified
+	 * @param rawType
+	 *            RAML type
 	 * @return The Java Class which maps to this Simple RAML ParamType or string
 	 *         if one is not found
 	 */
-	public static Class<?> mapSimpleType(RamlParamType param, String format) {
+	public static Class<?> mapSimpleType(RamlParamType param, String format, String rawType) {
 
 		switch (param) {
 			case BOOLEAN:
 				return Boolean.class;
 			case DATE:
-				return Date.class;
+				return mapDateFormat(rawType);
 			case INTEGER: {
 				Class<?> fromFormat = mapNumberFromFormat(format);
 				if (fromFormat == Double.class) {
@@ -123,6 +125,35 @@ public class SchemaHelper {
 				return String.class;
 		}
 
+	}
+
+	public static Class<?> mapDateFormat(String rawType) {
+
+		String param = rawType.toUpperCase();
+		try {
+			switch (param) {
+				case "DATE-ONLY":
+					String dateType = Config.getPojoConfig().getDateType();
+					if (StringUtils.hasText(dateType)) {
+						return Class.forName(dateType);
+					}
+					break;
+				case "TIME-ONLY":
+					String timeType = Config.getPojoConfig().getTimeType();
+					if (StringUtils.hasText(timeType)) {
+						return Class.forName(timeType);
+					}
+					break;
+				default:
+					String dateTimeType = Config.getPojoConfig().getDateTimeType();
+					if (StringUtils.hasText(dateTimeType)) {
+						return Class.forName(dateTimeType);
+					}
+			}
+		} catch (ClassNotFoundException e) {
+			logger.error("Error trying to find class for date type: " + rawType);
+		}
+		return Date.class;
 	}
 
 	private static Class<?> mapNumberFromFormat(String format) {

@@ -144,4 +144,9 @@ public class RJP10V2RamlFormParameter extends RamlFormParameter {
 	public List<AnnotationRef> getAnnotations() {
 		return this.formParameter.annotations();
 	}
+
+	@Override
+	public String getRawType() {
+		return this.formParameter.type();
+	}
 }

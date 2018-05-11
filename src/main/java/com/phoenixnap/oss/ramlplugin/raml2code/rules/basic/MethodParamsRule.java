@@ -139,7 +139,7 @@ public class MethodParamsRule implements Rule<CodeModelHelper.JExtMethod, JMetho
 		// data types as query parameters
 		RamlAbstractParam ramlParam = paramMetaData.getRamlParam();
 		if (ramlParam.getType() == RamlParamType.DATA_TYPE && ramlParam instanceof RJP10V2RamlQueryParameter) {
-			JClass jc = findFirstClassBySimpleName(paramMetaData.getCodeModel(), ((RJP10V2RamlQueryParameter) ramlParam).getRawType());
+			JClass jc = findFirstClassBySimpleName(paramMetaData.getCodeModel(), ramlParam.getRawType());
 			return generatableType.get().param(jc, paramMetaData.getName());
 		}
 

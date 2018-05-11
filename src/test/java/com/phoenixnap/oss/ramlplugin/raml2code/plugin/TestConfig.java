@@ -30,4 +30,15 @@ public class TestConfig {
 		Config.setLogicForParamsAndMethodsNaming(logicForParamsAndMethodsNaming);
 	}
 
+	public static void setDateTimeType(String dateTimeType) {
+		((TestPojoConfig) Config.getPojoConfig()).setDateTimeType(dateTimeType);
+	}
+
+	public static void setDateType(String dateType) {
+		((TestPojoConfig) Config.getPojoConfig()).setDateType(dateType);
+	}
+
+	public static void setTimeType(String timeType) {
+		((TestPojoConfig) Config.getPojoConfig()).setTimeType(timeType);
+	}
 }

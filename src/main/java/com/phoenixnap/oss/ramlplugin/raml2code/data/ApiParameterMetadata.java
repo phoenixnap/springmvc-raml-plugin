@@ -13,7 +13,6 @@
 package com.phoenixnap.oss.ramlplugin.raml2code.data;
 
 import java.lang.reflect.Array;
-import java.lang.reflect.Type;
 import java.util.List;
 import java.util.Set;
 
@@ -61,12 +60,6 @@ public class ApiParameterMetadata {
 	 * A format narrowing the allowed data for this parameter
 	 */
 	private String format;
-
-	/**
-	 * If the type contains generics, this is the type of the generic as defined
-	 * in the code.
-	 */
-	private Type genericType;
 
 	/**
 	 * Can this parameter be passed in as null
@@ -118,14 +111,12 @@ public class ApiParameterMetadata {
 		this.displayName = param.getDisplayName();
 
 		this.format = param.getFormat();
-		this.type = SchemaHelper.mapSimpleType(param.getType(), this.format);
+		this.type = SchemaHelper.mapSimpleType(param.getType(), this.format, param.getRawType());
 
 		// If it's a repeatable parameter simply convert to an array of type
 		if (param.isRepeat()) {
 			this.type = Array.newInstance(this.type, 0).getClass();
 		}
-
-		this.genericType = null;
 
 		this.example = StringUtils.hasText(param.getExample()) ? param.getExample() : null;
 		this.setRamlParam(param);
@@ -139,15 +130,6 @@ public class ApiParameterMetadata {
 	 */
 	public Class<?> getType() {
 		return type;
-	}
-
-	/**
-	 * The Java Type of the generic portion of the parameter
-	 * 
-	 * @return The Java Type of the generic portion of the parameter
-	 */
-	public Type getGenericType() {
-		return genericType;
 	}
 
 	/**

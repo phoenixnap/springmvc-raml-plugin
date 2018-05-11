@@ -139,4 +139,9 @@ public class RJP10V2RamlUriParameter extends RamlUriParameter {
 	public List<AnnotationRef> getAnnotations() {
 		return this.uriParameter.annotations();
 	}
+
+	@Override
+	public String getRawType() {
+		return this.uriParameter.type();
+	}
 }

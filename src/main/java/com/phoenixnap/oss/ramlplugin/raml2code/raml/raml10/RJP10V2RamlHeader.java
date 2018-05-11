@@ -130,4 +130,9 @@ public class RJP10V2RamlHeader extends RamlHeader {
 	public List<AnnotationRef> getAnnotations() {
 		return this.header.annotations();
 	}
+
+	@Override
+	public String getRawType() {
+		return this.header.type();
+	}
 }

@@ -54,6 +54,8 @@ public abstract class RamlAbstractParam { // extends AbstractParam {
 
 	public abstract List<AnnotationRef> getAnnotations();
 
+	public abstract String getRawType();
+
 	/**
 	 * Convenience method for easier processing. Non supporting parameters are
 	 * assumed to be single.
