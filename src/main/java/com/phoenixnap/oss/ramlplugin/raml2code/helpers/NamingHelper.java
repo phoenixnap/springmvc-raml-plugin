@@ -399,7 +399,7 @@ public class NamingHelper {
 
 		if (Config.getLogicForParamsAndMethodsNaming() == LogicForParamsAndMethodsNaming.DISPLAY_NAME
 				&& !StringUtils.isEmpty(apiActionMetadata.getDisplayName())) {
-			return cleanNameForJava(apiActionMetadata.getDisplayName());
+			return StringUtils.uncapitalize(cleanNameForJava(apiActionMetadata.getDisplayName()));
 		} else if (Config.getLogicForParamsAndMethodsNaming() == LogicForParamsAndMethodsNaming.ANNOTATION) {
 			for (AnnotationRef annotation : apiActionMetadata.getAnnotations()) {
 				if ("(javaName)".equals(annotation.name())) {

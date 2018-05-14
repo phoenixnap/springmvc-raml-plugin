@@ -13,7 +13,7 @@ types:
     properties:
       firstName:
         type: string
-        displayName: firstNameDisplayName
+        displayName: First Name Display Name
         (javaName): firstNameJavaName
         
 /test:
@@ -24,12 +24,12 @@ types:
         (javaName): uriParamJavaName
         type: integer
     get:
-      displayName: getMethodDisplayName
+      displayName: get method display name
       (javaName): getMethodJavaName
       queryParameters: 
         queryParam:
           type: string
-          displayName: queryParamDisplayName
+          displayName: Query Param Display Name
           (javaName): queryParamJavaName
       headers: 
         headerParam: 
@@ -43,7 +43,7 @@ types:
               type: User
     /accept:
       put:
-        displayName: putMethodDisplayName
+        displayName: Put Method Display Name
         (javaName): putMethodJavaName
         body: 
           application/json:
