@@ -19,8 +19,10 @@ import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Set;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import org.apache.commons.collections.MapUtils;
 import org.raml.v2.api.model.v10.datamodel.DateTimeTypeDeclaration;
 import org.raml.v2.api.model.v10.datamodel.TypeDeclaration;
@@ -56,7 +58,7 @@ import com.sun.codemodel.JVar;
 /**
  * Builder pattern for POJO generation using jCodeModel. Provides basic utility
  * methods including extension and getter/setter generation
- * 
+ *
  * @author kurtpa
  * @since 0.10.0
  *
@@ -67,12 +69,12 @@ public class PojoBuilder extends AbstractBuilder {
 
 	/**
 	 * Constructor allowing chaining of JCodeModels
-	 * 
+	 *
 	 * @param pojoModel
 	 *            Existing Codemodel to append to
 	 * @param className
 	 *            Class to be created
-	 * 
+	 *
 	 */
 	public PojoBuilder(JCodeModel pojoModel, String className) {
 		super(pojoModel);
@@ -98,7 +100,7 @@ public class PojoBuilder extends AbstractBuilder {
 
 	/**
 	 * Sets this Pojo's name
-	 * 
+	 *
 	 * @param pojoPackage
 	 *            The Package used to create POJO
 	 * @param className
@@ -242,6 +244,10 @@ public class PojoBuilder extends AbstractBuilder {
 
 		// Add protected variable
 		JFieldVar field = this.pojo.field(JMod.PROTECTED, resolvedType, toJavaName(name), jExpression);
+
+		if (!Objects.equals(typeDeclaration.name(), toJavaName(name))) {
+			field.annotate(JsonProperty.class).param("value", typeDeclaration.name());
+		}
 
 		if (resolvedType.name().equals(Date.class.getSimpleName())) {
 			JAnnotationUse jAnnotationUse = field.annotate(JsonFormat.class);

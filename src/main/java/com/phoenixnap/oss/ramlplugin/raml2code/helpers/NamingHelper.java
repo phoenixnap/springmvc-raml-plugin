@@ -349,9 +349,9 @@ public class NamingHelper {
 	public static String cleanNameForJava(String resourceName) {
 		String outString = resourceName;
 		if (StringUtils.hasText(resourceName)) {
-			outString = getNameHelper().normalizeName(resourceName);
+			outString = getNameHelper().replaceIllegalCharacters(resourceName);
 			if (StringUtils.hasText(outString)) {
-				outString = outString.replaceAll(NameHelper.ILLEGAL_CHARACTER_REGEX, "");
+				outString = getNameHelper().normalizeName(outString);
 			}
 		}
 		return outString;

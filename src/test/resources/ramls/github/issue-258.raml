@@ -1,0 +1,23 @@
+#%RAML 1.0
+title: Booking API
+
+types:
+  Booking:
+    properties:
+      payment.method: string
+      payment.id: string
+  BookingQuery:
+    properties:
+      payment.method: string
+      payment.id: string
+
+/bookings:
+  get:
+    queryParameters:
+      bookingQuery:
+        type: BookingQuery
+    responses:
+      200:
+        body:
+          application/json:
+            type: Booking
