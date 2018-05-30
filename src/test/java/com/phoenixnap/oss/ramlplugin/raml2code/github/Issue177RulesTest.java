@@ -5,7 +5,7 @@ import java.util.Set;
 import org.junit.Test;
 
 import com.phoenixnap.oss.ramlplugin.raml2code.data.ApiResourceMetadata;
-import com.phoenixnap.oss.ramlplugin.raml2code.plugin.SpringMvcEndpointGeneratorMojo.LogicForParamsAndMethodsNaming;
+import com.phoenixnap.oss.ramlplugin.raml2code.plugin.SpringMvcEndpointGeneratorMojo.OverrideNamingLogicWith;
 import com.phoenixnap.oss.ramlplugin.raml2code.plugin.TestConfig;
 import com.phoenixnap.oss.ramlplugin.raml2code.rules.GitHubAbstractRuleTestBase;
 import com.phoenixnap.oss.ramlplugin.raml2code.rules.Spring4ControllerStubRule;
@@ -29,7 +29,7 @@ public class Issue177RulesTest extends GitHubAbstractRuleTestBase {
 
 	@Test
 	public void displayName_used_for_naming_logic() throws Exception {
-		TestConfig.setLogicForParamsAndMethodsNaming(LogicForParamsAndMethodsNaming.DISPLAY_NAME);
+		TestConfig.setOverrideNamingLogicWith(OverrideNamingLogicWith.DISPLAY_NAME);
 		loadRaml("issue-177.raml");
 		rule = new Spring4ControllerStubRule();
 		Set<ApiResourceMetadata> allControllersMetadata = getAllControllersMetadata();
@@ -37,6 +37,6 @@ public class Issue177RulesTest extends GitHubAbstractRuleTestBase {
 			rule.apply(apiResourceMetadata, jCodeModel);
 		}
 		verifyGeneratedCode("Issue177-2Spring4ControllerStub", serializeModel());
-		TestConfig.setLogicForParamsAndMethodsNaming(LogicForParamsAndMethodsNaming.DEFAULT);
+		TestConfig.setOverrideNamingLogicWith(null);
 	}
 }

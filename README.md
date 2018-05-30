@@ -85,7 +85,7 @@ Then simply include the following code in the POM of the project you wish to gen
 (optional, default: "") Relative path where the generated Java classes will be saved to. Package structure folders will be created relative to this path.
 
 ### addTimestampFolder
-(optional, default: false) Should an extra folder be generated using a timestamp to seperate generations
+(optional, default: `false`) Should an extra folder be generated using a timestamp to seperate generations
 
 ### basePackage
 (required) Base package to be used for the java classes to be generated. Model objects will be added in the .model subpackage
@@ -97,37 +97,40 @@ Then simply include the following code in the POM of the project you wish to gen
 (optional, default: "") Base URI for generated Spring controllers. This overrules the baseUri attribute from inside the .raml spec.
 
 ### generateUnreferencedObjects
-(optional, default: false) Determines whether POJOs for unreferenced schemas or data types included in the RAML file should be generated.
+(optional, default: `false`) Determines whether POJOs for unreferenced schemas or data types included in the RAML file should be generated.
 
 ### generationConfig
 (optional) This object contains a map of configuration for the JsonSchema2Pojo generator. The full list of configurable attributes, their description and default values can be found here [GenerationConfig][]
 
 ### injectHttpHeadersParameter
-(optional, default: false) If set to true, we will generate a `HttpHeaders` parameter for each method to allow using request HTTP headers directly.
+(optional, default: `false`) If set to true, we will generate a `HttpHeaders` parameter for each method to allow using request HTTP headers directly.
 
 ### seperateMethodsByContentType
-(optional, default: false) Should we generate separate API methods for endpoints which define multiple content types in their 200 response.
+(optional, default: `false`) Should we generate separate API methods for endpoints which define multiple content types in their 200 response.
 
 ### useJackson1xCompatibility
-(optional, default: false) If set to true, we will generate Jackson 1 annotations inside the model objects.
+(optional, default: `false`) If set to true, we will generate Jackson 1 annotations inside the model objects.
 
 ### resourceDepthInClassNames
-(optional, default: 1) Levels of resource path that will be included in generated class names. If set to -1 entire uri will be included in class name.
+(optional, default: `1`) Levels of resource path that will be included in generated class names. If set to -1 entire uri will be included in class name.
 
 ### resourceTopLevelInClassNames
-(optional, default: 0) Top level of resource path that will be included in generated class names. If set to 0 entire URI will be included in class name.
+(optional, default: `0`) Top level of resource path that will be included in generated class names. If set to 0 entire URI will be included in class name.
 
 ### reverseOrderInClassNames
-(optional, default: false) Reverse order of resource path that will be included in generated class names. If set to false URI will be included in class name from left to right.
+(optional, default: `false`) Reverse order of resource path that will be included in generated class names. If set to false URI will be included in class name from left to right.
 
-### logicForParamsAndMethodsNaming
-(optional, default: DEFAULT) Logic used for Java names of arguments and methods generation. Possible values: `DEFAULT`, `DISPLAY_NAME` (`displayName` attribute will be cleaned and used), `ANNOTATION` (value of `javaName` annotation will be used as is).
+### methodsNamingLogic
+(optional, default: `OBJECTS`) Logic used for Java methods name generation. Possible values: `OBJECTS` (objects like request parameters and return types will be used) and `RESOURCES` (resource path will be used).
+
+### overrideNamingLogicWith
+(optional, default: "") The way to override naming logic for Java methods and arguments. Possible values: `DISPLAY_NAME` (`displayName` attribute (if found) will be cleaned and used) and `ANNOTATION` (`javaName` annotation (if found) will be used as is).
 
 ### ruleConfiguration
 (optional) This is a key/value map for configuration of individual rules. Not all rules support configuration.
 
 ### rule
-(optional, default: com.phoenixnap.oss.ramlplugin.raml2code.rules.Spring4ControllerStubRule) The rule class to be used for code generation.
+(optional, default: `com.phoenixnap.oss.ramlplugin.raml2code.rules.Spring4ControllerStubRule`) The rule class to be used for code generation.
 
 #### Available Rules
 - **com.phoenixnap.oss.ramlapisync.generation.rule.Spring4ControllerStubRule**:

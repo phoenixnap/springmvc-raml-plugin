@@ -196,13 +196,22 @@ public class SpringMvcEndpointGeneratorMojo extends AbstractMojo {
 	protected Boolean reverseOrderInClassNames;
 
 	/**
-	 * Logic used for Java names of arguments and methods generation. Possible
-	 * values: <ul> <li>DEFAULT</li><li>DISPLAY_NAME - displayName attribute
-	 * will be cleaned and used</li><li>ANNOTATION - "javaName" annotation will
-	 * be used as is</li> </ul>
+	 * Logic used for Java methods name generation. Possible values: <ul>
+	 * <li>OBJECTS - objects like request parameters and return types will be
+	 * used</li> <li>RESOURCES - resource path will be used</li> </ul> Default
+	 * is OBJECTS.
 	 */
-	@Parameter(required = false, readonly = true, defaultValue = "DEFAULT")
-	protected LogicForParamsAndMethodsNaming logicForParamsAndMethodsNaming;
+	@Parameter(required = false, readonly = true, defaultValue = "OBJECTS")
+	protected MethodsNamingLogic methodsNamingLogic;
+
+	/**
+	 * The way to override naming logic for Java methods and arguments. Possible
+	 * values: <ul> <li>DISPLAY_NAME - "displayName" attribute (if found) will
+	 * be cleaned and used</li> <li>ANNOTATION - "javaName" annotation (if
+	 * found) will be used as is</li> </ul> No default.
+	 */
+	@Parameter(required = false, readonly = true)
+	protected OverrideNamingLogicWith overrideNamingLogicWith;
 
 	private ClassRealm classRealm;
 
@@ -513,8 +522,12 @@ public class SpringMvcEndpointGeneratorMojo extends AbstractMojo {
 		this.getLog().info("Endpoint Generation Completed in:" + (System.currentTimeMillis() - startTime) + "ms");
 	}
 
-	public enum LogicForParamsAndMethodsNaming {
-		DEFAULT, DISPLAY_NAME, ANNOTATION
+	public enum MethodsNamingLogic {
+		OBJECTS, RESOURCES
+	}
+
+	public enum OverrideNamingLogicWith {
+		DISPLAY_NAME, ANNOTATION
 	}
 
 }

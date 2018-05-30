@@ -4,7 +4,6 @@ package com.gen.test.model;
 
 import java.io.Serializable;
 import javax.validation.constraints.NotNull;
-import com.fasterxml.jackson.annotation.JsonProperty;
 import org.apache.commons.lang.builder.EqualsBuilder;
 import org.apache.commons.lang.builder.HashCodeBuilder;
 import org.apache.commons.lang.builder.ToStringBuilder;
@@ -12,8 +11,7 @@ import org.apache.commons.lang.builder.ToStringBuilder;
 public class User implements Serializable
 {
 
-    @JsonProperty("firstName")
-    protected String firstNameDisplayName;
+    protected String firstName;
 
     /**
      * Creates a new User.
@@ -27,34 +25,34 @@ public class User implements Serializable
      * Creates a new User.
      * 
      */
-    public User(String firstNameDisplayName) {
+    public User(String firstName) {
         super();
-        this.firstNameDisplayName = firstNameDisplayName;
+        this.firstName = firstName;
     }
 
     /**
-     * Returns the firstNameDisplayName.
+     * Returns the firstName.
      * 
      * @return
-     *     firstNameDisplayName
+     *     firstName
      */
     @NotNull
-    public String getFirstNameDisplayName() {
-        return firstNameDisplayName;
+    public String getFirstName() {
+        return firstName;
     }
 
     /**
-     * Set the firstNameDisplayName.
+     * Set the firstName.
      * 
-     * @param firstNameDisplayName
-     *     the new firstNameDisplayName
+     * @param firstName
+     *     the new firstName
      */
-    public void setFirstNameDisplayName(String firstNameDisplayName) {
-        this.firstNameDisplayName = firstNameDisplayName;
+    public void setFirstName(String firstName) {
+        this.firstName = firstName;
     }
 
     public int hashCode() {
-        return new HashCodeBuilder().append(firstNameDisplayName).toHashCode();
+        return new HashCodeBuilder().append(firstName).toHashCode();
     }
 
     public boolean equals(Object other) {
@@ -68,11 +66,11 @@ public class User implements Serializable
             return false;
         }
         User otherObject = ((User) other);
-        return new EqualsBuilder().append(firstNameDisplayName, otherObject.firstNameDisplayName).isEquals();
+        return new EqualsBuilder().append(firstName, otherObject.firstName).isEquals();
     }
 
     public String toString() {
-        return new ToStringBuilder(this).append("firstNameDisplayName", firstNameDisplayName).toString();
+        return new ToStringBuilder(this).append("firstName", firstName).toString();
     }
 
 }
@@ -97,7 +95,7 @@ public interface TestController {
      * No description
      * 
      */
-    public ResponseEntity<?> createMethodObject(
+    public ResponseEntity<?> createTest(
         @Valid
         User user);
 
@@ -105,13 +103,13 @@ public interface TestController {
      * No description
      * 
      */
-    public ResponseEntity<User> getMethodDisplayName(Long uriParamDisplayName, String queryParamDisplayName, String headerParamDisplayName);
+    public ResponseEntity<User> getTestById(Long testId, String queryParam, String headerParam);
 
     /**
      * No description
      * 
      */
-    public ResponseEntity<?> updateMethodDisplayName(Long uriParamDisplayName,
+    public ResponseEntity<?> updateTestById(Long testId,
         @Valid
         User user);
 
@@ -119,7 +117,7 @@ public interface TestController {
      * No description
      * 
      */
-    public ResponseEntity<?> deleteMethod(Long uriParamDisplayName);
+    public ResponseEntity<?> deleteTestById(Long testId);
 
 }
 -----------------------------------com.gen.test.TestControllerDecorator.java-----------------------------------
@@ -160,11 +158,11 @@ public class TestControllerDecorator
      * 
      */
     @RequestMapping(value = "", method = RequestMethod.POST)
-    public ResponseEntity<?> createMethodObject(
+    public ResponseEntity<?> createTest(
         @Valid
         @RequestBody
         User user) {
-        return this.testControllerDelegate.createMethodObject(user);
+        return this.testControllerDelegate.createTest(user);
     }
 
     /**
@@ -172,14 +170,14 @@ public class TestControllerDecorator
      * 
      */
     @RequestMapping(value = "/{testId}", method = RequestMethod.GET)
-    public ResponseEntity<User> getMethodDisplayName(
-        @PathVariable("testId")
-        Long uriParamDisplayName,
-        @RequestParam(name = "queryParam")
-        String queryParamDisplayName,
-        @RequestHeader(name = "headerParam")
-        String headerParamDisplayName) {
-        return this.testControllerDelegate.getMethodDisplayName(uriParamDisplayName, queryParamDisplayName, headerParamDisplayName);
+    public ResponseEntity<User> getTestById(
+        @PathVariable
+        Long testId,
+        @RequestParam
+        String queryParam,
+        @RequestHeader
+        String headerParam) {
+        return this.testControllerDelegate.getTestById(testId, queryParam, headerParam);
     }
 
     /**
@@ -187,13 +185,13 @@ public class TestControllerDecorator
      * 
      */
     @RequestMapping(value = "/{testId}", method = RequestMethod.PUT)
-    public ResponseEntity<?> updateMethodDisplayName(
-        @PathVariable("testId")
-        Long uriParamDisplayName,
+    public ResponseEntity<?> updateTestById(
+        @PathVariable
+        Long testId,
         @Valid
         @RequestBody
         User user) {
-        return this.testControllerDelegate.updateMethodDisplayName(uriParamDisplayName, user);
+        return this.testControllerDelegate.updateTestById(testId, user);
     }
 
     /**
@@ -201,10 +199,11 @@ public class TestControllerDecorator
      * 
      */
     @RequestMapping(value = "/{testId}", method = RequestMethod.DELETE)
-    public ResponseEntity<?> deleteMethod(
-        @PathVariable("testId")
-        Long uriParamDisplayName) {
-        return this.testControllerDelegate.deleteMethod(uriParamDisplayName);
+    public ResponseEntity<?> deleteTestById(
+        @PathVariable
+        Long testId) {
+        return this.testControllerDelegate.deleteTestById(testId);
     }
 
 }
+

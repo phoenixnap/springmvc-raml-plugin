@@ -215,18 +215,8 @@ public class ApiActionMetadata {
 		if (response != null && response.getBody() != null && !response.getBody().isEmpty()) {
 			for (Entry<String, RamlMimeType> body : response.getBody().entrySet()) {
 				if (responseContentTypeFilter == null || body.getKey().equals(responseContentTypeFilter)) {
-					if (body.getKey().toLowerCase().contains("json") || body.getKey().toLowerCase().equals("body")) { // if
-																														// we
-																														// have
-																														// a
-																														// json
-																														// type
-																														// we
-																														// need
-																														// to
-																														// return
-																														// an
-																														// object
+					if (body.getKey().toLowerCase().contains("json") || body.getKey().toLowerCase().equals("body")) {
+						// if we have a json type we need to return an object
 						// Continue here!
 						ApiBodyMetadata responseBody = null;
 
@@ -255,8 +245,6 @@ public class ApiActionMetadata {
 
 	public String getName() {
 		String name = NamingHelper.getActionName(this);
-		// String name = NamingHelper.getActionName(parent.getResource(),
-		// resource, actionType);
 		if (responseContentTypeFilter != null) {
 			name += NamingHelper.convertContentTypeToQualifier(responseContentTypeFilter);
 		}

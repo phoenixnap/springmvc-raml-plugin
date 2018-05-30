@@ -95,15 +95,29 @@ public interface TestController {
      * No description
      * 
      */
-    public ResponseEntity<User> getUserBy(Long uriParam, String queryParam, String headerParam);
+    public ResponseEntity<?> createUser(
+        @Valid
+        User user);
 
     /**
      * No description
      * 
      */
-    public ResponseEntity<?> updateUser(Long uriParam,
+    public ResponseEntity<User> getUserBy(Long testId, String queryParam, String headerParam);
+
+    /**
+     * No description
+     * 
+     */
+    public ResponseEntity<?> updateUser(Long testId,
         @Valid
         User user);
+
+    /**
+     * No description
+     * 
+     */
+    public ResponseEntity<?> deleteByTestId(Long testId);
 
 }
 -----------------------------------com.gen.test.TestControllerDecorator.java-----------------------------------
@@ -143,29 +157,52 @@ public class TestControllerDecorator
      * No description
      * 
      */
-    @RequestMapping(value = "/{uriParam}", method = RequestMethod.GET)
-    public ResponseEntity<User> getUserBy(
-        @PathVariable
-        Long uriParam,
-        @RequestParam
-        String queryParam,
-        @RequestHeader
-        String headerParam) {
-        return this.testControllerDelegate.getUserBy(uriParam, queryParam, headerParam);
+    @RequestMapping(value = "", method = RequestMethod.POST)
+    public ResponseEntity<?> createUser(
+        @Valid
+        @RequestBody
+        User user) {
+        return this.testControllerDelegate.createUser(user);
     }
 
     /**
      * No description
      * 
      */
-    @RequestMapping(value = "/{uriParam}/accept", method = RequestMethod.PUT)
+    @RequestMapping(value = "/{testId}", method = RequestMethod.GET)
+    public ResponseEntity<User> getUserBy(
+        @PathVariable
+        Long testId,
+        @RequestParam
+        String queryParam,
+        @RequestHeader
+        String headerParam) {
+        return this.testControllerDelegate.getUserBy(testId, queryParam, headerParam);
+    }
+
+    /**
+     * No description
+     * 
+     */
+    @RequestMapping(value = "/{testId}", method = RequestMethod.PUT)
     public ResponseEntity<?> updateUser(
         @PathVariable
-        Long uriParam,
+        Long testId,
         @Valid
         @RequestBody
         User user) {
-        return this.testControllerDelegate.updateUser(uriParam, user);
+        return this.testControllerDelegate.updateUser(testId, user);
+    }
+
+    /**
+     * No description
+     * 
+     */
+    @RequestMapping(value = "/{testId}", method = RequestMethod.DELETE)
+    public ResponseEntity<?> deleteByTestId(
+        @PathVariable
+        Long testId) {
+        return this.testControllerDelegate.deleteByTestId(testId);
     }
 
 }

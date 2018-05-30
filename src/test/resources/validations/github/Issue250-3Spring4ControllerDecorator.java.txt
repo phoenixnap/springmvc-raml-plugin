@@ -96,15 +96,29 @@ public interface TestController {
      * No description
      * 
      */
+    public ResponseEntity<?> createMethodJavaName(
+        @Valid
+        User user);
+
+    /**
+     * No description
+     * 
+     */
     public ResponseEntity<User> getMethodJavaName(Long uriParamJavaName, String queryParamJavaName, String headerParamJavaName);
 
     /**
      * No description
      * 
      */
-    public ResponseEntity<?> putMethodJavaName(Long uriParamJavaName,
+    public ResponseEntity<?> updateMethodJavaName(Long uriParamJavaName,
         @Valid
         User user);
+
+    /**
+     * No description
+     * 
+     */
+    public ResponseEntity<?> deleteMethodJavaName(Long uriParamJavaName);
 
 }
 -----------------------------------com.gen.test.TestControllerDecorator.java-----------------------------------
@@ -144,9 +158,21 @@ public class TestControllerDecorator
      * No description
      * 
      */
-    @RequestMapping(value = "/{uriParam}", method = RequestMethod.GET)
+    @RequestMapping(value = "", method = RequestMethod.POST)
+    public ResponseEntity<?> createMethodJavaName(
+        @Valid
+        @RequestBody
+        User user) {
+        return this.testControllerDelegate.createMethodJavaName(user);
+    }
+
+    /**
+     * No description
+     * 
+     */
+    @RequestMapping(value = "/{testId}", method = RequestMethod.GET)
     public ResponseEntity<User> getMethodJavaName(
-        @PathVariable("uriParam")
+        @PathVariable("testId")
         Long uriParamJavaName,
         @RequestParam(name = "queryParam")
         String queryParamJavaName,
@@ -159,14 +185,25 @@ public class TestControllerDecorator
      * No description
      * 
      */
-    @RequestMapping(value = "/{uriParam}/accept", method = RequestMethod.PUT)
-    public ResponseEntity<?> putMethodJavaName(
-        @PathVariable("uriParam")
+    @RequestMapping(value = "/{testId}", method = RequestMethod.PUT)
+    public ResponseEntity<?> updateMethodJavaName(
+        @PathVariable("testId")
         Long uriParamJavaName,
         @Valid
         @RequestBody
         User user) {
-        return this.testControllerDelegate.putMethodJavaName(uriParamJavaName, user);
+        return this.testControllerDelegate.updateMethodJavaName(uriParamJavaName, user);
+    }
+
+    /**
+     * No description
+     * 
+     */
+    @RequestMapping(value = "/{testId}", method = RequestMethod.DELETE)
+    public ResponseEntity<?> deleteMethodJavaName(
+        @PathVariable("testId")
+        Long uriParamJavaName) {
+        return this.testControllerDelegate.deleteMethodJavaName(uriParamJavaName);
     }
 
 }

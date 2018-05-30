@@ -1,7 +1,8 @@
 package com.phoenixnap.oss.ramlplugin.raml2code.plugin;
 
 import com.phoenixnap.oss.ramlplugin.raml2code.helpers.NamingHelper;
-import com.phoenixnap.oss.ramlplugin.raml2code.plugin.SpringMvcEndpointGeneratorMojo.LogicForParamsAndMethodsNaming;
+import com.phoenixnap.oss.ramlplugin.raml2code.plugin.SpringMvcEndpointGeneratorMojo.MethodsNamingLogic;
+import com.phoenixnap.oss.ramlplugin.raml2code.plugin.SpringMvcEndpointGeneratorMojo.OverrideNamingLogicWith;
 
 public class Config {
 
@@ -27,8 +28,11 @@ public class Config {
 	private static final String DEFAULT_BASE_PACKAGE = "com.gen.test";
 	private static String basePackage = DEFAULT_BASE_PACKAGE;
 
-	private static final LogicForParamsAndMethodsNaming DEFAULT_LOGIC_FOR_PARAMS_AND_METHODS_NAMING = LogicForParamsAndMethodsNaming.DEFAULT;
-	private static LogicForParamsAndMethodsNaming logicForParamsAndMethodsNaming = DEFAULT_LOGIC_FOR_PARAMS_AND_METHODS_NAMING;
+	private static final MethodsNamingLogic DEFAULT_METHODS_NAMING_LOGIC = MethodsNamingLogic.OBJECTS;
+	private static MethodsNamingLogic methodsNamingLogic = DEFAULT_METHODS_NAMING_LOGIC;
+
+	private static final OverrideNamingLogicWith DEFAULT_OVERRIDE_NAMING_LOGIC_WITH = null;
+	private static OverrideNamingLogicWith overrideNamingLogicWith = DEFAULT_OVERRIDE_NAMING_LOGIC_WITH;
 
 	Config() {
 	}
@@ -116,15 +120,29 @@ public class Config {
 		return basePackage;
 	}
 
-	public static LogicForParamsAndMethodsNaming getLogicForParamsAndMethodsNaming() {
+	public static MethodsNamingLogic getMethodsNamingLogic() {
 		if (springMvcEndpointGeneratorMojo != null) {
-			return springMvcEndpointGeneratorMojo.logicForParamsAndMethodsNaming;
+			return springMvcEndpointGeneratorMojo.methodsNamingLogic;
 		}
-		return logicForParamsAndMethodsNaming;
+		if (methodsNamingLogic == null) {
+			return DEFAULT_METHODS_NAMING_LOGIC;
+		}
+		return methodsNamingLogic;
 	}
 
-	protected static void setLogicForParamsAndMethodsNaming(LogicForParamsAndMethodsNaming logicForParamsAndMethodsNaming) {
-		Config.logicForParamsAndMethodsNaming = logicForParamsAndMethodsNaming;
+	protected static void setMethodsNamingLogic(MethodsNamingLogic methodsNamingLogic) {
+		Config.methodsNamingLogic = methodsNamingLogic;
+	}
+
+	public static OverrideNamingLogicWith getOverrideNamingLogicWith() {
+		if (springMvcEndpointGeneratorMojo != null) {
+			return springMvcEndpointGeneratorMojo.overrideNamingLogicWith;
+		}
+		return overrideNamingLogicWith;
+	}
+
+	protected static void setOverrideNamingLogicWith(OverrideNamingLogicWith overrideNamingLogicWith) {
+		Config.overrideNamingLogicWith = overrideNamingLogicWith;
 	}
 
 	public static String getPojoPackage() {
@@ -139,7 +157,8 @@ public class Config {
 		setResourceTopLevelInClassNames(DEFAULT_RESOURCE_TOP_LEVEL_IN_CLASS_NAMES);
 		setReverseOrderInClassNames(DEFAULT_REVERSE_ORDER_IN_CLASS_NAMES);
 		setSeperateMethodsByContentType(DEFAULT_SEPERATE_METHODS_BY_CONTENTTYPE);
-		setLogicForParamsAndMethodsNaming(DEFAULT_LOGIC_FOR_PARAMS_AND_METHODS_NAMING);
+		setMethodsNamingLogic(DEFAULT_METHODS_NAMING_LOGIC);
+		setOverrideNamingLogicWith(DEFAULT_OVERRIDE_NAMING_LOGIC_WITH);
 	}
 
 }

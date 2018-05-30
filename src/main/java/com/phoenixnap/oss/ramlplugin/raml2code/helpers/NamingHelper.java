@@ -36,7 +36,8 @@ import com.phoenixnap.oss.ramlplugin.raml2code.data.ApiActionMetadata;
 import com.phoenixnap.oss.ramlplugin.raml2code.data.ApiBodyMetadata;
 import com.phoenixnap.oss.ramlplugin.raml2code.data.ApiParameterMetadata;
 import com.phoenixnap.oss.ramlplugin.raml2code.plugin.Config;
-import com.phoenixnap.oss.ramlplugin.raml2code.plugin.SpringMvcEndpointGeneratorMojo.LogicForParamsAndMethodsNaming;
+import com.phoenixnap.oss.ramlplugin.raml2code.plugin.SpringMvcEndpointGeneratorMojo.MethodsNamingLogic;
+import com.phoenixnap.oss.ramlplugin.raml2code.plugin.SpringMvcEndpointGeneratorMojo.OverrideNamingLogicWith;
 import com.phoenixnap.oss.ramlplugin.raml2code.raml.RamlActionType;
 import com.phoenixnap.oss.ramlplugin.raml2code.raml.RamlResource;
 
@@ -397,16 +398,26 @@ public class NamingHelper {
 
 	public static String getActionName(ApiActionMetadata apiActionMetadata) {
 
-		if (Config.getLogicForParamsAndMethodsNaming() == LogicForParamsAndMethodsNaming.DISPLAY_NAME
+		if (Config.getOverrideNamingLogicWith() == OverrideNamingLogicWith.DISPLAY_NAME
 				&& !StringUtils.isEmpty(apiActionMetadata.getDisplayName())) {
 			return StringUtils.uncapitalize(cleanNameForJava(apiActionMetadata.getDisplayName()));
-		} else if (Config.getLogicForParamsAndMethodsNaming() == LogicForParamsAndMethodsNaming.ANNOTATION) {
+		} else if (Config.getOverrideNamingLogicWith() == OverrideNamingLogicWith.ANNOTATION) {
 			for (AnnotationRef annotation : apiActionMetadata.getAnnotations()) {
 				if ("(javaName)".equals(annotation.name())) {
 					return String.valueOf(annotation.structuredValue().value());
 				}
 			}
 		}
+
+		if (Config.getMethodsNamingLogic() == MethodsNamingLogic.RESOURCES) {
+			return getActionNameFromResources(apiActionMetadata.getParent().getResource(), apiActionMetadata.getResource(),
+					apiActionMetadata.getActionType());
+		}
+
+		return getActionNameFromObjects(apiActionMetadata);
+	}
+
+	public static String getActionNameFromObjects(ApiActionMetadata apiActionMetadata) {
 
 		String uri = apiActionMetadata.getResource().getUri();
 		String name = convertActionTypeToIntent(apiActionMetadata.getActionType(), doesUriEndsWithParam(uri));
@@ -483,7 +494,7 @@ public class NamingHelper {
 	 *            The ActionType/HTTP Verb for this Action
 	 * @return The java name of the method that will represent this Action
 	 */
-	public static String getActionName(RamlResource controllerizedResource, RamlResource resource, RamlActionType actionType) {
+	public static String getActionNameFromResources(RamlResource controllerizedResource, RamlResource resource, RamlActionType actionType) {
 
 		String url = resource.getUri();
 		// Since this will be part of a resource/controller, remove the parent

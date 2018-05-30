@@ -1,6 +1,7 @@
 package com.phoenixnap.oss.ramlplugin.raml2code.plugin;
 
-import com.phoenixnap.oss.ramlplugin.raml2code.plugin.SpringMvcEndpointGeneratorMojo.LogicForParamsAndMethodsNaming;
+import com.phoenixnap.oss.ramlplugin.raml2code.plugin.SpringMvcEndpointGeneratorMojo.MethodsNamingLogic;
+import com.phoenixnap.oss.ramlplugin.raml2code.plugin.SpringMvcEndpointGeneratorMojo.OverrideNamingLogicWith;
 import com.phoenixnap.oss.ramlplugin.raml2code.rules.TestPojoConfig;
 
 public class TestConfig {
@@ -26,8 +27,12 @@ public class TestConfig {
 		Config.setInjectHttpHeadersParameter(injectHttpHeadersParameter);
 	}
 
-	public static void setLogicForParamsAndMethodsNaming(LogicForParamsAndMethodsNaming logicForParamsAndMethodsNaming) {
-		Config.setLogicForParamsAndMethodsNaming(logicForParamsAndMethodsNaming);
+	public static void setMethodsNamingLogic(MethodsNamingLogic methodsNamingLogic) {
+		Config.setMethodsNamingLogic(methodsNamingLogic);
+	}
+
+	public static void setOverrideNamingLogicWith(OverrideNamingLogicWith overrideNamingLogicWith) {
+		Config.setOverrideNamingLogicWith(overrideNamingLogicWith);
 	}
 
 	public static void setDateTimeType(String dateTimeType) {

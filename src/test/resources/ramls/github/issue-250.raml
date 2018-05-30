@@ -17,10 +17,16 @@ types:
         (javaName): firstNameJavaName
         
 /test:
-  /{uriParam}:
+  post:
+    displayName: create Method object
+    (javaName): createMethodJavaName
+    body: 
+      application/json:
+        type: User
+  /{testId}:
     uriParameters:
-      uriParam:
-        displayName: uriParamDisplayName
+      testId:
+        displayName: uri Param Display Name
         (javaName): uriParamJavaName
         type: integer
     get:
@@ -34,20 +40,22 @@ types:
       headers: 
         headerParam: 
           type: string
-          displayName: headerParamDisplayName
+          displayName: Header Param Display Name
           (javaName): headerParamJavaName
       responses:
         200:
           body: 
             application/json:
               type: User
-    /accept:
-      put:
-        displayName: Put Method Display Name
-        (javaName): putMethodJavaName
-        body: 
-          application/json:
-            type: User
-        responses:
-          200:
+    put:
+      displayName: update method display name
+      (javaName): updateMethodJavaName
+      body: 
+        application/json:
+          type: User
+    delete:
+      displayName: Delete method
+      (javaName): deleteMethodJavaName
+      responses:
+        200:
     
