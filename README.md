@@ -123,8 +123,12 @@ Then simply include the following code in the POM of the project you wish to gen
 ### methodsNamingLogic
 (optional, default: `OBJECTS`) Logic used for Java methods name generation. Possible values: `OBJECTS` (objects like request parameters and return types will be used) and `RESOURCES` (resource path will be used).
 
+NOTE: This is different from a previous default. Use `RESOURCES` to get `0.x` behavior.
+
 ### overrideNamingLogicWith
-(optional, default: "") The way to override naming logic for Java methods and arguments. Possible values: `DISPLAY_NAME` (`displayName` attribute (if found) will be cleaned and used) and `ANNOTATION` (`javaName` annotation (if found) will be used as is).
+(optional, default: "") The way to override naming logic for Java methods and arguments. Possible values:
+ - `DISPLAY_NAME` (`displayName` attribute (if found) will be cleaned and used. `displayName` key is natively supported by RAML spec)
+ - `ANNOTATION` (`javaName` annotation (if found) will be used as is). Refer to RAML [Annotation Types](https://github.com/raml-org/raml-spec/blob/master/versions/raml-10/raml-10.md#annotations) for more details.
 
 ### ruleConfiguration
 (optional) This is a key/value map for configuration of individual rules. Not all rules support configuration.
