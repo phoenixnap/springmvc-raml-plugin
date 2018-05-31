@@ -18,7 +18,7 @@ public interface BaseController {
      * No description
      * 
      */
-    public ResponseEntity<?> getObjectBy(
+    public ResponseEntity<?> getObject(
         @Pattern(regexp = "^.{1,255}$")
         String id,
         @Pattern(regexp = "^.{1,255}$")
@@ -63,7 +63,7 @@ public class BaseControllerDecorator
      * 
      */
     @RequestMapping(value = "/endpoint/{id}", method = RequestMethod.GET)
-    public ResponseEntity<?> getObjectBy(
+    public ResponseEntity<?> getObject(
         @Pattern(regexp = "^.{1,255}$")
         @PathVariable
         String id,
@@ -73,7 +73,7 @@ public class BaseControllerDecorator
         @Pattern(regexp = "^.{1,255}$")
         @RequestHeader(name = "X-My-Header", required = false)
         String xMyHeader) {
-        return this.baseControllerDelegate.getObjectBy(id, param1, xMyHeader);
+        return this.baseControllerDelegate.getObject(id, param1, xMyHeader);
     }
 
 }

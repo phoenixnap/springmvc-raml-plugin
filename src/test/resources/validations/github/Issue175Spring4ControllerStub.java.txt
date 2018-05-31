@@ -30,7 +30,7 @@ public class AResourceController {
      * 
      */
     @RequestMapping(value = "", method = RequestMethod.GET)
-    public ResponseEntity<?> getObjectBy(
+    public ResponseEntity<?> getObject(
         @Pattern(regexp = "^[a-z]+$")
         @Size(min = 2, max = 12)
         @RequestHeader(name = "header_string_param", required = false)
@@ -77,7 +77,7 @@ public class BResourceController {
      * 
      */
     @RequestMapping(value = "", method = RequestMethod.GET)
-    public ResponseEntity<?> getObjectBy(
+    public ResponseEntity<?> getObject(
         @Pattern(regexp = "^[a-z]+$")
         @Size(min = 3, max = 13)
         @RequestParam(name = "query_string_param", required = false)

@@ -95,7 +95,7 @@ public class BaseController {
      *
      */
     @RequestMapping(value = "/{id}/elements", method = RequestMethod.GET)
-    public Callable<ResponseEntity<?>> getObjectBy(
+    public Callable<ResponseEntity<?>> getObject(
         @PathVariable
         String id,
         @RequestParam

@@ -19,7 +19,7 @@ public interface ImageIdController {
      * No description
      * 
      */
-    public ResponseEntity<String> getStringBy(Optional<BigDecimal> optionalSize, BigDecimal imageId);
+    public ResponseEntity<String> getString(Optional<BigDecimal> optionalSize, BigDecimal imageId);
 
 }
 -----------------------------------com.gen.test.ImageIdControllerDecorator.java-----------------------------------
@@ -60,12 +60,12 @@ public class ImageIdControllerDecorator
         "/download/size{optionalSize}",
         "/download/size"
     }, method = RequestMethod.GET)
-    public ResponseEntity<String> getStringBy(
+    public ResponseEntity<String> getString(
         @PathVariable(required = false)
         Optional<BigDecimal> optionalSize,
         @PathVariable
         BigDecimal imageId) {
-        return this.imageIdControllerDelegate.getStringBy(optionalSize, imageId);
+        return this.imageIdControllerDelegate.getString(optionalSize, imageId);
     }
 
 }

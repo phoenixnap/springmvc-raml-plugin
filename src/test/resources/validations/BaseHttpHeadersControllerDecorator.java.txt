@@ -76,7 +76,7 @@ public interface BaseController {
      * No description
      *
      */
-    public ResponseEntity<?> getObjectBy(String id, Long requiredQueryParam, String optionalQueryParam, BigDecimal optionalQueryParam2, Long xMyHeader, String xAnotherHeader, HttpHeaders httpHeaders);
+    public ResponseEntity<?> getObject(String id, Long requiredQueryParam, String optionalQueryParam, BigDecimal optionalQueryParam2, Long xMyHeader, String xAnotherHeader, HttpHeaders httpHeaders);
 
 }
 -----------------------------------com.gen.test.BaseControllerDecorator.java-----------------------------------
@@ -141,7 +141,7 @@ public class BaseControllerDecorator
      *
      */
     @RequestMapping(value = "/{id}/elements", method = RequestMethod.GET)
-    public ResponseEntity<?> getObjectBy(
+    public ResponseEntity<?> getObject(
         @PathVariable
         String id,
         @RequestParam
@@ -156,7 +156,7 @@ public class BaseControllerDecorator
         String xAnotherHeader,
         @RequestHeader
         HttpHeaders httpHeaders) {
-        return this.baseControllerDelegate.getObjectBy(id, requiredQueryParam, optionalQueryParam, optionalQueryParam2, xMyHeader, xAnotherHeader, httpHeaders);
+        return this.baseControllerDelegate.getObject(id, requiredQueryParam, optionalQueryParam, optionalQueryParam2, xMyHeader, xAnotherHeader, httpHeaders);
     }
 
 }

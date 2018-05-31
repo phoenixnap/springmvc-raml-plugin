@@ -90,7 +90,7 @@ public interface BaseController {
      *
      */
     @GetMapping("/{id}/elements")
-    public ResponseEntity<?> getObjectBy(
+    public ResponseEntity<?> getObject(
         @PathVariable
         String id,
         @RequestParam

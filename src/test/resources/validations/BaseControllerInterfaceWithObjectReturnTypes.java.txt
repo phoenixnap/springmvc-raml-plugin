@@ -89,7 +89,7 @@ public interface BaseController {
      *
      */
     @RequestMapping(value = "/{id}/elements", method = RequestMethod.GET)
-    public Object getObjectBy(
+    public Object getObject(
         @PathVariable
         String id,
         @RequestParam

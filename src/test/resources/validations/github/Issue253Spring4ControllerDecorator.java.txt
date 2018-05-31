@@ -201,7 +201,7 @@ public interface TestController {
      * No description
      * 
      */
-    public ResponseEntity<Car> getCarBy(ZonedDateTime uDateTimeOnly, ZonedDateTime hDateTimeOnly);
+    public ResponseEntity<Car> getCar(ZonedDateTime uDateTimeOnly, ZonedDateTime hDateTimeOnly);
 
 }
 -----------------------------------com.gen.test.TestControllerDecorator.java-----------------------------------
@@ -273,12 +273,12 @@ public class TestControllerDecorator
      * 
      */
     @RequestMapping(value = "/{uDateTimeOnly}", method = RequestMethod.GET)
-    public ResponseEntity<Car> getCarBy(
+    public ResponseEntity<Car> getCar(
         @PathVariable
         ZonedDateTime uDateTimeOnly,
         @RequestHeader
         ZonedDateTime hDateTimeOnly) {
-        return this.testControllerDelegate.getCarBy(uDateTimeOnly, hDateTimeOnly);
+        return this.testControllerDelegate.getCar(uDateTimeOnly, hDateTimeOnly);
     }
 
 }

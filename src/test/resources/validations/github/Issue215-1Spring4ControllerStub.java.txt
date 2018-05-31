@@ -25,7 +25,7 @@ public interface CarController {
      * No description
      * 
      */
-    public ResponseEntity<String> getStringBy(Optional<BigDecimal> wheelId, BigDecimal carId);
+    public ResponseEntity<String> getString(Optional<BigDecimal> wheelId, BigDecimal carId);
 
 }
 -----------------------------------com.gen.test.CarControllerDecorator.java-----------------------------------
@@ -77,12 +77,12 @@ public class CarControllerDecorator
         "/{carId}/wheels/{wheelId}",
         "/{carId}/wheels/"
     }, method = RequestMethod.GET)
-    public ResponseEntity<String> getStringBy(
+    public ResponseEntity<String> getString(
         @PathVariable(required = false)
         Optional<BigDecimal> wheelId,
         @PathVariable
         BigDecimal carId) {
-        return this.carControllerDelegate.getStringBy(wheelId, carId);
+        return this.carControllerDelegate.getString(wheelId, carId);
     }
 
 }

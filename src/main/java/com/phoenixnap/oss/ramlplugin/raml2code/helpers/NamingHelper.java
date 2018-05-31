@@ -431,10 +431,9 @@ public class NamingHelper {
 			List<ApiParameterMetadata> parameterMetadataList = getParameters(apiActionMetadata);
 
 			if (!parameterMetadataList.isEmpty()) {
-				name = name + "By";
 				if (parameterMetadataList.size() == 1) {
 					ApiParameterMetadata paramMetaData = parameterMetadataList.iterator().next();
-					name = name + StringUtils.capitalize(paramMetaData.getJavaName());
+					name = name + "By" + StringUtils.capitalize(paramMetaData.getJavaName());
 				}
 			}
 

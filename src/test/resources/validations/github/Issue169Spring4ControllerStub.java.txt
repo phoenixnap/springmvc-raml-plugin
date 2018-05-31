@@ -28,7 +28,7 @@ public class DateController {
      * 
      */
     @RequestMapping(value = "", method = RequestMethod.GET)
-    public ResponseEntity<?> getObjectBy(
+    public ResponseEntity<?> getObject(
         @RequestParam
         @DateTimeFormat(pattern = "yyyy-MM-dd")
         Date dateOnly,

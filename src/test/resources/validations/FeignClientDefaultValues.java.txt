@@ -25,7 +25,7 @@ public interface BaseClient {
      * 
      */
     @RequestMapping(value = "", method = RequestMethod.GET)
-    public ResponseEntity getObjectBy(
+    public ResponseEntity getObject(
         @RequestParam
         Long requiredQueryParam,
         @RequestParam(defaultValue = "someDefault", required = false)

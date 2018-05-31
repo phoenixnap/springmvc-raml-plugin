@@ -103,7 +103,7 @@ public interface TestController {
      * No description
      * 
      */
-    public ResponseEntity<User> getUserBy(Long testId, String queryParam, String headerParam);
+    public ResponseEntity<User> getUser(Long testId, String queryParam, String headerParam);
 
     /**
      * No description
@@ -170,14 +170,14 @@ public class TestControllerDecorator
      * 
      */
     @RequestMapping(value = "/{testId}", method = RequestMethod.GET)
-    public ResponseEntity<User> getUserBy(
+    public ResponseEntity<User> getUser(
         @PathVariable
         Long testId,
         @RequestParam
         String queryParam,
         @RequestHeader
         String headerParam) {
-        return this.testControllerDelegate.getUserBy(testId, queryParam, headerParam);
+        return this.testControllerDelegate.getUser(testId, queryParam, headerParam);
     }
 
     /**
