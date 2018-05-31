@@ -410,7 +410,7 @@ public class NamingHelper {
 		return getActionNameFromObjects(apiActionMetadata);
 	}
 
-	public static String getActionNameFromObjects(ApiActionMetadata apiActionMetadata) {
+	private static String getActionNameFromObjects(ApiActionMetadata apiActionMetadata) {
 
 		String uri = apiActionMetadata.getResource().getUri();
 		String name = convertActionTypeToIntent(apiActionMetadata.getActionType(), doesUriEndsWithParam(uri));
@@ -487,7 +487,8 @@ public class NamingHelper {
 	 *            The ActionType/HTTP Verb for this Action
 	 * @return The java name of the method that will represent this Action
 	 */
-	public static String getActionNameFromResources(RamlResource controllerizedResource, RamlResource resource, RamlActionType actionType) {
+	private static String getActionNameFromResources(RamlResource controllerizedResource, RamlResource resource,
+			RamlActionType actionType) {
 
 		String url = resource.getUri();
 		// Since this will be part of a resource/controller, remove the parent

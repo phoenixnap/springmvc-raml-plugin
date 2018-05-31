@@ -32,6 +32,7 @@ public class NamingHelperTest {
 
 		String url = "/services/things";
 
+		TestConfig.resetConfig();
 		assertEquals("Should deal with depth=1", "Things", NamingHelper.getAllResourcesNames(url, false));
 		assertEquals("Should deal with depth=1 and singularization", "Thing", NamingHelper.getAllResourcesNames(url, true));
 
