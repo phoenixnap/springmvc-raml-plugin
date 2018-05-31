@@ -233,8 +233,8 @@ public class NamingHelper {
 	public static String getResourceName(RamlResource resource, boolean singularize) {
 		String url = resource.getRelativeUri();
 
-		if (StringUtils.hasText(url) && url.contains("/") && (url.lastIndexOf("/") < url.length())) {
-			return getResourceName(url.substring(url.lastIndexOf("/") + 1), singularize);
+		if (StringUtils.hasText(url) && url.contains("/") && (url.lastIndexOf('/') < url.length())) {
+			return getResourceName(url.substring(url.lastIndexOf('/') + 1), singularize);
 		}
 
 		return null;
@@ -247,32 +247,25 @@ public class NamingHelper {
 	 *            The URL of the raml resource being parsed
 	 * @param singularize
 	 *            Indicates if the resource name should be singularized or not
-	 * @param resourceDepthInClassNames
-	 *            The depth of uri to be included in a name
-	 * @param resourceTopLevelInClassNames
-	 *            The top level of URI to be included in a name
-	 * @param reverseOrderInClassNames
-	 *            Is order of URI parts included in a name reversed
 	 * @return name of a resource
 	 */
-	public static String getAllResourcesNames(String url, boolean singularize, int resourceDepthInClassNames,
-			int resourceTopLevelInClassNames, boolean reverseOrderInClassNames) {
+	public static String getAllResourcesNames(String url, boolean singularize) {
 
 		StringBuilder stringBuilder = new StringBuilder();
 		if (StringUtils.hasText(url)) {
 			String[] resources = SLASH.split(url);
 			int lengthCounter = 0;
-			for (int i = resources.length - 1; i >= resourceTopLevelInClassNames + 1; --i) {
+			for (int i = resources.length - 1; i >= Config.getResourceTopLevelInClassNames() + 1; --i) {
 				if (StringUtils.hasText(resources[i])) {
 					String resourceName = getResourceName(resources[i], singularize);
-					if (reverseOrderInClassNames) {
+					if (Config.isReverseOrderInClassNames()) {
 						stringBuilder.append(resourceName);
 					} else {
 						stringBuilder.insert(0, resourceName);
 					}
 					++lengthCounter;
 				}
-				if (resourceDepthInClassNames > 0 && lengthCounter >= resourceDepthInClassNames) {
+				if (Config.getResourceDepthInClassNames() > 0 && lengthCounter >= Config.getResourceDepthInClassNames()) {
 					break;
 				}
 			}

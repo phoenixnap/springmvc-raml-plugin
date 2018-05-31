@@ -15,6 +15,14 @@ public class TestConfig {
 		Config.setResourceDepthInClassNames(resourceDepthInClassNames);
 	}
 
+	public static void setResourceTopLevelInClassNames(int resourceTopLevelInClassNames) {
+		Config.setResourceTopLevelInClassNames(resourceTopLevelInClassNames);
+	}
+
+	public static void setReverseOrderInClassNames(Boolean reverseOrderInClassNames) {
+		Config.setReverseOrderInClassNames(reverseOrderInClassNames);
+	}
+
 	public static void setBasePackage(String basePackage) {
 		Config.setBasePackage(basePackage);
 	}
@@ -46,4 +54,5 @@ public class TestConfig {
 	public static void setTimeType(String timeType) {
 		((TestPojoConfig) Config.getPojoConfig()).setTimeType(timeType);
 	}
+
 }

@@ -16,7 +16,7 @@ import static org.junit.Assert.assertEquals;
 
 import org.junit.Test;
 
-import com.phoenixnap.oss.ramlplugin.raml2code.helpers.NamingHelper;
+import com.phoenixnap.oss.ramlplugin.raml2code.plugin.TestConfig;
 
 /**
  * Unit tests for the NamingHelper class
@@ -32,44 +32,62 @@ public class NamingHelperTest {
 
 		String url = "/services/things";
 
-		assertEquals("Should deal with unlimited depth", "ServicesThings", NamingHelper.getAllResourcesNames(url, false, -1, 0, false));
-		assertEquals("Should deal with unlimited depth and singularization", "ServiceThing",
-				NamingHelper.getAllResourcesNames(url, true, -1, 0, false));
-		assertEquals("Should deal with depth=1", "Things", NamingHelper.getAllResourcesNames(url, false, 1, 0, false));
-		assertEquals("Should deal with depth=1 and singularization", "Thing", NamingHelper.getAllResourcesNames(url, true, 1, 0, false));
-		assertEquals("Should deal with depth=2", "ServicesThings", NamingHelper.getAllResourcesNames(url, false, 2, 0, false));
-		assertEquals("Should deal with depth=2 and singularization", "ServiceThing",
-				NamingHelper.getAllResourcesNames(url, true, 2, 0, false));
+		assertEquals("Should deal with depth=1", "Things", NamingHelper.getAllResourcesNames(url, false));
+		assertEquals("Should deal with depth=1 and singularization", "Thing", NamingHelper.getAllResourcesNames(url, true));
+
+		TestConfig.setResourceDepthInClassNames(-1);
+		assertEquals("Should deal with unlimited depth", "ServicesThings", NamingHelper.getAllResourcesNames(url, false));
+		assertEquals("Should deal with unlimited depth and singularization", "ServiceThing", NamingHelper.getAllResourcesNames(url, true));
+
+		TestConfig.setResourceDepthInClassNames(2);
+		assertEquals("Should deal with depth=2", "ServicesThings", NamingHelper.getAllResourcesNames(url, false));
+		assertEquals("Should deal with depth=2 and singularization", "ServiceThing", NamingHelper.getAllResourcesNames(url, true));
+
+		TestConfig.setResourceDepthInClassNames(-1);
+		TestConfig.setReverseOrderInClassNames(Boolean.TRUE);
 		assertEquals("Should deal with unlimited depth and reversed order", "ThingsServices",
-				NamingHelper.getAllResourcesNames(url, false, -1, 0, true));
+				NamingHelper.getAllResourcesNames(url, false));
 		assertEquals("Should deal with unlimited depth, singularization and reversed order", "ThingService",
-				NamingHelper.getAllResourcesNames(url, true, -1, 0, true));
-		assertEquals("Should deal with depth=1 and reversed order", "Things", NamingHelper.getAllResourcesNames(url, false, 1, 0, true));
-		assertEquals("Should deal with depth=1, singularization and reversed order", "Thing",
-				NamingHelper.getAllResourcesNames(url, true, 1, 0, true));
-		assertEquals("Should deal with depth=2 and reversed order", "ThingsServices",
-				NamingHelper.getAllResourcesNames(url, false, 2, 0, true));
+				NamingHelper.getAllResourcesNames(url, true));
+
+		TestConfig.setResourceDepthInClassNames(1);
+		assertEquals("Should deal with depth=1 and reversed order", "Things", NamingHelper.getAllResourcesNames(url, false));
+		assertEquals("Should deal with depth=1, singularization and reversed order", "Thing", NamingHelper.getAllResourcesNames(url, true));
+
+		TestConfig.setResourceDepthInClassNames(2);
+		assertEquals("Should deal with depth=2 and reversed order", "ThingsServices", NamingHelper.getAllResourcesNames(url, false));
 		assertEquals("Should deal with depth=2, singularization and reversed order", "ThingService",
-				NamingHelper.getAllResourcesNames(url, true, 2, 0, true));
+				NamingHelper.getAllResourcesNames(url, true));
 
 		url = "/services/things/quotes";
 
-		assertEquals("Should deal with unlimited depth and top-level=1", "ThingsQuotes",
-				NamingHelper.getAllResourcesNames(url, false, -1, 1, false));
+		TestConfig.setResourceDepthInClassNames(-1);
+		TestConfig.setResourceTopLevelInClassNames(1);
+		TestConfig.setReverseOrderInClassNames(Boolean.FALSE);
+
+		assertEquals("Should deal with unlimited depth and top-level=1", "ThingsQuotes", NamingHelper.getAllResourcesNames(url, false));
 		assertEquals("Should deal with unlimited depth, top-level=1 and singularization", "ThingQuote",
-				NamingHelper.getAllResourcesNames(url, true, -1, 1, false));
-		assertEquals("Should deal with depth=2 and top-level=1", "ThingsQuotes",
-				NamingHelper.getAllResourcesNames(url, false, 2, 1, false));
+				NamingHelper.getAllResourcesNames(url, true));
+
+		TestConfig.setResourceDepthInClassNames(2);
+		assertEquals("Should deal with depth=2 and top-level=1", "ThingsQuotes", NamingHelper.getAllResourcesNames(url, false));
 		assertEquals("Should deal with depth=2, top-level=1 and singularization", "ThingQuote",
-				NamingHelper.getAllResourcesNames(url, true, 2, 1, false));
+				NamingHelper.getAllResourcesNames(url, true));
+
+		TestConfig.setResourceDepthInClassNames(-1);
+		TestConfig.setReverseOrderInClassNames(Boolean.TRUE);
 		assertEquals("Should deal with unlimited depth, top-level=1 and reversed order", "QuotesThings",
-				NamingHelper.getAllResourcesNames(url, false, -1, 1, true));
+				NamingHelper.getAllResourcesNames(url, false));
 		assertEquals("Should deal with unlimited depth, top-level=1, singularization and reversed order", "QuoteThing",
-				NamingHelper.getAllResourcesNames(url, true, -1, 1, true));
+				NamingHelper.getAllResourcesNames(url, true));
+
+		TestConfig.setResourceDepthInClassNames(2);
 		assertEquals("Should deal with depth=2, top-level=1 and reversed order", "QuotesThings",
-				NamingHelper.getAllResourcesNames(url, false, 2, 1, true));
+				NamingHelper.getAllResourcesNames(url, false));
 		assertEquals("Should deal with depth=2, top-level=1, singularization and reversed order", "QuoteThing",
-				NamingHelper.getAllResourcesNames(url, true, 2, 1, true));
+				NamingHelper.getAllResourcesNames(url, true));
+
+		TestConfig.resetConfig();
 	}
 
 	@Test
