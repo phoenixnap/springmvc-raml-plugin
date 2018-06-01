@@ -12,26 +12,6 @@
  */
 package com.phoenixnap.oss.ramlplugin.raml2code.helpers;
 
-import static java.util.Arrays.asList;
-import static org.apache.commons.lang3.StringUtils.containsOnly;
-import static org.apache.commons.lang3.StringUtils.difference;
-import static org.apache.commons.lang3.StringUtils.isEmpty;
-import static org.apache.commons.lang3.StringUtils.join;
-import static org.apache.commons.lang3.StringUtils.splitByCharacterTypeCamelCase;
-import static org.apache.commons.lang3.StringUtils.upperCase;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-
-import org.jsonschema2pojo.util.NameHelper;
-import org.raml.v2.api.model.v10.declarations.AnnotationRef;
-import org.raml.v2.internal.utils.Inflector;
-import org.springframework.http.MediaType;
-import org.springframework.util.StringUtils;
-
 import com.phoenixnap.oss.ramlplugin.raml2code.data.ApiActionMetadata;
 import com.phoenixnap.oss.ramlplugin.raml2code.data.ApiBodyMetadata;
 import com.phoenixnap.oss.ramlplugin.raml2code.data.ApiParameterMetadata;
@@ -40,11 +20,30 @@ import com.phoenixnap.oss.ramlplugin.raml2code.plugin.SpringMvcEndpointGenerator
 import com.phoenixnap.oss.ramlplugin.raml2code.plugin.SpringMvcEndpointGeneratorMojo.OverrideNamingLogicWith;
 import com.phoenixnap.oss.ramlplugin.raml2code.raml.RamlActionType;
 import com.phoenixnap.oss.ramlplugin.raml2code.raml.RamlResource;
+import org.jsonschema2pojo.util.NameHelper;
+import org.raml.v2.api.model.v10.declarations.AnnotationRef;
+import org.raml.v2.internal.utils.Inflector;
+import org.springframework.http.MediaType;
+import org.springframework.util.StringUtils;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
+import static java.util.Arrays.asList;
+import static org.apache.commons.lang3.StringUtils.containsOnly;
+import static org.apache.commons.lang3.StringUtils.difference;
+import static org.apache.commons.lang3.StringUtils.isEmpty;
+import static org.apache.commons.lang3.StringUtils.join;
+import static org.apache.commons.lang3.StringUtils.splitByCharacterTypeCamelCase;
+import static org.apache.commons.lang3.StringUtils.upperCase;
 
 /**
  * Class containing methods relating to naming conventions and string cleanup
  * for naming
- * 
+ *
  * @author Kurt Paris
  * @since 0.0.1
  *
@@ -72,7 +71,7 @@ public class NamingHelper {
 	/**
 	 * Converts an http contentType into a qualifier that can be used within a
 	 * Java method
-	 * 
+	 *
 	 * @param contentType
 	 *            The content type to convert application/json
 	 * @return qualifier, example V1Html
@@ -124,7 +123,7 @@ public class NamingHelper {
 
 	/**
 	 * Extracts a list of URI Parameters from a url
-	 * 
+	 *
 	 * @param url
 	 *            String to extract parameters from
 	 * @return A list of the uri parameters in this URL
@@ -147,7 +146,7 @@ public class NamingHelper {
 
 	/**
 	 * Utility method to check if a string can be used as a valid class name
-	 * 
+	 *
 	 * @param input
 	 *            String to check
 	 * @return true if valid
@@ -171,7 +170,7 @@ public class NamingHelper {
 
 	/**
 	 * Utility method to clean a string for use within javadoc
-	 * 
+	 *
 	 * @param input
 	 *            String to be cleaned
 	 * @return The cleaned string
@@ -183,7 +182,7 @@ public class NamingHelper {
 	/**
 	 * Utility method to clean New Line,Spaces and other highly useless
 	 * characters found (mainly in javadoc)
-	 * 
+	 *
 	 * @param input
 	 *            The string to be cleaned
 	 * @return Cleaned String
@@ -222,7 +221,7 @@ public class NamingHelper {
 
 	/**
 	 * Attempts to infer the name of a resource from a resources's relative URL
-	 * 
+	 *
 	 * @param resource
 	 *            The raml resource being parsed
 	 * @param singularize
@@ -242,7 +241,7 @@ public class NamingHelper {
 
 	/**
 	 * Attempts to infer the name of a resource from a resources's full URL.
-	 * 
+	 *
 	 * @param url
 	 *            The URL of the raml resource being parsed
 	 * @param singularize
@@ -276,7 +275,7 @@ public class NamingHelper {
 
 	/**
 	 * Attempts to infer the name of a resource from a resources's relative URL
-	 * 
+	 *
 	 * @param resource
 	 *            The Url representation of this object
 	 * @param singularize
@@ -299,7 +298,7 @@ public class NamingHelper {
 
 	/**
 	 * Singularises a string. uses underlying raml parser system
-	 * 
+	 *
 	 * @param target
 	 *            name to singularize
 	 * @return singularized name
@@ -335,7 +334,7 @@ public class NamingHelper {
 
 	/**
 	 * Cleans a string with characters that are not valid as a java identifier
-	 * 
+	 *
 	 * @param resourceName
 	 *            The string to clean
 	 * @return cleaned string
@@ -354,7 +353,7 @@ public class NamingHelper {
 	/**
 	 * Cleans a string with characters that are not valid as a java identifier
 	 * enum
-	 * 
+	 *
 	 * @param enumConstant
 	 *            The string to clean
 	 * @return cleaned string
@@ -486,7 +485,7 @@ public class NamingHelper {
 	/**
 	 * Attempts to infer the name of an action (intent) from a resource's
 	 * relative URL and action details
-	 * 
+	 *
 	 * @param controllerizedResource
 	 *            The resource that is mapped to the root controller
 	 * @param resource
@@ -500,12 +499,6 @@ public class NamingHelper {
 			RamlActionType actionType) {
 
 		String url = resource.getUri();
-		// Since this will be part of a resource/controller, remove the parent
-		// portion of the URL if enough details remain
-		// to infer a meaningful method name
-		if (controllerizedResource != resource && StringUtils.countOccurrencesOf(url, "{") < StringUtils.countOccurrencesOf(url, "/") - 1) {
-			url = reduceToResourceNameAndId(url);
-		}
 
 		// sanity check
 		if (StringUtils.hasText(url)) {
@@ -513,26 +506,35 @@ public class NamingHelper {
 			// Split the url into segments by seperator
 			String[] splitUrl = SLASH.split(url);
 			String name = "";
-			int numberOfIdsParsed = 0;
+			int numberOfSegmentsParsed = 0;
 			int index = splitUrl.length - 1;
 			boolean singularizeNext = false;
 			boolean isIdInPath = false;
-
+			boolean multipleIdsInPath = false;
+            if (StringUtils.countOccurrencesOf(url, "{") > 1) {
+                multipleIdsInPath = true;
+            }
 			// Parse segments until end is reached or we travers a maximum of 2
 			// non Path Variable segments, these 2 should both have at least 1
 			// id path variable each otherwise they would have been typically
 			// part of the parent controller
 			// or we have REALLY long URL nesting which isnt really a happy
 			// place.
-			while (numberOfIdsParsed < 2 && index >= 0) {
+			while (numberOfSegmentsParsed < 2 && index >= 0) {
 
 				String segment = splitUrl[index];
 				// Lets check for ID path variables
 				if (segment.contains("{") && segment.contains("}")) {
+                    // Since we probably found an ID, it means that method acts
+                    // on a single resource in the collection. probably :)
+                    singularizeNext = true;
+				    if (multipleIdsInPath) {
+				        index --;
+				        continue;
+                    }
 					// should we add this to Method name
 					if (index > 0 && index == splitUrl.length - 1) {
 						// set if the last segment of the url is an Id
-						isIdInPath = true;
 						if (segment.startsWith("{") && segment.endsWith("}")) {
 							String peek = splitUrl[index - 1].toLowerCase();
 							name = "By" + StringUtils.capitalize(difference(peek, segment.substring(1, segment.length() - 1)));
@@ -544,10 +546,7 @@ public class NamingHelper {
 							}
 						}
 					}
-					// Since we probably found an ID, it means that method acts
-					// on a single resource in the collection. probably :)
-					singularizeNext = true;
-				} else {
+				} else if (numberOfSegmentsParsed == 0) {
 					segment = cleanNameForJava(segment);
 					if (singularizeNext) { // consume singularisation
 						if (!segment.endsWith("details")) {
@@ -560,7 +559,7 @@ public class NamingHelper {
 						name = StringUtils.capitalize(segment) + name;
 					}
 
-					numberOfIdsParsed++;
+					numberOfSegmentsParsed++;
 				}
 				index--;
 			}
@@ -581,21 +580,9 @@ public class NamingHelper {
 	}
 
 	/**
-	 * Reduces long URL paths to a format {@code /resource/{id}}"
-	 * 
-	 * @param url
-	 * @return
-	 */
-	private static String reduceToResourceNameAndId(String url) {
-		String[] splitUrl = SLASH.split(url);
-		String slash = "/";
-		return slash + splitUrl[splitUrl.length - 2] + slash + splitUrl[splitUrl.length - 1];
-	}
-
-	/**
 	 * Attempts to convert the Http Verb into a textual representation of Intent
 	 * based on REST conventions
-	 * 
+	 *
 	 * @param actionType
 	 *            The ActionType/Http verb of the action
 	 * @param isIdInPath
@@ -625,7 +612,7 @@ public class NamingHelper {
 	/**
 	 * Returns the default sub package that will be used for model objects used
 	 * in the Request/Response body
-	 * 
+	 *
 	 * @return the package suffix to be appended.
 	 */
 	public static String getDefaultModelPackage() {
