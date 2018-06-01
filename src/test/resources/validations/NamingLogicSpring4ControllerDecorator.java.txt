@@ -224,7 +224,7 @@ public interface MessageController {
      * deleteMessage
      * 
      */
-    public ResponseEntity<?> deleteByMessageId(String messageId);
+    public ResponseEntity<?> deleteMessageByMessageId(String messageId);
 
     /**
      * subresource
@@ -317,10 +317,10 @@ public class MessageControllerDecorator
      * 
      */
     @RequestMapping(value = "/{messageId}", method = RequestMethod.DELETE)
-    public ResponseEntity<?> deleteByMessageId(
+    public ResponseEntity<?> deleteMessageByMessageId(
         @PathVariable
         String messageId) {
-        return this.messageControllerDelegate.deleteByMessageId(messageId);
+        return this.messageControllerDelegate.deleteMessageByMessageId(messageId);
     }
 
     /**

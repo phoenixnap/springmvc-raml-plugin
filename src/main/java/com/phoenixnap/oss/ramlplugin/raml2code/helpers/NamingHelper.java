@@ -428,25 +428,22 @@ public class NamingHelper {
 				name += "Object";
 			}
 
-			List<ApiParameterMetadata> parameterMetadataList = getParameters(apiActionMetadata);
-
-			if (!parameterMetadataList.isEmpty()) {
-				if (parameterMetadataList.size() == 1) {
-					ApiParameterMetadata paramMetaData = parameterMetadataList.iterator().next();
-					name = name + "By" + StringUtils.capitalize(paramMetaData.getJavaName());
-				}
-			}
+			name = appendActionNameWithSingleParameter(apiActionMetadata, name);
 
 		} else if (apiActionMetadata.getActionType().equals(RamlActionType.DELETE)) {
 
-			List<ApiParameterMetadata> parameterMetadataList = getParameters(apiActionMetadata);
-
-			if (!parameterMetadataList.isEmpty()) {
-				name = name + "By";
-				if (parameterMetadataList.size() == 1) {
-					name = name + cleanNameForJava(StringUtils.capitalize(parameterMetadataList.iterator().next().getName()));
-				}
+			// for DELETE method we'll still use resource name
+			String url = cleanLeadingAndTrailingNewLineAndChars(apiActionMetadata.getResource().getUri());
+			String[] splitUrl = SLASH.split(url);
+			String resourceNameToUse = null;
+			if (splitUrl.length > 1 && StringUtils.countOccurrencesOf(splitUrl[splitUrl.length - 1], "{") > 0) {
+				resourceNameToUse = splitUrl[splitUrl.length - 2];
+			} else {
+				resourceNameToUse = splitUrl[splitUrl.length - 1];
 			}
+
+			name = name + StringUtils.capitalize(cleanNameForJava(singularize(resourceNameToUse)));
+			name = appendActionNameWithSingleParameter(apiActionMetadata, name);
 
 		} else {
 			ApiBodyMetadata requestBody = apiActionMetadata.getRequestBody();
@@ -471,6 +468,19 @@ public class NamingHelper {
 		parameterMetadataList.addAll(apiActionMetadata.getRequestHeaders());
 
 		return parameterMetadataList;
+	}
+
+	private static String appendActionNameWithSingleParameter(ApiActionMetadata apiActionMetadata, String methodName) {
+
+		String newMethodName = methodName;
+
+		List<ApiParameterMetadata> parameterMetadataList = getParameters(apiActionMetadata);
+		if (parameterMetadataList.size() == 1) {
+			ApiParameterMetadata paramMetaData = parameterMetadataList.iterator().next();
+			newMethodName = newMethodName + "By" + StringUtils.capitalize(paramMetaData.getJavaName());
+		}
+
+		return newMethodName;
 	}
 
 	/**

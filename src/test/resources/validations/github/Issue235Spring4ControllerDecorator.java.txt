@@ -119,7 +119,7 @@ public interface TestController {
      * No description
      * 
      */
-    public ResponseEntity<?> deleteBy(BigDecimal test1, String test2, BigDecimal xTest1, String xTest2,
+    public ResponseEntity<?> deleteTest(BigDecimal test1, String test2, BigDecimal xTest1, String xTest2,
         @Valid
         DeleteObject deleteObject);
 
@@ -162,7 +162,7 @@ public class TestControllerDecorator
      * 
      */
     @RequestMapping(value = "", method = RequestMethod.DELETE)
-    public ResponseEntity<?> deleteBy(
+    public ResponseEntity<?> deleteTest(
         @RequestParam
         BigDecimal test1,
         @RequestParam
@@ -174,7 +174,7 @@ public class TestControllerDecorator
         @Valid
         @RequestBody
         DeleteObject deleteObject) {
-        return this.testControllerDelegate.deleteBy(test1, test2, xTest1, xTest2, deleteObject);
+        return this.testControllerDelegate.deleteTest(test1, test2, xTest1, xTest2, deleteObject);
     }
 
 }

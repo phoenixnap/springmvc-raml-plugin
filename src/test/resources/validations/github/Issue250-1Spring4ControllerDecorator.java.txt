@@ -117,7 +117,7 @@ public interface TestController {
      * No description
      * 
      */
-    public ResponseEntity<?> deleteByTestId(Long testId);
+    public ResponseEntity<?> deleteTestByTestId(Long testId);
 
 }
 -----------------------------------com.gen.test.TestControllerDecorator.java-----------------------------------
@@ -199,10 +199,10 @@ public class TestControllerDecorator
      * 
      */
     @RequestMapping(value = "/{testId}", method = RequestMethod.DELETE)
-    public ResponseEntity<?> deleteByTestId(
+    public ResponseEntity<?> deleteTestByTestId(
         @PathVariable
         Long testId) {
-        return this.testControllerDelegate.deleteByTestId(testId);
+        return this.testControllerDelegate.deleteTestByTestId(testId);
     }
 
 }
