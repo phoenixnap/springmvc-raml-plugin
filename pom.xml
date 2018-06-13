@@ -4,7 +4,7 @@
 	  
   	<groupId>com.phoenixnap.oss</groupId>
 	<artifactId>springmvc-raml-plugin</artifactId>
-	<version>2.0.2</version>
+	<version>2.0.3</version>
 	
 	<parent>
         <groupId>io.spring.platform</groupId>
