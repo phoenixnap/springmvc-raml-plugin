@@ -213,6 +213,13 @@ public class SpringMvcEndpointGeneratorMojo extends AbstractMojo {
 	@Parameter(required = false, readonly = true)
 	protected OverrideNamingLogicWith overrideNamingLogicWith;
 
+	/**
+	 * Skip code generation for endpoints (resources and methods) annotated with
+	 * this annotation.
+	 */
+	@Parameter(required = false, readonly = true)
+	protected String dontGenerateForAnnotation;
+
 	private ClassRealm classRealm;
 
 	private String resolvedSchemaLocation;

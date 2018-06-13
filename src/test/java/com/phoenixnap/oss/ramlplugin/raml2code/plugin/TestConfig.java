@@ -55,4 +55,8 @@ public class TestConfig {
 		((TestPojoConfig) Config.getPojoConfig()).setTimeType(timeType);
 	}
 
+	public static void setDontGenerateForAnnotation(String dontGenerateForAnnotation) {
+		Config.setDontGenerateForAnnotation(dontGenerateForAnnotation);
+	}
+
 }

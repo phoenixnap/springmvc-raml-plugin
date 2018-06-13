@@ -34,6 +34,9 @@ public class Config {
 	private static final OverrideNamingLogicWith DEFAULT_OVERRIDE_NAMING_LOGIC_WITH = null;
 	private static OverrideNamingLogicWith overrideNamingLogicWith = DEFAULT_OVERRIDE_NAMING_LOGIC_WITH;
 
+	private static final String DEFAULT_DONT_GENERATE_FOR_ANNOTATION = null;
+	private static String dontGenerateForAnnotation = DEFAULT_DONT_GENERATE_FOR_ANNOTATION;
+
 	Config() {
 	}
 
@@ -145,6 +148,17 @@ public class Config {
 		Config.overrideNamingLogicWith = overrideNamingLogicWith;
 	}
 
+	public static String getDontGenerateForAnnotation() {
+		if (springMvcEndpointGeneratorMojo != null) {
+			return springMvcEndpointGeneratorMojo.dontGenerateForAnnotation;
+		}
+		return dontGenerateForAnnotation;
+	}
+
+	protected static void setDontGenerateForAnnotation(String dontGenerateForAnnotation) {
+		Config.dontGenerateForAnnotation = dontGenerateForAnnotation;
+	}
+
 	public static String getPojoPackage() {
 		return getBasePackage() + NamingHelper.getDefaultModelPackage();
 	}
@@ -159,6 +173,7 @@ public class Config {
 		setSeperateMethodsByContentType(DEFAULT_SEPERATE_METHODS_BY_CONTENTTYPE);
 		setMethodsNamingLogic(DEFAULT_METHODS_NAMING_LOGIC);
 		setOverrideNamingLogicWith(DEFAULT_OVERRIDE_NAMING_LOGIC_WITH);
+		setDontGenerateForAnnotation(DEFAULT_DONT_GENERATE_FOR_ANNOTATION);
 	}
 
 }

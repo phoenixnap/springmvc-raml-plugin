@@ -9,11 +9,14 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import org.raml.v2.api.model.v10.datamodel.TypeDeclaration;
+import org.raml.v2.api.model.v10.declarations.AnnotationRef;
 import org.raml.v2.api.model.v10.methods.Method;
 import org.raml.v2.api.model.v10.resources.Resource;
+import org.springframework.util.StringUtils;
 
 import com.phoenixnap.oss.ramlplugin.raml2code.helpers.NamingHelper;
 import com.phoenixnap.oss.ramlplugin.raml2code.helpers.RamlTypeHelper;
+import com.phoenixnap.oss.ramlplugin.raml2code.plugin.Config;
 import com.phoenixnap.oss.ramlplugin.raml2code.raml.RamlAction;
 import com.phoenixnap.oss.ramlplugin.raml2code.raml.RamlActionType;
 import com.phoenixnap.oss.ramlplugin.raml2code.raml.RamlResource;
@@ -44,7 +47,18 @@ public class RJP10V2RamlResource implements RamlResource {
 		List<Resource> resources = delegate.resources();
 		if (resources != null) {
 			for (Resource resource : resources) {
-				childResourceMap.put(resource.relativeUri().value(), new RJP10V2RamlResource(resource));
+				boolean skipResource = false;
+				if (StringUtils.hasText(Config.getDontGenerateForAnnotation())) {
+					for (AnnotationRef annotation : resource.annotations()) {
+						if (("(" + Config.getDontGenerateForAnnotation() + ")").equals(annotation.name())) {
+							skipResource = true;
+						}
+					}
+				}
+
+				if (!skipResource) {
+					childResourceMap.put(resource.relativeUri().value(), new RJP10V2RamlResource(resource));
+				}
 			}
 		}
 	}
@@ -68,7 +82,19 @@ public class RJP10V2RamlResource implements RamlResource {
 	public Map<RamlActionType, RamlAction> getActions() {
 		Map<RamlActionType, RamlAction> actions = new HashMap<RamlActionType, RamlAction>();
 		for (Method method : this.delegate.methods()) {
-			actions.put(RamlActionType.valueOf(method.method().toUpperCase()), new RJP10V2RamlAction(method));
+
+			boolean skipMethod = false;
+			if (StringUtils.hasText(Config.getDontGenerateForAnnotation())) {
+				for (AnnotationRef annotation : method.annotations()) {
+					if (("(" + Config.getDontGenerateForAnnotation() + ")").equals(annotation.name())) {
+						skipMethod = true;
+					}
+				}
+			}
+
+			if (!skipMethod) {
+				actions.put(RamlActionType.valueOf(method.method().toUpperCase()), new RJP10V2RamlAction(method));
+			}
 		}
 		return actions;
 	}
