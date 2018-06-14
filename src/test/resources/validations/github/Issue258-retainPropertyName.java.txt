@@ -219,7 +219,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 /**
  * No description
- * (Generated with springmvc-raml-parser v.2.0.2)
+ * (Generated with springmvc-raml-parser v.@project.version@)
  *
  */
 @RestController
