@@ -153,7 +153,7 @@ public class MethodParamsRule implements Rule<CodeModelHelper.JExtMethod, JMetho
 			if (paramMetaData.getRamlParam().getMinLength() != null) {
 				jAnnotationUse.param("min", paramMetaData.getRamlParam().getMinLength());
 			}
-			if (paramMetaData.getRamlParam().getMinLength() != null) {
+			if (paramMetaData.getRamlParam().getMaxLength() != null) {
 				jAnnotationUse.param("max", paramMetaData.getRamlParam().getMaxLength());
 			}
 		}
