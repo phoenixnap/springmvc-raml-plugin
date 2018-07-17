@@ -22,7 +22,6 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
 import org.apache.commons.collections.MapUtils;
 import org.raml.v2.api.model.v10.datamodel.DateTimeTypeDeclaration;
 import org.raml.v2.api.model.v10.datamodel.TypeDeclaration;
@@ -31,6 +30,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.util.StringUtils;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import com.fasterxml.jackson.annotation.JsonTypeInfo.As;
@@ -227,16 +227,7 @@ public class PojoBuilder extends AbstractBuilder {
 			// validation
 			if (Config.getPojoConfig().isIncludeJsr303Annotations() && validations != null) {
 
-				// check if field is complex object so we can mark it with
-				// @Valid
-				boolean isPOJO = type.startsWith(this.pojo._package().name() + ".");
-				if (!isPOJO && resolvedType.getClass().getName().equals("com.sun.codemodel.JNarrowedClass")
-						&& resolvedType.getTypeParameters().size() == 1) {
-					JClass typeClass = resolvedType.getTypeParameters().get(0);
-					isPOJO = typeClass.fullName().startsWith(this.pojo._package().name() + ".");
-				}
-
-				validations.annotateFieldJSR303(getterMethod, isPOJO);
+				validations.annotateFieldJSR303(getterMethod, false);
 			}
 
 			return this;

@@ -204,7 +204,6 @@ package com.gen.test.model;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
-import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 import org.apache.commons.lang.builder.EqualsBuilder;
 import org.apache.commons.lang.builder.HashCodeBuilder;
@@ -250,7 +249,6 @@ public class ProductUpdate
      * @return
      *     groups
      */
-    @Valid
     public List<com.gen.test.model.Group> getGroups() {
         if (groups == null) {
             return new ArrayList<com.gen.test.model.Group>();
