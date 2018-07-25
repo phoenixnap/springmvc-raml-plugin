@@ -14,6 +14,7 @@ package com.phoenixnap.oss.ramlplugin.raml2code.interpreters;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
@@ -214,6 +215,10 @@ public class PojoBuilder extends AbstractBuilder {
 		} else if (resolvedType.fullName().startsWith(List.class.getName() + "<")) {
 			JClass narrowedListClass = this.pojoModel.ref(ArrayList.class).narrow(resolvedType.getTypeParameters().get(0));
 			jExpression = JExpr._new(narrowedListClass);
+		}
+
+		if (resolveType(Collection.class.getName()).isAssignableFrom(resolvedType) && !Config.getPojoConfig().isInitializeCollections()) {
+			jExpression = null;
 		}
 
 		// lets ignore this if parent contains it and we will use parent's in

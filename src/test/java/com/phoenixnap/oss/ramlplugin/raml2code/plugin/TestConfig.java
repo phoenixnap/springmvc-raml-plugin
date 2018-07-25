@@ -59,4 +59,7 @@ public class TestConfig {
 		Config.setDontGenerateForAnnotation(dontGenerateForAnnotation);
 	}
 
+	public static void setInitializeCollections(boolean initializeCollections) {
+		((TestPojoConfig) Config.getPojoConfig()).setInitializeCollections(initializeCollections);
+	}
 }

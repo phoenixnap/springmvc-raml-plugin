@@ -27,4 +27,8 @@ public class TestPojoConfig extends PojoGenerationConfig {
 	public void setTimeType(String timeType) {
 		this.timeType = timeType;
 	}
+
+	public void setInitializeCollections(boolean initializeCollections) {
+		this.initializeCollections = initializeCollections;
+	}
 }

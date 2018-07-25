@@ -1,0 +1,310 @@
+-----------------------------------com.gen.test.model.Address.java-----------------------------------
+
+package com.gen.test.model;
+
+import java.io.Serializable;
+import javax.validation.constraints.NotNull;
+import org.apache.commons.lang.builder.EqualsBuilder;
+import org.apache.commons.lang.builder.HashCodeBuilder;
+import org.apache.commons.lang.builder.ToStringBuilder;
+
+public class Address implements Serializable
+{
+
+    protected String city;
+    protected String street;
+    protected String houseNumber;
+
+    /**
+     * Creates a new Address.
+     * 
+     */
+    public Address() {
+        super();
+    }
+
+    /**
+     * Creates a new Address.
+     * 
+     */
+    public Address(String city, String street, String houseNumber) {
+        super();
+        this.city = city;
+        this.street = street;
+        this.houseNumber = houseNumber;
+    }
+
+    /**
+     * Returns the city.
+     * 
+     * @return
+     *     city
+     */
+    @NotNull
+    public String getCity() {
+        return city;
+    }
+
+    /**
+     * Set the city.
+     * 
+     * @param city
+     *     the new city
+     */
+    public void setCity(String city) {
+        this.city = city;
+    }
+
+    /**
+     * Returns the street.
+     * 
+     * @return
+     *     street
+     */
+    @NotNull
+    public String getStreet() {
+        return street;
+    }
+
+    /**
+     * Set the street.
+     * 
+     * @param street
+     *     the new street
+     */
+    public void setStreet(String street) {
+        this.street = street;
+    }
+
+    /**
+     * Returns the houseNumber.
+     * 
+     * @return
+     *     houseNumber
+     */
+    @NotNull
+    public String getHouseNumber() {
+        return houseNumber;
+    }
+
+    /**
+     * Set the houseNumber.
+     * 
+     * @param houseNumber
+     *     the new houseNumber
+     */
+    public void setHouseNumber(String houseNumber) {
+        this.houseNumber = houseNumber;
+    }
+
+    public int hashCode() {
+        return new HashCodeBuilder().append(city).append(street).append(houseNumber).toHashCode();
+    }
+
+    public boolean equals(Object other) {
+        if (other == null) {
+            return false;
+        }
+        if (other == this) {
+            return true;
+        }
+        if (this.getClass()!= other.getClass()) {
+            return false;
+        }
+        Address otherObject = ((Address) other);
+        return new EqualsBuilder().append(city, otherObject.city).append(street, otherObject.street).append(houseNumber, otherObject.houseNumber).isEquals();
+    }
+
+    public String toString() {
+        return new ToStringBuilder(this).append("city", city).append("street", street).append("houseNumber", houseNumber).toString();
+    }
+
+}
+-----------------------------------com.gen.test.model.Student.java-----------------------------------
+
+package com.gen.test.model;
+
+import java.io.Serializable;
+import java.util.List;
+import javax.validation.Valid;
+import javax.validation.constraints.NotNull;
+import org.apache.commons.lang.builder.EqualsBuilder;
+import org.apache.commons.lang.builder.HashCodeBuilder;
+import org.apache.commons.lang.builder.ToStringBuilder;
+
+public class Student implements Serializable
+{
+
+    protected String firstName;
+    protected String lastName;
+    protected List<Address> addresses;
+
+    /**
+     * Creates a new Student.
+     * 
+     */
+    public Student() {
+        super();
+    }
+
+    /**
+     * Creates a new Student.
+     * 
+     */
+    public Student(String firstName, String lastName, List<Address> addresses) {
+        super();
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.addresses = addresses;
+    }
+
+    /**
+     * Returns the firstName.
+     * 
+     * @return
+     *     firstName
+     */
+    @NotNull
+    public String getFirstName() {
+        return firstName;
+    }
+
+    /**
+     * Set the firstName.
+     * 
+     * @param firstName
+     *     the new firstName
+     */
+    public void setFirstName(String firstName) {
+        this.firstName = firstName;
+    }
+
+    /**
+     * Returns the lastName.
+     * 
+     * @return
+     *     lastName
+     */
+    @NotNull
+    public String getLastName() {
+        return lastName;
+    }
+
+    /**
+     * Set the lastName.
+     * 
+     * @param lastName
+     *     the new lastName
+     */
+    public void setLastName(String lastName) {
+        this.lastName = lastName;
+    }
+
+    /**
+     * Returns the addresses.
+     * 
+     * @return
+     *     addresses
+     */
+    @NotNull
+    @Valid
+    public List<Address> getAddresses() {
+        return addresses;
+    }
+
+    /**
+     * Set the addresses.
+     * 
+     * @param addresses
+     *     the new addresses
+     */
+    public void setAddresses(List<Address> addresses) {
+        this.addresses = addresses;
+    }
+
+    public int hashCode() {
+        return new HashCodeBuilder().append(firstName).append(lastName).append(addresses).toHashCode();
+    }
+
+    public boolean equals(Object other) {
+        if (other == null) {
+            return false;
+        }
+        if (other == this) {
+            return true;
+        }
+        if (this.getClass()!= other.getClass()) {
+            return false;
+        }
+        Student otherObject = ((Student) other);
+        return new EqualsBuilder().append(firstName, otherObject.firstName).append(lastName, otherObject.lastName).append(addresses, otherObject.addresses).isEquals();
+    }
+
+    public String toString() {
+        return new ToStringBuilder(this).append("firstName", firstName).append("lastName", lastName).append("addresses", addresses).toString();
+    }
+
+}
+-----------------------------------com.gen.test.StudentController.java-----------------------------------
+
+package com.gen.test;
+
+import java.util.List;
+import com.gen.test.model.Student;
+import org.springframework.http.ResponseEntity;
+
+
+/**
+ * No description
+ * (Generated with springmvc-raml-parser v.@project.version@)
+ * 
+ */
+public interface StudentController {
+
+
+    /**
+     * Get all
+     * 
+     */
+    public ResponseEntity<List<Student>> getStudents();
+
+}
+-----------------------------------com.gen.test.StudentControllerDecorator.java-----------------------------------
+
+package com.gen.test;
+
+import java.util.List;
+import com.gen.test.model.Student;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RestController;
+
+
+/**
+ * No description
+ * (Generated with springmvc-raml-parser v.@project.version@)
+ * 
+ */
+@RestController
+@RequestMapping("/api/students")
+@Validated
+public class StudentControllerDecorator
+    implements StudentController
+{
+
+    @Autowired
+    private StudentController studentControllerDelegate;
+
+    /**
+     * Get all
+     * 
+     */
+    @RequestMapping(value = "", method = RequestMethod.GET)
+    public ResponseEntity<List<Student>> getStudents() {
+        return this.studentControllerDelegate.getStudents();
+    }
+
+}
