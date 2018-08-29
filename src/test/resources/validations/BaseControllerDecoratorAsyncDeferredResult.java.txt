@@ -1,0 +1,156 @@
+-----------------------------------com.gen.test.model.NamedResponseType.java-----------------------------------
+
+package com.gen.test.model;
+
+import java.io.Serializable;
+import org.apache.commons.lang.builder.EqualsBuilder;
+import org.apache.commons.lang.builder.HashCodeBuilder;
+import org.apache.commons.lang.builder.ToStringBuilder;
+
+public class NamedResponseType implements Serializable
+{
+
+
+    /**
+     * Creates a new NamedResponseType.
+     * 
+     */
+    public NamedResponseType() {
+        super();
+    }
+
+    public int hashCode() {
+        return new HashCodeBuilder().toHashCode();
+    }
+
+    public boolean equals(Object other) {
+        if (other == null) {
+            return false;
+        }
+        if (other == this) {
+            return true;
+        }
+        if (this.getClass()!= other.getClass()) {
+            return false;
+        }
+        NamedResponseType otherObject = ((NamedResponseType) other);
+        return new EqualsBuilder().isEquals();
+    }
+
+    public String toString() {
+        return new ToStringBuilder(this).toString();
+    }
+
+}
+-----------------------------------com.gen.test.BaseController.java-----------------------------------
+
+package com.gen.test;
+
+import java.math.BigDecimal;
+import com.gen.test.model.NamedResponseType;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.context.request.async.DeferredResult;
+
+
+/**
+ * The BaseController class
+ * (Generated with springmvc-raml-parser v.@project.version@)
+ *
+ */
+public interface BaseController {
+
+
+    /**
+     * No description
+     *
+     */
+    public DeferredResult<ResponseEntity<?>> getObject();
+
+    /**
+     * Get base entity by ID
+     *
+     */
+    public DeferredResult<ResponseEntity<NamedResponseType>> getNamedResponseTypeById(String id);
+
+    /**
+     * No description
+     *
+     */
+    public DeferredResult<ResponseEntity<?>> getObject(String id, Long requiredQueryParam, String optionalQueryParam, BigDecimal optionalQueryParam2, Long xMyHeader, String xAnotherHeader);
+
+}
+-----------------------------------com.gen.test.BaseControllerDecorator.java-----------------------------------
+
+package com.gen.test;
+
+import java.math.BigDecimal;
+import com.gen.test.model.NamedResponseType;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestHeader;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.context.request.async.DeferredResult;
+
+
+/**
+ * The BaseController class
+ * (Generated with springmvc-raml-parser v.@project.version@)
+ *
+ */
+@RestController
+@RequestMapping(value = "/api/base", produces = "application/json")
+@Validated
+public class BaseControllerDecorator
+    implements BaseController
+{
+
+    @Autowired
+    private BaseController baseControllerDelegate;
+
+    /**
+     * No description
+     *
+     */
+    @RequestMapping(value = "", method = RequestMethod.GET)
+    public DeferredResult<ResponseEntity<?>> getObject() {
+        return this.baseControllerDelegate.getObject();
+    }
+
+    /**
+     * Get base entity by ID
+     *
+     */
+    @RequestMapping(value = "/{id}", method = RequestMethod.GET)
+    public DeferredResult<NamedResponseType> getNamedResponseTypeById(
+        @PathVariable
+        String id) {
+        return this.baseControllerDelegate.getNamedResponseTypeById(id);
+    }
+
+    /**
+     * No description
+     *
+     */
+    @RequestMapping(value = "/{id}/elements", method = RequestMethod.GET)
+    public DeferredResult<ResponseEntity<?>> getObject(
+        @PathVariable
+        String id,
+        @RequestParam
+        Long requiredQueryParam,
+        @RequestParam(defaultValue = "dummyDefault", required = false)
+        String optionalQueryParam,
+        @RequestParam(required = false, defaultValue = "2")
+        BigDecimal optionalQueryParam2,
+        @RequestHeader(name = "X-My-Header", required = false, defaultValue = "3")
+        Long xMyHeader,
+        @RequestHeader(name = "X-Another-Header")
+        String xAnotherHeader) {
+        return this.baseControllerDelegate.getObject(id, requiredQueryParam, optionalQueryParam, optionalQueryParam2, xMyHeader, xAnotherHeader);
+    }
+
+}

@@ -59,9 +59,12 @@ public abstract class SpringControllerStubRule extends SpringConfigurableRule {
 				.addClassAnnotationRule(new SpringValidatedClassAnnotationRule()).setClassRule(new ControllerClassDeclarationRule())
 				.setMethodCommentRule(new MethodCommentRule()).addMethodAnnotationRule(new SpringRequestMappingMethodAnnotationRule())
 				.addMethodAnnotationRule(getResponseBodyAnnotationRule())
-				.setMethodSignatureRule(new ControllerMethodSignatureRule(
-						isCallableResponse() ? new SpringSimpleCallableResponseTypeRule() : new SpringSimpleResponseTypeRule(),
-						new SpringMethodParamsRule(isAddParameterJavadoc(), isAllowArrayParameters())))
+				.setMethodSignatureRule(
+						new ControllerMethodSignatureRule(
+								isDeferredResult() ? new SpringSimpleDeferredResponseTypeRule()
+										: isCallableResponse() ? new SpringSimpleCallableResponseTypeRule()
+												: new SpringSimpleResponseTypeRule(),
+								new SpringMethodParamsRule(isAddParameterJavadoc(), isAllowArrayParameters())))
 				.setMethodBodyRule(new ImplementMeMethodBodyRule());
 
 		return generator.apply(metadata, generatableType);

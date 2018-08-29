@@ -4,7 +4,7 @@
 	  
   	<groupId>com.phoenixnap.oss</groupId>
 	<artifactId>springmvc-raml-plugin</artifactId>
-	<version>2.0.4</version>
+	<version>2.0.5</version>
 	
 	<parent>
         <groupId>io.spring.platform</groupId>
@@ -52,6 +52,7 @@
 		<ramlparser2.version>1.0.20</ramlparser2.version>
 		<feign.client.version>1.1.6.RELEASE</feign.client.version>
         <codemodel.version>2.6</codemodel.version>
+		<spring-webmvc.version>5.0.5.RELEASE</spring-webmvc.version>
 	</properties>
   	
 	<dependencies>
@@ -160,6 +161,11 @@
 		    <groupId>org.slf4j</groupId>
 		    <artifactId>slf4j-log4j12</artifactId>
 		    <scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-webmvc</artifactId>
+			<version>${spring-webmvc.version}</version>
 		</dependency>
 	</dependencies>
 

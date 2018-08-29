@@ -60,10 +60,12 @@ public abstract class SpringControllerInterfaceRule extends SpringConfigurableRu
 				.setClassRule(new ControllerInterfaceDeclarationRule()).setMethodCommentRule(new MethodCommentRule())
 				.addMethodAnnotationRule(isUseShortcutMethodMappings() ? new SpringShortcutMappingMethodAnnotationRule()
 						: new SpringRequestMappingMethodAnnotationRule())
-				.addMethodAnnotationRule(getResponseBodyAnnotationRule())
+				.addMethodAnnotationRule(
+						getResponseBodyAnnotationRule())
 				.setMethodSignatureRule(new ControllerMethodSignatureRule(
-						isCallableResponse() ? new SpringCallableResponseEntityRule()
-								: isSimpleReturnTypes() ? new SpringObjectReturnTypeRule() : new SpringResponseEntityRule(),
+						isDeferredResult() ? new SpringDefferedResponseEntityRule()
+								: isCallableResponse() ? new SpringCallableResponseEntityRule()
+										: isSimpleReturnTypes() ? new SpringObjectReturnTypeRule() : new SpringResponseEntityRule(),
 						new SpringMethodParamsRule(isAddParameterJavadoc(), isAllowArrayParameters())));
 		return generator.apply(metadata, generatableType);
 	}

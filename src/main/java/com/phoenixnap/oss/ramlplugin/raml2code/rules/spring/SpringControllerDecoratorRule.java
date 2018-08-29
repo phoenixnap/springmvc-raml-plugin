@@ -12,8 +12,6 @@
  */
 package com.phoenixnap.oss.ramlplugin.raml2code.rules.spring;
 
-import org.apache.commons.lang.StringUtils;
-
 import com.phoenixnap.oss.ramlplugin.raml2code.data.ApiActionMetadata;
 import com.phoenixnap.oss.ramlplugin.raml2code.data.ApiResourceMetadata;
 import com.phoenixnap.oss.ramlplugin.raml2code.rules.GenericJavaClassRule;
@@ -31,30 +29,24 @@ import com.sun.codemodel.JAnnotationUse;
 import com.sun.codemodel.JCodeModel;
 import com.sun.codemodel.JDefinedClass;
 import com.sun.codemodel.JMethod;
+import org.apache.commons.lang.StringUtils;
 
 /**
  * A code generation Rule that provides a Spring4 Controller based on a
  * decorator pattern. The goal is to generate code that does not have to be
  * manually extended by the user. A raml endpoint called /people for example
- * implies two generated artefacts:
- *
- * // 1. Controller Interface interface PeopleController { ResponseEntity
- * getPeople(); }
- *
- * // 2. A Decorator that implements the Controller Interface // and delegates
- * to another instance of a class implementing the very same controller
- * interface. {@literal @}RestController {@literal @}RequestMapping("/people")
- * class PeopleControllerDecorator implements PeopleController {
- *
- * {@literal @}Autowired PeopleController peopleControllerDelegate;
- *
+ * implies two generated artefacts: <p> // 1. Controller Interface interface
+ * PeopleController { ResponseEntity getPeople(); } <p> // 2. A Decorator that
+ * implements the Controller Interface // and delegates to another instance of a
+ * class implementing the very same controller interface.
+ * {@literal @}RestController {@literal @}RequestMapping("/people") class
+ * PeopleControllerDecorator implements PeopleController { <p>
+ * {@literal @}Autowired PeopleController peopleControllerDelegate; <p>
  * {@literal @}RequestMapping(value="", method=RequestMethod.GET) public
  * ResponseEntity getPeople() { return
- * this.peopleControllerDelegate.getPeople(); } }
- *
- * Now all the user has to do is to implement a Spring-Bean called
- * "PeopleControllerDelegate". This way he can implement the endpoint without
- * altering the generated code.
+ * this.peopleControllerDelegate.getPeople(); } } <p> Now all the user has to do
+ * is to implement a Spring-Bean called "PeopleControllerDelegate". This way he
+ * can implement the endpoint without altering the generated code.
  *
  * @author armin.weisser
  * @author kurtpa
@@ -67,9 +59,11 @@ public abstract class SpringControllerDecoratorRule extends SpringConfigurableRu
 
 		JDefinedClass generatedInterface = new GenericJavaClassRule().setPackageRule(new PackageRule())
 				.setClassCommentRule(new ClassCommentRule()).setClassRule(new ControllerInterfaceDeclarationRule())
-				.setMethodCommentRule(new MethodCommentRule())
+				.setMethodCommentRule(
+						new MethodCommentRule())
 				.setMethodSignatureRule(new ControllerMethodSignatureRule(
-						isCallableResponse() ? new SpringCallableResponseEntityRule() : new SpringResponseEntityRule(),
+						isDeferredResult() ? new SpringDefferedResponseEntityRule()
+								: isCallableResponse() ? new SpringCallableResponseEntityRule() : new SpringResponseEntityRule(),
 						new MethodParamsRule(isAddParameterJavadoc(), isAllowArrayParameters())))
 				.apply(metadata, generatableType);
 
@@ -83,9 +77,11 @@ public abstract class SpringControllerDecoratorRule extends SpringConfigurableRu
 				.setImplementsExtendsRule(new ImplementsControllerInterfaceRule(generatedInterface))
 				.addFieldDeclarationRule(new SpringDelegateFieldDeclerationRule(delegateFieldName))
 				.setMethodCommentRule(new MethodCommentRule()).addMethodAnnotationRule(new SpringRequestMappingMethodAnnotationRule())
-				.addMethodAnnotationRule(getResponseBodyAnnotationRule())
+				.addMethodAnnotationRule(
+						getResponseBodyAnnotationRule())
 				.setMethodSignatureRule(new ControllerMethodSignatureRule(
-						isCallableResponse() ? new SpringCallableResponseEntityRule() : new SpringResponseEntityRule(),
+						isDeferredResult() ? new SpringSimpleDeferredResponseTypeRule()
+								: isCallableResponse() ? new SpringCallableResponseEntityRule() : new SpringResponseEntityRule(),
 						new SpringMethodParamsRule(isAddParameterJavadoc(), isAllowArrayParameters())))
 				.setMethodBodyRule(new DelegatingMethodBodyRule(delegateFieldName));
 
