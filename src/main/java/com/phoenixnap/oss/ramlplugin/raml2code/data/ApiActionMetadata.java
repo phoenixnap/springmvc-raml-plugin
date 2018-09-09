@@ -22,6 +22,7 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 import org.raml.v2.api.model.v10.datamodel.JSONTypeDeclaration;
+import org.raml.v2.api.model.v10.declarations.AnnotationRef;
 import org.springframework.http.MediaType;
 import org.springframework.util.StringUtils;
 
@@ -88,10 +89,6 @@ public class ApiActionMetadata {
 	}
 
 	public Set<ApiParameterMetadata> getPathVariables() {
-		// FIXME Alex - comment this out!
-		// if (pathVariables != null) {
-		// return pathVariables;
-		// }
 		pathVariables = new LinkedHashSet<>();
 
 		RamlResource targetResource = action.getResource();
@@ -218,18 +215,8 @@ public class ApiActionMetadata {
 		if (response != null && response.getBody() != null && !response.getBody().isEmpty()) {
 			for (Entry<String, RamlMimeType> body : response.getBody().entrySet()) {
 				if (responseContentTypeFilter == null || body.getKey().equals(responseContentTypeFilter)) {
-					if (body.getKey().toLowerCase().contains("json") || body.getKey().toLowerCase().equals("body")) { // if
-																														// we
-																														// have
-																														// a
-																														// json
-																														// type
-																														// we
-																														// need
-																														// to
-																														// return
-																														// an
-																														// object
+					if (body.getKey().toLowerCase().contains("json") || body.getKey().toLowerCase().equals("body")) {
+						// if we have a json type we need to return an object
 						// Continue here!
 						ApiBodyMetadata responseBody = null;
 
@@ -258,8 +245,6 @@ public class ApiActionMetadata {
 
 	public String getName() {
 		String name = NamingHelper.getActionName(this);
-		// String name = NamingHelper.getActionName(parent.getResource(),
-		// resource, actionType);
 		if (responseContentTypeFilter != null) {
 			name += NamingHelper.convertContentTypeToQualifier(responseContentTypeFilter);
 		}
@@ -384,5 +369,13 @@ public class ApiActionMetadata {
 
 	public void setRequestBodyMime(String requestBodyMime) {
 		this.requestBodyMime = requestBodyMime;
+	}
+
+	public String getDisplayName() {
+		return action.getDisplayName();
+	}
+
+	public List<AnnotationRef> getAnnotations() {
+		return action.getAnnotations();
 	}
 }

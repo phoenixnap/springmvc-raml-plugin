@@ -48,6 +48,7 @@ import com.phoenixnap.oss.ramlplugin.raml2code.exception.InvalidRamlResourceExce
 import com.phoenixnap.oss.ramlplugin.raml2code.helpers.NamingHelper;
 import com.phoenixnap.oss.ramlplugin.raml2code.helpers.RamlParser;
 import com.phoenixnap.oss.ramlplugin.raml2code.helpers.RamlTypeHelper;
+import com.phoenixnap.oss.ramlplugin.raml2code.helpers.SchemaHelper;
 import com.phoenixnap.oss.ramlplugin.raml2code.raml.RamlDataType;
 import com.phoenixnap.oss.ramlplugin.raml2code.raml.RamlRoot;
 import com.phoenixnap.oss.ramlplugin.raml2code.raml.raml10.RJP10V2RamlRoot;
@@ -116,12 +117,12 @@ public class SpringMvcEndpointGeneratorMojo extends AbstractMojo {
 	protected String schemaLocation;
 
 	/**
-	 * A boolean indicating whether the POJOs for unreferenced schemas defined
-	 * in the RAML file should be generated. By default, such schemas are not
-	 * generated.
+	 * A boolean indicating whether the POJOs for unreferenced objects (schemas
+	 * and data types) defined in the RAML file should be generated. By default,
+	 * such schemas/types are not generated.
 	 */
 	@Parameter(required = false, readonly = true, defaultValue = "false")
-	protected Boolean generateUnreferencedSchemas;
+	protected Boolean generateUnreferencedObjects;
 
 	/**
 	 * The explicit base path under which the rest endpoints should be located.
@@ -193,6 +194,31 @@ public class SpringMvcEndpointGeneratorMojo extends AbstractMojo {
 	 */
 	@Parameter(required = false, readonly = true, defaultValue = "false")
 	protected Boolean reverseOrderInClassNames;
+
+	/**
+	 * Logic used for Java methods name generation. Possible values: <ul>
+	 * <li>OBJECTS - objects like request parameters and return types will be
+	 * used</li> <li>RESOURCES - resource path will be used</li> </ul> Default
+	 * is OBJECTS.
+	 */
+	@Parameter(required = false, readonly = true, defaultValue = "OBJECTS")
+	protected MethodsNamingLogic methodsNamingLogic;
+
+	/**
+	 * The way to override naming logic for Java methods and arguments. Possible
+	 * values: <ul> <li>DISPLAY_NAME - "displayName" attribute (if found) will
+	 * be cleaned and used</li> <li>ANNOTATION - "javaName" annotation (if
+	 * found) will be used as is</li> </ul> No default.
+	 */
+	@Parameter(required = false, readonly = true)
+	protected OverrideNamingLogicWith overrideNamingLogicWith;
+
+	/**
+	 * Skip code generation for endpoints (resources and methods) annotated with
+	 * this annotation.
+	 */
+	@Parameter(required = false, readonly = true)
+	protected String dontGenerateForAnnotation;
 
 	private ClassRealm classRealm;
 
@@ -266,8 +292,10 @@ public class SpringMvcEndpointGeneratorMojo extends AbstractMojo {
 			throw new IOException("Could not create directory:" + rootDir.getAbsolutePath());
 		}
 
-		generateCode(codeModel, controllers, rootDir);
-		generateUnreferencedSchemasV10(codeModel, loadRamlFromFile, rootDir, controllers);
+		generateCode(null, controllers, rootDir);
+		if (this.generateUnreferencedObjects) {
+			generateUnreferencedObjects(codeModel, loadRamlFromFile, resolvedRamlPath, rootDir, controllers);
+		}
 
 		if (unifiedModel) {
 			buildCodeModelToDisk(codeModel, "Unified", rootDir);
@@ -293,18 +321,27 @@ public class SpringMvcEndpointGeneratorMojo extends AbstractMojo {
 		return bodyNames;
 	}
 
-	private void generateUnreferencedSchemasV10(JCodeModel codeModel, RamlRoot loadRamlFromFile, File rootDir,
+	private void generateUnreferencedObjects(JCodeModel codeModel, RamlRoot loadRamlFromFile, String resolvedRamlPath, File rootDir,
 			Set<ApiResourceMetadata> controllers) {
-		if (this.generateUnreferencedSchemas) {
+		if (loadRamlFromFile.getTypes() != null && !loadRamlFromFile.getTypes().isEmpty()) {
 			this.getLog().debug("Generating Code for Unreferenced Types");
-			if (loadRamlFromFile.getTypes() != null && !loadRamlFromFile.getTypes().isEmpty()) {
-				Set<String> allReferencedTypes = getAllReferencedTypeNames(controllers);
-				for (Map.Entry<String, RamlDataType> type : loadRamlFromFile.getTypes().entrySet()) {
-					if (!allReferencedTypes.contains(type.getKey())) {
-						ApiBodyMetadata tempBodyMetadata = RamlTypeHelper.mapTypeToPojo(codeModel, loadRamlFromFile,
-								type.getValue().getType());
-						generateModelSources(codeModel, tempBodyMetadata, rootDir);
-					}
+			Set<String> allReferencedTypes = getAllReferencedTypeNames(controllers);
+			for (Map.Entry<String, RamlDataType> type : loadRamlFromFile.getTypes().entrySet()) {
+				if (!allReferencedTypes.contains(type.getKey())) {
+					ApiBodyMetadata tempBodyMetadata = RamlTypeHelper.mapTypeToPojo(codeModel, loadRamlFromFile, type.getValue().getType());
+					generateModelSources(codeModel, tempBodyMetadata, rootDir);
+				}
+			}
+		}
+
+		if (loadRamlFromFile.getSchemas() != null && !loadRamlFromFile.getSchemas().isEmpty()) {
+			this.getLog().debug("Generating Code for Unreferenced Schemas");
+			for (Map<String, String> map : loadRamlFromFile.getSchemas()) {
+				for (String schemaName : map.keySet()) {
+					this.getLog().info("Generating POJO for unreferenced schema " + schemaName);
+					ApiBodyMetadata tempBodyMetadata = SchemaHelper.mapSchemaToPojo(loadRamlFromFile, schemaName, resolvedRamlPath,
+							schemaName, this.resolvedSchemaLocation);
+					generateModelSources(null, tempBodyMetadata, rootDir);
 				}
 			}
 		}
@@ -490,6 +527,14 @@ public class SpringMvcEndpointGeneratorMojo extends AbstractMojo {
 		}
 
 		this.getLog().info("Endpoint Generation Completed in:" + (System.currentTimeMillis() - startTime) + "ms");
+	}
+
+	public enum MethodsNamingLogic {
+		OBJECTS, RESOURCES
+	}
+
+	public enum OverrideNamingLogicWith {
+		DISPLAY_NAME, ANNOTATION
 	}
 
 }

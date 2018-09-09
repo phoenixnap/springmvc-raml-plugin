@@ -16,6 +16,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.raml.v2.api.model.v10.declarations.AnnotationRef;
 import org.raml.v2.api.model.v10.methods.Method;
 
 import com.phoenixnap.oss.ramlplugin.raml2code.helpers.RamlTypeHelper;
@@ -126,5 +127,10 @@ public class RJP10V2RamlAction implements RamlAction {
 	@Override
 	public List<RamlSecurityReference> getSecuredBy() {
 		return ramlModelFactory.createRamlSecurityReferences(method.securedBy());
+	}
+
+	@Override
+	public List<AnnotationRef> getAnnotations() {
+		return this.method.annotations();
 	}
 }

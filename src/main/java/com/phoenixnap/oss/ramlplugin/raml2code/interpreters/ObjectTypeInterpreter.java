@@ -20,6 +20,7 @@ import java.util.Set;
 
 import org.raml.v2.api.model.v10.datamodel.ObjectTypeDeclaration;
 import org.raml.v2.api.model.v10.datamodel.TypeDeclaration;
+import org.raml.v2.api.model.v10.declarations.AnnotationRef;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.util.MimeType;
@@ -28,6 +29,7 @@ import org.springframework.util.StringUtils;
 import com.phoenixnap.oss.ramlplugin.raml2code.helpers.NamingHelper;
 import com.phoenixnap.oss.ramlplugin.raml2code.helpers.RamlTypeHelper;
 import com.phoenixnap.oss.ramlplugin.raml2code.plugin.Config;
+import com.phoenixnap.oss.ramlplugin.raml2code.plugin.SpringMvcEndpointGeneratorMojo.OverrideNamingLogicWith;
 import com.phoenixnap.oss.ramlplugin.raml2code.raml.RamlDataType;
 import com.phoenixnap.oss.ramlplugin.raml2code.raml.RamlRoot;
 import com.sun.codemodel.JClass;
@@ -151,11 +153,34 @@ public class ObjectTypeInterpreter extends BaseTypeInterpreter {
 			builder.extendsClass(childType);
 		}
 
+		List<String> excludeFieldsFromToString = new ArrayList<>();
 		for (TypeDeclaration objectProperty : objectType.properties()) {
+
+			String fieldName = null;
+			if (Config.getOverrideNamingLogicWith() == OverrideNamingLogicWith.DISPLAY_NAME && objectProperty.displayName() != null) {
+				fieldName = NamingHelper.getParameterName(objectProperty.displayName().value());
+			} else if (Config.getOverrideNamingLogicWith() == OverrideNamingLogicWith.ANNOTATION) {
+				for (AnnotationRef annotation : objectProperty.annotations()) {
+					if ("(javaName)".equals(annotation.name())) {
+						fieldName = String.valueOf(annotation.structuredValue().value());
+						break;
+					}
+				}
+			}
+			if (StringUtils.isEmpty(fieldName)) {
+				fieldName = NamingHelper.getParameterName(objectProperty.name());
+			}
+
+			List<AnnotationRef> annotations = objectProperty.annotations();
+			for (AnnotationRef annotation : annotations) {
+				if ("(isSensitive)".equals(annotation.name()) && Boolean.TRUE.equals(annotation.structuredValue().value())) {
+					excludeFieldsFromToString.add(fieldName);
+				}
+			}
 			RamlInterpretationResult childResult = RamlInterpreterFactory.getInterpreterForType(objectProperty).interpret(document,
 					objectProperty, builderModel, true);
 			String childType = childResult.getResolvedClassOrBuiltOrObject().fullName();
-			builder.withField(objectProperty.name(), childType, RamlTypeHelper.getDescription(objectProperty), childResult.getValidations(),
+			builder.withField(fieldName, childType, RamlTypeHelper.getDescription(objectProperty), childResult.getValidations(),
 					objectProperty);
 
 		}
@@ -164,7 +189,7 @@ public class ObjectTypeInterpreter extends BaseTypeInterpreter {
 		builder.withCompleteConstructor();
 
 		// Add overriden hashCode(), equals() and toString() methods
-		builder.withOverridenMethods();
+		builder.withOverridenMethods(excludeFieldsFromToString);
 
 		if (!childTypes.isEmpty()) {
 			// Add @JsonTypeInfo and @JsonSubTypes to support discriminator

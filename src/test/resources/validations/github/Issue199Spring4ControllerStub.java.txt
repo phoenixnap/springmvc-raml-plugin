@@ -3,6 +3,7 @@
 package com.gen.test.model;
 
 import java.io.Serializable;
+import javax.validation.constraints.NotNull;
 import org.apache.commons.lang.builder.EqualsBuilder;
 import org.apache.commons.lang.builder.HashCodeBuilder;
 import org.apache.commons.lang.builder.ToStringBuilder;
@@ -10,8 +11,8 @@ import org.apache.commons.lang.builder.ToStringBuilder;
 public class Employee implements Serializable
 {
 
-    private String name;
-    private String skill;
+    protected String name;
+    protected String skill;
 
     /**
      * Creates a new Employee.
@@ -37,6 +38,7 @@ public class Employee implements Serializable
      * @return
      *     name
      */
+    @NotNull
     public String getName() {
         return name;
     }
@@ -57,6 +59,7 @@ public class Employee implements Serializable
      * @return
      *     skill
      */
+    @NotNull
     public String getSkill() {
         return skill;
     }
@@ -99,6 +102,7 @@ public class Employee implements Serializable
 package com.gen.test.model;
 
 import java.io.Serializable;
+import javax.validation.constraints.NotNull;
 import org.apache.commons.lang.builder.EqualsBuilder;
 import org.apache.commons.lang.builder.HashCodeBuilder;
 import org.apache.commons.lang.builder.ToStringBuilder;
@@ -108,7 +112,7 @@ public class EmployeeExtended
     implements Serializable
 {
 
-    private String job;
+    protected String job;
 
     /**
      * Creates a new EmployeeExtended.
@@ -128,11 +132,34 @@ public class EmployeeExtended
     }
 
     /**
+     * Returns the name.
+     * 
+     * @return
+     *     name
+     */
+    @NotNull
+    public String getName() {
+        return name;
+    }
+
+    /**
+     * Returns the skill.
+     * 
+     * @return
+     *     skill
+     */
+    @NotNull
+    public String getSkill() {
+        return skill;
+    }
+
+    /**
      * Returns the job.
      *
      * @return
      *     job
      */
+    @NotNull
     public String getJob() {
         return job;
     }
@@ -177,6 +204,8 @@ package com.gen.test.model;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
+import javax.validation.Valid;
+import javax.validation.constraints.NotNull;
 import org.apache.commons.lang.builder.EqualsBuilder;
 import org.apache.commons.lang.builder.HashCodeBuilder;
 import org.apache.commons.lang.builder.ToStringBuilder;
@@ -184,7 +213,7 @@ import org.apache.commons.lang.builder.ToStringBuilder;
 public class EmployeeRq implements Serializable
 {
 
-    private List<Employee> employees = new ArrayList<Employee>();
+    protected List<Employee> employees = new ArrayList<Employee>();
 
     /**
      * Creates a new EmployeeRq.
@@ -209,6 +238,8 @@ public class EmployeeRq implements Serializable
      * @return
      *     employees
      */
+    @NotNull
+    @Valid
     public List<Employee> getEmployees() {
         return employees;
     }
@@ -253,6 +284,8 @@ package com.gen.test.model;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
+import javax.validation.Valid;
+import javax.validation.constraints.NotNull;
 import org.apache.commons.lang.builder.EqualsBuilder;
 import org.apache.commons.lang.builder.HashCodeBuilder;
 import org.apache.commons.lang.builder.ToStringBuilder;
@@ -260,7 +293,7 @@ import org.apache.commons.lang.builder.ToStringBuilder;
 public class EmployeeRs implements Serializable
 {
 
-    private List<EmployeeExtended> employees = new ArrayList<EmployeeExtended>();
+    protected List<EmployeeExtended> employees = new ArrayList<EmployeeExtended>();
 
     /**
      * Creates a new EmployeeRs.
@@ -285,6 +318,8 @@ public class EmployeeRs implements Serializable
      * @return
      *     employees
      */
+    @NotNull
+    @Valid
     public List<EmployeeExtended> getEmployees() {
         return employees;
     }

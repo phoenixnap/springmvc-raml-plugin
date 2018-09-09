@@ -13,14 +13,17 @@
 package com.phoenixnap.oss.ramlplugin.raml2code.data;
 
 import java.lang.reflect.Array;
-import java.lang.reflect.Type;
 import java.util.List;
 import java.util.Set;
 
 import org.apache.commons.lang.NullArgumentException;
+import org.raml.v2.api.model.v10.declarations.AnnotationRef;
 import org.springframework.util.StringUtils;
 
+import com.phoenixnap.oss.ramlplugin.raml2code.helpers.NamingHelper;
 import com.phoenixnap.oss.ramlplugin.raml2code.helpers.SchemaHelper;
+import com.phoenixnap.oss.ramlplugin.raml2code.plugin.Config;
+import com.phoenixnap.oss.ramlplugin.raml2code.plugin.SpringMvcEndpointGeneratorMojo.OverrideNamingLogicWith;
 import com.phoenixnap.oss.ramlplugin.raml2code.raml.RamlAbstractParam;
 import com.phoenixnap.oss.ramlplugin.raml2code.raml.RamlUriParameter;
 import com.sun.codemodel.JCodeModel;
@@ -59,12 +62,6 @@ public class ApiParameterMetadata {
 	private String format;
 
 	/**
-	 * If the type contains generics, this is the type of the generic as defined
-	 * in the code.
-	 */
-	private Type genericType;
-
-	/**
 	 * Can this parameter be passed in as null
 	 */
 	private boolean nullable;
@@ -94,6 +91,7 @@ public class ApiParameterMetadata {
 	 * @param param
 	 *            Java Parameter representation
 	 * @param codeModel
+	 *            JCodeModel to use
 	 */
 	public ApiParameterMetadata(String name, RamlAbstractParam param, JCodeModel codeModel) {
 		super();
@@ -113,14 +111,12 @@ public class ApiParameterMetadata {
 		this.displayName = param.getDisplayName();
 
 		this.format = param.getFormat();
-		this.type = SchemaHelper.mapSimpleType(param.getType(), this.format);
+		this.type = SchemaHelper.mapSimpleType(param.getType(), this.format, param.getRawType());
 
 		// If it's a repeatable parameter simply convert to an array of type
 		if (param.isRepeat()) {
 			this.type = Array.newInstance(this.type, 0).getClass();
 		}
-
-		this.genericType = null;
 
 		this.example = StringUtils.hasText(param.getExample()) ? param.getExample() : null;
 		this.setRamlParam(param);
@@ -134,15 +130,6 @@ public class ApiParameterMetadata {
 	 */
 	public Class<?> getType() {
 		return type;
-	}
-
-	/**
-	 * The Java Type of the generic portion of the parameter
-	 * 
-	 * @return The Java Type of the generic portion of the parameter
-	 */
-	public Type getGenericType() {
-		return genericType;
 	}
 
 	/**
@@ -221,5 +208,27 @@ public class ApiParameterMetadata {
 
 	public JCodeModel getCodeModel() {
 		return codeModel;
+	}
+
+	public List<AnnotationRef> getAnnotations() {
+		return ramlParam.getAnnotations();
+	}
+
+	public String getJavaName() {
+		String javaName = null;
+		if (Config.getOverrideNamingLogicWith() == OverrideNamingLogicWith.DISPLAY_NAME && !StringUtils.isEmpty(this.getDisplayName())) {
+			javaName = NamingHelper.getParameterName(this.getDisplayName());
+		} else if (Config.getOverrideNamingLogicWith() == OverrideNamingLogicWith.ANNOTATION) {
+			for (AnnotationRef annotation : this.getAnnotations()) {
+				if ("(javaName)".equals(annotation.name())) {
+					javaName = String.valueOf(annotation.structuredValue().value());
+					break;
+				}
+			}
+		}
+		if (StringUtils.isEmpty(javaName)) {
+			javaName = NamingHelper.getParameterName(this.getName());
+		}
+		return javaName;
 	}
 }

@@ -3,6 +3,7 @@
 package com.gen.test.model;
 
 import java.io.Serializable;
+import javax.validation.constraints.NotNull;
 import org.apache.commons.lang.builder.EqualsBuilder;
 import org.apache.commons.lang.builder.HashCodeBuilder;
 import org.apache.commons.lang.builder.ToStringBuilder;
@@ -10,8 +11,8 @@ import org.apache.commons.lang.builder.ToStringBuilder;
 public class DeleteObject implements Serializable
 {
 
-    private Double id;
-    private String name;
+    protected Double id;
+    protected String name;
 
     /**
      * Creates a new DeleteObject.
@@ -37,6 +38,7 @@ public class DeleteObject implements Serializable
      * @return
      *     id
      */
+    @NotNull
     public Double getId() {
         return id;
     }
@@ -57,6 +59,7 @@ public class DeleteObject implements Serializable
      * @return
      *     name
      */
+    @NotNull
     public String getName() {
         return name;
     }
@@ -116,7 +119,7 @@ public interface TestController {
      * No description
      * 
      */
-    public ResponseEntity<?> deleteBy(BigDecimal test1, String test2, BigDecimal xTest1, String xTest2,
+    public ResponseEntity<?> deleteTest(BigDecimal test1, String test2, BigDecimal xTest1, String xTest2,
         @Valid
         DeleteObject deleteObject);
 
@@ -159,7 +162,7 @@ public class TestControllerDecorator
      * 
      */
     @RequestMapping(value = "", method = RequestMethod.DELETE)
-    public ResponseEntity<?> deleteBy(
+    public ResponseEntity<?> deleteTest(
         @RequestParam
         BigDecimal test1,
         @RequestParam
@@ -171,7 +174,7 @@ public class TestControllerDecorator
         @Valid
         @RequestBody
         DeleteObject deleteObject) {
-        return this.testControllerDelegate.deleteBy(test1, test2, xTest1, xTest2, deleteObject);
+        return this.testControllerDelegate.deleteTest(test1, test2, xTest1, xTest2, deleteObject);
     }
 
 }

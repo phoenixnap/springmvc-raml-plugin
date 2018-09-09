@@ -3,6 +3,8 @@
 package com.gen.test.model;
 
 import java.io.Serializable;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Pattern;
 import org.apache.commons.lang.builder.EqualsBuilder;
 import org.apache.commons.lang.builder.HashCodeBuilder;
 import org.apache.commons.lang.builder.ToStringBuilder;
@@ -14,7 +16,7 @@ public class TheResourceId implements Serializable
      * The UUID of this resource.
      * 
      */
-    private String id;
+    protected String id;
 
     /**
      * Creates a new TheResourceId.
@@ -39,6 +41,8 @@ public class TheResourceId implements Serializable
      * @return
      *     id
      */
+    @NotNull
+    @Pattern(regexp = "^[a-fA-F0-9]{8}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{12}$")
     public String getId() {
         return id;
     }

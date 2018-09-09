@@ -55,8 +55,10 @@ public class RamlHelper {
 	 * list - the method will return the first grant in the list.
 	 * 
 	 * @param action
+	 *            action to find grant for
 	 * @param document
-	 * @return
+	 *            root raml document
+	 * @return first grant found, null otherwise
 	 */
 	public static String getFirstAuthorizationGrant(RamlAction action, RamlRoot document) {
 		List<String> grants = getAuthorizationGrants(action, document);

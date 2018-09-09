@@ -48,23 +48,23 @@ Then simply include the following code in the POM of the project you wish to gen
 <plugin>
   <groupId>com.phoenixnap.oss</groupId>
   <artifactId>springmvc-raml-plugin</artifactId>
-  <version>x.x.x</version>
+  <version>2.x.x</version>
   <configuration>
     <ramlPath>{path.to.raml.file}</ramlPath>
-	<schemaLocation>{path.to.schema.directory||schema.absolute.url}</schemaLocation>
-	<outputRelativePath>/src/generated</outputRelativePath>
+    <schemaLocation>{path.to.schema.directory||schema.absolute.url}</schemaLocation>
+    <outputRelativePath>/src/generated</outputRelativePath>
     <addTimestampFolder>false</addTimestampFolder>
     <basePackage>com.gen.wow</basePackage>
     <baseUri>/api</baseUri>
-    <generateUnreferencedSchemas>true</generateUnreferencedSchemas>
-	<generationConfig>
-		<includeAdditionalProperties>false</includeAdditionalProperties>
-		...
-	</generationConfig>
-	<seperateMethodsByContentType>false</seperateMethodsByContentType>
-	<rule>com.phoenixnap.oss.ramlplugin.raml2code.rules.Spring4ControllerStubRule</rule>
-	<ruleConfiguration>			
-	</ruleConfiguration>
+    <generateUnreferencedObjects>true</generateUnreferencedObjects>
+    <generationConfig>
+        <includeAdditionalProperties>false</includeAdditionalProperties>
+        ...
+    </generationConfig>
+    <seperateMethodsByContentType>false</seperateMethodsByContentType>
+    <rule>com.phoenixnap.oss.ramlplugin.raml2code.rules.Spring4ControllerStubRule</rule>
+    <ruleConfiguration>			
+    </ruleConfiguration>
   </configuration>
   <executions>
     <execution>
@@ -82,10 +82,10 @@ Then simply include the following code in the POM of the project you wish to gen
 (required) The path to the file, relative to the project base directory
 
 ### outputRelativePath
-(optional) Relative path where the generated Java classes will be saved to. Package structure folders will be created relative to this path.
+(optional, default: "") Relative path where the generated Java classes will be saved to. Package structure folders will be created relative to this path.
 
 ### addTimestampFolder
-(optional, default: false) Should an extra folder be generated using a timestamp to seperate generations
+(optional, default: `false`) Should an extra folder be generated using a timestamp to seperate generations
 
 ### basePackage
 (required) Base package to be used for the java classes to be generated. Model objects will be added in the .model subpackage
@@ -94,37 +94,50 @@ Then simply include the following code in the POM of the project you wish to gen
 (optional, default: "") The URI or relative path to the folder/network location containing JSON Schemas
 
 ### baseUri
-(optional) Base URI for generated Spring controllers. This overrules the baseUri attribute from inside the .raml spec.
+(optional, default: "") Base URI for generated Spring controllers. This overrules the baseUri attribute from inside the .raml spec.
 
-### generateUnreferencedSchemas
-(optional) Determines whether POJOs for unreferenced schemas included in the RAML file should be generated.
+### generateUnreferencedObjects
+(optional, default: `false`) Determines whether POJOs for unreferenced schemas or data types included in the RAML file should be generated.
 
 ### generationConfig
 (optional) This object contains a map of configuration for the JsonSchema2Pojo generator. The full list of configurable attributes, their description and default values can be found here [GenerationConfig][]
 
 ### injectHttpHeadersParameter
-(optional, default: false) If set to true, we will generate a `HttpHeaders` parameter for each method to allow using request HTTP headers directly.
+(optional, default: `false`) If set to true, we will generate a `HttpHeaders` parameter for each method to allow using request HTTP headers directly.
 
 ### seperateMethodsByContentType
-(optional, default: false) Should we generate separate API methods for endpoints which define multiple content types in their 200 response.
+(optional, default: `false`) Should we generate separate API methods for endpoints which define multiple content types in their 200 response.
 
 ### useJackson1xCompatibility
-(optional, default: false) If set to true, we will generate Jackson 1 annotations inside the model objects.
+(optional, default: `false`) If set to true, we will generate Jackson 1 annotations inside the model objects.
 
 ### resourceDepthInClassNames
-(optional, default: 1) Levels of resource path that will be included in generated class names. If set to -1 entire uri will be included in class name.
+(optional, default: `1`) Levels of resource path that will be included in generated class names. If set to -1 entire uri will be included in class name.
 
 ### resourceTopLevelInClassNames
-(optional, default: 0) Top level of resource path that will be included in generated class names. If set to 0 entire URI will be included in class name.
+(optional, default: `0`) Top level of resource path that will be included in generated class names. If set to 0 entire URI will be included in class name.
 
 ### reverseOrderInClassNames
-(optional, default: false) Reverse order of resource path that will be included in generated class names. If set to false URI will be included in class name from left to right.
+(optional, default: `false`) Reverse order of resource path that will be included in generated class names. If set to false URI will be included in class name from left to right.
+
+### methodsNamingLogic
+(optional, default: `OBJECTS`) Logic used for Java methods name generation. Possible values: `OBJECTS` (objects like request parameters and return types will be used) and `RESOURCES` (resource path will be used).
+
+NOTE: This is different from a previous default. Use `RESOURCES` to get `0.x` behavior.
+
+### overrideNamingLogicWith
+(optional, default: "") The way to override naming logic for Java methods and arguments. Possible values:
+ - `DISPLAY_NAME` (`displayName` attribute (if found) will be cleaned and used. `displayName` key is natively supported by RAML spec)
+ - `ANNOTATION` (`javaName` annotation (if found) will be used as is). Refer to RAML [Annotation](https://github.com/raml-org/raml-spec/blob/master/versions/raml-10/raml-10.md#annotations) for more details.
+ 
+### dontGenerateForAnnotation
+(optional, default: "") When defined, code generation will be skipped for resources and methods annotated with this [Annotation](https://github.com/raml-org/raml-spec/blob/master/versions/raml-10/raml-10.md#annotations). When annotation is set on resource - all methods in the resource and all sub-resources will be ignored. Value of the annotation is not important.
 
 ### ruleConfiguration
 (optional) This is a key/value map for configuration of individual rules. Not all rules support configuration.
 
 ### rule
-(optional, default: com.phoenixnap.oss.ramlplugin.raml2code.rules.Spring4ControllerStubRule) The rule class to be used for code generation.
+(optional, default: `com.phoenixnap.oss.ramlplugin.raml2code.rules.Spring4ControllerStubRule`) The rule class to be used for code generation.
 
 #### Available Rules
 - **com.phoenixnap.oss.ramlapisync.generation.rule.Spring4ControllerStubRule**:

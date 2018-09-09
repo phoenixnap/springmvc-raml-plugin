@@ -14,17 +14,11 @@ import org.apache.commons.lang.builder.ToStringBuilder;
 public class Book implements Serializable
 {
 
-    @NotNull
-    private Double id;
-    @NotNull
-    private String title;
-    @NotNull
-    private String author;
-    @NotNull
-    @Valid
-    private Publisher publisher;
-    @Valid
-    private List<Chapter> chapters = new ArrayList<Chapter>();
+    protected Double id;
+    protected String title;
+    protected String author;
+    protected Publisher publisher;
+    protected List<Chapter> chapters = new ArrayList<Chapter>();
 
     /**
      * Creates a new Book.
@@ -53,6 +47,7 @@ public class Book implements Serializable
      * @return
      *     id
      */
+    @NotNull
     public Double getId() {
         return id;
     }
@@ -73,6 +68,7 @@ public class Book implements Serializable
      * @return
      *     title
      */
+    @NotNull
     public String getTitle() {
         return title;
     }
@@ -93,6 +89,7 @@ public class Book implements Serializable
      * @return
      *     author
      */
+    @NotNull
     public String getAuthor() {
         return author;
     }
@@ -113,6 +110,8 @@ public class Book implements Serializable
      * @return
      *     publisher
      */
+    @NotNull
+    @Valid
     public Publisher getPublisher() {
         return publisher;
     }
@@ -133,6 +132,7 @@ public class Book implements Serializable
      * @return
      *     chapters
      */
+    @Valid
     public List<Chapter> getChapters() {
         return chapters;
     }
@@ -183,10 +183,8 @@ import org.apache.commons.lang.builder.ToStringBuilder;
 public class Chapter implements Serializable
 {
 
-    @NotNull
-    private String chapTitle;
-    @NotNull
-    private Double noPages;
+    protected String chapTitle;
+    protected Double noPages;
 
     /**
      * Creates a new Chapter.
@@ -212,6 +210,7 @@ public class Chapter implements Serializable
      * @return
      *     chapTitle
      */
+    @NotNull
     public String getChapTitle() {
         return chapTitle;
     }
@@ -232,6 +231,7 @@ public class Chapter implements Serializable
      * @return
      *     noPages
      */
+    @NotNull
     public Double getNoPages() {
         return noPages;
     }
@@ -282,11 +282,9 @@ import org.apache.commons.lang.builder.ToStringBuilder;
 public class Publisher implements Serializable
 {
 
-    @NotNull
-    private String name;
-    @NotNull
-    private String country;
-    private Long revenue;
+    protected String name;
+    protected String country;
+    protected Long revenue;
 
     /**
      * Creates a new Publisher.
@@ -313,6 +311,7 @@ public class Publisher implements Serializable
      * @return
      *     name
      */
+    @NotNull
     public String getName() {
         return name;
     }
@@ -333,6 +332,7 @@ public class Publisher implements Serializable
      * @return
      *     country
      */
+    @NotNull
     public String getCountry() {
         return country;
     }

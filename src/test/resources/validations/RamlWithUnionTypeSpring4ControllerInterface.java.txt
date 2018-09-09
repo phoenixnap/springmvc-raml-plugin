@@ -3,6 +3,8 @@
 package com.gen.test.model;
 
 import java.io.Serializable;
+import javax.validation.Valid;
+import javax.validation.constraints.NotNull;
 import org.apache.commons.lang.builder.EqualsBuilder;
 import org.apache.commons.lang.builder.HashCodeBuilder;
 import org.apache.commons.lang.builder.ToStringBuilder;
@@ -10,8 +12,8 @@ import org.apache.commons.lang.builder.ToStringBuilder;
 public class Device implements Serializable
 {
 
-    private com.gen.test.model.Phone Phone;
-    private com.gen.test.model.Notebook Notebook;
+    protected com.gen.test.model.Phone Phone;
+    protected com.gen.test.model.Notebook Notebook;
 
     /**
      * Creates a new Device.
@@ -37,6 +39,8 @@ public class Device implements Serializable
      * @return
      *     Phone
      */
+    @NotNull
+    @Valid
     public com.gen.test.model.Phone getPhone() {
         return Phone;
     }
@@ -57,6 +61,8 @@ public class Device implements Serializable
      * @return
      *     Notebook
      */
+    @NotNull
+    @Valid
     public com.gen.test.model.Notebook getNotebook() {
         return Notebook;
     }
@@ -99,6 +105,7 @@ public class Device implements Serializable
 package com.gen.test.model;
 
 import java.io.Serializable;
+import javax.validation.constraints.NotNull;
 import org.apache.commons.lang.builder.EqualsBuilder;
 import org.apache.commons.lang.builder.HashCodeBuilder;
 import org.apache.commons.lang.builder.ToStringBuilder;
@@ -106,8 +113,8 @@ import org.apache.commons.lang.builder.ToStringBuilder;
 public class Notebook implements Serializable
 {
 
-    private String manufacturer;
-    private Double numberOfUSBPorts;
+    protected String manufacturer;
+    protected Double numberOfUSBPorts;
 
     /**
      * Creates a new Notebook.
@@ -133,6 +140,7 @@ public class Notebook implements Serializable
      * @return
      *     manufacturer
      */
+    @NotNull
     public String getManufacturer() {
         return manufacturer;
     }
@@ -153,6 +161,7 @@ public class Notebook implements Serializable
      * @return
      *     numberOfUSBPorts
      */
+    @NotNull
     public Double getNumberOfUSBPorts() {
         return numberOfUSBPorts;
     }
@@ -195,6 +204,7 @@ public class Notebook implements Serializable
 package com.gen.test.model;
 
 import java.io.Serializable;
+import javax.validation.constraints.NotNull;
 import org.apache.commons.lang.builder.EqualsBuilder;
 import org.apache.commons.lang.builder.HashCodeBuilder;
 import org.apache.commons.lang.builder.ToStringBuilder;
@@ -202,8 +212,8 @@ import org.apache.commons.lang.builder.ToStringBuilder;
 public class Phone implements Serializable
 {
 
-    private String manufacturer;
-    private Double numberOfSIMCards;
+    protected String manufacturer;
+    protected Double numberOfSIMCards;
 
     /**
      * Creates a new Phone.
@@ -229,6 +239,7 @@ public class Phone implements Serializable
      * @return
      *     manufacturer
      */
+    @NotNull
     public String getManufacturer() {
         return manufacturer;
     }
@@ -249,6 +260,7 @@ public class Phone implements Serializable
      * @return
      *     numberOfSIMCards
      */
+    @NotNull
     public Double getNumberOfSIMCards() {
         return numberOfSIMCards;
     }

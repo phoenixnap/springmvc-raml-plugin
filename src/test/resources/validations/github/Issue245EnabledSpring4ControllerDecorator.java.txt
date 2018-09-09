@@ -1,0 +1,211 @@
+-----------------------------------com.gen.test.model.User.java-----------------------------------
+
+package com.gen.test.model;
+
+import java.io.Serializable;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Pattern;
+import javax.validation.constraints.Size;
+import org.apache.commons.lang.builder.EqualsBuilder;
+import org.apache.commons.lang.builder.HashCodeBuilder;
+import org.apache.commons.lang.builder.ToStringBuilder;
+
+public class User implements Serializable
+{
+
+    protected String firstName;
+    protected String lastName;
+    protected String nickName;
+
+    /**
+     * Creates a new User.
+     * 
+     */
+    public User() {
+        super();
+    }
+
+    /**
+     * Creates a new User.
+     * 
+     */
+    public User(String firstName, String lastName, String nickName) {
+        super();
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.nickName = nickName;
+    }
+
+    /**
+     * Returns the firstName.
+     * 
+     * @return
+     *     firstName
+     */
+    @NotNull
+    @Size(min = 5, max = 50)
+    public String getFirstName() {
+        return firstName;
+    }
+
+    /**
+     * Set the firstName.
+     * 
+     * @param firstName
+     *     the new firstName
+     */
+    public void setFirstName(String firstName) {
+        this.firstName = firstName;
+    }
+
+    /**
+     * Returns the lastName.
+     * 
+     * @return
+     *     lastName
+     */
+    @NotNull
+    @Pattern(regexp = "^[a-z]+$")
+    public String getLastName() {
+        return lastName;
+    }
+
+    /**
+     * Set the lastName.
+     * 
+     * @param lastName
+     *     the new lastName
+     */
+    public void setLastName(String lastName) {
+        this.lastName = lastName;
+    }
+
+    /**
+     * Returns the nickName.
+     * 
+     * @return
+     *     nickName
+     */
+    public String getNickName() {
+        return nickName;
+    }
+
+    /**
+     * Set the nickName.
+     * 
+     * @param nickName
+     *     the new nickName
+     */
+    public void setNickName(String nickName) {
+        this.nickName = nickName;
+    }
+
+    public int hashCode() {
+        return new HashCodeBuilder().append(firstName).append(lastName).append(nickName).toHashCode();
+    }
+
+    public boolean equals(Object other) {
+        if (other == null) {
+            return false;
+        }
+        if (other == this) {
+            return true;
+        }
+        if (this.getClass()!= other.getClass()) {
+            return false;
+        }
+        User otherObject = ((User) other);
+        return new EqualsBuilder().append(firstName, otherObject.firstName).append(lastName, otherObject.lastName).append(nickName, otherObject.nickName).isEquals();
+    }
+
+    public String toString() {
+        return new ToStringBuilder(this).append("firstName", firstName).append("lastName", lastName).append("nickName", nickName).toString();
+    }
+
+}
+-----------------------------------com.gen.test.UserController.java-----------------------------------
+
+package com.gen.test;
+
+import java.util.List;
+import javax.validation.Valid;
+import com.gen.test.model.User;
+import org.springframework.http.ResponseEntity;
+
+
+/**
+ * No description
+ * (Generated with springmvc-raml-parser v.@project.version@)
+ * 
+ */
+public interface UserController {
+
+
+    /**
+     * No description
+     * 
+     */
+    public ResponseEntity<List<User>> getUsers();
+
+    /**
+     * No description
+     * 
+     */
+    public ResponseEntity<?> createUser(
+        @Valid
+        User user);
+
+}
+-----------------------------------com.gen.test.UserControllerDecorator.java-----------------------------------
+
+package com.gen.test;
+
+import java.util.List;
+import javax.validation.Valid;
+import com.gen.test.model.User;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RestController;
+
+
+/**
+ * No description
+ * (Generated with springmvc-raml-parser v.@project.version@)
+ * 
+ */
+@RestController
+@RequestMapping("/api/users")
+@Validated
+public class UserControllerDecorator
+    implements UserController
+{
+
+    @Autowired
+    private UserController userControllerDelegate;
+
+    /**
+     * No description
+     * 
+     */
+    @RequestMapping(value = "", method = RequestMethod.GET)
+    public ResponseEntity<List<User>> getUsers() {
+        return this.userControllerDelegate.getUsers();
+    }
+
+    /**
+     * No description
+     * 
+     */
+    @RequestMapping(value = "", method = RequestMethod.POST)
+    public ResponseEntity<?> createUser(
+        @Valid
+        @RequestBody
+        User user) {
+        return this.userControllerDelegate.createUser(user);
+    }
+
+}

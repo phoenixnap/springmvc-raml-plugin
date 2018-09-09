@@ -15,4 +15,20 @@ public class TestPojoConfig extends PojoGenerationConfig {
 	public void setGenerateBuilders(boolean generateBuilders) {
 		this.generateBuilders = generateBuilders;
 	}
+
+	public void setDateTimeType(String dateTimeType) {
+		this.dateTimeType = dateTimeType;
+	}
+
+	public void setDateType(String dateType) {
+		this.dateType = dateType;
+	}
+
+	public void setTimeType(String timeType) {
+		this.timeType = timeType;
+	}
+
+	public void setInitializeCollections(boolean initializeCollections) {
+		this.initializeCollections = initializeCollections;
+	}
 }

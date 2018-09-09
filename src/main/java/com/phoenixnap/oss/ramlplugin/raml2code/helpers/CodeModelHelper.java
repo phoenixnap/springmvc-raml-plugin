@@ -21,6 +21,7 @@ import org.apache.commons.io.output.StringBuilderWriter;
 
 import com.phoenixnap.oss.ramlplugin.raml2code.exception.InvalidCodeModelException;
 import com.sun.codemodel.JClass;
+
 import com.sun.codemodel.JCodeModel;
 import com.sun.codemodel.JDeclaration;
 import com.sun.codemodel.JDefinedClass;
@@ -56,7 +57,7 @@ public abstract class CodeModelHelper {
 	 * Searches inside a JCodeModel for a class with a specified name ignoring
 	 * package
 	 *
-	 * @param codeModel[]
+	 * @param codeModel
 	 *            The codemodels which we will look inside
 	 * @param simpleClassName
 	 *            The class name to search for

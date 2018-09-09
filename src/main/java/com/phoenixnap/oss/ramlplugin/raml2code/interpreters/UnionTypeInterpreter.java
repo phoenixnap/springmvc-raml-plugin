@@ -136,7 +136,7 @@ public class UnionTypeInterpreter extends BaseTypeInterpreter {
 		builder.withCompleteConstructor();
 
 		// Add overriden hashCode(), equals() and toString() methods
-		builder.withOverridenMethods();
+		builder.withOverridenMethods(Collections.emptyList());
 
 		return result;
 

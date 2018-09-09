@@ -1,0 +1,269 @@
+-----------------------------------com.gen.test.model.Person.java-----------------------------------
+
+package com.gen.test.model;
+
+import java.io.Serializable;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
+import org.apache.commons.lang.builder.EqualsBuilder;
+import org.apache.commons.lang.builder.HashCodeBuilder;
+import org.apache.commons.lang.builder.ToStringBuilder;
+
+public class Person implements Serializable
+{
+
+    protected String notOverriden;
+    protected String firstName;
+
+    /**
+     * Creates a new Person.
+     * 
+     */
+    public Person() {
+        super();
+    }
+
+    /**
+     * Creates a new Person.
+     * 
+     */
+    public Person(String notOverriden, String firstName) {
+        super();
+        this.notOverriden = notOverriden;
+        this.firstName = firstName;
+    }
+
+    /**
+     * Returns the notOverriden.
+     * 
+     * @return
+     *     notOverriden
+     */
+    @NotNull
+    public String getNotOverriden() {
+        return notOverriden;
+    }
+
+    /**
+     * Set the notOverriden.
+     * 
+     * @param notOverriden
+     *     the new notOverriden
+     */
+    public void setNotOverriden(String notOverriden) {
+        this.notOverriden = notOverriden;
+    }
+
+    /**
+     * Returns the firstName.
+     * 
+     * @return
+     *     firstName
+     */
+    @NotNull
+    @Size(max = 5)
+    public String getFirstName() {
+        return firstName;
+    }
+
+    /**
+     * Set the firstName.
+     * 
+     * @param firstName
+     *     the new firstName
+     */
+    public void setFirstName(String firstName) {
+        this.firstName = firstName;
+    }
+
+    public int hashCode() {
+        return new HashCodeBuilder().append(notOverriden).append(firstName).toHashCode();
+    }
+
+    public boolean equals(Object other) {
+        if (other == null) {
+            return false;
+        }
+        if (other == this) {
+            return true;
+        }
+        if (this.getClass()!= other.getClass()) {
+            return false;
+        }
+        Person otherObject = ((Person) other);
+        return new EqualsBuilder().append(notOverriden, otherObject.notOverriden).append(firstName, otherObject.firstName).isEquals();
+    }
+
+    public String toString() {
+        return new ToStringBuilder(this).append("notOverriden", notOverriden).append("firstName", firstName).toString();
+    }
+
+}
+-----------------------------------com.gen.test.model.User.java-----------------------------------
+
+package com.gen.test.model;
+
+import java.io.Serializable;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Pattern;
+import javax.validation.constraints.Size;
+import org.apache.commons.lang.builder.EqualsBuilder;
+import org.apache.commons.lang.builder.HashCodeBuilder;
+import org.apache.commons.lang.builder.ToStringBuilder;
+
+public class User
+    extends Person
+    implements Serializable
+{
+
+    protected Long userId;
+
+    /**
+     * Creates a new User.
+     * 
+     */
+    public User() {
+        super();
+    }
+
+    /**
+     * Creates a new User.
+     * 
+     */
+    public User(String notOverriden, String firstName, Long userId) {
+        super(notOverriden, firstName);
+        this.userId = userId;
+    }
+
+    /**
+     * Returns the notOverriden.
+     * 
+     * @return
+     *     notOverriden
+     */
+    @NotNull
+    public String getNotOverriden() {
+        return notOverriden;
+    }
+
+    /**
+     * Returns the firstName.
+     * 
+     * @return
+     *     firstName
+     */
+    @NotNull
+    @Pattern(regexp = "^[a-zA-Z]+$")
+    @Size(min = 3)
+    public String getFirstName() {
+        if (firstName == null) {
+            return "Alex";
+        }
+        return firstName;
+    }
+
+    /**
+     * Returns the userId.
+     * 
+     * @return
+     *     userId
+     */
+    @NotNull
+    public Long getUserId() {
+        return userId;
+    }
+
+    /**
+     * Set the userId.
+     * 
+     * @param userId
+     *     the new userId
+     */
+    public void setUserId(Long userId) {
+        this.userId = userId;
+    }
+
+    public int hashCode() {
+        return new HashCodeBuilder().appendSuper(super.hashCode()).append(userId).toHashCode();
+    }
+
+    public boolean equals(Object other) {
+        if (other == null) {
+            return false;
+        }
+        if (other == this) {
+            return true;
+        }
+        if (this.getClass()!= other.getClass()) {
+            return false;
+        }
+        User otherObject = ((User) other);
+        return new EqualsBuilder().appendSuper(super.equals(otherObject)).append(userId, otherObject.userId).isEquals();
+    }
+
+    public String toString() {
+        return new ToStringBuilder(this).appendSuper(super.toString()).append("userId", userId).toString();
+    }
+
+}
+-----------------------------------com.gen.test.UserController.java-----------------------------------
+
+package com.gen.test;
+
+import com.gen.test.model.User;
+import org.springframework.http.ResponseEntity;
+
+
+/**
+ * No description
+ * (Generated with springmvc-raml-parser v.@project.version@)
+ * 
+ */
+public interface UserController {
+
+
+    /**
+     * No description
+     * 
+     */
+    public ResponseEntity<User> getUser();
+
+}
+-----------------------------------com.gen.test.UserControllerDecorator.java-----------------------------------
+
+package com.gen.test;
+
+import com.gen.test.model.User;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RestController;
+
+
+/**
+ * No description
+ * (Generated with springmvc-raml-parser v.@project.version@)
+ * 
+ */
+@RestController
+@RequestMapping("/api/users")
+@Validated
+public class UserControllerDecorator
+    implements UserController
+{
+
+    @Autowired
+    private UserController userControllerDelegate;
+
+    /**
+     * No description
+     * 
+     */
+    @RequestMapping(value = "", method = RequestMethod.GET)
+    public ResponseEntity<User> getUser() {
+        return this.userControllerDelegate.getUser();
+    }
+
+}

@@ -1,0 +1,83 @@
+-----------------------------------com.gen.test.TopLevel1Controller.java-----------------------------------
+
+package com.gen.test;
+
+import javax.validation.Valid;
+import org.springframework.http.ResponseEntity;
+
+
+/**
+ * No description
+ * (Generated with springmvc-raml-parser v.@project.version@)
+ * 
+ */
+public interface TopLevel1Controller {
+
+
+    /**
+     * No description
+     * 
+     */
+    public ResponseEntity<?> getObject();
+
+    /**
+     * No description
+     * 
+     */
+    public ResponseEntity<?> updateString(
+        @Valid
+        String string);
+
+}
+-----------------------------------com.gen.test.TopLevel1ControllerDecorator.java-----------------------------------
+
+package com.gen.test;
+
+import javax.validation.Valid;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RestController;
+
+
+/**
+ * No description
+ * (Generated with springmvc-raml-parser v.@project.version@)
+ * 
+ */
+@RestController
+@RequestMapping("/api/topLevel1")
+@Validated
+public class TopLevel1ControllerDecorator
+    implements TopLevel1Controller
+{
+
+    @Autowired
+    private TopLevel1Controller topLevel1ControllerDelegate;
+
+    /**
+     * No description
+     * 
+     */
+    @RequestMapping(value = "", method = RequestMethod.GET)
+    public ResponseEntity<?> getObject() {
+        return this.topLevel1ControllerDelegate.getObject();
+    }
+
+    /**
+     * No description
+     * 
+     */
+    @RequestMapping(value = "/level2", method = RequestMethod.PUT)
+    public ResponseEntity<?> updateString(
+        @Valid
+        @RequestBody
+        String string) {
+        return this.topLevel1ControllerDelegate.updateString(string);
+    }
+
+}
+

@@ -1,0 +1,40 @@
+#%RAML 1.0
+title: Booking API
+
+annotationTypes: 
+  skipThis:
+    type: boolean
+    allowedTargets: [Resource, Method]
+
+/topLevel1:
+  get:
+    responses: 
+      200:
+        body: 
+          application/json:
+  post:
+    (skipThis):  true
+    responses: 
+      200:
+        body: 
+          application/json:
+  /level2:
+    put:
+      body: 
+        application/json:
+          type: string
+    /level3:
+      (skipThis):  true
+      get:
+        responses: 
+          200:
+            body: 
+              application/json:
+                type: integer
+      /level4:
+        get:
+          responses: 
+            200:
+              body: 
+                application/json:
+                  type: number

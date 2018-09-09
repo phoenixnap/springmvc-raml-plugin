@@ -5,6 +5,8 @@ import java.util.Set;
 import org.junit.Test;
 
 import com.phoenixnap.oss.ramlplugin.raml2code.data.ApiResourceMetadata;
+import com.phoenixnap.oss.ramlplugin.raml2code.plugin.SpringMvcEndpointGeneratorMojo.OverrideNamingLogicWith;
+import com.phoenixnap.oss.ramlplugin.raml2code.plugin.TestConfig;
 import com.phoenixnap.oss.ramlplugin.raml2code.rules.GitHubAbstractRuleTestBase;
 import com.phoenixnap.oss.ramlplugin.raml2code.rules.Spring4ControllerStubRule;
 
@@ -15,13 +17,26 @@ import com.phoenixnap.oss.ramlplugin.raml2code.rules.Spring4ControllerStubRule;
 public class Issue177RulesTest extends GitHubAbstractRuleTestBase {
 
 	@Test
-	public void applySpring4ControllerStubRule_shouldCreate_validCode() throws Exception {
+	public void displayName_not_used_for_naming_logic() throws Exception {
 		loadRaml("issue-177.raml");
 		rule = new Spring4ControllerStubRule();
 		Set<ApiResourceMetadata> allControllersMetadata = getAllControllersMetadata();
 		for (ApiResourceMetadata apiResourceMetadata : allControllersMetadata) {
 			rule.apply(apiResourceMetadata, jCodeModel);
 		}
-		verifyGeneratedCode("Issue177Spring4ControllerStub", serializeModel());
+		verifyGeneratedCode("Issue177-1Spring4ControllerStub", serializeModel());
+	}
+
+	@Test
+	public void displayName_used_for_naming_logic() throws Exception {
+		TestConfig.setOverrideNamingLogicWith(OverrideNamingLogicWith.DISPLAY_NAME);
+		loadRaml("issue-177.raml");
+		rule = new Spring4ControllerStubRule();
+		Set<ApiResourceMetadata> allControllersMetadata = getAllControllersMetadata();
+		for (ApiResourceMetadata apiResourceMetadata : allControllersMetadata) {
+			rule.apply(apiResourceMetadata, jCodeModel);
+		}
+		verifyGeneratedCode("Issue177-2Spring4ControllerStub", serializeModel());
+		TestConfig.setOverrideNamingLogicWith(null);
 	}
 }

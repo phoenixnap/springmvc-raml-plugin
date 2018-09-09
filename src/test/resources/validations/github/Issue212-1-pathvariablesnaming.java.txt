@@ -1,8 +1,10 @@
+
 -----------------------------------com.gen.test.model.Booking.java-----------------------------------
 
 package com.gen.test.model;
 
 import java.io.Serializable;
+import javax.validation.constraints.NotNull;
 import org.apache.commons.lang.builder.EqualsBuilder;
 import org.apache.commons.lang.builder.HashCodeBuilder;
 import org.apache.commons.lang.builder.ToStringBuilder;
@@ -10,8 +12,8 @@ import org.apache.commons.lang.builder.ToStringBuilder;
 public class Booking implements Serializable
 {
 
-    private String firstName;
-    private String lastName;
+    protected String firstName;
+    protected String lastName;
 
     /**
      * Creates a new Booking.
@@ -37,6 +39,7 @@ public class Booking implements Serializable
      * @return
      *     firstName
      */
+    @NotNull
     public String getFirstName() {
         return firstName;
     }
@@ -57,6 +60,7 @@ public class Booking implements Serializable
      * @return
      *     lastName
      */
+    @NotNull
     public String getLastName() {
         return lastName;
     }
@@ -134,7 +138,7 @@ public interface BookingController {
      *
      */
     @RequestMapping(value = "/{bookingRef}", method = RequestMethod.GET)
-    public ResponseEntity<Booking> getBookingBy(
+    public ResponseEntity<Booking> getBooking(
         @PathVariable
         BigDecimal bookingRef,
         @PathVariable

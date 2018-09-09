@@ -5,6 +5,7 @@ package com.gen.test.model;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
+import javax.validation.constraints.NotNull;
 import org.apache.commons.lang.builder.EqualsBuilder;
 import org.apache.commons.lang.builder.HashCodeBuilder;
 import org.apache.commons.lang.builder.ToStringBuilder;
@@ -12,8 +13,8 @@ import org.apache.commons.lang.builder.ToStringBuilder;
 public class User implements Serializable
 {
 
-    private List<String> nickNames = new ArrayList<String>();
-    private List<Double> orderNumbers = new ArrayList<Double>();
+    protected List<String> nickNames = new ArrayList<String>();
+    protected List<Double> orderNumbers = new ArrayList<Double>();
 
     /**
      * Creates a new User.
@@ -39,6 +40,7 @@ public class User implements Serializable
      * @return
      *     nickNames
      */
+    @NotNull
     public List<String> getNickNames() {
         return nickNames;
     }
@@ -59,6 +61,7 @@ public class User implements Serializable
      * @return
      *     orderNumbers
      */
+    @NotNull
     public List<Double> getOrderNumbers() {
         return orderNumbers;
     }

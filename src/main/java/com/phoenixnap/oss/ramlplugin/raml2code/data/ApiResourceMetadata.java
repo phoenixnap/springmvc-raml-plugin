@@ -62,8 +62,7 @@ public class ApiResourceMetadata {
 	public String getName() {
 		if (Config.getResourceDepthInClassNames() != 1 || Config.getResourceTopLevelInClassNames() != 0
 				|| Config.isReverseOrderInClassNames()) {
-			return NamingHelper.getAllResourcesNames(controllerUrl, singularizeName, Config.getResourceDepthInClassNames(),
-					Config.getResourceTopLevelInClassNames(), Config.isReverseOrderInClassNames());
+			return NamingHelper.getAllResourcesNames(controllerUrl, singularizeName);
 		} else {
 			return NamingHelper.getResourceName(resource, singularizeName);
 		}

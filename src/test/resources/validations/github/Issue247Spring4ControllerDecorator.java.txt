@@ -1,0 +1,171 @@
+-----------------------------------com.gen.test.model.User.java-----------------------------------
+
+package com.gen.test.model;
+
+import java.io.Serializable;
+import javax.validation.constraints.NotNull;
+import org.apache.commons.lang.builder.EqualsBuilder;
+import org.apache.commons.lang.builder.HashCodeBuilder;
+import org.apache.commons.lang.builder.ToStringBuilder;
+
+public class User implements Serializable
+{
+
+    protected Long userId;
+    protected Long salary;
+
+    /**
+     * Creates a new User.
+     * 
+     */
+    public User() {
+        super();
+    }
+
+    /**
+     * Creates a new User.
+     * 
+     */
+    public User(Long userId, Long salary) {
+        super();
+        this.userId = userId;
+        this.salary = salary;
+    }
+
+    /**
+     * Returns the userId.
+     * 
+     * @return
+     *     userId
+     */
+    @NotNull
+    public Long getUserId() {
+        return userId;
+    }
+
+    /**
+     * Set the userId.
+     * 
+     * @param userId
+     *     the new userId
+     */
+    public void setUserId(Long userId) {
+        this.userId = userId;
+    }
+
+    /**
+     * Returns the salary.
+     * 
+     * @return
+     *     salary
+     */
+    @NotNull
+    public Long getSalary() {
+        return salary;
+    }
+
+    /**
+     * Set the salary.
+     * 
+     * @param salary
+     *     the new salary
+     */
+    public void setSalary(Long salary) {
+        this.salary = salary;
+    }
+
+    public int hashCode() {
+        return new HashCodeBuilder().append(userId).append(salary).toHashCode();
+    }
+
+    public boolean equals(Object other) {
+        if (other == null) {
+            return false;
+        }
+        if (other == this) {
+            return true;
+        }
+        if (this.getClass()!= other.getClass()) {
+            return false;
+        }
+        User otherObject = ((User) other);
+        return new EqualsBuilder().append(userId, otherObject.userId).append(salary, otherObject.salary).isEquals();
+    }
+
+    public String toString() {
+        return new ToStringBuilder(this).append("userId", userId).toString();
+    }
+
+}
+-----------------------------------com.gen.test.UserController.java-----------------------------------
+
+package com.gen.test;
+
+import javax.validation.Valid;
+import com.gen.test.model.User;
+import org.springframework.http.ResponseEntity;
+
+
+/**
+ * No description
+ * (Generated with springmvc-raml-parser v.@project.version@)
+ * 
+ */
+public interface UserController {
+
+
+    /**
+     * No description
+     * 
+     */
+    public ResponseEntity<User> updateUser(Long userId,
+        @Valid
+        User user);
+
+}
+-----------------------------------com.gen.test.UserControllerDecorator.java-----------------------------------
+
+package com.gen.test;
+
+import javax.validation.Valid;
+import com.gen.test.model.User;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RestController;
+
+
+/**
+ * No description
+ * (Generated with springmvc-raml-parser v.@project.version@)
+ * 
+ */
+@RestController
+@RequestMapping("/api/users")
+@Validated
+public class UserControllerDecorator
+    implements UserController
+{
+
+    @Autowired
+    private UserController userControllerDelegate;
+
+    /**
+     * No description
+     * 
+     */
+    @RequestMapping(value = "/{userId}", method = RequestMethod.PUT)
+    public ResponseEntity<User> updateUser(
+        @PathVariable
+        Long userId,
+        @Valid
+        @RequestBody
+        User user) {
+        return this.userControllerDelegate.updateUser(userId, user);
+    }
+
+}

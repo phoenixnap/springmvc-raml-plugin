@@ -3,6 +3,8 @@
 package com.gen.test.model;
 
 import java.io.Serializable;
+import javax.validation.constraints.NotNull;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import org.apache.commons.lang.builder.EqualsBuilder;
 import org.apache.commons.lang.builder.HashCodeBuilder;
 import org.apache.commons.lang.builder.ToStringBuilder;
@@ -14,7 +16,8 @@ public class SampleUnit implements Serializable
      * The type string.
      * 
      */
-    private String tString;
+    @JsonProperty("t_String")
+    protected String tString;
 
     /**
      * Creates a new SampleUnit.
@@ -34,17 +37,18 @@ public class SampleUnit implements Serializable
     }
 
     /**
-     * Returns the t_string.
+     * Returns the tString.
      * 
      * @return
      *     tString
      */
+    @NotNull
     public String getTString() {
         return tString;
     }
 
     /**
-     * Set the t_string.
+     * Set the tString.
      * 
      * @param tString
      *     the new tString

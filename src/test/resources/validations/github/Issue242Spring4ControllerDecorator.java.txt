@@ -3,6 +3,7 @@
 package com.gen.test.model;
 
 import java.io.Serializable;
+import javax.validation.constraints.NotNull;
 import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import org.apache.commons.lang.builder.EqualsBuilder;
@@ -17,8 +18,8 @@ import org.apache.commons.lang.builder.ToStringBuilder;
 public class Person implements Serializable
 {
 
-    private String kind;
-    private String name;
+    protected String kind;
+    protected String name;
 
     /**
      * Creates a new Person.
@@ -44,6 +45,7 @@ public class Person implements Serializable
      * @return
      *     kind
      */
+    @NotNull
     public String getKind() {
         return kind;
     }
@@ -64,6 +66,7 @@ public class Person implements Serializable
      * @return
      *     name
      */
+    @NotNull
     public String getName() {
         return name;
     }

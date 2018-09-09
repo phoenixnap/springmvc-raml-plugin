@@ -1,0 +1,241 @@
+-----------------------------------com.gen.test.model.Booking.java-----------------------------------
+
+package com.gen.test.model;
+
+import java.io.Serializable;
+import javax.validation.constraints.NotNull;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import org.apache.commons.lang.builder.EqualsBuilder;
+import org.apache.commons.lang.builder.HashCodeBuilder;
+import org.apache.commons.lang.builder.ToStringBuilder;
+
+public class Booking implements Serializable
+{
+
+    @JsonProperty("payment.method")
+    protected String paymentMethod;
+    @JsonProperty("payment.id")
+    protected String paymentId;
+
+    /**
+     * Creates a new Booking.
+     *
+     */
+    public Booking() {
+        super();
+    }
+
+    /**
+     * Creates a new Booking.
+     *
+     */
+    public Booking(String paymentMethod, String paymentId) {
+        super();
+        this.paymentMethod = paymentMethod;
+        this.paymentId = paymentId;
+    }
+
+    /**
+     * Returns the paymentMethod.
+     *
+     * @return
+     *     paymentMethod
+     */
+    @NotNull
+    public String getPaymentMethod() {
+        return paymentMethod;
+    }
+
+    /**
+     * Set the paymentMethod.
+     *
+     * @param paymentMethod
+     *     the new paymentMethod
+     */
+    public void setPaymentMethod(String paymentMethod) {
+        this.paymentMethod = paymentMethod;
+    }
+
+    /**
+     * Returns the paymentId.
+     *
+     * @return
+     *     paymentId
+     */
+    @NotNull
+    public String getPaymentId() {
+        return paymentId;
+    }
+
+    /**
+     * Set the paymentId.
+     *
+     * @param paymentId
+     *     the new paymentId
+     */
+    public void setPaymentId(String paymentId) {
+        this.paymentId = paymentId;
+    }
+
+    public int hashCode() {
+        return new HashCodeBuilder().append(paymentMethod).append(paymentId).toHashCode();
+    }
+
+    public boolean equals(Object other) {
+        if (other == null) {
+            return false;
+        }
+        if (other == this) {
+            return true;
+        }
+        if (this.getClass()!= other.getClass()) {
+            return false;
+        }
+        Booking otherObject = ((Booking) other);
+        return new EqualsBuilder().append(paymentMethod, otherObject.paymentMethod).append(paymentId, otherObject.paymentId).isEquals();
+    }
+
+    public String toString() {
+        return new ToStringBuilder(this).append("paymentMethod", paymentMethod).append("paymentId", paymentId).toString();
+    }
+
+}
+-----------------------------------com.gen.test.model.BookingQuery.java-----------------------------------
+
+package com.gen.test.model;
+
+import java.io.Serializable;
+import javax.validation.constraints.NotNull;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import org.apache.commons.lang.builder.EqualsBuilder;
+import org.apache.commons.lang.builder.HashCodeBuilder;
+import org.apache.commons.lang.builder.ToStringBuilder;
+
+public class BookingQuery implements Serializable
+{
+
+    @JsonProperty("payment.method")
+    protected String paymentMethod;
+    @JsonProperty("payment.id")
+    protected String paymentId;
+
+    /**
+     * Creates a new BookingQuery.
+     *
+     */
+    public BookingQuery() {
+        super();
+    }
+
+    /**
+     * Creates a new BookingQuery.
+     *
+     */
+    public BookingQuery(String paymentMethod, String paymentId) {
+        super();
+        this.paymentMethod = paymentMethod;
+        this.paymentId = paymentId;
+    }
+
+    /**
+     * Returns the paymentMethod.
+     *
+     * @return
+     *     paymentMethod
+     */
+    @NotNull
+    public String getPaymentMethod() {
+        return paymentMethod;
+    }
+
+    /**
+     * Set the paymentMethod.
+     *
+     * @param paymentMethod
+     *     the new paymentMethod
+     */
+    public void setPaymentMethod(String paymentMethod) {
+        this.paymentMethod = paymentMethod;
+    }
+
+    /**
+     * Returns the paymentId.
+     *
+     * @return
+     *     paymentId
+     */
+    @NotNull
+    public String getPaymentId() {
+        return paymentId;
+    }
+
+    /**
+     * Set the paymentId.
+     *
+     * @param paymentId
+     *     the new paymentId
+     */
+    public void setPaymentId(String paymentId) {
+        this.paymentId = paymentId;
+    }
+
+    public int hashCode() {
+        return new HashCodeBuilder().append(paymentMethod).append(paymentId).toHashCode();
+    }
+
+    public boolean equals(Object other) {
+        if (other == null) {
+            return false;
+        }
+        if (other == this) {
+            return true;
+        }
+        if (this.getClass()!= other.getClass()) {
+            return false;
+        }
+        BookingQuery otherObject = ((BookingQuery) other);
+        return new EqualsBuilder().append(paymentMethod, otherObject.paymentMethod).append(paymentId, otherObject.paymentId).isEquals();
+    }
+
+    public String toString() {
+        return new ToStringBuilder(this).append("paymentMethod", paymentMethod).append("paymentId", paymentId).toString();
+    }
+
+}
+-----------------------------------com.gen.test.BookingController.java-----------------------------------
+
+package com.gen.test;
+
+import javax.validation.Valid;
+import com.gen.test.model.Booking;
+import com.gen.test.model.BookingQuery;
+import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
+
+
+/**
+ * No description
+ * (Generated with springmvc-raml-parser v.@project.version@)
+ *
+ */
+@RestController
+@Validated
+@RequestMapping("/api/bookings")
+public interface BookingController {
+
+
+    /**
+     * No description
+     *
+     */
+    @RequestMapping(value = "", method = RequestMethod.GET)
+    public ResponseEntity<Booking> getBookingByBookingQuery(
+        @RequestParam
+        @Valid
+        BookingQuery bookingQuery);
+
+}

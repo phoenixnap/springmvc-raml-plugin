@@ -1,0 +1,64 @@
+#%RAML 1.0
+title: java-time
+
+types: 
+  Car:
+    type: object
+    properties: 
+      dateOnly:
+        type: date-only
+        example: "2015-05-23"
+      timeOnly:
+        type: time-only
+        example: "12:30:00"
+      dateTimeOnly:
+        type: datetime-only
+        example: "2015-07-04T21:00:00"
+      dateTimeRFC3339: 
+        type: datetime
+        format: rfc3339 # the default, so no need to specify
+        example: "2016-02-28T16:41:41.090Z"
+      dateTimeRFC2616: 
+        type: datetime
+        format: rfc2616
+        example: "Sun, 28 Feb 2016 16:41:41 GMT"
+  
+/test:
+  post:
+    queryParameters: 
+      qDteOnly:
+        type: date-only
+        example: "2015-05-23"
+      qTimeOnly:
+        type: time-only
+        example: "12:30:00"
+      qDateTimeOnly:
+        type: datetime-only
+        example: "2015-07-04T21:00:00"
+      qDateTimeRFC3339: 
+        type: datetime
+        format: rfc3339 # the default, so no need to specify
+        example: "2016-02-28T16:41:41.090Z"
+      qDateTimeRFC2616: 
+        type: datetime
+        format: rfc2616
+        example: "Sun, 28 Feb 2016 16:41:41 GMT"
+    body: 
+      application/json:
+        type: Car
+  /{uDateTimeOnly}:
+    uriParameters: 
+      uDateTimeOnly: 
+        type: datetime-only
+        example: "2015-07-04T21:00:00"
+    get:
+      headers: 
+        hDateTimeOnly:
+          type: datetime-only
+          example: "2015-07-04T21:00:00"
+      responses: 
+        200:
+          body: 
+            application/json:
+              type: Car
+        

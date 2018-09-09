@@ -3,6 +3,8 @@
 package com.gen.test.model;
 
 import java.io.Serializable;
+import javax.validation.Valid;
+import javax.validation.constraints.NotNull;
 import org.apache.commons.lang.builder.EqualsBuilder;
 import org.apache.commons.lang.builder.HashCodeBuilder;
 import org.apache.commons.lang.builder.ToStringBuilder;
@@ -14,12 +16,12 @@ public class EventCreate implements Serializable
      * The Name of the event
      * 
      */
-    private String eventName;
+    protected String eventName;
     /**
      * The event payload
      * 
      */
-    private EventPayload eventPayload;
+    protected EventPayload eventPayload;
 
     /**
      * Creates a new EventCreate.
@@ -45,6 +47,7 @@ public class EventCreate implements Serializable
      * @return
      *     eventName
      */
+    @NotNull
     public String getEventName() {
         return eventName;
     }
@@ -65,6 +68,8 @@ public class EventCreate implements Serializable
      * @return
      *     eventPayload
      */
+    @NotNull
+    @Valid
     public EventPayload getEventPayload() {
         return eventPayload;
     }

@@ -3,6 +3,7 @@
 package com.gen.test.model;
 
 import java.io.Serializable;
+import javax.validation.constraints.NotNull;
 import org.apache.commons.lang.builder.EqualsBuilder;
 import org.apache.commons.lang.builder.HashCodeBuilder;
 import org.apache.commons.lang.builder.ToStringBuilder;
@@ -10,8 +11,8 @@ import org.apache.commons.lang.builder.ToStringBuilder;
 public class Object implements Serializable
 {
 
-    private Long stuffId;
-    private Long coolerId;
+    protected Long stuffId;
+    protected Long coolerId;
 
     /**
      * Creates a new Object.
@@ -37,6 +38,7 @@ public class Object implements Serializable
      * @return
      *     stuffId
      */
+    @NotNull
     public Long getStuffId() {
         return stuffId;
     }
@@ -57,6 +59,7 @@ public class Object implements Serializable
      * @return
      *     coolerId
      */
+    @NotNull
     public Long getCoolerId() {
         return coolerId;
     }

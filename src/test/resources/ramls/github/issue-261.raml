@@ -1,0 +1,30 @@
+#%RAML 1.0
+title: Method names for DELETE are not self-explanatory
+
+/deleting:
+  /test-object/{testId}:
+    uriParameters:
+        testId: integer
+    delete:
+    /subresource:
+      delete:
+        queryParameters: 
+          name: string
+    
+  /some-other-object/:
+    delete:
+      queryParameters: 
+        id: integer
+        number: integer
+      
+  /anotherobject:
+    /{objectId}:
+      uriParameters: 
+        objectId: integer
+      delete:
+        headers: 
+          headerParam: string
+          
+  /singleobject:
+    delete:
+    

@@ -3,6 +3,7 @@
 package com.gen.test.model;
 
 import java.io.Serializable;
+import javax.validation.constraints.NotNull;
 import org.apache.commons.lang.builder.EqualsBuilder;
 import org.apache.commons.lang.builder.HashCodeBuilder;
 import org.apache.commons.lang.builder.ToStringBuilder;
@@ -10,9 +11,9 @@ import org.apache.commons.lang.builder.ToStringBuilder;
 public class Song implements Serializable
 {
 
-    private String songId;
-    private String songTitle;
-    private String artist;
+    protected String songId;
+    protected String songTitle;
+    protected String artist;
 
     /**
      * Creates a new Song.
@@ -39,6 +40,7 @@ public class Song implements Serializable
      * @return
      *     songId
      */
+    @NotNull
     public String getSongId() {
         return songId;
     }
@@ -59,6 +61,7 @@ public class Song implements Serializable
      * @return
      *     songTitle
      */
+    @NotNull
     public String getSongTitle() {
         return songTitle;
     }
@@ -79,6 +82,7 @@ public class Song implements Serializable
      * @return
      *     artist
      */
+    @NotNull
     public String getArtist() {
         return artist;
     }
@@ -183,7 +187,7 @@ public interface SongClient {
      * 
      */
     @RequestMapping(value = "/{songId}", method = RequestMethod.DELETE)
-    public ResponseEntity deleteBySongId(
+    public ResponseEntity deleteSongBySongId(
         @PathVariable
         String songId);
 

@@ -1,0 +1,23 @@
+#%RAML 1.0
+
+title: Validation Bug Test
+
+types: 
+  Address: 
+    type: object
+    properties: 
+      city: string
+      street: string
+      houseNo: string
+  Parent: 
+    type: object
+    properties: 
+      address: Address
+  Child: 
+    type: Parent
+      
+/parent:
+  post:
+    body: 
+      application/json:
+        type: Child

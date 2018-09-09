@@ -13,10 +13,12 @@
 package com.phoenixnap.oss.ramlplugin.raml2code.raml.raml10;
 
 import java.math.BigDecimal;
+import java.util.List;
 
 import org.raml.v2.api.model.v10.datamodel.NumberTypeDeclaration;
 import org.raml.v2.api.model.v10.datamodel.StringTypeDeclaration;
 import org.raml.v2.api.model.v10.datamodel.TypeDeclaration;
+import org.raml.v2.api.model.v10.declarations.AnnotationRef;
 
 import com.phoenixnap.oss.ramlplugin.raml2code.helpers.RamlTypeHelper;
 import com.phoenixnap.oss.ramlplugin.raml2code.raml.RamlHeader;
@@ -122,5 +124,15 @@ public class RJP10V2RamlHeader extends RamlHeader {
 	@Override
 	public String getName() {
 		return this.header.name();
+	}
+
+	@Override
+	public List<AnnotationRef> getAnnotations() {
+		return this.header.annotations();
+	}
+
+	@Override
+	public String getRawType() {
+		return this.header.type();
 	}
 }

@@ -1,0 +1,284 @@
+-----------------------------------com.gen.test.model.Car.java-----------------------------------
+
+package com.gen.test.model;
+
+import java.io.Serializable;
+import java.time.LocalDate;
+import java.time.LocalTime;
+import java.time.ZonedDateTime;
+import javax.validation.constraints.NotNull;
+import org.apache.commons.lang.builder.EqualsBuilder;
+import org.apache.commons.lang.builder.HashCodeBuilder;
+import org.apache.commons.lang.builder.ToStringBuilder;
+
+public class Car implements Serializable
+{
+
+    protected LocalDate dateOnly;
+    protected LocalTime timeOnly;
+    protected ZonedDateTime dateTimeOnly;
+    protected ZonedDateTime dateTimeRFC3339;
+    protected ZonedDateTime dateTimeRFC2616;
+
+    /**
+     * Creates a new Car.
+     * 
+     */
+    public Car() {
+        super();
+    }
+
+    /**
+     * Creates a new Car.
+     * 
+     */
+    public Car(LocalDate dateOnly, LocalTime timeOnly, ZonedDateTime dateTimeOnly, ZonedDateTime dateTimeRFC3339, ZonedDateTime dateTimeRFC2616) {
+        super();
+        this.dateOnly = dateOnly;
+        this.timeOnly = timeOnly;
+        this.dateTimeOnly = dateTimeOnly;
+        this.dateTimeRFC3339 = dateTimeRFC3339;
+        this.dateTimeRFC2616 = dateTimeRFC2616;
+    }
+
+    /**
+     * Returns the dateOnly.
+     * 
+     * @return
+     *     dateOnly
+     */
+    @NotNull
+    public LocalDate getDateOnly() {
+        return dateOnly;
+    }
+
+    /**
+     * Set the dateOnly.
+     * 
+     * @param dateOnly
+     *     the new dateOnly
+     */
+    public void setDateOnly(LocalDate dateOnly) {
+        this.dateOnly = dateOnly;
+    }
+
+    /**
+     * Returns the timeOnly.
+     * 
+     * @return
+     *     timeOnly
+     */
+    @NotNull
+    public LocalTime getTimeOnly() {
+        return timeOnly;
+    }
+
+    /**
+     * Set the timeOnly.
+     * 
+     * @param timeOnly
+     *     the new timeOnly
+     */
+    public void setTimeOnly(LocalTime timeOnly) {
+        this.timeOnly = timeOnly;
+    }
+
+    /**
+     * Returns the dateTimeOnly.
+     * 
+     * @return
+     *     dateTimeOnly
+     */
+    @NotNull
+    public ZonedDateTime getDateTimeOnly() {
+        return dateTimeOnly;
+    }
+
+    /**
+     * Set the dateTimeOnly.
+     * 
+     * @param dateTimeOnly
+     *     the new dateTimeOnly
+     */
+    public void setDateTimeOnly(ZonedDateTime dateTimeOnly) {
+        this.dateTimeOnly = dateTimeOnly;
+    }
+
+    /**
+     * Returns the dateTimeRFC3339.
+     * 
+     * @return
+     *     dateTimeRFC3339
+     */
+    @NotNull
+    public ZonedDateTime getDateTimeRFC3339() {
+        return dateTimeRFC3339;
+    }
+
+    /**
+     * Set the dateTimeRFC3339.
+     * 
+     * @param dateTimeRFC3339
+     *     the new dateTimeRFC3339
+     */
+    public void setDateTimeRFC3339(ZonedDateTime dateTimeRFC3339) {
+        this.dateTimeRFC3339 = dateTimeRFC3339;
+    }
+
+    /**
+     * Returns the dateTimeRFC2616.
+     * 
+     * @return
+     *     dateTimeRFC2616
+     */
+    @NotNull
+    public ZonedDateTime getDateTimeRFC2616() {
+        return dateTimeRFC2616;
+    }
+
+    /**
+     * Set the dateTimeRFC2616.
+     * 
+     * @param dateTimeRFC2616
+     *     the new dateTimeRFC2616
+     */
+    public void setDateTimeRFC2616(ZonedDateTime dateTimeRFC2616) {
+        this.dateTimeRFC2616 = dateTimeRFC2616;
+    }
+
+    public int hashCode() {
+        return new HashCodeBuilder().append(dateOnly).append(timeOnly).append(dateTimeOnly).append(dateTimeRFC3339).append(dateTimeRFC2616).toHashCode();
+    }
+
+    public boolean equals(Object other) {
+        if (other == null) {
+            return false;
+        }
+        if (other == this) {
+            return true;
+        }
+        if (this.getClass()!= other.getClass()) {
+            return false;
+        }
+        Car otherObject = ((Car) other);
+        return new EqualsBuilder().append(dateOnly, otherObject.dateOnly).append(timeOnly, otherObject.timeOnly).append(dateTimeOnly, otherObject.dateTimeOnly).append(dateTimeRFC3339, otherObject.dateTimeRFC3339).append(dateTimeRFC2616, otherObject.dateTimeRFC2616).isEquals();
+    }
+
+    public String toString() {
+        return new ToStringBuilder(this).append("dateOnly", dateOnly).append("timeOnly", timeOnly).append("dateTimeOnly", dateTimeOnly).append("dateTimeRFC3339", dateTimeRFC3339).append("dateTimeRFC2616", dateTimeRFC2616).toString();
+    }
+
+}
+-----------------------------------com.gen.test.TestController.java-----------------------------------
+
+package com.gen.test;
+
+import java.time.LocalDate;
+import java.time.LocalTime;
+import java.time.ZonedDateTime;
+import javax.validation.Valid;
+import com.gen.test.model.Car;
+import org.springframework.http.ResponseEntity;
+
+
+/**
+ * No description
+ * (Generated with springmvc-raml-parser v.@project.version@)
+ * 
+ */
+public interface TestController {
+
+
+    /**
+     * No description
+     * 
+     */
+    public ResponseEntity<?> createCar(LocalDate qDteOnly, LocalTime qTimeOnly, ZonedDateTime qDateTimeOnly, ZonedDateTime qDateTimeRFC3339, ZonedDateTime qDateTimeRFC2616,
+        @Valid
+        Car car);
+
+    /**
+     * No description
+     * 
+     */
+    public ResponseEntity<Car> getCar(ZonedDateTime uDateTimeOnly, ZonedDateTime hDateTimeOnly);
+
+}
+-----------------------------------com.gen.test.TestControllerDecorator.java-----------------------------------
+
+package com.gen.test;
+
+import java.time.LocalDate;
+import java.time.LocalTime;
+import java.time.ZonedDateTime;
+import javax.validation.Valid;
+import com.gen.test.model.Car;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.format.annotation.DateTimeFormat;
+import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestHeader;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
+
+
+/**
+ * No description
+ * (Generated with springmvc-raml-parser v.@project.version@)
+ * 
+ */
+@RestController
+@RequestMapping("/api/test")
+@Validated
+public class TestControllerDecorator
+    implements TestController
+{
+
+    @Autowired
+    private TestController testControllerDelegate;
+
+    /**
+     * No description
+     * 
+     */
+    @RequestMapping(value = "", method = RequestMethod.POST)
+    public ResponseEntity<?> createCar(
+        @RequestParam
+        @DateTimeFormat(pattern = "yyyy-MM-dd")
+        LocalDate qDteOnly,
+        @RequestParam
+        @DateTimeFormat(pattern = "HH:mm:ss")
+        LocalTime qTimeOnly,
+        @RequestParam
+        @DateTimeFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss")
+        ZonedDateTime qDateTimeOnly,
+        @RequestParam
+        @DateTimeFormat(pattern = "yyyy-MM-dd'T'HH:mm:ssXXX")
+        ZonedDateTime qDateTimeRFC3339,
+        @RequestParam
+        @DateTimeFormat(pattern = "EEE, dd MMM yyyy HH:mm:ss z")
+        ZonedDateTime qDateTimeRFC2616,
+        @Valid
+        @RequestBody
+        Car car) {
+        return this.testControllerDelegate.createCar(qDteOnly, qTimeOnly, qDateTimeOnly, qDateTimeRFC3339, qDateTimeRFC2616, car);
+    }
+
+    /**
+     * No description
+     * 
+     */
+    @RequestMapping(value = "/{uDateTimeOnly}", method = RequestMethod.GET)
+    public ResponseEntity<Car> getCar(
+        @PathVariable
+        ZonedDateTime uDateTimeOnly,
+        @RequestHeader
+        ZonedDateTime hDateTimeOnly) {
+        return this.testControllerDelegate.getCar(uDateTimeOnly, hDateTimeOnly);
+    }
+
+}

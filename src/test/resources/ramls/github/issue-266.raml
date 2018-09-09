@@ -1,0 +1,26 @@
+#%RAML 1.0
+title: Collections are always initialized #266
+version: 1.0
+
+types:
+  Address:
+    type: object
+    properties: 
+      city: string
+      street: string
+      houseNumber: string
+  Student: 
+    type: object
+    properties: 
+      firstName: string
+      lastName: string
+      addresses: Address[]
+
+/students:
+  get:
+    description: Get all
+    responses: 
+      200:
+        body: 
+          application/json:
+            type: Student[]

@@ -3,6 +3,7 @@
 package com.gen.test.model;
 
 import java.io.Serializable;
+import javax.validation.constraints.NotNull;
 import org.apache.commons.lang.builder.EqualsBuilder;
 import org.apache.commons.lang.builder.HashCodeBuilder;
 import org.apache.commons.lang.builder.ToStringBuilder;
@@ -10,9 +11,9 @@ import org.apache.commons.lang.builder.ToStringBuilder;
 public class Manager implements Serializable
 {
 
-    private String firstName;
-    private String lastName;
-    private String departman;
+    protected String firstName;
+    protected String lastName;
+    protected String departman;
 
     /**
      * Creates a new Manager.
@@ -39,6 +40,7 @@ public class Manager implements Serializable
      * @return
      *     firstName
      */
+    @NotNull
     public String getFirstName() {
         return firstName;
     }
@@ -59,6 +61,7 @@ public class Manager implements Serializable
      * @return
      *     lastName
      */
+    @NotNull
     public String getLastName() {
         return lastName;
     }
@@ -79,6 +82,7 @@ public class Manager implements Serializable
      * @return
      *     departman
      */
+    @NotNull
     public String getDepartman() {
         return departman;
     }
@@ -190,7 +194,7 @@ public interface PersonManagerController {
      *
      */
     @DeleteMapping("/{id}")
-    public ResponseEntity<?> deleteById(
+    public ResponseEntity<?> deleteManagerById(
         @PathVariable
         String id);
 

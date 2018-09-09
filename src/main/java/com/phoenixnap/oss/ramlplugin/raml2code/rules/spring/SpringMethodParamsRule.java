@@ -131,7 +131,7 @@ public class SpringMethodParamsRule extends MethodParamsRule {
 			}
 			// In most cases will be JReferencedClass - for a primitive/boxed
 			// primitive
-			if (jVar.type() instanceof JDefinedClass) {
+			if (Config.getPojoConfig().isIncludeJsr303Annotations() && jVar.type() instanceof JDefinedClass) {
 				boolean isPOJO = ((JDefinedClass) jVar.type())._package().name().startsWith(Config.getBasePackage());
 				if (isPOJO) {
 					jVar.annotate(Valid.class);

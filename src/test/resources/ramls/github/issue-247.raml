@@ -1,0 +1,32 @@
+#%RAML 1.0
+title: API
+version: 1.0
+
+annotationTypes: 
+  isSensitive:
+    type: boolean
+    allowedTargets: TypeDeclaration
+
+types:
+  User: # kind can equal `User`; default value for `discriminatorValue`
+    type: object
+    properties:
+      userId:
+        type: integer
+      salary:
+        type: integer
+        (isSensitive): true
+
+/users:
+  /{userId}:
+    uriParameters: 
+      userId: integer
+    put:
+      body: 
+        application/json:
+          type: User
+      responses: 
+        200:
+          body: 
+            application/json:
+              type: User

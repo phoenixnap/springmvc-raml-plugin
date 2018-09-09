@@ -27,6 +27,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.jsonschema2pojo.util.NameHelper;
+import org.raml.v2.api.model.v10.declarations.AnnotationRef;
 import org.raml.v2.internal.utils.Inflector;
 import org.springframework.http.MediaType;
 import org.springframework.util.StringUtils;
@@ -34,6 +35,9 @@ import org.springframework.util.StringUtils;
 import com.phoenixnap.oss.ramlplugin.raml2code.data.ApiActionMetadata;
 import com.phoenixnap.oss.ramlplugin.raml2code.data.ApiBodyMetadata;
 import com.phoenixnap.oss.ramlplugin.raml2code.data.ApiParameterMetadata;
+import com.phoenixnap.oss.ramlplugin.raml2code.plugin.Config;
+import com.phoenixnap.oss.ramlplugin.raml2code.plugin.SpringMvcEndpointGeneratorMojo.MethodsNamingLogic;
+import com.phoenixnap.oss.ramlplugin.raml2code.plugin.SpringMvcEndpointGeneratorMojo.OverrideNamingLogicWith;
 import com.phoenixnap.oss.ramlplugin.raml2code.raml.RamlActionType;
 import com.phoenixnap.oss.ramlplugin.raml2code.raml.RamlResource;
 
@@ -228,11 +232,11 @@ public class NamingHelper {
 	 */
 	public static String getResourceName(RamlResource resource, boolean singularize) {
 		String url = resource.getRelativeUri();
-		if (StringUtils.hasText(url)) {
-			if (url.contains("/") && (url.lastIndexOf("/") < url.length())) {
-				return getResourceName(url.substring(url.lastIndexOf("/") + 1), singularize);
-			}
+
+		if (StringUtils.hasText(url) && url.contains("/") && (url.lastIndexOf('/') < url.length())) {
+			return getResourceName(url.substring(url.lastIndexOf('/') + 1), singularize);
 		}
+
 		return null;
 	}
 
@@ -243,32 +247,25 @@ public class NamingHelper {
 	 *            The URL of the raml resource being parsed
 	 * @param singularize
 	 *            Indicates if the resource name should be singularized or not
-	 * @param resourceDepthInClassNames
-	 *            The depth of uri to be included in a name
-	 * @param resourceTopLevelInClassNames
-	 *            The top level of URI to be included in a name
-	 * @param reverseOrderInClassNames
-	 *            Is order of URI parts included in a name reversed
 	 * @return name of a resource
 	 */
-	public static String getAllResourcesNames(String url, boolean singularize, int resourceDepthInClassNames,
-			int resourceTopLevelInClassNames, boolean reverseOrderInClassNames) {
+	public static String getAllResourcesNames(String url, boolean singularize) {
 
 		StringBuilder stringBuilder = new StringBuilder();
 		if (StringUtils.hasText(url)) {
 			String[] resources = SLASH.split(url);
 			int lengthCounter = 0;
-			for (int i = resources.length - 1; i >= resourceTopLevelInClassNames + 1; --i) {
+			for (int i = resources.length - 1; i >= Config.getResourceTopLevelInClassNames() + 1; --i) {
 				if (StringUtils.hasText(resources[i])) {
 					String resourceName = getResourceName(resources[i], singularize);
-					if (reverseOrderInClassNames) {
+					if (Config.isReverseOrderInClassNames()) {
 						stringBuilder.append(resourceName);
 					} else {
 						stringBuilder.insert(0, resourceName);
 					}
 					++lengthCounter;
 				}
-				if (resourceDepthInClassNames > 0 && lengthCounter >= resourceDepthInClassNames) {
+				if (Config.getResourceDepthInClassNames() > 0 && lengthCounter >= Config.getResourceDepthInClassNames()) {
 					break;
 				}
 			}
@@ -346,9 +343,9 @@ public class NamingHelper {
 	public static String cleanNameForJava(String resourceName) {
 		String outString = resourceName;
 		if (StringUtils.hasText(resourceName)) {
-			outString = getNameHelper().normalizeName(resourceName);
+			outString = getNameHelper().replaceIllegalCharacters(resourceName);
 			if (StringUtils.hasText(outString)) {
-				outString = outString.replaceAll(NameHelper.ILLEGAL_CHARACTER_REGEX, "");
+				outString = getNameHelper().normalizeName(outString);
 			}
 		}
 		return outString;
@@ -394,6 +391,27 @@ public class NamingHelper {
 
 	public static String getActionName(ApiActionMetadata apiActionMetadata) {
 
+		if (Config.getOverrideNamingLogicWith() == OverrideNamingLogicWith.DISPLAY_NAME
+				&& !StringUtils.isEmpty(apiActionMetadata.getDisplayName())) {
+			return StringUtils.uncapitalize(cleanNameForJava(apiActionMetadata.getDisplayName()));
+		} else if (Config.getOverrideNamingLogicWith() == OverrideNamingLogicWith.ANNOTATION) {
+			for (AnnotationRef annotation : apiActionMetadata.getAnnotations()) {
+				if ("(javaName)".equals(annotation.name())) {
+					return String.valueOf(annotation.structuredValue().value());
+				}
+			}
+		}
+
+		if (Config.getMethodsNamingLogic() == MethodsNamingLogic.RESOURCES) {
+			return getActionNameFromResources(apiActionMetadata.getParent().getResource(), apiActionMetadata.getResource(),
+					apiActionMetadata.getActionType());
+		}
+
+		return getActionNameFromObjects(apiActionMetadata);
+	}
+
+	private static String getActionNameFromObjects(ApiActionMetadata apiActionMetadata) {
+
 		String uri = apiActionMetadata.getResource().getUri();
 		String name = convertActionTypeToIntent(apiActionMetadata.getActionType(), doesUriEndsWithParam(uri));
 
@@ -410,27 +428,22 @@ public class NamingHelper {
 				name += "Object";
 			}
 
-			List<ApiParameterMetadata> parameterMetadataList = getParameters(apiActionMetadata);
-
-			if (!parameterMetadataList.isEmpty()) {
-				name = name + "By";
-				if (parameterMetadataList.size() == 1) {
-					ApiParameterMetadata paramMetaData = parameterMetadataList.iterator().next();
-					name = name + StringUtils.capitalize(cleanNameForJava(
-							paramMetaData.getDisplayName() != null ? paramMetaData.getDisplayName() : paramMetaData.getName()));
-				}
-			}
+			name = appendActionNameWithSingleParameter(apiActionMetadata, name);
 
 		} else if (apiActionMetadata.getActionType().equals(RamlActionType.DELETE)) {
 
-			List<ApiParameterMetadata> parameterMetadataList = getParameters(apiActionMetadata);
-
-			if (!parameterMetadataList.isEmpty()) {
-				name = name + "By";
-				if (parameterMetadataList.size() == 1) {
-					name = name + cleanNameForJava(StringUtils.capitalize(parameterMetadataList.iterator().next().getName()));
-				}
+			// for DELETE method we'll still use resource name
+			String url = cleanLeadingAndTrailingNewLineAndChars(apiActionMetadata.getResource().getUri());
+			String[] splitUrl = SLASH.split(url);
+			String resourceNameToUse = null;
+			if (splitUrl.length > 1 && StringUtils.countOccurrencesOf(splitUrl[splitUrl.length - 1], "{") > 0) {
+				resourceNameToUse = splitUrl[splitUrl.length - 2];
+			} else {
+				resourceNameToUse = splitUrl[splitUrl.length - 1];
 			}
+
+			name = name + StringUtils.capitalize(cleanNameForJava(singularize(resourceNameToUse)));
+			name = appendActionNameWithSingleParameter(apiActionMetadata, name);
 
 		} else {
 			ApiBodyMetadata requestBody = apiActionMetadata.getRequestBody();
@@ -457,6 +470,19 @@ public class NamingHelper {
 		return parameterMetadataList;
 	}
 
+	private static String appendActionNameWithSingleParameter(ApiActionMetadata apiActionMetadata, String methodName) {
+
+		String newMethodName = methodName;
+
+		List<ApiParameterMetadata> parameterMetadataList = getParameters(apiActionMetadata);
+		if (parameterMetadataList.size() == 1) {
+			ApiParameterMetadata paramMetaData = parameterMetadataList.iterator().next();
+			newMethodName = newMethodName + "By" + StringUtils.capitalize(paramMetaData.getJavaName());
+		}
+
+		return newMethodName;
+	}
+
 	/**
 	 * Attempts to infer the name of an action (intent) from a resource's
 	 * relative URL and action details
@@ -470,7 +496,8 @@ public class NamingHelper {
 	 *            The ActionType/HTTP Verb for this Action
 	 * @return The java name of the method that will represent this Action
 	 */
-	public static String getActionName(RamlResource controllerizedResource, RamlResource resource, RamlActionType actionType) {
+	private static String getActionNameFromResources(RamlResource controllerizedResource, RamlResource resource,
+			RamlActionType actionType) {
 
 		String url = resource.getUri();
 		// Since this will be part of a resource/controller, remove the parent

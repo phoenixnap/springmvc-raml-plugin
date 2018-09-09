@@ -3,6 +3,7 @@
 package com.gen.test.model;
 
 import java.io.Serializable;
+import javax.validation.constraints.NotNull;
 import org.apache.commons.lang.builder.EqualsBuilder;
 import org.apache.commons.lang.builder.HashCodeBuilder;
 import org.apache.commons.lang.builder.ToStringBuilder;
@@ -10,7 +11,7 @@ import org.apache.commons.lang.builder.ToStringBuilder;
 public class Client implements Serializable
 {
 
-    private String test;
+    protected String test;
 
     /**
      * Creates a new Client.
@@ -35,6 +36,7 @@ public class Client implements Serializable
      * @return
      *     test
      */
+    @NotNull
     public String getTest() {
         return test;
     }

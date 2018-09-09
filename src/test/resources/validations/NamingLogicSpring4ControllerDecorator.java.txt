@@ -3,6 +3,7 @@
 package com.gen.test.model;
 
 import java.io.Serializable;
+import javax.validation.constraints.NotNull;
 import org.apache.commons.lang.builder.EqualsBuilder;
 import org.apache.commons.lang.builder.HashCodeBuilder;
 import org.apache.commons.lang.builder.ToStringBuilder;
@@ -10,7 +11,7 @@ import org.apache.commons.lang.builder.ToStringBuilder;
 public class Message implements Serializable
 {
 
-    private String value;
+    protected String value;
 
     /**
      * Creates a new Message.
@@ -35,6 +36,7 @@ public class Message implements Serializable
      * @return
      *     value
      */
+    @NotNull
     public String getValue() {
         return value;
     }
@@ -77,6 +79,7 @@ public class Message implements Serializable
 package com.gen.test.model;
 
 import java.io.Serializable;
+import javax.validation.constraints.NotNull;
 import org.apache.commons.lang.builder.EqualsBuilder;
 import org.apache.commons.lang.builder.HashCodeBuilder;
 import org.apache.commons.lang.builder.ToStringBuilder;
@@ -84,8 +87,8 @@ import org.apache.commons.lang.builder.ToStringBuilder;
 public class MessageSubResource implements Serializable
 {
 
-    private String title;
-    private String desc;
+    protected String title;
+    protected String desc;
 
     /**
      * Creates a new MessageSubResource.
@@ -111,6 +114,7 @@ public class MessageSubResource implements Serializable
      * @return
      *     title
      */
+    @NotNull
     public String getTitle() {
         return title;
     }
@@ -131,6 +135,7 @@ public class MessageSubResource implements Serializable
      * @return
      *     desc
      */
+    @NotNull
     public String getDesc() {
         return desc;
     }
@@ -219,7 +224,7 @@ public interface MessageController {
      * deleteMessage
      * 
      */
-    public ResponseEntity<?> deleteByMessageId(String messageId);
+    public ResponseEntity<?> deleteMessageByMessageId(String messageId);
 
     /**
      * subresource
@@ -312,10 +317,10 @@ public class MessageControllerDecorator
      * 
      */
     @RequestMapping(value = "/{messageId}", method = RequestMethod.DELETE)
-    public ResponseEntity<?> deleteByMessageId(
+    public ResponseEntity<?> deleteMessageByMessageId(
         @PathVariable
         String messageId) {
-        return this.messageControllerDelegate.deleteByMessageId(messageId);
+        return this.messageControllerDelegate.deleteMessageByMessageId(messageId);
     }
 
     /**

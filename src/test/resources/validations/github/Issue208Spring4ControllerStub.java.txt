@@ -3,6 +3,7 @@
 package com.gen.test.model;
 
 import java.io.Serializable;
+import javax.validation.constraints.NotNull;
 import org.apache.commons.lang.builder.EqualsBuilder;
 import org.apache.commons.lang.builder.HashCodeBuilder;
 import org.apache.commons.lang.builder.ToStringBuilder;
@@ -10,8 +11,8 @@ import org.apache.commons.lang.builder.ToStringBuilder;
 public class Group implements Serializable
 {
 
-    private Long id;
-    private String name;
+    protected Long id;
+    protected String name;
 
     /**
      * Creates a new Group.
@@ -37,6 +38,7 @@ public class Group implements Serializable
      * @return
      *     id
      */
+    @NotNull
     public Long getId() {
         return id;
     }
@@ -57,6 +59,7 @@ public class Group implements Serializable
      * @return
      *     name
      */
+    @NotNull
     public String getName() {
         return name;
     }
@@ -101,6 +104,7 @@ package com.gen.test.model;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
+import javax.validation.Valid;
 import org.apache.commons.lang.builder.EqualsBuilder;
 import org.apache.commons.lang.builder.HashCodeBuilder;
 import org.apache.commons.lang.builder.ToStringBuilder;
@@ -108,8 +112,8 @@ import org.apache.commons.lang.builder.ToStringBuilder;
 public class Product implements Serializable
 {
 
-    private String id;
-    private List<Group> groups = new ArrayList<Group>();
+    protected String id;
+    protected List<Group> groups = new ArrayList<Group>();
 
     /**
      * Creates a new Product.
@@ -155,6 +159,7 @@ public class Product implements Serializable
      * @return
      *     groups
      */
+    @Valid
     public List<Group> getGroups() {
         return groups;
     }
@@ -197,7 +202,9 @@ public class Product implements Serializable
 package com.gen.test.model;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
+import javax.validation.constraints.NotNull;
 import org.apache.commons.lang.builder.EqualsBuilder;
 import org.apache.commons.lang.builder.HashCodeBuilder;
 import org.apache.commons.lang.builder.ToStringBuilder;
@@ -207,7 +214,7 @@ public class ProductUpdate
     implements Serializable
 {
 
-    private Double locationId;
+    protected Double locationId;
 
     /**
      * Creates a new ProductUpdate.
@@ -221,9 +228,32 @@ public class ProductUpdate
      * Creates a new ProductUpdate.
      * 
      */
-    public ProductUpdate(String id, List<Group> groups, Double locationId) {
+    public ProductUpdate(String id, List<com.gen.test.model.Group> groups, Double locationId) {
         super(id, groups);
         this.locationId = locationId;
+    }
+
+    /**
+     * Returns the id.
+     * 
+     * @return
+     *     id
+     */
+    public String getId() {
+        return id;
+    }
+
+    /**
+     * Returns the groups.
+     * 
+     * @return
+     *     groups
+     */
+    public List<com.gen.test.model.Group> getGroups() {
+        if (groups == null) {
+            return new ArrayList<com.gen.test.model.Group>();
+        }
+        return groups;
     }
 
     /**
@@ -232,6 +262,7 @@ public class ProductUpdate
      * @return
      *     locationId
      */
+    @NotNull
     public Double getLocationId() {
         return locationId;
     }

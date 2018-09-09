@@ -8,3 +8,4 @@ target
 /iconv.dll
 .idea
 /.recommenders
+.sts4-cache/

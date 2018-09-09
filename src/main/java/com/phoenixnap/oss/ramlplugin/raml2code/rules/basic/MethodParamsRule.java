@@ -109,8 +109,9 @@ public class MethodParamsRule implements Rule<CodeModelHelper.JExtMethod, JMetho
 
 	protected JVar paramQueryForm(ApiParameterMetadata paramMetaData, CodeModelHelper.JExtMethod generatableType,
 			ApiActionMetadata endpointMetadata) {
-		String javaName = NamingHelper
-				.getParameterName(paramMetaData.getDisplayName() != null ? paramMetaData.getDisplayName() : paramMetaData.getName());
+
+		String javaName = paramMetaData.getJavaName();
+
 		if (addParameterJavadoc) {
 			String paramComment = "";
 			if (paramMetaData.getRamlParam() != null && StringUtils.hasText(paramMetaData.getRamlParam().getDescription())) {
@@ -138,7 +139,7 @@ public class MethodParamsRule implements Rule<CodeModelHelper.JExtMethod, JMetho
 		// data types as query parameters
 		RamlAbstractParam ramlParam = paramMetaData.getRamlParam();
 		if (ramlParam.getType() == RamlParamType.DATA_TYPE && ramlParam instanceof RJP10V2RamlQueryParameter) {
-			JClass jc = findFirstClassBySimpleName(paramMetaData.getCodeModel(), ((RJP10V2RamlQueryParameter) ramlParam).getRawType());
+			JClass jc = findFirstClassBySimpleName(paramMetaData.getCodeModel(), ramlParam.getRawType());
 			return generatableType.get().param(jc, paramMetaData.getName());
 		}
 
@@ -152,7 +153,7 @@ public class MethodParamsRule implements Rule<CodeModelHelper.JExtMethod, JMetho
 			if (paramMetaData.getRamlParam().getMinLength() != null) {
 				jAnnotationUse.param("min", paramMetaData.getRamlParam().getMinLength());
 			}
-			if (paramMetaData.getRamlParam().getMinLength() != null) {
+			if (paramMetaData.getRamlParam().getMaxLength() != null) {
 				jAnnotationUse.param("max", paramMetaData.getRamlParam().getMaxLength());
 			}
 		}
@@ -188,7 +189,7 @@ public class MethodParamsRule implements Rule<CodeModelHelper.JExtMethod, JMetho
 			generatableType.get().javadoc().addParam(uncapitalize(requestBodyName) + " The Request Body Payload");
 		}
 		JVar param = generatableType.get().param(requestBodyType, uncapitalize(requestBodyName));
-		if (!RamlActionType.PATCH.equals(endpointMetadata.getActionType())) {
+		if (Config.getPojoConfig().isIncludeJsr303Annotations() && !RamlActionType.PATCH.equals(endpointMetadata.getActionType())) {
 			// skip Valid annotation for PATCH actions since it's a partial
 			// update so some required fields might be omitted
 			param.annotate(Valid.class);
