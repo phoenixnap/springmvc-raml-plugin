@@ -15,16 +15,16 @@ package com.phoenixnap.oss.ramlplugin.raml2code.rules.spring;
 
 import static com.phoenixnap.oss.ramlplugin.raml2code.helpers.CodeModelHelper.findFirstClassBySimpleName;
 
-import java.util.List;
-
-import org.springframework.http.ResponseEntity;
-
 import com.phoenixnap.oss.ramlplugin.raml2code.data.ApiActionMetadata;
 import com.phoenixnap.oss.ramlplugin.raml2code.data.ApiBodyMetadata;
 import com.phoenixnap.oss.ramlplugin.raml2code.rules.Rule;
 import com.sun.codemodel.JClass;
 import com.sun.codemodel.JDefinedClass;
 import com.sun.codemodel.JType;
+import java.math.BigDecimal;
+import java.math.BigInteger;
+import java.util.List;
+import org.springframework.http.ResponseEntity;
 
 /**
  * Creates a org.springframework.http.ResponseEntity as a return type for an
@@ -53,6 +53,12 @@ public class SpringResponseEntityRule implements Rule<JDefinedClass, JType, ApiA
 			if (apiBodyMetadata.isArray()) {
 				JClass arrayType = generatableType.owner().ref(List.class);
 				return responseEntity.narrow(arrayType.narrow(genericType));
+			} else if (BigDecimal.class.getSimpleName().equals(apiBodyMetadata.getName())) {
+				JClass bigDecimalType = generatableType.owner().ref(BigDecimal.class);
+				return responseEntity.narrow(bigDecimalType);
+			} else if (BigInteger.class.getSimpleName().equals(apiBodyMetadata.getName())) {
+				JClass bigIntegerType = generatableType.owner().ref(BigInteger.class);
+				return responseEntity.narrow(bigIntegerType);
 			}
 			return responseEntity.narrow(genericType);
 
