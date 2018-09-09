@@ -62,4 +62,8 @@ public class TestConfig {
 	public static void setInitializeCollections(boolean initializeCollections) {
 		((TestPojoConfig) Config.getPojoConfig()).setInitializeCollections(initializeCollections);
 	}
+
+	public static void setUseBigDecimal(boolean useBigDecimal) {
+		((TestPojoConfig) Config.getPojoConfig()).setUseBigDecimals(useBigDecimal);
+	}
 }
