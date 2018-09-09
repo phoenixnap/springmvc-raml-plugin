@@ -1,0 +1,12 @@
+#%RAML 1.0
+title: Number as bigdecimal #275
+version: 1.0
+
+/lucky-number:
+  get:
+    description: Returns the winning number.
+    responses:
+      200:
+        body:
+          application/json:
+            type: number
