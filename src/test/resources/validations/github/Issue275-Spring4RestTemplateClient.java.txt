@@ -1,0 +1,74 @@
+-----------------------------------com.gen.test.LuckyNumberClient.java-----------------------------------
+
+package com.gen.test;
+
+import java.math.BigDecimal;
+import org.springframework.http.ResponseEntity;
+
+
+/**
+ * No description
+ * (Generated with springmvc-raml-parser v.2.0.4)
+ *
+ */
+public interface LuckyNumberClient {
+
+
+    /**
+     * Returns the winning number.
+     *
+     */
+    public ResponseEntity<BigDecimal> getBigDecimal();
+
+}
+-----------------------------------com.gen.test.LuckyNumberClientImpl.java-----------------------------------
+
+package com.gen.test;
+
+import java.util.ArrayList;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpMethod;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Component;
+import org.springframework.web.client.RestTemplate;
+import org.springframework.web.util.UriComponents;
+import org.springframework.web.util.UriComponentsBuilder;
+
+
+/**
+ * No description
+ * (Generated with springmvc-raml-parser v.2.0.4)
+ *
+ */
+@Component
+public class LuckyNumberClientImpl
+    implements LuckyNumberClient
+{
+
+    @Value("${client.url}")
+    private String baseUrl;
+    @Autowired
+    private RestTemplate restTemplate;
+
+    /**
+     * Returns the winning number.
+     *
+     */
+    public ResponseEntity<java.math.BigDecimal> getBigDecimal() {
+        HttpHeaders httpHeaders = new HttpHeaders();
+        //  Add Accepts Headers and Body Content-Type
+        ArrayList<MediaType> acceptsList = new ArrayList<MediaType>();
+        acceptsList.add(MediaType.valueOf("application/json"));
+        httpHeaders.setAccept(acceptsList);
+        String url = baseUrl.concat("/lucky-number");
+        UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl(url);
+        UriComponents uriComponents = builder.build();
+        HttpEntity httpEntity = new HttpEntity(httpHeaders);
+        return this.restTemplate.exchange(uriComponents.encode().toUri(), HttpMethod.GET, httpEntity, BigDecimal.class);
+    }
+
+}
