@@ -31,6 +31,8 @@ import com.sun.codemodel.JDefinedClass;
  */
 public abstract class SpringConfigurableRule implements ConfigurableRule<JCodeModel, JDefinedClass, ApiResourceMetadata> {
 
+	public static final String DEFFERED_RESPONSE_CONFIGURATION = "DeferredResult";
+
 	public static final String CALLABLE_RESPONSE_CONFIGURATION = "callableResponse";
 
 	public static final String PARAMETER_JAVADOC_CONFIGURATION = "addParameterJavadoc";
@@ -41,6 +43,7 @@ public abstract class SpringConfigurableRule implements ConfigurableRule<JCodeMo
 
 	public static final String SHORTCUT_METHOD_MAPPINGS = "useShortcutMethodMappings";
 
+	private boolean deferredResult = false;
 	private boolean callableResponse = false;
 	private boolean addParameterJavadoc = false;
 	private boolean allowArrayParameters = true;
@@ -54,6 +57,9 @@ public abstract class SpringConfigurableRule implements ConfigurableRule<JCodeMo
 	@Override
 	public void applyConfiguration(Map<String, String> configuration) {
 		if (!CollectionUtils.isEmpty(configuration)) {
+			if (configuration.containsKey(DEFFERED_RESPONSE_CONFIGURATION)) {
+				setDeferredResult(BooleanUtils.toBoolean(configuration.get(DEFFERED_RESPONSE_CONFIGURATION)));
+			}
 			if (configuration.containsKey(CALLABLE_RESPONSE_CONFIGURATION)) {
 				setCallableResponse(BooleanUtils.toBoolean(configuration.get(CALLABLE_RESPONSE_CONFIGURATION)));
 			}
@@ -88,6 +94,14 @@ public abstract class SpringConfigurableRule implements ConfigurableRule<JCodeMo
 
 	public void setCallableResponse(boolean callableResponse) {
 		this.callableResponse = callableResponse;
+	}
+
+	public boolean isDeferredResult() {
+		return deferredResult;
+	}
+
+	public void setDeferredResult(boolean deferredResult) {
+		this.deferredResult = deferredResult;
 	}
 
 	public boolean isUseShortcutMethodMappings() {
