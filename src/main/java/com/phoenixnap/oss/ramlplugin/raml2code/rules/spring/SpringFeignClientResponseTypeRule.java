@@ -40,7 +40,7 @@ public class SpringFeignClientResponseTypeRule implements Rule<JDefinedClass, JT
 		JClass responseEntity = generatableType.owner().ref(ResponseEntity.class);
 		if (!endpointMetadata.getResponseBody().isEmpty()) {
 			ApiBodyMetadata apiBodyMetadata = endpointMetadata.getResponseBody().values().iterator().next();
-			JClass genericType = findFirstClassBySimpleName(apiBodyMetadata.getCodeModel(), apiBodyMetadata.getName());
+			JClass genericType = findFirstClassBySimpleName(apiBodyMetadata.getCodeModel(), apiBodyMetadata.getFullName());
 			if (apiBodyMetadata.isArray()) {
 				JClass arrayType = generatableType.owner().ref(List.class);
 				responseEntity = responseEntity.narrow(arrayType.narrow(genericType));

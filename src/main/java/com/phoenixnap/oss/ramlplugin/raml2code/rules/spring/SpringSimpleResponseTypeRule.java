@@ -51,7 +51,7 @@ public class SpringSimpleResponseTypeRule implements Rule<JDefinedClass, JType, 
 		JClass responseType = generatableType.owner().ref(ResponseEntity.class);
 		if (!endpointMetadata.getResponseBody().isEmpty()) {
 			ApiBodyMetadata apiBodyMetadata = endpointMetadata.getResponseBody().values().iterator().next();
-			JClass genericType = findFirstClassBySimpleName(apiBodyMetadata.getCodeModel(), apiBodyMetadata.getName());
+			JClass genericType = findFirstClassBySimpleName(apiBodyMetadata.getCodeModel(), apiBodyMetadata.getFullName());
 			if (apiBodyMetadata.isArray()) {
 				JClass arrayType = generatableType.owner().ref(List.class);
 				return arrayType.narrow(genericType);

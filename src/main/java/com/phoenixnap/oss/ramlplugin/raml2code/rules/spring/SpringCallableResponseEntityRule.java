@@ -52,7 +52,7 @@ public class SpringCallableResponseEntityRule implements Rule<JDefinedClass, JTy
 		JClass responseEntity = generatableType.owner().ref(ResponseEntity.class);
 		if (!endpointMetadata.getResponseBody().isEmpty()) {
 			ApiBodyMetadata apiBodyMetadata = endpointMetadata.getResponseBody().values().iterator().next();
-			JClass genericType = findFirstClassBySimpleName(apiBodyMetadata.getCodeModel(), apiBodyMetadata.getName());
+			JClass genericType = findFirstClassBySimpleName(apiBodyMetadata.getCodeModel(), apiBodyMetadata.getFullName());
 			if (apiBodyMetadata.isArray()) {
 				JClass arrayType = generatableType.owner().ref(List.class);
 				return callable.narrow(responseEntity.narrow(arrayType.narrow(genericType)));

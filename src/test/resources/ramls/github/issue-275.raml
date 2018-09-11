@@ -1,0 +1,14 @@
+#%RAML 1.0
+title: Number as bigdecimal
+version: 1.0
+
+/number:
+  get:
+    description: Returns the winning number.
+    queryParameters: 
+      name: string
+    responses:
+      200:
+        body:
+          application/json:
+            type: number
