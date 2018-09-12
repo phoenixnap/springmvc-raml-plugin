@@ -35,7 +35,6 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 import com.phoenixnap.oss.ramlplugin.raml2code.data.ApiBodyMetadata;
 import com.phoenixnap.oss.ramlplugin.raml2code.interpreters.RamlInterpretationResult;
 import com.phoenixnap.oss.ramlplugin.raml2code.interpreters.RamlInterpreterFactory;
-import com.phoenixnap.oss.ramlplugin.raml2code.plugin.Config;
 import com.phoenixnap.oss.ramlplugin.raml2code.raml.RamlRoot;
 import com.sun.codemodel.JAnnotationUse;
 import com.sun.codemodel.JClass;
@@ -119,19 +118,13 @@ public class RamlTypeHelper {
 		}
 
 		boolean array = false;
-
 		String pojoName = pojo.name();
-		String fullName = pojo.fullName();
 		if (pojo.name().contains("List<") || pojo.name().contains("Set<")) {
 			array = true;
 			pojoName = pojo.getTypeParameters().get(0).name();
-			fullName = pojoName;
-		}
-		if (fullName.startsWith(Config.getBasePackage() + ".model")) {
-			fullName = pojoName;
 		}
 
-		return new ApiBodyMetadata(pojoName, type, array, pojoCodeModel, fullName);
+		return new ApiBodyMetadata(pojoName, type, array, pojoCodeModel);
 	}
 
 	/**

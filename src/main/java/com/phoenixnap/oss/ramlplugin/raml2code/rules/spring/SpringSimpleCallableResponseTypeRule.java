@@ -54,7 +54,7 @@ public class SpringSimpleCallableResponseTypeRule implements Rule<JDefinedClass,
 		JClass responseType = generatableType.owner().ref(ResponseEntity.class);
 		if (!endpointMetadata.getResponseBody().isEmpty()) {
 			ApiBodyMetadata apiBodyMetadata = endpointMetadata.getResponseBody().values().iterator().next();
-			JClass genericType = findFirstClassBySimpleName(apiBodyMetadata.getCodeModel(), apiBodyMetadata.getFullName());
+			JClass genericType = findFirstClassBySimpleName(apiBodyMetadata.getCodeModel(), apiBodyMetadata.getName());
 			if (apiBodyMetadata.isArray()) {
 				JClass arrayType = generatableType.owner().ref(List.class);
 				responseType = arrayType.narrow(genericType);

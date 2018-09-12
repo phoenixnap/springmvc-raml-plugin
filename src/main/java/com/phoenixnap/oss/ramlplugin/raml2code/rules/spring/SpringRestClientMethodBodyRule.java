@@ -222,7 +222,7 @@ public class SpringRestClientMethodBodyRule implements Rule<CodeModelHelper.JExt
 		JClass returnType = null;
 		if (!endpointMetadata.getResponseBody().isEmpty()) {
 			ApiBodyMetadata apiBodyMetadata = endpointMetadata.getResponseBody().values().iterator().next();
-			JClass genericType = findFirstClassBySimpleName(apiBodyMetadata.getCodeModel(), apiBodyMetadata.getFullName());
+			JClass genericType = findFirstClassBySimpleName(apiBodyMetadata.getCodeModel(), apiBodyMetadata.getName());
 			if (apiBodyMetadata.isArray()) {
 				JClass arrayType = owner.ref(List.class);
 				returnType = arrayType.narrow(genericType);

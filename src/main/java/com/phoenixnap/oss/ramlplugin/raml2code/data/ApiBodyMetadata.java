@@ -32,20 +32,18 @@ import com.sun.codemodel.JCodeModel;
 public class ApiBodyMetadata {
 
 	private String name;
-	private String fullName;
 	private String schema;
 	private TypeDeclaration type;
 	private JCodeModel codeModel;
 	private boolean array = false;
 
-	public ApiBodyMetadata(String name, TypeDeclaration type, boolean array, JCodeModel codeModel, String fullName) {
+	public ApiBodyMetadata(String name, TypeDeclaration type, boolean array, JCodeModel codeModel) {
 		super();
 		this.schema = null;
 		this.type = type;
 		this.name = name;
 		this.codeModel = codeModel;
 		this.array = array;
-		this.fullName = fullName;
 		// array detection. i think we can default this to false since we should
 		// already be generating lists from the type. nope we need it within
 		// rules for narrowing to List
@@ -70,7 +68,6 @@ public class ApiBodyMetadata {
 		super();
 		this.schema = schema;
 		this.name = name;
-		this.fullName = name;
 		this.codeModel = codeModel;
 
 		boolean typeFound = false;
@@ -157,13 +154,6 @@ public class ApiBodyMetadata {
 		} else {
 			return SchemaHelper.buildBodyJCodeModel(schemaLocation, basePackage, name, schema, annotator);
 		}
-	}
-
-	/**
-	 * @return the fullName
-	 */
-	public String getFullName() {
-		return fullName;
 	}
 
 }
