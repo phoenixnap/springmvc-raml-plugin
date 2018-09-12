@@ -7,11 +7,13 @@ import org.hamcrest.MatcherAssert;
 public abstract class GitHubAbstractRuleTestBase extends AbstractRuleTestBase {
 
 	public static final String RESOURCE_BASE = AbstractRuleTestBase.RESOURCE_BASE + "github/";
-	public static final String GITHUB_VALIDATOR_BASE = "validations/github/";
+	public static final String DEFAULT_GITHUB_VALIDATOR_BASE = "validations/github/";
+
+	private String gitHubValidatorBase = DEFAULT_GITHUB_VALIDATOR_BASE;
 
 	protected void verifyGeneratedCode(String name, String generatedCode) throws Exception {
 		String removedSerialVersionUID = removeSerialVersionUID(generatedCode);
-		String expectedCode = getTextFromFile(GITHUB_VALIDATOR_BASE + name + ".java.txt");
+		String expectedCode = getTextFromFile(this.gitHubValidatorBase + name + ".java.txt");
 
 		try {
 			MatcherAssert.assertThat(name + " is not generated correctly.", removedSerialVersionUID,
@@ -25,5 +27,13 @@ public abstract class GitHubAbstractRuleTestBase extends AbstractRuleTestBase {
 
 	public static void loadRaml(String ramlFileName) {
 		AbstractRuleTestBase.RAML = RamlLoader.loadRamlFromFile(RESOURCE_BASE + ramlFileName);
+	}
+
+	/**
+	 * @param gitHubValidatorBase
+	 *            the gitHubValidatorBase to set
+	 */
+	public void setGitHubValidatorBase(String gitHubValidatorBase) {
+		this.gitHubValidatorBase = gitHubValidatorBase;
 	}
 }

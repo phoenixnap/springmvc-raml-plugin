@@ -103,6 +103,7 @@ package com.gen.test;
 
 import javax.validation.Valid;
 import com.gen.test.model.Object;
+import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -126,7 +127,7 @@ public class BaseController {
      *
      */
     @RequestMapping(value = "", method = RequestMethod.POST)
-    public Object createObject(
+    public ResponseEntity<Object> createObject(
         @Valid
         @RequestBody
         Object object) {

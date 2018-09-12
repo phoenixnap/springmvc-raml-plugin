@@ -12,17 +12,11 @@
  */
 package com.phoenixnap.oss.ramlplugin.raml2code.rules.spring;
 
-import static com.phoenixnap.oss.ramlplugin.raml2code.helpers.CodeModelHelper.findFirstClassBySimpleName;
-
-import java.util.List;
 import java.util.concurrent.Callable;
 
-import org.springframework.http.ResponseEntity;
-
 import com.phoenixnap.oss.ramlplugin.raml2code.data.ApiActionMetadata;
-import com.phoenixnap.oss.ramlplugin.raml2code.data.ApiBodyMetadata;
+import com.phoenixnap.oss.ramlplugin.raml2code.helpers.RuleHelper;
 import com.phoenixnap.oss.ramlplugin.raml2code.rules.Rule;
-import com.sun.codemodel.JClass;
 import com.sun.codemodel.JDefinedClass;
 import com.sun.codemodel.JType;
 
@@ -48,18 +42,6 @@ public class SpringCallableResponseEntityRule implements Rule<JDefinedClass, JTy
 	@Override
 	public JType apply(ApiActionMetadata endpointMetadata, JDefinedClass generatableType) {
 
-		JClass callable = generatableType.owner().ref(Callable.class);
-		JClass responseEntity = generatableType.owner().ref(ResponseEntity.class);
-		if (!endpointMetadata.getResponseBody().isEmpty()) {
-			ApiBodyMetadata apiBodyMetadata = endpointMetadata.getResponseBody().values().iterator().next();
-			JClass genericType = findFirstClassBySimpleName(apiBodyMetadata.getCodeModel(), apiBodyMetadata.getName());
-			if (apiBodyMetadata.isArray()) {
-				JClass arrayType = generatableType.owner().ref(List.class);
-				return callable.narrow(responseEntity.narrow(arrayType.narrow(genericType)));
-			}
-			return callable.narrow(responseEntity.narrow(genericType));
-
-		}
-		return callable.narrow(responseEntity.narrow(generatableType.owner().wildcard()));
+		return RuleHelper.getCallableResponseEntity(endpointMetadata, generatableType.owner());
 	}
 }

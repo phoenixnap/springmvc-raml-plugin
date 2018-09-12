@@ -85,7 +85,7 @@ public class BaseController {
      * 
      */
     @RequestMapping(value = "/{id}", method = RequestMethod.GET)
-    public NamedResponseType getNamedResponseTypeById(
+    public ResponseEntity<NamedResponseType> getNamedResponseTypeById(
         @PathVariable
         String id,
         @RequestHeader

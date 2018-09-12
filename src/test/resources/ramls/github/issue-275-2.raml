@@ -1,0 +1,15 @@
+#%RAML 1.0
+title: Number as biginteger #275
+version: 1.0
+
+/number:
+  get:
+    description: Returns the winning integer.
+    queryParameters: 
+      name: string
+    responses:
+      200:
+        body:
+          application/json:
+            type: number
+            format: long

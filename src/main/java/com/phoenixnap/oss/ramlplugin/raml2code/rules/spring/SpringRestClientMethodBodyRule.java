@@ -14,6 +14,8 @@ package com.phoenixnap.oss.ramlplugin.raml2code.rules.spring;
 
 import static com.phoenixnap.oss.ramlplugin.raml2code.helpers.CodeModelHelper.findFirstClassBySimpleName;
 
+import java.math.BigDecimal;
+import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
@@ -37,6 +39,7 @@ import com.phoenixnap.oss.ramlplugin.raml2code.data.ApiParameterMetadata;
 import com.phoenixnap.oss.ramlplugin.raml2code.helpers.CodeModelHelper;
 import com.phoenixnap.oss.ramlplugin.raml2code.helpers.NamingHelper;
 import com.phoenixnap.oss.ramlplugin.raml2code.helpers.RamlHelper;
+import com.phoenixnap.oss.ramlplugin.raml2code.helpers.RuleHelper;
 import com.phoenixnap.oss.ramlplugin.raml2code.plugin.Config;
 import com.phoenixnap.oss.ramlplugin.raml2code.rules.Rule;
 import com.sun.codemodel.JBlock;
@@ -219,20 +222,7 @@ public class SpringRestClientMethodBodyRule implements Rule<CodeModelHelper.JExt
 		}
 
 		// Determining response entity type
-		JClass returnType = null;
-		if (!endpointMetadata.getResponseBody().isEmpty()) {
-			ApiBodyMetadata apiBodyMetadata = endpointMetadata.getResponseBody().values().iterator().next();
-			JClass genericType = findFirstClassBySimpleName(apiBodyMetadata.getCodeModel(), apiBodyMetadata.getName());
-			if (apiBodyMetadata.isArray()) {
-				JClass arrayType = owner.ref(List.class);
-				returnType = arrayType.narrow(genericType);
-			} else {
-				returnType = genericType;
-			}
-		} else {
-			returnType = owner.ref(Object.class);
-		}
-
+		JClass returnType = RuleHelper.getObject(endpointMetadata, owner);
 		JExpression returnExpression = JExpr.dotclass(returnType);// assume not
 																	// parameterized
 																	// by

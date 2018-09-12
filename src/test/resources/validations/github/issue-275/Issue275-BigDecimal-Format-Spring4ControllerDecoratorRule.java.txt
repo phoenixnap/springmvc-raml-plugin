@@ -1,0 +1,62 @@
+-----------------------------------com.gen.test.NumberController.java-----------------------------------
+
+package com.gen.test;
+
+import org.springframework.http.ResponseEntity;
+
+
+/**
+ * No description
+ * (Generated with springmvc-raml-parser v.@project.version@)
+ * 
+ */
+public interface NumberController {
+
+
+    /**
+     * Returns the winning integer.
+     * 
+     */
+    public ResponseEntity<Long> getLongByName(String name);
+
+}
+-----------------------------------com.gen.test.NumberControllerDecorator.java-----------------------------------
+
+package com.gen.test;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
+
+
+/**
+ * No description
+ * (Generated with springmvc-raml-parser v.@project.version@)
+ * 
+ */
+@RestController
+@RequestMapping("/api/number")
+@Validated
+public class NumberControllerDecorator
+    implements NumberController
+{
+
+    @Autowired
+    private NumberController numberControllerDelegate;
+
+    /**
+     * Returns the winning integer.
+     * 
+     */
+    @RequestMapping(value = "", method = RequestMethod.GET)
+    public ResponseEntity<Long> getLongByName(
+        @RequestParam
+        String name) {
+        return this.numberControllerDelegate.getLongByName(name);
+    }
+
+}

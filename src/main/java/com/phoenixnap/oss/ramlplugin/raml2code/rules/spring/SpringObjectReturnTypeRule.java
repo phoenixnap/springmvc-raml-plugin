@@ -13,15 +13,10 @@
 package com.phoenixnap.oss.ramlplugin.raml2code.rules.spring;
 
 import com.phoenixnap.oss.ramlplugin.raml2code.data.ApiActionMetadata;
-import com.phoenixnap.oss.ramlplugin.raml2code.data.ApiBodyMetadata;
+import com.phoenixnap.oss.ramlplugin.raml2code.helpers.RuleHelper;
 import com.phoenixnap.oss.ramlplugin.raml2code.rules.Rule;
-import com.sun.codemodel.JClass;
 import com.sun.codemodel.JDefinedClass;
 import com.sun.codemodel.JType;
-
-import static com.phoenixnap.oss.ramlplugin.raml2code.helpers.CodeModelHelper.findFirstClassBySimpleName;
-
-import java.util.List;
 
 /**
  * Creates an Object as a return type for an endpoint. If the endpoint declares
@@ -44,17 +39,8 @@ public class SpringObjectReturnTypeRule implements Rule<JDefinedClass, JType, Ap
 
 	@Override
 	public JType apply(ApiActionMetadata endpointMetadata, JDefinedClass generatableType) {
-		if (!endpointMetadata.getResponseBody().isEmpty()) {
-			ApiBodyMetadata apiBodyMetadata = endpointMetadata.getResponseBody().values().iterator().next();
-			JClass returnType = findFirstClassBySimpleName(apiBodyMetadata.getCodeModel(), apiBodyMetadata.getName());
-			if (apiBodyMetadata.isArray()) {
-				JClass arrayType = generatableType.owner().ref(List.class);
-				return arrayType.narrow(returnType);
-			}
-			return returnType;
 
-		}
-		return generatableType.owner().ref(Object.class);
+		return RuleHelper.getObject(endpointMetadata, generatableType.owner());
 	}
 
 }
