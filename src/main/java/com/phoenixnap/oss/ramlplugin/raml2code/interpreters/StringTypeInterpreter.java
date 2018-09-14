@@ -31,6 +31,8 @@ import com.sun.codemodel.JCodeModel;
  */
 public class StringTypeInterpreter extends BaseTypeInterpreter {
 
+	private static final String DEFAULT_ENUM_NAME = "DefaultEnum";
+
 	@Override
 	public Set<Class<? extends TypeDeclaration>> getSupportedTypes() {
 		return Collections.singleton(StringTypeDeclaration.class);
@@ -51,8 +53,11 @@ public class StringTypeInterpreter extends BaseTypeInterpreter {
 			if (stringType.enumValues() != null && !stringType.enumValues().isEmpty()) {
 				// We have an enum. we need to create it and set it
 				String enumName = stringType.type();
-				if (stringType.type().equals("string")) {
+				if ("string".equalsIgnoreCase(enumName)) {
 					enumName = stringType.name();
+				}
+				if ("string".equalsIgnoreCase(enumName)) {
+					enumName = DEFAULT_ENUM_NAME;
 				}
 				EnumBuilder builder = new EnumBuilder(builderModel, enumName);
 				builder.withEnums(stringType.enumValues(), String.class);

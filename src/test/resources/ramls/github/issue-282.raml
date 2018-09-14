@@ -1,0 +1,19 @@
+#%RAML 1.0
+title: Enums create String.java source file
+types:
+  Bus:
+    type: object
+    properties:
+      metadata:
+        type: array
+        items:
+          enum: [ac, multi-axle, reading-light, sleeper]
+
+/bus:
+  get:
+    description: Get a bus.
+    responses:
+      200:
+        body:
+          application/json:
+            type: Bus
