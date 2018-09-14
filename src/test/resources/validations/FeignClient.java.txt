@@ -140,7 +140,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
  * (Generated with springmvc-raml-parser v.@project.version@)
  * 
  */
-@FeignClient(url = "/api/songs", name = "songClient")
+@FeignClient(path = "/api/songs", name = "songClient")
 public interface SongClient {
 
 
@@ -167,7 +167,7 @@ public interface SongClient {
      */
     @RequestMapping(value = "/{songId}", method = RequestMethod.GET)
     public ResponseEntity<Song> getSongBySongId(
-        @PathVariable
+        @PathVariable(name = "songId")
         String songId);
 
     /**
@@ -176,7 +176,7 @@ public interface SongClient {
      */
     @RequestMapping(value = "/{songId}", method = RequestMethod.PUT)
     public ResponseEntity<Song> updateSong(
-        @PathVariable
+        @PathVariable(name = "songId")
         String songId,
         @Valid
         @RequestBody
@@ -188,7 +188,7 @@ public interface SongClient {
      */
     @RequestMapping(value = "/{songId}", method = RequestMethod.DELETE)
     public ResponseEntity<?> deleteSongBySongId(
-        @PathVariable
+        @PathVariable(name = "songId")
         String songId);
 
 }

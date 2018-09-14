@@ -16,7 +16,7 @@ import org.springframework.web.bind.annotation.RequestParam;
  * (Generated with springmvc-raml-parser v.@project.version@)
  * 
  */
-@FeignClient(url = "/api/base", name = "baseClient")
+@FeignClient(path = "/api/base", name = "baseClient")
 public interface BaseClient {
 
 
@@ -26,11 +26,11 @@ public interface BaseClient {
      */
     @RequestMapping(value = "", method = RequestMethod.GET)
     public ResponseEntity<?> getObject(
-        @RequestParam
+        @RequestParam(name = "requiredQueryParam")
         Long requiredQueryParam,
-        @RequestParam(defaultValue = "someDefault", required = false)
+        @RequestParam(defaultValue = "someDefault", required = false, name = "optionalQueryParam")
         String optionalQueryParam,
-        @RequestParam(required = false, defaultValue = "3")
+        @RequestParam(required = false, defaultValue = "3", name = "optionalQueryParam2")
         BigDecimal optionalQueryParam2,
         @RequestHeader(name = "X-Optional-Header", required = false, defaultValue = "2")
         Long xOptionalHeader,

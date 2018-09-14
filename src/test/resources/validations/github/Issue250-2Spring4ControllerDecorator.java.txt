@@ -173,7 +173,7 @@ public class TestControllerDecorator
      */
     @RequestMapping(value = "/{testId}", method = RequestMethod.GET)
     public ResponseEntity<User> getMethodDisplayName(
-        @PathVariable("testId")
+        @PathVariable(name = "testId")
         Long uriParamDisplayName,
         @RequestParam(name = "queryParam")
         String queryParamDisplayName,
@@ -188,7 +188,7 @@ public class TestControllerDecorator
      */
     @RequestMapping(value = "/{testId}", method = RequestMethod.PUT)
     public ResponseEntity<?> updateMethodDisplayName(
-        @PathVariable("testId")
+        @PathVariable(name = "testId")
         Long uriParamDisplayName,
         @Valid
         @RequestBody
@@ -202,7 +202,7 @@ public class TestControllerDecorator
      */
     @RequestMapping(value = "/{testId}", method = RequestMethod.DELETE)
     public ResponseEntity<?> deleteMethod(
-        @PathVariable("testId")
+        @PathVariable(name = "testId")
         Long uriParamDisplayName) {
         return this.testControllerDelegate.deleteMethod(uriParamDisplayName);
     }

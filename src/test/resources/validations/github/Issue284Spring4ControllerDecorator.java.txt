@@ -1,0 +1,43 @@
+-----------------------------------com.gen.test.OtherIdClient.java-----------------------------------
+
+package com.gen.test;
+
+import java.math.BigDecimal;
+import org.springframework.cloud.netflix.feign.FeignClient;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestHeader;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
+
+
+/**
+ * No description
+ * (Generated with springmvc-raml-parser v.@project.version@)
+ * 
+ */
+@FeignClient(path = "/api/test/{testId}/{other-id}", name = "otherIdClient")
+public interface OtherIdClient {
+
+
+    /**
+     * No description
+     * 
+     */
+    @RequestMapping(value = "", method = RequestMethod.GET)
+    public ResponseEntity<String> getString(
+        @PathVariable(name = "testId")
+        BigDecimal testId,
+        @PathVariable(name = "other-id")
+        BigDecimal otherId,
+        @RequestParam(name = "name")
+        java.lang.String name,
+        @RequestParam(name = "my-name")
+        java.lang.String myName,
+        @RequestHeader(name = "head")
+        java.lang.String head,
+        @RequestHeader(name = "my-head")
+        java.lang.String myHead);
+
+}

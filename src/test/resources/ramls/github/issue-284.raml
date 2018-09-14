@@ -1,0 +1,19 @@
+#%RAML 1.0
+title: FeignClient issues
+
+/test/{testId}/{other-id}:
+  uriParameters: 
+    testId: number
+    other-id: number
+  get:
+    queryParameters: 
+      name: string
+      my-name: string
+    headers: 
+      head: string
+      my-head: string
+    responses: 
+      200:
+        body: 
+          application/json:
+            type: string

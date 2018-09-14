@@ -32,7 +32,7 @@ public class SpringFeignClientClassAnnotationRule implements Rule<JDefinedClass,
 	public JAnnotationUse apply(ApiResourceMetadata controllerMetadata, JDefinedClass generatableType) {
 		JAnnotationUse feignClient = generatableType.annotate(FeignClient.class);
 
-		feignClient.param("url", controllerMetadata.getControllerUrl());
+		feignClient.param("path", controllerMetadata.getControllerUrl());
 		feignClient.param("name", getClientName(controllerMetadata));
 
 		return feignClient;

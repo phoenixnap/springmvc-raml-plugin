@@ -44,8 +44,9 @@ public class SpringFeignClientInterfaceDecoratorRule implements Rule<JCodeModel,
 		GenericJavaClassRule generator = new GenericJavaClassRule().setPackageRule(new PackageRule())
 				.setClassCommentRule(new ClassCommentRule()).addClassAnnotationRule(new SpringFeignClientClassAnnotationRule())
 				.setClassRule(new SpringFeignClientInterfaceDeclarationRule()).setMethodCommentRule(new MethodCommentRule())
-				.addMethodAnnotationRule(new SpringRequestMappingMethodAnnotationRule()).setMethodSignatureRule(
-						new ControllerMethodSignatureRule(new SpringFeignClientResponseTypeRule(), new SpringMethodParamsRule()));
+				.addMethodAnnotationRule(new SpringRequestMappingMethodAnnotationRule())
+				.setMethodSignatureRule(new ControllerMethodSignatureRule(new SpringFeignClientResponseTypeRule(),
+						new SpringFeignClientMethodParamsRule()));
 		return generator.apply(metadata, generatableType);
 	}
 }
