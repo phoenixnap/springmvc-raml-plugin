@@ -15,6 +15,7 @@ A sample project that includes a SpringMVC Server implementation using the Decor
 ## Documentation & Getting Support
 Usage and documentation are available in the Javadoc and README.md (this file). Kindly contact the developers via email (available in the pom files) if required or open an [Issue][] in our tracking system.
 
+A tuturial about using RAML to document API contracts and how this plugin fit within the process can be found in this PhoenixNAP blog post: https://phoenixnap.com/blog/the-source-of-truth-using-raml-to-document-rest-api-contracts
 
 ## Building from Source
 The SpringMVC-RAML plugin uses a [Maven][]-based build system.
