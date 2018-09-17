@@ -1,4 +1,4 @@
-![PhoenixNAP Logo](https://phoenixnap.com/wp-content/themes/phoenixnap-v2/img/v2/logo.svg)
+[![PhoenixNAP Logo](https://phoenixnap.com/wp-content/themes/phoenixnap-v2/img/v2/logo.svg)](https://phoenixnap.com)
 
 # Spring MVC-RAML Plugin [![Build Status](https://travis-ci.org/phoenixnap/springmvc-raml-plugin.svg?branch=master)](https://travis-ci.org/phoenixnap/springmvc-raml-plugin) [![Apache License 2](https://img.shields.io/badge/license-ASF2-blue.svg)](https://www.apache.org/licenses/LICENSE-2.0.txt) [![Maven Central](https://maven-badges.herokuapp.com/maven-central/com.phoenixnap.oss/springmvc-raml-plugin/badge.svg)](https://maven-badges.herokuapp.com/maven-central/com.phoenixnap.oss/springmvc-raml-plugin/badge.svg)
 
