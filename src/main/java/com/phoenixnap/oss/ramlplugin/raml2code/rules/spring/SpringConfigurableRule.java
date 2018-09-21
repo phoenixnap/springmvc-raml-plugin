@@ -17,10 +17,13 @@ import java.util.Map;
 import org.apache.commons.lang3.BooleanUtils;
 import org.springframework.util.CollectionUtils;
 
+import com.phoenixnap.oss.ramlplugin.raml2code.data.ApiActionMetadata;
 import com.phoenixnap.oss.ramlplugin.raml2code.data.ApiResourceMetadata;
 import com.phoenixnap.oss.ramlplugin.raml2code.rules.ConfigurableRule;
+import com.phoenixnap.oss.ramlplugin.raml2code.rules.Rule;
 import com.sun.codemodel.JCodeModel;
 import com.sun.codemodel.JDefinedClass;
+import com.sun.codemodel.JType;
 
 /**
  * Common parent for configurable spring rules
@@ -33,6 +36,8 @@ public abstract class SpringConfigurableRule implements ConfigurableRule<JCodeMo
 
 	public static final String CALLABLE_RESPONSE_CONFIGURATION = "callableResponse";
 
+	public static final String DEFERRED_RESULT_RESPONSE_CONFIGURATION = "deferredResultResponse";
+
 	public static final String PARAMETER_JAVADOC_CONFIGURATION = "addParameterJavadoc";
 
 	public static final String ARRAY_PARAMETER_CONFIGURATION = "allowArrayParameters";
@@ -42,6 +47,7 @@ public abstract class SpringConfigurableRule implements ConfigurableRule<JCodeMo
 	public static final String SHORTCUT_METHOD_MAPPINGS = "useShortcutMethodMappings";
 
 	private boolean callableResponse = false;
+	private boolean deferredResultResponse = false;
 	private boolean addParameterJavadoc = false;
 	private boolean allowArrayParameters = true;
 	/**
@@ -56,6 +62,9 @@ public abstract class SpringConfigurableRule implements ConfigurableRule<JCodeMo
 		if (!CollectionUtils.isEmpty(configuration)) {
 			if (configuration.containsKey(CALLABLE_RESPONSE_CONFIGURATION)) {
 				setCallableResponse(BooleanUtils.toBoolean(configuration.get(CALLABLE_RESPONSE_CONFIGURATION)));
+			}
+			if (configuration.containsKey(DEFERRED_RESULT_RESPONSE_CONFIGURATION)) {
+				setDeferredResultResponse(BooleanUtils.toBoolean(configuration.get(DEFERRED_RESULT_RESPONSE_CONFIGURATION)));
 			}
 			if (configuration.containsKey(PARAMETER_JAVADOC_CONFIGURATION)) {
 				setAddParameterJavadoc(BooleanUtils.toBoolean(configuration.get(PARAMETER_JAVADOC_CONFIGURATION)));
@@ -105,4 +114,25 @@ public abstract class SpringConfigurableRule implements ConfigurableRule<JCodeMo
 	public void setSimpleReturnTypes(boolean simpleReturnTypes) {
 		this.simpleReturnTypes = simpleReturnTypes;
 	}
+
+	public boolean isDeferredResultResponse() {
+		return deferredResultResponse;
+	}
+
+	public void setDeferredResultResponse(boolean deferredResultResponse) {
+		this.deferredResultResponse = deferredResultResponse;
+	}
+
+	protected Rule<JDefinedClass, JType, ApiActionMetadata> getReturnTypeRule(boolean useSimpleReturnType) {
+		if (isCallableResponse()) {
+			return new SpringCallableResponseEntityRule();
+		} else if (isDeferredResultResponse()) {
+			return new SpringDeferredResultResponseEntityRule();
+		} else if (useSimpleReturnType && isSimpleReturnTypes()) {
+			return new SpringObjectReturnTypeRule();
+		} else {
+			return new SpringResponseEntityRule();
+		}
+	}
+
 }

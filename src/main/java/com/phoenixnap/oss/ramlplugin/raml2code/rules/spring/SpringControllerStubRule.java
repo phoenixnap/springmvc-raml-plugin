@@ -59,8 +59,7 @@ public abstract class SpringControllerStubRule extends SpringConfigurableRule {
 				.addClassAnnotationRule(new SpringValidatedClassAnnotationRule()).setClassRule(new ControllerClassDeclarationRule())
 				.setMethodCommentRule(new MethodCommentRule()).addMethodAnnotationRule(new SpringRequestMappingMethodAnnotationRule())
 				.addMethodAnnotationRule(getResponseBodyAnnotationRule())
-				.setMethodSignatureRule(new ControllerMethodSignatureRule(
-						isCallableResponse() ? new SpringSimpleCallableResponseTypeRule() : new SpringSimpleResponseTypeRule(),
+				.setMethodSignatureRule(new ControllerMethodSignatureRule(getReturnTypeRule(false),
 						new SpringMethodParamsRule(isAddParameterJavadoc(), isAllowArrayParameters())))
 				.setMethodBodyRule(new ImplementMeMethodBodyRule());
 

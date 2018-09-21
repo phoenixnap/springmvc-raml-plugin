@@ -12,6 +12,11 @@
  */
 package com.phoenixnap.oss.ramlplugin.raml2code.rules.spring;
 
+import java.util.Map;
+
+import org.apache.commons.lang3.BooleanUtils;
+import org.springframework.util.CollectionUtils;
+
 import com.phoenixnap.oss.ramlplugin.raml2code.data.ApiActionMetadata;
 import com.phoenixnap.oss.ramlplugin.raml2code.data.ApiResourceMetadata;
 import com.phoenixnap.oss.ramlplugin.raml2code.rules.GenericJavaClassRule;
@@ -25,10 +30,6 @@ import com.sun.codemodel.JAnnotationUse;
 import com.sun.codemodel.JCodeModel;
 import com.sun.codemodel.JDefinedClass;
 import com.sun.codemodel.JMethod;
-import org.apache.commons.lang3.BooleanUtils;
-import org.springframework.util.CollectionUtils;
-
-import java.util.Map;
 
 /**
  * A code generation Rule that provides a standalone Controller interface with
@@ -60,21 +61,16 @@ public abstract class SpringControllerInterfaceRule extends SpringConfigurableRu
 				.setClassRule(new ControllerInterfaceDeclarationRule()).setMethodCommentRule(new MethodCommentRule())
 				.addMethodAnnotationRule(isUseShortcutMethodMappings() ? new SpringShortcutMappingMethodAnnotationRule()
 						: new SpringRequestMappingMethodAnnotationRule())
-				.addMethodAnnotationRule(getResponseBodyAnnotationRule())
-				.setMethodSignatureRule(new ControllerMethodSignatureRule(
-						isCallableResponse() ? new SpringCallableResponseEntityRule()
-								: isSimpleReturnTypes() ? new SpringObjectReturnTypeRule() : new SpringResponseEntityRule(),
-						new SpringMethodParamsRule(isAddParameterJavadoc(), isAllowArrayParameters())));
+				.addMethodAnnotationRule(getResponseBodyAnnotationRule()).setMethodSignatureRule(new ControllerMethodSignatureRule(
+						getReturnTypeRule(true), new SpringMethodParamsRule(isAddParameterJavadoc(), isAllowArrayParameters())));
 		return generator.apply(metadata, generatableType);
 	}
 
 	@Override
 	public void applyConfiguration(Map<String, String> configuration) {
 		super.applyConfiguration(configuration);
-		if (!CollectionUtils.isEmpty(configuration)) {
-			if (configuration.containsKey(SIMPLE_RETURN_TYPES)) {
-				setSimpleReturnTypes(BooleanUtils.toBoolean(configuration.get(SIMPLE_RETURN_TYPES)));
-			}
+		if (!CollectionUtils.isEmpty(configuration) && configuration.containsKey(SIMPLE_RETURN_TYPES)) {
+			setSimpleReturnTypes(BooleanUtils.toBoolean(configuration.get(SIMPLE_RETURN_TYPES)));
 		}
 	}
 

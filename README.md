@@ -149,7 +149,9 @@ The drawback: When you regenerate the controller stubs your code will be overrid
 ```
 Configuration:
 	callableResponse: [OPTIONAL] set to 'true' to support asynchronous callables. Default: 'false'
+	deferredResultResponse: [OPTIONAL] set to 'true' to support asynchronous deferred results (DeferredResult). Default: 'false'
 ```
+**NOTE:** `callableResponse` and `deferredResultResponse` are mutually exclusive
 
 - **com.phoenixnap.oss.ramlplugin.raml2code.rules.Spring4ControllerDecoratorRule**:
 Creates a controller interface and a decorator with Spring MVC annotations for each top level endpoint.
@@ -159,7 +161,9 @@ So all you have to do is to provide an ControllerDelegate class which implements
 ```
 Configuration:
 	callableResponse: [OPTIONAL] set to 'true' to support asynchronous callables. Default: 'false'
+	deferredResultResponse: [OPTIONAL] set to 'true' to support asynchronous deferred results (DeferredResult). Default: 'false'
 ```
+**NOTE:** `callableResponse` and `deferredResultResponse` are mutually exclusive
 
 - **com.phoenixnap.oss.ramlplugin.raml2code.rules.Spring4ControllerInterfaceRule**:
 Creates an single interface with Spring MVC annotations for each top level endpoint.
@@ -168,9 +172,11 @@ All you have to do is to provide an implementation for the controller interface
 ```
 Configuration:
 	callableResponse: [OPTIONAL] set to 'true' to support asynchronous callables. Default: 'false'
+	deferredResultResponse: [OPTIONAL] set to 'true' to support asynchronous deferred results (DeferredResult). Default: 'false'
 	simpleReturnTypes: [OPTIONAL] set to 'true' to generate controllers method's return types without ResponseEntity<> wrapper. Will also generate Object instead of ResponseEntity<?> return type for methods when return type is not specified for the endpoint. Default: 'false'
 	useShortcutMethodMappings: [OPTIONAL] set to 'true' to generate new shortcut method annotations(e.g. @PutMapping, @GetMapping) instead of old-style @RequestMapping. Default: 'false'
 ```
+**NOTE:** `callableResponse`, `deferredResultResponse` and `simpleReturnTypes` are mutually exclusive
 
 - **com.phoenixnap.oss.ramlplugin.raml2code.rules.Spring4RestTemplateClientRule**:
 Creates a single interface as well as a client implementation using the Spring RestTemplate. The client assumes that a RestTemplate is available to be autowired.

@@ -8,6 +8,7 @@ import java.util.List;
 import java.util.concurrent.Callable;
 
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.context.request.async.DeferredResult;
 
 import com.phoenixnap.oss.ramlplugin.raml2code.data.ApiActionMetadata;
 import com.phoenixnap.oss.ramlplugin.raml2code.data.ApiBodyMetadata;
@@ -21,28 +22,36 @@ public class RuleHelper {
 
 	public static JClass getResponseEntity(ApiActionMetadata endpointMetadata, JCodeModel owner, boolean checkBody) {
 
-		return narrow(endpointMetadata, owner, false, checkBody, true);
+		return narrow(endpointMetadata, owner, false, checkBody, true, false);
 	}
 
 	public static JClass getCallableResponseEntity(ApiActionMetadata endpointMetadata, JCodeModel owner) {
 
-		return narrow(endpointMetadata, owner, true, true, true);
+		return narrow(endpointMetadata, owner, true, true, true, false);
+	}
+
+	public static JClass getDeferredResultResponseEntity(ApiActionMetadata endpointMetadata, JCodeModel owner) {
+
+		return narrow(endpointMetadata, owner, false, true, true, true);
 	}
 
 	public static JClass getObject(ApiActionMetadata endpointMetadata, JCodeModel owner) {
 
-		return narrow(endpointMetadata, owner, false, true, false);
+		return narrow(endpointMetadata, owner, false, true, false, false);
 	}
 
 	private static JClass narrow(ApiActionMetadata endpointMetadata, JCodeModel owner, boolean useCallable, boolean checkBody,
-			boolean useWildcard) {
+			boolean useWildcard, boolean useDeferredResult) {
 
 		JClass callable = null;
 		if (useCallable) {
 			callable = owner.ref(Callable.class);
 		}
+		if (useDeferredResult) {
+			callable = owner.ref(DeferredResult.class);
+		}
 		if (checkBody && endpointMetadata.getResponseBody().isEmpty()) {
-			if (useWildcard) {
+			if (useWildcard || useDeferredResult) {
 				return getResponseEntityNarrow(owner, owner.wildcard(), callable);
 			} else {
 				return owner.ref(Object.class);
