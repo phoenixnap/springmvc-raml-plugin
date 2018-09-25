@@ -66,22 +66,25 @@ public class MethodParamsRule implements Rule<CodeModelHelper.JExtMethod, JMetho
 
 	boolean addParameterJavadoc = false;
 	boolean allowArrayParameters = true;
+	boolean allowHeaders = true;
 
 	public MethodParamsRule() {
-		this(false, true);
+		this(false, true, true);
 	}
 
 	/**
-	 * If set to true, the rule will also add a parameter javadoc entry
 	 * 
 	 * @param addParameterJavadoc
 	 *            Set to true for javadocs for parameters
 	 * @param allowArrayParameters
 	 *            If true we will use the component type for array parameters
+	 * @param allowHeaders
+	 *            If true individual headers will be used
 	 */
-	public MethodParamsRule(boolean addParameterJavadoc, boolean allowArrayParameters) {
+	public MethodParamsRule(boolean addParameterJavadoc, boolean allowArrayParameters, boolean allowHeaders) {
 		this.addParameterJavadoc = addParameterJavadoc;
 		this.allowArrayParameters = allowArrayParameters;
+		this.allowHeaders = allowHeaders;
 	}
 
 	@Override
@@ -90,7 +93,10 @@ public class MethodParamsRule implements Rule<CodeModelHelper.JExtMethod, JMetho
 		List<ApiParameterMetadata> parameterMetadataList = new ArrayList<>();
 		parameterMetadataList.addAll(endpointMetadata.getPathVariables());
 		parameterMetadataList.addAll(endpointMetadata.getRequestParameters());
-		parameterMetadataList.addAll(endpointMetadata.getRequestHeaders());
+
+		if (this.allowHeaders) {
+			parameterMetadataList.addAll(endpointMetadata.getRequestHeaders());
+		}
 
 		parameterMetadataList.forEach(paramMetaData -> {
 			paramQueryForm(paramMetaData, generatableType, endpointMetadata);

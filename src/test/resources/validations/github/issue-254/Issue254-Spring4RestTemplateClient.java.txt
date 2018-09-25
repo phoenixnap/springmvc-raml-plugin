@@ -1,0 +1,219 @@
+-----------------------------------com.gen.test.TestClient.java-----------------------------------
+
+package com.gen.test;
+
+import java.math.BigDecimal;
+import java.util.Date;
+import javax.validation.Valid;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.ResponseEntity;
+
+
+/**
+ * No description
+ * (Generated with springmvc-raml-parser v.@project.version@)
+ * 
+ */
+public interface TestClient {
+
+
+    /**
+     * No description
+     * 
+     * @param xTestDateTime 
+     * @param httpHeaders The HTTP headers for the request
+     * @param xTestNumber 
+     * @param string The Request Body Payload
+     * @param xTestString 
+     */
+    public ResponseEntity<?> createString(Date xTestDateTime, java.lang.String xTestString, BigDecimal xTestNumber,
+        @Valid
+        String string, HttpHeaders httpHeaders);
+
+    /**
+     * No description
+     * 
+     * @param xTestDateTime 
+     * @param httpHeaders The HTTP headers for the request
+     * @param xTestNumber 
+     * @param string The Request Body Payload
+     * @param xTestString 
+     */
+    public ResponseEntity<?> updateString(Date xTestDateTime, java.lang.String xTestString, BigDecimal xTestNumber,
+        @Valid
+        String string, HttpHeaders httpHeaders);
+
+    /**
+     * No description
+     * 
+     * @param xTestDateTime 
+     * @param httpHeaders The HTTP headers for the request
+     * @param id 
+     * @param xTestNumber 
+     * @param xTestString 
+     */
+    public ResponseEntity<String> getString(BigDecimal id, Date xTestDateTime, java.lang.String xTestString, BigDecimal xTestNumber, HttpHeaders httpHeaders);
+
+    /**
+     * No description
+     * 
+     * @param xTestDateTime 
+     * @param httpHeaders The HTTP headers for the request
+     * @param id 
+     * @param xTestNumber 
+     * @param xTestString 
+     */
+    public ResponseEntity<?> deleteTest(BigDecimal id, Date xTestDateTime, java.lang.String xTestString, BigDecimal xTestNumber, HttpHeaders httpHeaders);
+
+}
+-----------------------------------com.gen.test.TestClientImpl.java-----------------------------------
+
+package com.gen.test;
+
+import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
+import javax.validation.Valid;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpMethod;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Component;
+import org.springframework.web.client.RestTemplate;
+import org.springframework.web.util.UriComponents;
+import org.springframework.web.util.UriComponentsBuilder;
+
+
+/**
+ * No description
+ * (Generated with springmvc-raml-parser v.@project.version@)
+ * 
+ */
+@Component
+public class TestClientImpl
+    implements TestClient
+{
+
+    @Value("${client.url}")
+    private java.lang.String baseUrl;
+    @Autowired
+    private RestTemplate restTemplate;
+
+    /**
+     * No description
+     * 
+     */
+    public ResponseEntity<?> createString(Date xTestDateTime, java.lang.String xTestString, BigDecimal xTestNumber,
+        @Valid
+        String string, HttpHeaders httpHeaders) {
+        //  Add Accepts Headers and Body Content-Type
+        ArrayList<MediaType> acceptsList = new ArrayList<MediaType>();
+        httpHeaders.setContentType(MediaType.valueOf("application/json"));
+        acceptsList.add(MediaType.valueOf("application/json"));
+        httpHeaders.setAccept(acceptsList);
+        if (xTestDateTime!= null) {
+            httpHeaders.add("X-testDateTime", xTestDateTime.toString());
+        }
+        if (xTestString!= null) {
+            httpHeaders.add("X-testString", xTestString.toString());
+        }
+        if (xTestNumber!= null) {
+            httpHeaders.add("X-testNumber", xTestNumber.toString());
+        }
+        java.lang.String url = baseUrl.concat("/test");
+        UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl(url);
+        UriComponents uriComponents = builder.build();
+        HttpEntity httpEntity = new HttpEntity(string, httpHeaders);
+        return this.restTemplate.exchange(uriComponents.encode().toUri(), HttpMethod.POST, httpEntity, Object.class);
+    }
+
+    /**
+     * No description
+     * 
+     */
+    public ResponseEntity<?> updateString(Date xTestDateTime, java.lang.String xTestString, BigDecimal xTestNumber,
+        @Valid
+        String string, HttpHeaders httpHeaders) {
+        //  Add Accepts Headers and Body Content-Type
+        ArrayList<MediaType> acceptsList = new ArrayList<MediaType>();
+        httpHeaders.setContentType(MediaType.valueOf("application/json"));
+        acceptsList.add(MediaType.valueOf("application/json"));
+        httpHeaders.setAccept(acceptsList);
+        if (xTestDateTime!= null) {
+            httpHeaders.add("X-testDateTime", xTestDateTime.toString());
+        }
+        if (xTestString!= null) {
+            httpHeaders.add("X-testString", xTestString.toString());
+        }
+        if (xTestNumber!= null) {
+            httpHeaders.add("X-testNumber", xTestNumber.toString());
+        }
+        java.lang.String url = baseUrl.concat("/test");
+        UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl(url);
+        UriComponents uriComponents = builder.build();
+        HttpEntity httpEntity = new HttpEntity(string, httpHeaders);
+        return this.restTemplate.exchange(uriComponents.encode().toUri(), HttpMethod.PUT, httpEntity, Object.class);
+    }
+
+    /**
+     * No description
+     * 
+     */
+    public ResponseEntity<String> getString(BigDecimal id, Date xTestDateTime, java.lang.String xTestString, BigDecimal xTestNumber, HttpHeaders httpHeaders) {
+        //  Add Accepts Headers and Body Content-Type
+        ArrayList<MediaType> acceptsList = new ArrayList<MediaType>();
+        acceptsList.add(MediaType.valueOf("application/json"));
+        httpHeaders.setAccept(acceptsList);
+        if (xTestDateTime!= null) {
+            httpHeaders.add("X-testDateTime", xTestDateTime.toString());
+        }
+        if (xTestString!= null) {
+            httpHeaders.add("X-testString", xTestString.toString());
+        }
+        if (xTestNumber!= null) {
+            httpHeaders.add("X-testNumber", xTestNumber.toString());
+        }
+        java.lang.String url = baseUrl.concat("/test/{id}");
+        UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl(url);
+        UriComponents uriComponents = builder.build();
+        HttpEntity httpEntity = new HttpEntity(httpHeaders);
+        Map<java.lang.String, Object> uriParamMap = new HashMap();
+        uriParamMap.put("id", id);
+        uriComponents = uriComponents.expand(uriParamMap);
+        return this.restTemplate.exchange(uriComponents.encode().toUri(), HttpMethod.GET, httpEntity, String.class);
+    }
+
+    /**
+     * No description
+     * 
+     */
+    public ResponseEntity<?> deleteTest(BigDecimal id, Date xTestDateTime, java.lang.String xTestString, BigDecimal xTestNumber, HttpHeaders httpHeaders) {
+        //  Add Accepts Headers and Body Content-Type
+        ArrayList<MediaType> acceptsList = new ArrayList<MediaType>();
+        acceptsList.add(MediaType.valueOf("application/json"));
+        httpHeaders.setAccept(acceptsList);
+        if (xTestDateTime!= null) {
+            httpHeaders.add("X-testDateTime", xTestDateTime.toString());
+        }
+        if (xTestString!= null) {
+            httpHeaders.add("X-testString", xTestString.toString());
+        }
+        if (xTestNumber!= null) {
+            httpHeaders.add("X-testNumber", xTestNumber.toString());
+        }
+        java.lang.String url = baseUrl.concat("/test/{id}");
+        UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl(url);
+        UriComponents uriComponents = builder.build();
+        HttpEntity httpEntity = new HttpEntity(httpHeaders);
+        Map<java.lang.String, Object> uriParamMap = new HashMap();
+        uriParamMap.put("id", id);
+        uriComponents = uriComponents.expand(uriParamMap);
+        return this.restTemplate.exchange(uriComponents.encode().toUri(), HttpMethod.DELETE, httpEntity, Object.class);
+    }
+
+}

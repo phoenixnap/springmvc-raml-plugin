@@ -1,0 +1,60 @@
+#%RAML 1.0
+title:  gh-254
+description: Option to skip headers in method parameters when using injectHttpHeadersParameter 
+  
+/test:
+  post:
+    headers: 
+      X-testDateTime:
+        type: datetime-only
+        example: "2015-07-04T21:00:00"
+      X-testString: 
+        type: string
+      X-testNumber:
+        type: number
+    body: 
+      application/json:
+        type: string
+    responses: 
+      201:
+  put:
+    headers: 
+      X-testDateTime:
+        type: datetime-only
+        example: "2015-07-04T21:00:00"
+      X-testString: 
+        type: string
+      X-testNumber:
+        type: number
+    body: 
+      application/json:
+        type: string
+    responses: 
+      201:
+  /{id}:
+    uriParameters: 
+      id: number
+    get:
+      headers: 
+        X-testDateTime:
+          type: datetime-only
+          example: "2015-07-04T21:00:00"
+        X-testString: 
+          type: string
+        X-testNumber:
+          type: number
+      responses: 
+        200:
+          body: 
+            application/json:
+              type: string
+    delete:
+      headers: 
+        X-testDateTime:
+          type: datetime-only
+          example: "2015-07-04T21:00:00"
+        X-testString: 
+          type: string
+        X-testNumber:
+          type: number
+        

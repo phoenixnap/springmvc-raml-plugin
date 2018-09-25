@@ -1,0 +1,97 @@
+-----------------------------------com.gen.test.TestClient.java-----------------------------------
+
+package com.gen.test;
+
+import java.math.BigDecimal;
+import java.util.Date;
+import javax.validation.Valid;
+import org.springframework.cloud.netflix.feign.FeignClient;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestHeader;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+
+
+/**
+ * No description
+ * (Generated with springmvc-raml-parser v.@project.version@)
+ * 
+ */
+@FeignClient(path = "/api/test", name = "testClient")
+public interface TestClient {
+
+
+    /**
+     * No description
+     * 
+     */
+    @RequestMapping(value = "", method = RequestMethod.POST)
+    public ResponseEntity<?> createString(
+        @RequestHeader(name = "X-testDateTime")
+        Date xTestDateTime,
+        @RequestHeader(name = "X-testString")
+        java.lang.String xTestString,
+        @RequestHeader(name = "X-testNumber")
+        BigDecimal xTestNumber,
+        @Valid
+        @RequestBody
+        String string,
+        @RequestHeader
+        HttpHeaders httpHeaders);
+
+    /**
+     * No description
+     * 
+     */
+    @RequestMapping(value = "", method = RequestMethod.PUT)
+    public ResponseEntity<?> updateString(
+        @RequestHeader(name = "X-testDateTime")
+        Date xTestDateTime,
+        @RequestHeader(name = "X-testString")
+        java.lang.String xTestString,
+        @RequestHeader(name = "X-testNumber")
+        BigDecimal xTestNumber,
+        @Valid
+        @RequestBody
+        String string,
+        @RequestHeader
+        HttpHeaders httpHeaders);
+
+    /**
+     * No description
+     * 
+     */
+    @RequestMapping(value = "/{id}", method = RequestMethod.GET)
+    public ResponseEntity<String> getString(
+        @PathVariable(name = "id")
+        BigDecimal id,
+        @RequestHeader(name = "X-testDateTime")
+        Date xTestDateTime,
+        @RequestHeader(name = "X-testString")
+        java.lang.String xTestString,
+        @RequestHeader(name = "X-testNumber")
+        BigDecimal xTestNumber,
+        @RequestHeader
+        HttpHeaders httpHeaders);
+
+    /**
+     * No description
+     * 
+     */
+    @RequestMapping(value = "/{id}", method = RequestMethod.DELETE)
+    public ResponseEntity<?> deleteTest(
+        @PathVariable(name = "id")
+        BigDecimal id,
+        @RequestHeader(name = "X-testDateTime")
+        Date xTestDateTime,
+        @RequestHeader(name = "X-testString")
+        java.lang.String xTestString,
+        @RequestHeader(name = "X-testNumber")
+        BigDecimal xTestNumber,
+        @RequestHeader
+        HttpHeaders httpHeaders);
+
+}

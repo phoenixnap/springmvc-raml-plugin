@@ -61,8 +61,8 @@ public class SpringMethodParamsRule extends MethodParamsRule {
 		super();
 	}
 
-	public SpringMethodParamsRule(boolean addParameterJavadoc, boolean allowArrayParameters) {
-		super(addParameterJavadoc, allowArrayParameters);
+	public SpringMethodParamsRule(boolean addParameterJavadoc, boolean allowArrayParameters, boolean allowHeaders) {
+		super(addParameterJavadoc, allowArrayParameters, allowHeaders);
 	}
 
 	@Override
@@ -70,7 +70,7 @@ public class SpringMethodParamsRule extends MethodParamsRule {
 			ApiActionMetadata endpointMetadata) {
 		JVar jVar = super.paramQueryForm(paramMetaData, generatableType, endpointMetadata);
 		JAnnotationUse jAnnotationUse;
-		if (paramMetaData.getRamlParam() != null && paramMetaData.getRamlParam() instanceof RamlUriParameter) {
+		if (paramMetaData.getRamlParam() instanceof RamlUriParameter) {
 			jAnnotationUse = jVar.annotate(PathVariable.class);
 			if (!paramMetaData.getName().equals(jVar.name())) {
 				jAnnotationUse.param("name", paramMetaData.getName());
@@ -79,7 +79,7 @@ public class SpringMethodParamsRule extends MethodParamsRule {
 				jAnnotationUse.param("required", false);
 			}
 			return jVar;
-		} else if (paramMetaData.getRamlParam() != null && paramMetaData.getRamlParam() instanceof RamlHeader) {
+		} else if (paramMetaData.getRamlParam() instanceof RamlHeader) {
 			jAnnotationUse = jVar.annotate(RequestHeader.class);
 			if (!paramMetaData.getName().equals(jVar.name())) {
 				jAnnotationUse.param("name", paramMetaData.getName());

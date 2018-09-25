@@ -93,8 +93,8 @@ public class Spring4RestTemplateClientRule implements ConfigurableRule<JCodeMode
 		JDefinedClass generatedInterface = new GenericJavaClassRule().setPackageRule(new PackageRule())
 				.setClassCommentRule(new ClassCommentRule()).setClassRule(new ClientInterfaceDeclarationRule()) // MODIFIED
 				.setMethodCommentRule(new MethodCommentRule())
-				.setMethodSignatureRule(
-						new ControllerMethodSignatureRule(new SpringResponseEntityRule(), new MethodParamsRule(true, allowArrayParameters)))
+				.setMethodSignatureRule(new ControllerMethodSignatureRule(new SpringResponseEntityRule(),
+						new MethodParamsRule(true, allowArrayParameters, true)))
 				.apply(metadata, generatableType);
 
 		GenericJavaClassRule clientGenerator = new GenericJavaClassRule().setPackageRule(new PackageRule())
@@ -104,7 +104,7 @@ public class Spring4RestTemplateClientRule implements ConfigurableRule<JCodeMode
 				.addFieldDeclarationRule(new ClassFieldDeclarationRule(baseUrlFieldName, String.class, getBaseUrlConfigurationName())) //
 				.setMethodCommentRule(new MethodCommentRule())
 				.setMethodSignatureRule(new ControllerMethodSignatureRule(new SpringResponseEntityRule(),
-						new MethodParamsRule(false, allowArrayParameters)))
+						new MethodParamsRule(false, allowArrayParameters, true)))
 				.setMethodBodyRule(new SpringRestClientMethodBodyRule(restTemplateFieldName, baseUrlFieldName));
 
 		if (grants.isEmpty()) {

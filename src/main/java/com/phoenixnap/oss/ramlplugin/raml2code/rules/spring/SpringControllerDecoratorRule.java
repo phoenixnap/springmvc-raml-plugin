@@ -16,6 +16,7 @@ import org.apache.commons.lang.StringUtils;
 
 import com.phoenixnap.oss.ramlplugin.raml2code.data.ApiActionMetadata;
 import com.phoenixnap.oss.ramlplugin.raml2code.data.ApiResourceMetadata;
+import com.phoenixnap.oss.ramlplugin.raml2code.plugin.Config;
 import com.phoenixnap.oss.ramlplugin.raml2code.rules.GenericJavaClassRule;
 import com.phoenixnap.oss.ramlplugin.raml2code.rules.Rule;
 import com.phoenixnap.oss.ramlplugin.raml2code.rules.basic.ClassCommentRule;
@@ -69,7 +70,7 @@ public abstract class SpringControllerDecoratorRule extends SpringConfigurableRu
 				.setClassCommentRule(new ClassCommentRule()).setClassRule(new ControllerInterfaceDeclarationRule())
 				.setMethodCommentRule(new MethodCommentRule())
 				.setMethodSignatureRule(new ControllerMethodSignatureRule(getReturnTypeRule(false),
-						new MethodParamsRule(isAddParameterJavadoc(), isAllowArrayParameters())))
+						new MethodParamsRule(isAddParameterJavadoc(), isAllowArrayParameters(), !Config.isInjectHttpHeadersParameter())))
 				.apply(metadata, generatableType);
 
 		String delegateFieldName = StringUtils.uncapitalize(generatedInterface.name() + "Delegate");
@@ -84,7 +85,8 @@ public abstract class SpringControllerDecoratorRule extends SpringConfigurableRu
 				.setMethodCommentRule(new MethodCommentRule()).addMethodAnnotationRule(new SpringRequestMappingMethodAnnotationRule())
 				.addMethodAnnotationRule(getResponseBodyAnnotationRule())
 				.setMethodSignatureRule(new ControllerMethodSignatureRule(getReturnTypeRule(false),
-						new SpringMethodParamsRule(isAddParameterJavadoc(), isAllowArrayParameters())))
+						new SpringMethodParamsRule(isAddParameterJavadoc(), isAllowArrayParameters(),
+								!Config.isInjectHttpHeadersParameter())))
 				.setMethodBodyRule(new DelegatingMethodBodyRule(delegateFieldName));
 
 		return delegateGenerator.apply(metadata, generatableType);

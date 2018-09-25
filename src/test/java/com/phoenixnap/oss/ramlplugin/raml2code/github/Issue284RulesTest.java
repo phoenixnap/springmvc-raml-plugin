@@ -20,6 +20,6 @@ public class Issue284RulesTest extends GitHubAbstractRuleTestBase {
 		loadRaml("issue-284.raml");
 		Rule<JCodeModel, JDefinedClass, ApiResourceMetadata> rule = new SpringFeignClientInterfaceDecoratorRule();
 		rule.apply(getControllerMetadata(), jCodeModel);
-		verifyGeneratedCode("Issue284Spring4ControllerDecorator");
+		verifyGeneratedCode("Issue284FeignClientInterface");
 	}
 }

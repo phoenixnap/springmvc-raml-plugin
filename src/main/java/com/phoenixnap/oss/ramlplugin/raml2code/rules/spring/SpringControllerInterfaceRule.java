@@ -19,6 +19,7 @@ import org.springframework.util.CollectionUtils;
 
 import com.phoenixnap.oss.ramlplugin.raml2code.data.ApiActionMetadata;
 import com.phoenixnap.oss.ramlplugin.raml2code.data.ApiResourceMetadata;
+import com.phoenixnap.oss.ramlplugin.raml2code.plugin.Config;
 import com.phoenixnap.oss.ramlplugin.raml2code.rules.GenericJavaClassRule;
 import com.phoenixnap.oss.ramlplugin.raml2code.rules.Rule;
 import com.phoenixnap.oss.ramlplugin.raml2code.rules.basic.ClassCommentRule;
@@ -61,8 +62,9 @@ public abstract class SpringControllerInterfaceRule extends SpringConfigurableRu
 				.setClassRule(new ControllerInterfaceDeclarationRule()).setMethodCommentRule(new MethodCommentRule())
 				.addMethodAnnotationRule(isUseShortcutMethodMappings() ? new SpringShortcutMappingMethodAnnotationRule()
 						: new SpringRequestMappingMethodAnnotationRule())
-				.addMethodAnnotationRule(getResponseBodyAnnotationRule()).setMethodSignatureRule(new ControllerMethodSignatureRule(
-						getReturnTypeRule(true), new SpringMethodParamsRule(isAddParameterJavadoc(), isAllowArrayParameters())));
+				.addMethodAnnotationRule(getResponseBodyAnnotationRule()).setMethodSignatureRule(
+						new ControllerMethodSignatureRule(getReturnTypeRule(true), new SpringMethodParamsRule(isAddParameterJavadoc(),
+								isAllowArrayParameters(), !Config.isInjectHttpHeadersParameter())));
 		return generator.apply(metadata, generatableType);
 	}
 

@@ -14,6 +14,7 @@ package com.phoenixnap.oss.ramlplugin.raml2code.rules.spring;
 
 import com.phoenixnap.oss.ramlplugin.raml2code.data.ApiActionMetadata;
 import com.phoenixnap.oss.ramlplugin.raml2code.data.ApiResourceMetadata;
+import com.phoenixnap.oss.ramlplugin.raml2code.plugin.Config;
 import com.phoenixnap.oss.ramlplugin.raml2code.rules.GenericJavaClassRule;
 import com.phoenixnap.oss.ramlplugin.raml2code.rules.Rule;
 import com.phoenixnap.oss.ramlplugin.raml2code.rules.basic.ClassCommentRule;
@@ -59,8 +60,8 @@ public abstract class SpringControllerStubRule extends SpringConfigurableRule {
 				.addClassAnnotationRule(new SpringValidatedClassAnnotationRule()).setClassRule(new ControllerClassDeclarationRule())
 				.setMethodCommentRule(new MethodCommentRule()).addMethodAnnotationRule(new SpringRequestMappingMethodAnnotationRule())
 				.addMethodAnnotationRule(getResponseBodyAnnotationRule())
-				.setMethodSignatureRule(new ControllerMethodSignatureRule(getReturnTypeRule(false),
-						new SpringMethodParamsRule(isAddParameterJavadoc(), isAllowArrayParameters())))
+				.setMethodSignatureRule(new ControllerMethodSignatureRule(getReturnTypeRule(false), new SpringMethodParamsRule(
+						isAddParameterJavadoc(), isAllowArrayParameters(), !Config.isInjectHttpHeadersParameter())))
 				.setMethodBodyRule(new ImplementMeMethodBodyRule());
 
 		return generator.apply(metadata, generatableType);
