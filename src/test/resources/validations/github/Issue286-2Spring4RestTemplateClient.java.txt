@@ -1,0 +1,258 @@
+-----------------------------------com.gen.test.model.User.java-----------------------------------
+
+package com.gen.test.model;
+
+import java.io.Serializable;
+import javax.validation.constraints.NotNull;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import org.apache.commons.lang.builder.EqualsBuilder;
+import org.apache.commons.lang.builder.HashCodeBuilder;
+import org.apache.commons.lang.builder.ToStringBuilder;
+
+public class User implements Serializable
+{
+
+    @JsonProperty("firstName")
+    protected String firstNameDisplayName;
+
+    /**
+     * Creates a new User.
+     * 
+     */
+    public User() {
+        super();
+    }
+
+    /**
+     * Creates a new User.
+     * 
+     */
+    public User(String firstNameDisplayName) {
+        super();
+        this.firstNameDisplayName = firstNameDisplayName;
+    }
+
+    /**
+     * Returns the firstNameDisplayName.
+     * 
+     * @return
+     *     firstNameDisplayName
+     */
+    @NotNull
+    public String getFirstNameDisplayName() {
+        return firstNameDisplayName;
+    }
+
+    /**
+     * Set the firstNameDisplayName.
+     * 
+     * @param firstNameDisplayName
+     *     the new firstNameDisplayName
+     */
+    public void setFirstNameDisplayName(String firstNameDisplayName) {
+        this.firstNameDisplayName = firstNameDisplayName;
+    }
+
+    public int hashCode() {
+        return new HashCodeBuilder().append(firstNameDisplayName).toHashCode();
+    }
+
+    public boolean equals(Object other) {
+        if (other == null) {
+            return false;
+        }
+        if (other == this) {
+            return true;
+        }
+        if (this.getClass()!= other.getClass()) {
+            return false;
+        }
+        User otherObject = ((User) other);
+        return new EqualsBuilder().append(firstNameDisplayName, otherObject.firstNameDisplayName).isEquals();
+    }
+
+    public String toString() {
+        return new ToStringBuilder(this).append("firstNameDisplayName", firstNameDisplayName).toString();
+    }
+
+}
+-----------------------------------com.gen.test.TestClient.java-----------------------------------
+
+package com.gen.test;
+
+import javax.validation.Valid;
+import com.gen.test.model.User;
+import org.springframework.http.ResponseEntity;
+
+
+/**
+ * No description
+ * (Generated with springmvc-raml-parser v.@project.version@)
+ * 
+ */
+public interface TestClient {
+
+
+    /**
+     * No description
+     * 
+     * @param user The Request Body Payload
+     */
+    public ResponseEntity<?> createMethodObject(
+        @Valid
+        User user);
+
+    /**
+     * No description
+     * 
+     * @param queryParamDisplayName 
+     * @param headerParamDisplayName 
+     * @param uriParamDisplayName 
+     */
+    public ResponseEntity<User> getMethodDisplayName(Long uriParamDisplayName, String queryParamDisplayName, String headerParamDisplayName);
+
+    /**
+     * No description
+     * 
+     * @param user The Request Body Payload
+     * @param uriParamDisplayName 
+     */
+    public ResponseEntity<?> updateMethodDisplayName(Long uriParamDisplayName,
+        @Valid
+        User user);
+
+    /**
+     * No description
+     * 
+     * @param uriParamDisplayName 
+     */
+    public ResponseEntity<?> deleteMethod(Long uriParamDisplayName);
+
+}
+-----------------------------------com.gen.test.TestClientImpl.java-----------------------------------
+
+package com.gen.test;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
+import javax.validation.Valid;
+import com.gen.test.model.User;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpMethod;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Component;
+import org.springframework.web.client.RestTemplate;
+import org.springframework.web.util.UriComponents;
+import org.springframework.web.util.UriComponentsBuilder;
+
+
+/**
+ * No description
+ * (Generated with springmvc-raml-parser v.@project.version@)
+ * 
+ */
+@Component
+public class TestClientImpl
+    implements TestClient
+{
+
+    @Value("${client.url}")
+    private String baseUrl;
+    @Autowired
+    private RestTemplate restTemplate;
+
+    /**
+     * No description
+     * 
+     */
+    public ResponseEntity<?> createMethodObject(
+        @Valid
+        User user) {
+        HttpHeaders httpHeaders = new HttpHeaders();
+        //  Add Accepts Headers and Body Content-Type
+        ArrayList<MediaType> acceptsList = new ArrayList<MediaType>();
+        httpHeaders.setContentType(MediaType.valueOf("application/json"));
+        acceptsList.add(MediaType.valueOf("application/json"));
+        httpHeaders.setAccept(acceptsList);
+        String url = baseUrl.concat("/test");
+        UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl(url);
+        UriComponents uriComponents = builder.build();
+        HttpEntity httpEntity = new HttpEntity(user, httpHeaders);
+        return this.restTemplate.exchange(uriComponents.encode().toUri(), HttpMethod.POST, httpEntity, Object.class);
+    }
+
+    /**
+     * No description
+     * 
+     */
+    public ResponseEntity<User> getMethodDisplayName(Long uriParamDisplayName, String queryParamDisplayName, String headerParamDisplayName) {
+        HttpHeaders httpHeaders = new HttpHeaders();
+        //  Add Accepts Headers and Body Content-Type
+        ArrayList<MediaType> acceptsList = new ArrayList<MediaType>();
+        acceptsList.add(MediaType.valueOf("application/json"));
+        httpHeaders.setAccept(acceptsList);
+        if (headerParamDisplayName!= null) {
+            httpHeaders.add("headerParam", headerParamDisplayName.toString());
+        }
+        String url = baseUrl.concat("/test/{testId}");
+        UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl(url);
+        if (queryParamDisplayName!= null) {
+            builder.queryParam("queryParam", queryParamDisplayName);
+        }
+        UriComponents uriComponents = builder.build();
+        HttpEntity httpEntity = new HttpEntity(httpHeaders);
+        Map<String, Object> uriParamMap = new HashMap();
+        uriParamMap.put("uriParamDisplayName", uriParamDisplayName);
+        uriComponents = uriComponents.expand(uriParamMap);
+        return this.restTemplate.exchange(uriComponents.encode().toUri(), HttpMethod.GET, httpEntity, User.class);
+    }
+
+    /**
+     * No description
+     * 
+     */
+    public ResponseEntity<?> updateMethodDisplayName(Long uriParamDisplayName,
+        @Valid
+        User user) {
+        HttpHeaders httpHeaders = new HttpHeaders();
+        //  Add Accepts Headers and Body Content-Type
+        ArrayList<MediaType> acceptsList = new ArrayList<MediaType>();
+        httpHeaders.setContentType(MediaType.valueOf("application/json"));
+        acceptsList.add(MediaType.valueOf("application/json"));
+        httpHeaders.setAccept(acceptsList);
+        String url = baseUrl.concat("/test/{testId}");
+        UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl(url);
+        UriComponents uriComponents = builder.build();
+        HttpEntity httpEntity = new HttpEntity(user, httpHeaders);
+        Map<String, Object> uriParamMap = new HashMap();
+        uriParamMap.put("uriParamDisplayName", uriParamDisplayName);
+        uriComponents = uriComponents.expand(uriParamMap);
+        return this.restTemplate.exchange(uriComponents.encode().toUri(), HttpMethod.PUT, httpEntity, Object.class);
+    }
+
+    /**
+     * No description
+     * 
+     */
+    public ResponseEntity<?> deleteMethod(Long uriParamDisplayName) {
+        HttpHeaders httpHeaders = new HttpHeaders();
+        //  Add Accepts Headers and Body Content-Type
+        ArrayList<MediaType> acceptsList = new ArrayList<MediaType>();
+        acceptsList.add(MediaType.valueOf("application/json"));
+        httpHeaders.setAccept(acceptsList);
+        String url = baseUrl.concat("/test/{testId}");
+        UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl(url);
+        UriComponents uriComponents = builder.build();
+        HttpEntity httpEntity = new HttpEntity(httpHeaders);
+        Map<String, Object> uriParamMap = new HashMap();
+        uriParamMap.put("uriParamDisplayName", uriParamDisplayName);
+        uriComponents = uriComponents.expand(uriParamMap);
+        return this.restTemplate.exchange(uriComponents.encode().toUri(), HttpMethod.DELETE, httpEntity, Object.class);
+    }
+
+}

@@ -12,10 +12,6 @@
  */
 package com.phoenixnap.oss.ramlplugin.raml2code.rules.spring;
 
-import static com.phoenixnap.oss.ramlplugin.raml2code.helpers.CodeModelHelper.findFirstClassBySimpleName;
-
-import java.math.BigDecimal;
-import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
@@ -34,10 +30,8 @@ import org.springframework.web.util.UriComponentsBuilder;
 
 import com.google.common.base.CaseFormat;
 import com.phoenixnap.oss.ramlplugin.raml2code.data.ApiActionMetadata;
-import com.phoenixnap.oss.ramlplugin.raml2code.data.ApiBodyMetadata;
 import com.phoenixnap.oss.ramlplugin.raml2code.data.ApiParameterMetadata;
 import com.phoenixnap.oss.ramlplugin.raml2code.helpers.CodeModelHelper;
-import com.phoenixnap.oss.ramlplugin.raml2code.helpers.NamingHelper;
 import com.phoenixnap.oss.ramlplugin.raml2code.helpers.RamlHelper;
 import com.phoenixnap.oss.ramlplugin.raml2code.helpers.RuleHelper;
 import com.phoenixnap.oss.ramlplugin.raml2code.plugin.Config;
@@ -147,9 +141,9 @@ public class SpringRestClientMethodBodyRule implements Rule<CodeModelHelper.JExt
 
 		// Add headers
 		for (ApiParameterMetadata parameter : endpointMetadata.getRequestHeaders()) {
-			JVar param = methodParamMap.get(NamingHelper.getParameterName(parameter.getName()));
-			String javaParamName = NamingHelper.getParameterName(parameter.getName());
-			body._if(methodParamMap.get(javaParamName).ne(JExpr._null()))._then().block().invoke(httpHeaders, "add")
+
+			JVar param = methodParamMap.get(parameter.getJavaName());
+			body._if(methodParamMap.get(parameter.getJavaName()).ne(JExpr._null()))._then().block().invoke(httpHeaders, "add")
 					.arg(parameter.getName()).arg(JExpr.invoke(param, "toString"));
 		}
 
@@ -185,9 +179,8 @@ public class SpringRestClientMethodBodyRule implements Rule<CodeModelHelper.JExt
 				// we need to check if param is not null in order to prevent
 				// client for sending that param (that will be read as empty
 				// string instead of null)
-				body._if(methodParamMap.get(NamingHelper.getParameterName(parameter.getName())).ne(JExpr._null()))._then().block()
-						.invoke(uriBuilderVar, "queryParam").arg(parameter.getName())
-						.arg(methodParamMap.get(NamingHelper.getParameterName(parameter.getName())));
+				body._if(methodParamMap.get(parameter.getJavaName()).ne(JExpr._null()))._then().block().invoke(uriBuilderVar, "queryParam")
+						.arg(parameter.getName()).arg(methodParamMap.get(parameter.getJavaName()));
 			}
 		}
 
@@ -215,7 +208,7 @@ public class SpringRestClientMethodBodyRule implements Rule<CodeModelHelper.JExt
 			JVar uriParamMapVar = body.decl(uriParamMap, "uriParamMap", uriParamMapInit);
 
 			endpointMetadata.getPathVariables()
-					.forEach(p -> body.invoke(uriParamMapVar, "put").arg(p.getName()).arg(methodParamMap.get(p.getName())));
+					.forEach(p -> body.invoke(uriParamMapVar, "put").arg(p.getJavaName()).arg(methodParamMap.get(p.getJavaName())));
 			JInvocation expandInvocation = uriComponentVar.invoke("expand").arg(uriParamMapVar);
 
 			body.assign(uriComponentVar, expandInvocation);
