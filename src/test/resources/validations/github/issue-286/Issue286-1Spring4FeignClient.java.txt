@@ -1,0 +1,148 @@
+-----------------------------------com.gen.test.model.User.java-----------------------------------
+
+package com.gen.test.model;
+
+import java.io.Serializable;
+import javax.validation.constraints.NotNull;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import org.apache.commons.lang.builder.EqualsBuilder;
+import org.apache.commons.lang.builder.HashCodeBuilder;
+import org.apache.commons.lang.builder.ToStringBuilder;
+
+public class User implements Serializable
+{
+
+    @JsonProperty("firstName")
+    protected String firstNameJavaName;
+
+    /**
+     * Creates a new User.
+     * 
+     */
+    public User() {
+        super();
+    }
+
+    /**
+     * Creates a new User.
+     * 
+     */
+    public User(String firstNameJavaName) {
+        super();
+        this.firstNameJavaName = firstNameJavaName;
+    }
+
+    /**
+     * Returns the firstNameJavaName.
+     * 
+     * @return
+     *     firstNameJavaName
+     */
+    @NotNull
+    public String getFirstNameJavaName() {
+        return firstNameJavaName;
+    }
+
+    /**
+     * Set the firstNameJavaName.
+     * 
+     * @param firstNameJavaName
+     *     the new firstNameJavaName
+     */
+    public void setFirstNameJavaName(String firstNameJavaName) {
+        this.firstNameJavaName = firstNameJavaName;
+    }
+
+    public int hashCode() {
+        return new HashCodeBuilder().append(firstNameJavaName).toHashCode();
+    }
+
+    public boolean equals(Object other) {
+        if (other == null) {
+            return false;
+        }
+        if (other == this) {
+            return true;
+        }
+        if (this.getClass()!= other.getClass()) {
+            return false;
+        }
+        User otherObject = ((User) other);
+        return new EqualsBuilder().append(firstNameJavaName, otherObject.firstNameJavaName).isEquals();
+    }
+
+    public String toString() {
+        return new ToStringBuilder(this).append("firstNameJavaName", firstNameJavaName).toString();
+    }
+
+}
+-----------------------------------com.gen.test.TestClient.java-----------------------------------
+
+package com.gen.test;
+
+import javax.validation.Valid;
+import com.gen.test.model.User;
+import org.springframework.cloud.netflix.feign.FeignClient;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestHeader;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
+
+
+/**
+ * No description
+ * (Generated with springmvc-raml-parser v.@project.version@)
+ * 
+ */
+@FeignClient(path = "/api/test", name = "testClient")
+public interface TestClient {
+
+
+    /**
+     * No description
+     * 
+     */
+    @RequestMapping(value = "", method = RequestMethod.POST)
+    public ResponseEntity<?> createMethodJavaName(
+        @Valid
+        @RequestBody
+        User user);
+
+    /**
+     * No description
+     * 
+     */
+    @RequestMapping(value = "/{testId}", method = RequestMethod.GET)
+    public ResponseEntity<User> getMethodJavaName(
+        @PathVariable(name = "testId")
+        Long uriParamJavaName,
+        @RequestParam(name = "queryParam")
+        String queryParamJavaName,
+        @RequestHeader(name = "headerParam")
+        String headerParamJavaName);
+
+    /**
+     * No description
+     * 
+     */
+    @RequestMapping(value = "/{testId}", method = RequestMethod.PUT)
+    public ResponseEntity<?> updateMethodJavaName(
+        @PathVariable(name = "testId")
+        Long uriParamJavaName,
+        @Valid
+        @RequestBody
+        User user);
+
+    /**
+     * No description
+     * 
+     */
+    @RequestMapping(value = "/{testId}", method = RequestMethod.DELETE)
+    public ResponseEntity<?> deleteMethodJavaName(
+        @PathVariable(name = "testId")
+        Long uriParamJavaName);
+
+}

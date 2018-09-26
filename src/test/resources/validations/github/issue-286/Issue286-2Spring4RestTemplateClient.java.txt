@@ -207,7 +207,7 @@ public class TestClientImpl
         UriComponents uriComponents = builder.build();
         HttpEntity httpEntity = new HttpEntity(httpHeaders);
         Map<String, Object> uriParamMap = new HashMap();
-        uriParamMap.put("uriParamDisplayName", uriParamDisplayName);
+        uriParamMap.put("testId", uriParamDisplayName);
         uriComponents = uriComponents.expand(uriParamMap);
         return this.restTemplate.exchange(uriComponents.encode().toUri(), HttpMethod.GET, httpEntity, User.class);
     }
@@ -230,7 +230,7 @@ public class TestClientImpl
         UriComponents uriComponents = builder.build();
         HttpEntity httpEntity = new HttpEntity(user, httpHeaders);
         Map<String, Object> uriParamMap = new HashMap();
-        uriParamMap.put("uriParamDisplayName", uriParamDisplayName);
+        uriParamMap.put("testId", uriParamDisplayName);
         uriComponents = uriComponents.expand(uriParamMap);
         return this.restTemplate.exchange(uriComponents.encode().toUri(), HttpMethod.PUT, httpEntity, Object.class);
     }
@@ -250,7 +250,7 @@ public class TestClientImpl
         UriComponents uriComponents = builder.build();
         HttpEntity httpEntity = new HttpEntity(httpHeaders);
         Map<String, Object> uriParamMap = new HashMap();
-        uriParamMap.put("uriParamDisplayName", uriParamDisplayName);
+        uriParamMap.put("testId", uriParamDisplayName);
         uriComponents = uriComponents.expand(uriParamMap);
         return this.restTemplate.exchange(uriComponents.encode().toUri(), HttpMethod.DELETE, httpEntity, Object.class);
     }

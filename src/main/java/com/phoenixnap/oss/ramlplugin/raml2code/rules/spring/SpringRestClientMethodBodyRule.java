@@ -208,7 +208,7 @@ public class SpringRestClientMethodBodyRule implements Rule<CodeModelHelper.JExt
 			JVar uriParamMapVar = body.decl(uriParamMap, "uriParamMap", uriParamMapInit);
 
 			endpointMetadata.getPathVariables()
-					.forEach(p -> body.invoke(uriParamMapVar, "put").arg(p.getJavaName()).arg(methodParamMap.get(p.getJavaName())));
+					.forEach(p -> body.invoke(uriParamMapVar, "put").arg(p.getName()).arg(methodParamMap.get(p.getJavaName())));
 			JInvocation expandInvocation = uriComponentVar.invoke("expand").arg(uriParamMapVar);
 
 			body.assign(uriComponentVar, expandInvocation);
