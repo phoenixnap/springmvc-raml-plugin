@@ -19,7 +19,7 @@ public class Issue286RulesTest extends GitHubAbstractRuleTestBase {
 	public void init() {
 		super.setGitHubValidatorBase(DEFAULT_GITHUB_VALIDATOR_BASE + "issue-286/");
 	}
-	
+
 	@Test
 	public void verify_overriding_naming_logic_with_annotation_client() throws Exception {
 		TestConfig.setOverrideNamingLogicWith(OverrideNamingLogicWith.ANNOTATION);
@@ -39,7 +39,7 @@ public class Issue286RulesTest extends GitHubAbstractRuleTestBase {
 		verifyGeneratedCode("Issue286-2Spring4RestTemplateClient");
 		TestConfig.setOverrideNamingLogicWith(null);
 	}
-	
+
 	@Test
 	public void verify_overriding_naming_logic_with_annotation_feign_client() throws Exception {
 		TestConfig.setOverrideNamingLogicWith(OverrideNamingLogicWith.ANNOTATION);
@@ -49,7 +49,7 @@ public class Issue286RulesTest extends GitHubAbstractRuleTestBase {
 		verifyGeneratedCode("Issue286-1Spring4FeignClient");
 		TestConfig.setOverrideNamingLogicWith(null);
 	}
-	
+
 	@Test
 	public void verify_overriding_naming_logic_with_display_name_feign_client() throws Exception {
 		TestConfig.setOverrideNamingLogicWith(OverrideNamingLogicWith.DISPLAY_NAME);
