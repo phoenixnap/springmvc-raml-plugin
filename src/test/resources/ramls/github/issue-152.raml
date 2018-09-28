@@ -1,0 +1,50 @@
+#%RAML 1.0
+title: Collision with java keywords #152
+
+types:
+  import:
+    type: object
+    properties:
+      amount:
+        type: number
+        required: false
+        description: |
+          Monetary amount.
+      currency:
+        type: string
+        required: false
+        description: |
+          String based on ISO-4217 for specifying the currency related to the amount.
+      integer:
+        type: integer
+        required: false
+      while: string
+      super: number
+          
+/break:
+  post:
+    queryParameters: 
+      long: number
+      boolean: boolean
+    body: 
+      application/json:
+        type: import
+    responses: 
+      201:
+        body: 
+          application/json:
+            type: import
+  /{byte}:
+    uriParameters: 
+      byte: 
+        type: number
+    get:
+      queryParameters: 
+        return: date-only
+        void: string
+        default: number
+      responses: 
+        200:
+          body: 
+            application/json:
+              type: import[]

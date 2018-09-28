@@ -1,0 +1,321 @@
+-----------------------------------com.gen.test.model.Import.java-----------------------------------
+
+package com.gen.test.model;
+
+import java.io.Serializable;
+import java.math.BigInteger;
+import javax.validation.constraints.NotNull;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import org.apache.commons.lang.builder.EqualsBuilder;
+import org.apache.commons.lang.builder.HashCodeBuilder;
+import org.apache.commons.lang.builder.ToStringBuilder;
+
+public class Import implements Serializable
+{
+
+    /**
+     * Monetary amount.
+     * 
+     * 
+     */
+    protected Double amount;
+    /**
+     * String based on ISO-4217 for specifying the currency related to the amount.
+     * 
+     * 
+     */
+    protected String currency;
+    protected BigInteger integer;
+    @JsonProperty("while")
+    protected String whileCustom;
+    @JsonProperty("super")
+    protected Double superCustom;
+
+    /**
+     * Creates a new Import.
+     * 
+     */
+    public Import() {
+        super();
+    }
+
+    /**
+     * Creates a new Import.
+     * 
+     */
+    public Import(Double amount, String currency, BigInteger integer, String whileCustom, Double superCustom) {
+        super();
+        this.amount = amount;
+        this.currency = currency;
+        this.integer = integer;
+        this.whileCustom = whileCustom;
+        this.superCustom = superCustom;
+    }
+
+    /**
+     * Returns the amount.
+     * 
+     * @return
+     *     amount
+     */
+    public Double getAmount() {
+        return amount;
+    }
+
+    /**
+     * Set the amount.
+     * 
+     * @param amount
+     *     the new amount
+     */
+    public void setAmount(Double amount) {
+        this.amount = amount;
+    }
+
+    /**
+     * Returns the currency.
+     * 
+     * @return
+     *     currency
+     */
+    public String getCurrency() {
+        return currency;
+    }
+
+    /**
+     * Set the currency.
+     * 
+     * @param currency
+     *     the new currency
+     */
+    public void setCurrency(String currency) {
+        this.currency = currency;
+    }
+
+    /**
+     * Returns the integer.
+     * 
+     * @return
+     *     integer
+     */
+    public BigInteger getInteger() {
+        return integer;
+    }
+
+    /**
+     * Set the integer.
+     * 
+     * @param integer
+     *     the new integer
+     */
+    public void setInteger(BigInteger integer) {
+        this.integer = integer;
+    }
+
+    /**
+     * Returns the whileCustom.
+     * 
+     * @return
+     *     whileCustom
+     */
+    @NotNull
+    public String getWhileCustom() {
+        return whileCustom;
+    }
+
+    /**
+     * Set the whileCustom.
+     * 
+     * @param whileCustom
+     *     the new whileCustom
+     */
+    public void setWhileCustom(String whileCustom) {
+        this.whileCustom = whileCustom;
+    }
+
+    /**
+     * Returns the superCustom.
+     * 
+     * @return
+     *     superCustom
+     */
+    @NotNull
+    public Double getSuperCustom() {
+        return superCustom;
+    }
+
+    /**
+     * Set the superCustom.
+     * 
+     * @param superCustom
+     *     the new superCustom
+     */
+    public void setSuperCustom(Double superCustom) {
+        this.superCustom = superCustom;
+    }
+
+    public int hashCode() {
+        return new HashCodeBuilder().append(amount).append(currency).append(integer).append(whileCustom).append(superCustom).toHashCode();
+    }
+
+    public boolean equals(Object other) {
+        if (other == null) {
+            return false;
+        }
+        if (other == this) {
+            return true;
+        }
+        if (this.getClass()!= other.getClass()) {
+            return false;
+        }
+        Import otherObject = ((Import) other);
+        return new EqualsBuilder().append(amount, otherObject.amount).append(currency, otherObject.currency).append(integer, otherObject.integer).append(whileCustom, otherObject.whileCustom).append(superCustom, otherObject.superCustom).isEquals();
+    }
+
+    public String toString() {
+        return new ToStringBuilder(this).append("amount", amount).append("currency", currency).append("integer", integer).append("whileCustom", whileCustom).append("superCustom", superCustom).toString();
+    }
+
+}
+-----------------------------------com.gen.test.BreakClient.java-----------------------------------
+
+package com.gen.test;
+
+import java.math.BigDecimal;
+import java.util.Date;
+import java.util.List;
+import javax.validation.Valid;
+import com.gen.test.model.Import;
+import org.springframework.http.ResponseEntity;
+
+
+/**
+ * No description
+ * (Generated with springmvc-raml-parser v.@project.version@)
+ * 
+ */
+public interface BreakClient {
+
+
+    /**
+     * No description
+     * 
+     * @param importCustom The Request Body Payload
+     * @param booleanCustom 
+     * @param longCustom 
+     */
+    public ResponseEntity<Import> createImport(BigDecimal longCustom, Boolean booleanCustom,
+        @Valid
+        Import importCustom);
+
+    /**
+     * No description
+     * 
+     * @param returnCustom 
+     * @param defaultCustom 
+     * @param voidCustom 
+     * @param byteCustom 
+     */
+    public ResponseEntity<List<Import>> getImports(BigDecimal byteCustom, Date returnCustom, String voidCustom, BigDecimal defaultCustom);
+
+}
+-----------------------------------com.gen.test.BreakClientImpl.java-----------------------------------
+
+package com.gen.test;
+
+import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import javax.validation.Valid;
+import com.gen.test.model.Import;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.ParameterizedTypeReference;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpMethod;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Component;
+import org.springframework.web.client.RestTemplate;
+import org.springframework.web.util.UriComponents;
+import org.springframework.web.util.UriComponentsBuilder;
+
+
+/**
+ * No description
+ * (Generated with springmvc-raml-parser v.@project.version@)
+ * 
+ */
+@Component
+public class BreakClientImpl
+    implements BreakClient
+{
+
+    @Value("${client.url}")
+    private String baseUrl;
+    @Autowired
+    private RestTemplate restTemplate;
+
+    /**
+     * No description
+     * 
+     */
+    public ResponseEntity<Import> createImport(BigDecimal longCustom, Boolean booleanCustom,
+        @Valid
+        Import importCustom) {
+        HttpHeaders httpHeaders = new HttpHeaders();
+        //  Add Accepts Headers and Body Content-Type
+        ArrayList<MediaType> acceptsList = new ArrayList<MediaType>();
+        httpHeaders.setContentType(MediaType.valueOf("application/json"));
+        acceptsList.add(MediaType.valueOf("application/json"));
+        httpHeaders.setAccept(acceptsList);
+        String url = baseUrl.concat("/break");
+        UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl(url);
+        if (longCustom!= null) {
+            builder.queryParam("long", longCustom);
+        }
+        if (booleanCustom!= null) {
+            builder.queryParam("boolean", booleanCustom);
+        }
+        UriComponents uriComponents = builder.build();
+        HttpEntity httpEntity = new HttpEntity(importCustom, httpHeaders);
+        return this.restTemplate.exchange(uriComponents.encode().toUri(), HttpMethod.POST, httpEntity, Import.class);
+    }
+
+    /**
+     * No description
+     * 
+     */
+    public ResponseEntity<List<Import>> getImports(BigDecimal byteCustom, Date returnCustom, String voidCustom, BigDecimal defaultCustom) {
+        HttpHeaders httpHeaders = new HttpHeaders();
+        //  Add Accepts Headers and Body Content-Type
+        ArrayList<MediaType> acceptsList = new ArrayList<MediaType>();
+        acceptsList.add(MediaType.valueOf("application/json"));
+        httpHeaders.setAccept(acceptsList);
+        String url = baseUrl.concat("/break/{byte}");
+        UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl(url);
+        if (returnCustom!= null) {
+            builder.queryParam("return", returnCustom);
+        }
+        if (voidCustom!= null) {
+            builder.queryParam("void", voidCustom);
+        }
+        if (defaultCustom!= null) {
+            builder.queryParam("default", defaultCustom);
+        }
+        UriComponents uriComponents = builder.build();
+        HttpEntity httpEntity = new HttpEntity(httpHeaders);
+        Map<String, Object> uriParamMap = new HashMap();
+        uriParamMap.put("byte", byteCustom);
+        uriComponents = uriComponents.expand(uriParamMap);
+        class _P extends org.springframework.core.ParameterizedTypeReference<java.util.List<com.gen.test.model.Import>>{};
+        ParameterizedTypeReference<List<Import>> typeReference = new _P();
+        return this.restTemplate.exchange(uriComponents.encode().toUri(), HttpMethod.GET, httpEntity, typeReference);
+    }
+
+}
+

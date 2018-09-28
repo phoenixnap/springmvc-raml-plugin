@@ -1,0 +1,10 @@
+#%RAML 1.0
+title: Import Statement for BigDecimal/BigInteger not generated for request body #288
+version: 1.0
+
+/number:
+  post:
+    description: Returns the winning number.
+    body: 
+      application/json:
+        type: number

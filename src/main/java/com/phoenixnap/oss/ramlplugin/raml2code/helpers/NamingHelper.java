@@ -21,6 +21,7 @@ import static org.apache.commons.lang3.StringUtils.splitByCharacterTypeCamelCase
 import static org.apache.commons.lang3.StringUtils.upperCase;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.regex.Matcher;
@@ -56,6 +57,14 @@ public class NamingHelper {
 	private static final Pattern SLASH = Pattern.compile("/");
 
 	private static final String ILLEGAL_CHARACTER_REGEX = "[^0-9a-zA-Z_$]";
+
+	private static final String KEYWORDS[] = { "abstract", "assert", "boolean", "break", "byte", "case", "catch", "char", "class", "const",
+			"continue", "default", "do", "double", "else", "extends", "false", "final", "finally", "float", "for", "goto", "if",
+			"implements", "import", "instanceof", "int", "interface", "long", "native", "new", "null", "package", "private", "protected",
+			"public", "return", "short", "static", "strictfp", "super", "switch", "synchronized", "this", "throw", "throws", "transient",
+			"true", "try", "void", "volatile", "while" };
+
+	private static List<String> keywordsList;
 
 	private static NameHelper cachedNameHelper;
 
@@ -217,7 +226,7 @@ public class NamingHelper {
 	 * @return The name for this using Java class convention
 	 */
 	public static String convertToClassName(String clazz) {
-		return StringUtils.capitalize(cleanNameForJava(clazz));
+		return StringUtils.capitalize(cleanNameForJava(clazz, false));
 	}
 
 	/**
@@ -330,7 +339,7 @@ public class NamingHelper {
 	 * @return A name suitable for a Java parameter
 	 */
 	public static String getParameterName(String name) {
-		return StringUtils.uncapitalize(cleanNameForJava(name));
+		return filterKeywords(StringUtils.uncapitalize(cleanNameForJava(name)));
 	}
 
 	/**
@@ -341,6 +350,11 @@ public class NamingHelper {
 	 * @return cleaned string
 	 */
 	public static String cleanNameForJava(String resourceName) {
+
+		return cleanNameForJava(resourceName, true);
+	}
+
+	private static String cleanNameForJava(String resourceName, boolean filterKeywords) {
 		String outString = resourceName;
 		if (StringUtils.hasText(resourceName)) {
 			outString = getNameHelper().replaceIllegalCharacters(resourceName);
@@ -348,7 +362,19 @@ public class NamingHelper {
 				outString = getNameHelper().normalizeName(outString);
 			}
 		}
-		return outString;
+
+		if (!filterKeywords) {
+			return outString;
+		}
+
+		return filterKeywords(outString);
+	}
+
+	public static String filterKeywords(String name) {
+		if (getKeywords().contains(name)) {
+			return name + "Custom";
+		}
+		return name;
 	}
 
 	/**
@@ -375,7 +401,7 @@ public class NamingHelper {
 			enumName = "_" + enumName;
 		}
 
-		return enumName;
+		return filterKeywords(enumName);
 	}
 
 	private static boolean doesUriEndsWithParam(String uri) {
@@ -630,6 +656,13 @@ public class NamingHelper {
 	 */
 	public static String getDefaultModelPackage() {
 		return ".model";
+	}
+
+	private static List<String> getKeywords() {
+		if (keywordsList == null || keywordsList.isEmpty()) {
+			keywordsList = Arrays.asList(KEYWORDS);
+		}
+		return keywordsList;
 	}
 
 }

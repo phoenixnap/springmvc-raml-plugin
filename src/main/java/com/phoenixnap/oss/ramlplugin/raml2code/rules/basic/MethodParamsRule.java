@@ -15,6 +15,8 @@ package com.phoenixnap.oss.ramlplugin.raml2code.rules.basic;
 import static com.phoenixnap.oss.ramlplugin.raml2code.helpers.CodeModelHelper.findFirstClassBySimpleName;
 import static org.springframework.util.StringUtils.uncapitalize;
 
+import java.math.BigDecimal;
+import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -174,7 +176,15 @@ public class MethodParamsRule implements Rule<CodeModelHelper.JExtMethod, JMetho
 	}
 
 	protected JVar paramObjects(ApiActionMetadata endpointMetadata, CodeModelHelper.JExtMethod generatableType) {
+
 		String requestBodyName = endpointMetadata.getRequestBody().getName();
+		String requestBodyFullName = requestBodyName;
+		if (BigDecimal.class.getSimpleName().equals(requestBodyName)) {
+			requestBodyFullName = BigDecimal.class.getName();
+		} else if (BigInteger.class.getSimpleName().equals(requestBodyName)) {
+			requestBodyFullName = BigInteger.class.getName();
+		}
+
 		boolean array = endpointMetadata.getRequestBody().isArray();
 
 		List<JCodeModel> codeModels = new ArrayList<>();
@@ -186,15 +196,15 @@ public class MethodParamsRule implements Rule<CodeModelHelper.JExtMethod, JMetho
 			codeModels.add(generatableType.owner());
 		}
 
-		JClass requestBodyType = findFirstClassBySimpleName(codeModels.toArray(new JCodeModel[codeModels.size()]), requestBodyName);
+		JClass requestBodyType = findFirstClassBySimpleName(codeModels.toArray(new JCodeModel[codeModels.size()]), requestBodyFullName);
 		if (allowArrayParameters && array) {
 			JClass arrayType = generatableType.owner().ref(List.class);
 			requestBodyType = arrayType.narrow(requestBodyType);
 		}
 		if (addParameterJavadoc) {
-			generatableType.get().javadoc().addParam(uncapitalize(requestBodyName) + " The Request Body Payload");
+			generatableType.get().javadoc().addParam(NamingHelper.getParameterName(requestBodyName) + " The Request Body Payload");
 		}
-		JVar param = generatableType.get().param(requestBodyType, uncapitalize(requestBodyName));
+		JVar param = generatableType.get().param(requestBodyType, NamingHelper.getParameterName(requestBodyName));
 		if (Config.getPojoConfig().isIncludeJsr303Annotations() && !RamlActionType.PATCH.equals(endpointMetadata.getActionType())) {
 			// skip Valid annotation for PATCH actions since it's a partial
 			// update so some required fields might be omitted

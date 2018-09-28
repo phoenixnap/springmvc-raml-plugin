@@ -32,6 +32,7 @@ import com.google.common.base.CaseFormat;
 import com.phoenixnap.oss.ramlplugin.raml2code.data.ApiActionMetadata;
 import com.phoenixnap.oss.ramlplugin.raml2code.data.ApiParameterMetadata;
 import com.phoenixnap.oss.ramlplugin.raml2code.helpers.CodeModelHelper;
+import com.phoenixnap.oss.ramlplugin.raml2code.helpers.NamingHelper;
 import com.phoenixnap.oss.ramlplugin.raml2code.helpers.RamlHelper;
 import com.phoenixnap.oss.ramlplugin.raml2code.helpers.RuleHelper;
 import com.phoenixnap.oss.ramlplugin.raml2code.plugin.Config;
@@ -152,7 +153,7 @@ public class SpringRestClientMethodBodyRule implements Rule<CodeModelHelper.JExt
 		JInvocation init = JExpr._new(httpEntityClass);
 
 		if (endpointMetadata.getRequestBody() != null) {
-			init.arg(methodParamMap.get(CaseFormat.UPPER_CAMEL.to(CaseFormat.LOWER_CAMEL, endpointMetadata.getRequestBody().getName())));
+			init.arg(methodParamMap.get(NamingHelper.getParameterName(endpointMetadata.getRequestBody().getName())));
 		}
 		init.arg(httpHeaders);
 
