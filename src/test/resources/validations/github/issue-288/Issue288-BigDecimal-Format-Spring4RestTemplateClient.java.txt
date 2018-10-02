@@ -45,7 +45,7 @@ import org.springframework.web.util.UriComponentsBuilder;
 
 /**
  * No description
- * (Generated with springmvc-raml-parser v.2.0.4)
+ * (Generated with springmvc-raml-parser v.@project.version@)
  * 
  */
 @Component
