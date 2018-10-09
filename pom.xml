@@ -4,20 +4,18 @@
 	  
   	<groupId>com.phoenixnap.oss</groupId>
 	<artifactId>springmvc-raml-plugin</artifactId>
-	<version>2.0.5</version>
-	
-	<parent>
-        <groupId>io.spring.platform</groupId>
-        <artifactId>platform-bom</artifactId>
-        <version>Brussels-SR6</version>
-        <relativePath/>
-    </parent>
+	<version>2.0.6-SNAPSHOT</version>
 	
 	<name>RAML to Spring MVC code generator</name>
 	<description>Component is Maven plugin that reads RAML documents and creates Spring MVC endpoints</description>
 	<url>https://github.com/phoenixnap/springmvc-raml-plugin/tree/master/springmvc-raml-parser</url>
-  	<packaging>maven-plugin</packaging>
-  	
+  	<packaging>pom</packaging>
+
+	<modules>
+		<module>core</module>
+		<module>maven</module>
+	</modules>
+
 	<developers>
 		<developer>
 			<name>Aleksandar Stojsavljevic</name>
@@ -54,8 +52,9 @@
         <codemodel.version>2.6</codemodel.version>
 	</properties>
   	
-	<dependencies>
+	<dependencyManagement>
 
+		<dependencies>
 		<dependency>
 			<groupId>commons-io</groupId>
 			<artifactId>commons-io</artifactId>
@@ -97,36 +96,6 @@
 			</exclusions>
 		</dependency>
 		
-		<!-- Maven -->
-		<dependency>
-			<groupId>org.apache.maven</groupId>
-			<artifactId>maven-core</artifactId>
-			<version>${maven.core.version}</version>
-		</dependency>
-		<dependency>
-			<groupId>org.apache.maven</groupId>
-			<artifactId>maven-plugin-api</artifactId>
-			<version>${maven.core.version}</version>
-		</dependency>
-		<dependency>
-			<groupId>org.apache.maven.plugin-tools</groupId>
-			<artifactId>maven-plugin-annotations</artifactId>
-			<version>3.4</version>
-			<scope>provided</scope>
-		</dependency>
-		<dependency>
-			<groupId>org.apache.maven</groupId>
-			<artifactId>maven-compat</artifactId>
-			<version>${maven.core.version}</version>
-			<scope>test</scope>
-		</dependency>
-		<dependency>
-			<groupId>org.apache.maven.plugin-testing</groupId>
-			<artifactId>maven-plugin-testing-harness</artifactId>
-			<scope>test</scope>
-			<version>3.3.0</version>
-		</dependency>
-		
 		
 		<!-- Test Dependencies -->
 		<dependency>
@@ -161,7 +130,9 @@
 		    <artifactId>slf4j-log4j12</artifactId>
 		    <scope>test</scope>
 		</dependency>
-	</dependencies>
+		</dependencies>
+	</dependencyManagement>
+
 
 	<build>
 		<pluginManagement>
@@ -240,13 +211,13 @@
 		
 		<resources>
 			<resource>
-				<directory>src/main/resources</directory>
+				<directory>core/src/main/resources</directory>
 				<filtering>true</filtering>
 			</resource>
 		</resources>
 		<testResources>
 			<testResource>
-				<directory>src/test/resources</directory>
+				<directory>core/src/test/resources</directory>
 				<filtering>true</filtering>
 			</testResource>
 		</testResources>
