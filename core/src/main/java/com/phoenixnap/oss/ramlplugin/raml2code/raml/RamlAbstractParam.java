@@ -60,8 +60,8 @@ public abstract class RamlAbstractParam { // extends AbstractParam {
 	 * Convenience method for easier processing. Non supporting parameters are
 	 * assumed to be single.
 	 * 
-	 * @return True if this is an array/repeatable parameter. Default to false
-	 *         if no implementation found
+	 * @return True if this is an array/repeatable parameter. Default to false if no
+	 *         implementation found
 	 */
 	public boolean isRepeat() {
 		return false;

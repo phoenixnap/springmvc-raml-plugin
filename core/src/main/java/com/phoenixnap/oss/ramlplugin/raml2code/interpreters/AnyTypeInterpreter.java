@@ -31,7 +31,8 @@ public class AnyTypeInterpreter extends BaseTypeInterpreter {
 	}
 
 	@Override
-	public RamlInterpretationResult interpret(RamlRoot document, TypeDeclaration type, JCodeModel builderModel, boolean property) {
+	public RamlInterpretationResult interpret(RamlRoot document, TypeDeclaration type, JCodeModel builderModel,
+			boolean property) {
 
 		AnyTypeDeclaration anyTypeDeclaration = (AnyTypeDeclaration) type;
 

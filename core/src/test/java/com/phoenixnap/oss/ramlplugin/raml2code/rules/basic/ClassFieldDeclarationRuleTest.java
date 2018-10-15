@@ -39,7 +39,8 @@ public class ClassFieldDeclarationRuleTest extends AbstractRuleTestBase {
 	}
 
 	@Test
-	public void applyClassFieldDeclarationRule_shouldCreate_validNonAutowiredField() throws JClassAlreadyExistsException {
+	public void applyClassFieldDeclarationRule_shouldCreate_validNonAutowiredField()
+			throws JClassAlreadyExistsException {
 		ClassFieldDeclarationRule rule = new ClassFieldDeclarationRule("field", String.class, false);
 
 		JPackage jPackage = jCodeModel.rootPackage();
@@ -53,7 +54,8 @@ public class ClassFieldDeclarationRuleTest extends AbstractRuleTestBase {
 	}
 
 	@Test
-	public void applyClassFieldDeclarationRule_shouldCreate_validValueAnnotedField() throws JClassAlreadyExistsException {
+	public void applyClassFieldDeclarationRule_shouldCreate_validValueAnnotedField()
+			throws JClassAlreadyExistsException {
 		ClassFieldDeclarationRule rule = new ClassFieldDeclarationRule("field", String.class, "${sample}");
 
 		JPackage jPackage = jCodeModel.rootPackage();

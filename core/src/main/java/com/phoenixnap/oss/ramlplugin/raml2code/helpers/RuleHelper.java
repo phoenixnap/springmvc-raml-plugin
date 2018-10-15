@@ -40,8 +40,8 @@ public class RuleHelper {
 		return narrow(endpointMetadata, owner, false, true, false, false);
 	}
 
-	private static JClass narrow(ApiActionMetadata endpointMetadata, JCodeModel owner, boolean useCallable, boolean checkBody,
-			boolean useWildcard, boolean useDeferredResult) {
+	private static JClass narrow(ApiActionMetadata endpointMetadata, JCodeModel owner, boolean useCallable,
+			boolean checkBody, boolean useWildcard, boolean useDeferredResult) {
 
 		JClass callable = null;
 		if (useCallable) {
@@ -89,7 +89,8 @@ public class RuleHelper {
 		return type;
 	}
 
-	private static JClass updateType(JCodeModel owner, JClass callable, JClass type, boolean useResponseEntity, boolean isArray) {
+	private static JClass updateType(JCodeModel owner, JClass callable, JClass type, boolean useResponseEntity,
+			boolean isArray) {
 
 		JClass arrayType = owner.ref(List.class);
 		if (useResponseEntity && isArray) {

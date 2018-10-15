@@ -43,7 +43,8 @@ public class ApiResourceMetadata {
 
 	Set<ApiActionMetadata> apiCalls = new LinkedHashSet<>();
 
-	public ApiResourceMetadata(JCodeModel bodyCodeModel, String controllerUrl, RamlResource resource, RamlRoot document) {
+	public ApiResourceMetadata(JCodeModel bodyCodeModel, String controllerUrl, RamlResource resource,
+			RamlRoot document) {
 		super();
 		this.controllerUrl = controllerUrl;
 		this.resource = resource;
@@ -51,7 +52,8 @@ public class ApiResourceMetadata {
 		this.bodyCodeModel = bodyCodeModel;
 	}
 
-	public void addApiCall(RamlResource resource, RamlActionType actionType, RamlAction action, String responseContentType) {
+	public void addApiCall(RamlResource resource, RamlActionType actionType, RamlAction action,
+			String responseContentType) {
 		apiCalls.add(new ApiActionMetadata(this, resource, actionType, action, responseContentType));
 	}
 

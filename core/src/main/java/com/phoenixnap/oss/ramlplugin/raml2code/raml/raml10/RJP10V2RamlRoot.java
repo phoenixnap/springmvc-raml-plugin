@@ -47,8 +47,8 @@ public class RJP10V2RamlRoot implements RamlRoot {
 	@Override
 	public Map<String, RamlResource> getResources() {
 		if (api != null) {
-			return ramlModelFactory.transformToUnmodifiableMap(api.resources(), resources, ramlModelFactory::createRamlResource,
-					r -> r.relativeUri().value());
+			return ramlModelFactory.transformToUnmodifiableMap(api.resources(), resources,
+					ramlModelFactory::createRamlResource, r -> r.relativeUri().value());
 		} else {
 			return Collections.emptyMap();
 		}
@@ -85,7 +85,8 @@ public class RJP10V2RamlRoot implements RamlRoot {
 		// possible to pull in same library multiple times.
 		// In order to avoid IllegalStateException we'll add basic
 		// mergeFunction.
-		Map<String, RamlDataType> libOfLibTypes = api.uses().stream().flatMap(x -> x.uses().stream()).flatMap(x -> x.types().stream())
+		Map<String, RamlDataType> libOfLibTypes = api.uses().stream().flatMap(x -> x.uses().stream())
+				.flatMap(x -> x.types().stream())
 				.collect(Collectors.toMap(this::nameType, this::typeDeclarationToRamlDataType, (x, y) -> x));
 
 		types.putAll(libOfLibTypes);
@@ -108,7 +109,8 @@ public class RJP10V2RamlRoot implements RamlRoot {
 	}
 
 	List<RamlDocumentationItem> getDocumentation() {
-		return api.documentation().stream().map(ramlModelFactory::createRamlDocumentationItem).collect(Collectors.toList());
+		return api.documentation().stream().map(ramlModelFactory::createRamlDocumentationItem)
+				.collect(Collectors.toList());
 	}
 
 	@Override

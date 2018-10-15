@@ -76,8 +76,7 @@ public class GenericJavaClassRule implements Rule<JCodeModel, JDefinedClass, Api
 	private Rule<JPackage, JDefinedClass, ApiResourceMetadata> classRule;
 
 	/**
-	 * an optional rule to define implements/extends part of the class
-	 * declaration
+	 * an optional rule to define implements/extends part of the class declaration
 	 */
 	private Optional<Rule<JDefinedClass, JDefinedClass, ApiResourceMetadata>> implementsExtendsRule = Optional.empty();
 
@@ -118,7 +117,8 @@ public class GenericJavaClassRule implements Rule<JCodeModel, JDefinedClass, Api
 			throw new IllegalStateException("A packageRule and classRule are mandatory.");
 		}
 		if (!metadata.getApiCalls().isEmpty() && methodSignatureRule == null) {
-			throw new IllegalStateException("Since there are API Calls in the metadata at least a methodSignatureRule is mandatory");
+			throw new IllegalStateException(
+					"Since there are API Calls in the metadata at least a methodSignatureRule is mandatory");
 		}
 
 		JPackage jPackage = packageRule.apply(metadata, codeModel);
@@ -131,7 +131,8 @@ public class GenericJavaClassRule implements Rule<JCodeModel, JDefinedClass, Api
 			JMethod jMethod = methodSignatureRule.apply(apiMappingMetadata, jClass);
 			methodCommentRule.ifPresent(rule -> rule.apply(apiMappingMetadata, jMethod));
 			methodAnnotationRules.forEach(rule -> rule.apply(apiMappingMetadata, jMethod));
-			methodBodyRule.ifPresent(rule -> rule.apply(apiMappingMetadata, CodeModelHelper.ext(jMethod, jClass.owner())));
+			methodBodyRule
+					.ifPresent(rule -> rule.apply(apiMappingMetadata, CodeModelHelper.ext(jMethod, jClass.owner())));
 		});
 		return jClass;
 	}
@@ -141,14 +142,16 @@ public class GenericJavaClassRule implements Rule<JCodeModel, JDefinedClass, Api
 		return this;
 	}
 
-	public GenericJavaClassRule addClassAnnotationRule(Rule<JDefinedClass, JAnnotationUse, ApiResourceMetadata> annotationRule) {
+	public GenericJavaClassRule addClassAnnotationRule(
+			Rule<JDefinedClass, JAnnotationUse, ApiResourceMetadata> annotationRule) {
 		if (annotationRule != null) {
 			this.classAnnotationRules.add(annotationRule);
 		}
 		return this;
 	}
 
-	public GenericJavaClassRule setClassCommentRule(Rule<JDefinedClass, JDocComment, ApiResourceMetadata> classCommentRule) {
+	public GenericJavaClassRule setClassCommentRule(
+			Rule<JDefinedClass, JDocComment, ApiResourceMetadata> classCommentRule) {
 		this.classCommentRule = Optional.ofNullable(classCommentRule);
 		return this;
 	}
@@ -158,7 +161,8 @@ public class GenericJavaClassRule implements Rule<JCodeModel, JDefinedClass, Api
 		return this;
 	}
 
-	public GenericJavaClassRule setMethodSignatureRule(Rule<JDefinedClass, JMethod, ApiActionMetadata> methodSignatureRule) {
+	public GenericJavaClassRule setMethodSignatureRule(
+			Rule<JDefinedClass, JMethod, ApiActionMetadata> methodSignatureRule) {
 		this.methodSignatureRule = methodSignatureRule;
 		return this;
 	}
@@ -168,17 +172,20 @@ public class GenericJavaClassRule implements Rule<JCodeModel, JDefinedClass, Api
 		return this;
 	}
 
-	public GenericJavaClassRule addFieldDeclarationRule(Rule<JDefinedClass, JFieldVar, ApiResourceMetadata> fieldDeclerationRule) {
+	public GenericJavaClassRule addFieldDeclarationRule(
+			Rule<JDefinedClass, JFieldVar, ApiResourceMetadata> fieldDeclerationRule) {
 		this.fieldDeclerationRules.add(fieldDeclerationRule);
 		return this;
 	}
 
-	public GenericJavaClassRule setImplementsExtendsRule(Rule<JDefinedClass, JDefinedClass, ApiResourceMetadata> implementsExtendsRule) {
+	public GenericJavaClassRule setImplementsExtendsRule(
+			Rule<JDefinedClass, JDefinedClass, ApiResourceMetadata> implementsExtendsRule) {
 		this.implementsExtendsRule = Optional.ofNullable(implementsExtendsRule);
 		return this;
 	}
 
-	public GenericJavaClassRule addMethodAnnotationRule(Rule<JMethod, JAnnotationUse, ApiActionMetadata> methodAnnotationRule) {
+	public GenericJavaClassRule addMethodAnnotationRule(
+			Rule<JMethod, JAnnotationUse, ApiActionMetadata> methodAnnotationRule) {
 		if (methodAnnotationRule != null) {
 			this.methodAnnotationRules.add(methodAnnotationRule);
 		}

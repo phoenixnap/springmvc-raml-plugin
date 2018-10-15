@@ -40,7 +40,8 @@ public class ArrayTypeInterpreter extends BaseTypeInterpreter {
 	}
 
 	@Override
-	public RamlInterpretationResult interpret(RamlRoot document, TypeDeclaration type, JCodeModel builderModel, boolean property) {
+	public RamlInterpretationResult interpret(RamlRoot document, TypeDeclaration type, JCodeModel builderModel,
+			boolean property) {
 		RamlInterpretationResult result = new RamlInterpretationResult(type.required());
 
 		typeCheck(type);
@@ -78,16 +79,18 @@ public class ArrayTypeInterpreter extends BaseTypeInterpreter {
 			TypeDeclaration arrayContentsType = arrayType.items();
 
 			// Lets process the array base class first
-			RamlInterpretationResult childResult = RamlInterpreterFactory.getInterpreterForType(arrayContentsType).interpret(document,
-					arrayContentsType, builderModel, false);
-			JClass collection = resolveCollectionClass(arrayType, childResult.getResolvedClassOrBuiltOrObject(), builderModel);
+			RamlInterpretationResult childResult = RamlInterpreterFactory.getInterpreterForType(arrayContentsType)
+					.interpret(document, arrayContentsType, builderModel, false);
+			JClass collection = resolveCollectionClass(arrayType, childResult.getResolvedClassOrBuiltOrObject(),
+					builderModel);
 			result.setResolvedClass(collection);
 		}
 
 		return result;
 	}
 
-	private JClass resolveCollectionClass(ArrayTypeDeclaration arrayType, JClass resolvedClass, JCodeModel builderModel) {
+	private JClass resolveCollectionClass(ArrayTypeDeclaration arrayType, JClass resolvedClass,
+			JCodeModel builderModel) {
 		Class<?> container = List.class;
 		if (arrayType.uniqueItems() != null && arrayType.uniqueItems()) {
 			container = Set.class;

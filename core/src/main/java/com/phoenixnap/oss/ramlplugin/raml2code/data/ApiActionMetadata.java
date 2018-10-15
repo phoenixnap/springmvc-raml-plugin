@@ -66,8 +66,8 @@ public class ApiActionMetadata {
 
 	private String responseContentTypeFilter;
 
-	public ApiActionMetadata(ApiResourceMetadata parent, RamlResource resource, RamlActionType actionType, RamlAction action,
-			String responseContentTypeFilter) {
+	public ApiActionMetadata(ApiResourceMetadata parent, RamlResource resource, RamlActionType actionType,
+			RamlAction action, String responseContentTypeFilter) {
 		super();
 		this.parent = parent;
 		this.resource = resource;
@@ -80,8 +80,8 @@ public class ApiActionMetadata {
 
 	@Override
 	public String toString() {
-		return "Method " + getName() + "  Verb [" + actionType + "] Url [" + getUrl() + "] \nConsumes [" + getConsumes() + "] Produces ["
-				+ getProduces() + "] with Schema [" + null + "] \nPath Vars ["
+		return "Method " + getName() + "  Verb [" + actionType + "] Url [" + getUrl() + "] \nConsumes [" + getConsumes()
+				+ "] Produces [" + getProduces() + "] with Schema [" + null + "] \nPath Vars ["
 				+ StringUtils.collectionToCommaDelimitedString(getPathVariables()) + "] \nRequest Params ["
 				+ StringUtils.collectionToCommaDelimitedString(getRequestParameters()) + "] \nRequest Headers ["
 				+ StringUtils.collectionToCommaDelimitedString(getRequestHeaders()) + "] \n";
@@ -149,9 +149,11 @@ public class ApiActionMetadata {
 	}
 
 	private void collectBodyParams(JCodeModel codeModel, Entry<String, RamlMimeType> mime) {
-		if (mime.getKey().equals(MediaType.MULTIPART_FORM_DATA_VALUE) && doesActionTypeSupportMultipartMime(actionType)) {
+		if (mime.getKey().equals(MediaType.MULTIPART_FORM_DATA_VALUE)
+				&& doesActionTypeSupportMultipartMime(actionType)) {
 			collectRequestParamsForMime(action.getBody().get(MediaType.MULTIPART_FORM_DATA_VALUE));
-		} else if (mime.getKey().equals(MediaType.APPLICATION_FORM_URLENCODED_VALUE) && doesActionTypeSupportMultipartMime(actionType)) {
+		} else if (mime.getKey().equals(MediaType.APPLICATION_FORM_URLENCODED_VALUE)
+				&& doesActionTypeSupportMultipartMime(actionType)) {
 			collectRequestParamsForMime(action.getBody().get(MediaType.APPLICATION_FORM_URLENCODED_VALUE));
 		}
 
@@ -167,7 +169,8 @@ public class ApiActionMetadata {
 			if (type != null && type.getType() != null && !(type.getType() instanceof JSONTypeDeclaration)) {
 				requestBody = RamlTypeHelper.mapTypeToPojo(codeModel, parent.getDocument(), type.getType());
 			} else if (StringUtils.hasText(schema)) {
-				requestBody = SchemaHelper.mapSchemaToPojo(parent.getDocument(), schema, Config.getPojoPackage(), name, null);
+				requestBody = SchemaHelper.mapSchemaToPojo(parent.getDocument(), schema, Config.getPojoPackage(), name,
+						null);
 			}
 			if (requestBody != null) {
 				setRequestBody(requestBody, mime.getKey());
@@ -176,16 +179,16 @@ public class ApiActionMetadata {
 	}
 
 	/**
-	 * Method to check if a specific action type supports payloads in the body
-	 * of the request
+	 * Method to check if a specific action type supports payloads in the body of
+	 * the request
 	 * 
 	 * @param target
 	 *            The target Verb to check
 	 * @return If true, the verb supports a payload in the request body
 	 */
 	private boolean doesActionTypeSupportRequestBody(RamlActionType target) {
-		return target.equals(RamlActionType.POST) || target.equals(RamlActionType.PUT) || target.equals(RamlActionType.PATCH)
-				|| target.equals(RamlActionType.DELETE);
+		return target.equals(RamlActionType.POST) || target.equals(RamlActionType.PUT)
+				|| target.equals(RamlActionType.PATCH) || target.equals(RamlActionType.DELETE);
 	}
 
 	/**
@@ -224,10 +227,13 @@ public class ApiActionMetadata {
 						String schema = body.getValue().getSchema();
 						// prefer type if we have it.
 						String name = StringUtils.capitalize(getName()) + "Response";
-						if (type != null && type.getType() != null && !(type.getType() instanceof JSONTypeDeclaration)) {
-							responseBody = RamlTypeHelper.mapTypeToPojo(codeModel, parent.getDocument(), type.getType());
+						if (type != null && type.getType() != null
+								&& !(type.getType() instanceof JSONTypeDeclaration)) {
+							responseBody = RamlTypeHelper.mapTypeToPojo(codeModel, parent.getDocument(),
+									type.getType());
 						} else if (StringUtils.hasText(schema)) {
-							responseBody = SchemaHelper.mapSchemaToPojo(parent.getDocument(), schema, Config.getPojoPackage(), name, null);
+							responseBody = SchemaHelper.mapSchemaToPojo(parent.getDocument(), schema,
+									Config.getPojoPackage(), name, null);
 						}
 
 						if (responseBody != null) {

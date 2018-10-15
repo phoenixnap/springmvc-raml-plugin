@@ -98,7 +98,8 @@ public class RamlInterpreterTest extends AbstractRuleTestBase {
 		assertThat(AbstractRuleTestBase.RAML, is(notNullValue()));
 		RamlResource managers = AbstractRuleTestBase.RAML.getResource("/managers");
 
-		RamlDataType managersPostType = managers.getAction(RamlActionType.POST).getBody().get("application/json").getType();
+		RamlDataType managersPostType = managers.getAction(RamlActionType.POST).getBody().get("application/json")
+				.getType();
 		assertThat(managersPostType, is(notNullValue()));
 		ApiBodyMetadata managersPostRequest = RamlTypeHelper.mapTypeToPojo(jCodeModel, AbstractRuleTestBase.RAML,
 				managersPostType.getType());
@@ -117,7 +118,8 @@ public class RamlInterpreterTest extends AbstractRuleTestBase {
 		assertThat(AbstractRuleTestBase.RAML, is(notNullValue()));
 		RamlResource managers = AbstractRuleTestBase.RAML.getResource("/managers");
 
-		RamlDataType managersPostType = managers.getAction(RamlActionType.POST).getBody().get("application/json").getType();
+		RamlDataType managersPostType = managers.getAction(RamlActionType.POST).getBody().get("application/json")
+				.getType();
 		assertThat(managersPostType, is(notNullValue()));
 		ApiBodyMetadata managersPostRequest = RamlTypeHelper.mapTypeToPojo(jCodeModel, AbstractRuleTestBase.RAML,
 				managersPostType.getType());
@@ -131,7 +133,8 @@ public class RamlInterpreterTest extends AbstractRuleTestBase {
 		JDefinedClass manager = (JDefinedClass) CodeModelHelper.findFirstClassBySimpleName(jCodeModel, "Manager");
 		JDefinedClass department = (JDefinedClass) CodeModelHelper.findFirstClassBySimpleName(jCodeModel, "Department");
 
-		checkIfGetterContainsAnnotation(true, manager, NotNull.class, "firstname", "lastname", "id", "department", "clearanceLevel");
+		checkIfGetterContainsAnnotation(true, manager, NotNull.class, "firstname", "lastname", "id", "department",
+				"clearanceLevel");
 		checkIfGetterContainsAnnotation(true, person, NotNull.class, "firstname", "lastname", "id");
 		checkIfGetterContainsAnnotation(true, department, NotNull.class, "name");
 
@@ -156,7 +159,8 @@ public class RamlInterpreterTest extends AbstractRuleTestBase {
 
 		JDefinedClass validation = (JDefinedClass) CodeModelHelper.findFirstClassBySimpleName(jCodeModel, "Validation");
 
-		checkIfGetterContainsAnnotation(true, validation, NotNull.class, "lastname", "pattern", "length", "id", "anEnum", "anotherEnum");
+		checkIfGetterContainsAnnotation(true, validation, NotNull.class, "lastname", "pattern", "length", "id",
+				"anEnum", "anotherEnum");
 		checkIfGetterContainsAnnotation(false, validation, NotNull.class, "firstname", "minLength");
 		checkIfGetterContainsAnnotation(true, validation, Size.class, "length", "minLength");
 		checkIfGetterContainsAnnotation(true, validation, Pattern.class, "pattern");
@@ -182,7 +186,8 @@ public class RamlInterpreterTest extends AbstractRuleTestBase {
 		assertThat(elementAsString, containsString("TESTFEE(\"testfee\")"));
 	}
 
-	private void checkIfAnnotationHasParameter(JDefinedClass classToCheck, Class<?> annotationClass, String field, String param) {
+	private void checkIfAnnotationHasParameter(JDefinedClass classToCheck, Class<?> annotationClass, String field,
+			String param) {
 		JAnnotationUse annotation = getAnnotationForGetter(classToCheck, annotationClass, field);
 		assertThat(annotation, is(notNullValue()));
 		JAnnotationValue annotationParam = annotation.getAnnotationMembers().get(param);
@@ -207,7 +212,8 @@ public class RamlInterpreterTest extends AbstractRuleTestBase {
 		return null;
 	}
 
-	private void checkIfFieldContainsAnnotation(boolean expected, JDefinedClass classToCheck, Class<?> annotationClass, String... fields) {
+	private void checkIfFieldContainsAnnotation(boolean expected, JDefinedClass classToCheck, Class<?> annotationClass,
+			String... fields) {
 		for (JFieldVar field : classToCheck.fields().values()) {
 			if ((fields == null || fields.length == 0 || ArrayUtils.contains(fields, field.name()))
 					&& !field.name().equals("serialVersionUID")) {
@@ -222,9 +228,10 @@ public class RamlInterpreterTest extends AbstractRuleTestBase {
 		}
 	}
 
-	private void checkIfGetterContainsAnnotation(boolean expected, JDefinedClass classToCheck, Class<?> annotationClass, String... fields) {
-		List<String> expectedMethodNames = Arrays.asList(fields).stream().map(field -> "get" + NamingHelper.convertToClassName(field))
-				.collect(Collectors.toList());
+	private void checkIfGetterContainsAnnotation(boolean expected, JDefinedClass classToCheck, Class<?> annotationClass,
+			String... fields) {
+		List<String> expectedMethodNames = Arrays.asList(fields).stream()
+				.map(field -> "get" + NamingHelper.convertToClassName(field)).collect(Collectors.toList());
 		Map<String, JMethod> actualMethods = classToCheck.methods().stream()
 				.collect(Collectors.toMap(method -> method.name(), method -> method));
 
@@ -261,8 +268,9 @@ public class RamlInterpreterTest extends AbstractRuleTestBase {
 		Optional<JMethod> methodOptional = classToCheck.methods().stream()
 				.filter(method -> method.name().equals("get" + NamingHelper.convertToClassName(field))).findFirst();
 		if (methodOptional.isPresent()) {
-			Optional<JAnnotationUse> findFirst = methodOptional.get().annotations().stream()
-					.filter(annotation -> annotation.getAnnotationClass().name().equals(annotationClass.getSimpleName())).findFirst();
+			Optional<JAnnotationUse> findFirst = methodOptional.get().annotations().stream().filter(
+					annotation -> annotation.getAnnotationClass().name().equals(annotationClass.getSimpleName()))
+					.findFirst();
 			return findFirst.get();
 		}
 
@@ -273,11 +281,11 @@ public class RamlInterpreterTest extends AbstractRuleTestBase {
 	public void interpretNestedArrays() {
 		assertThat(AbstractRuleTestBase.RAML, is(notNullValue()));
 		RamlResource nestedArrayPersons = AbstractRuleTestBase.RAML.getResource("/nestedArrayPersons");
-		RamlDataType nestedArrayPersonsGetType = nestedArrayPersons.getAction(RamlActionType.GET).getResponses().get("200").getBody()
-				.get("application/json").getType();
+		RamlDataType nestedArrayPersonsGetType = nestedArrayPersons.getAction(RamlActionType.GET).getResponses()
+				.get("200").getBody().get("application/json").getType();
 		assertThat(nestedArrayPersonsGetType, is(notNullValue()));
-		ApiBodyMetadata nestedArrayPersonsGetRequest = RamlTypeHelper.mapTypeToPojo(jCodeModel, AbstractRuleTestBase.RAML,
-				nestedArrayPersonsGetType.getType());
+		ApiBodyMetadata nestedArrayPersonsGetRequest = RamlTypeHelper.mapTypeToPojo(jCodeModel,
+				AbstractRuleTestBase.RAML, nestedArrayPersonsGetType.getType());
 		assertThat(nestedArrayPersonsGetRequest, is(notNullValue()));
 		assertThat(nestedArrayPersonsGetRequest.getName(), is("NestedArrayPerson"));
 		assertThat(nestedArrayPersonsGetRequest.isArray(), is(true));
@@ -294,11 +302,11 @@ public class RamlInterpreterTest extends AbstractRuleTestBase {
 	public void interpret2ndLevelNestedArrays() {
 		assertThat(AbstractRuleTestBase.RAML, is(notNullValue()));
 		RamlResource nestedArrayPersons = AbstractRuleTestBase.RAML.getResource("/nestedNestedArrayPersons");
-		RamlDataType nestedArrayPersonsGetType = nestedArrayPersons.getAction(RamlActionType.GET).getResponses().get("200").getBody()
-				.get("application/json").getType();
+		RamlDataType nestedArrayPersonsGetType = nestedArrayPersons.getAction(RamlActionType.GET).getResponses()
+				.get("200").getBody().get("application/json").getType();
 		assertThat(nestedArrayPersonsGetType, is(notNullValue()));
-		ApiBodyMetadata nestedArrayPersonsGetRequest = RamlTypeHelper.mapTypeToPojo(jCodeModel, AbstractRuleTestBase.RAML,
-				nestedArrayPersonsGetType.getType());
+		ApiBodyMetadata nestedArrayPersonsGetRequest = RamlTypeHelper.mapTypeToPojo(jCodeModel,
+				AbstractRuleTestBase.RAML, nestedArrayPersonsGetType.getType());
 		assertThat(nestedArrayPersonsGetRequest, is(notNullValue()));
 		assertThat(nestedArrayPersonsGetRequest.getName(), is("NestedNestedArrayPerson"));
 		assertThat(nestedArrayPersonsGetRequest.isArray(), is(true));
@@ -315,10 +323,11 @@ public class RamlInterpreterTest extends AbstractRuleTestBase {
 	public void interpretGetResponseBodyInheritanceModel() {
 		assertThat(AbstractRuleTestBase.RAML, is(notNullValue()));
 		RamlResource songs = AbstractRuleTestBase.RAML.getResource("/songs");
-		RamlDataType songsGetType = songs.getAction(RamlActionType.GET).getResponses().get("200").getBody().get("application/json")
-				.getType();
+		RamlDataType songsGetType = songs.getAction(RamlActionType.GET).getResponses().get("200").getBody()
+				.get("application/json").getType();
 		assertThat(songsGetType, is(notNullValue()));
-		ApiBodyMetadata songsGetRequest = RamlTypeHelper.mapTypeToPojo(jCodeModel, AbstractRuleTestBase.RAML, songsGetType.getType());
+		ApiBodyMetadata songsGetRequest = RamlTypeHelper.mapTypeToPojo(jCodeModel, AbstractRuleTestBase.RAML,
+				songsGetType.getType());
 		assertThat(songsGetRequest, is(notNullValue()));
 
 		assertThat(songsGetRequest.isArray(), is(false));
@@ -335,10 +344,11 @@ public class RamlInterpreterTest extends AbstractRuleTestBase {
 	public void interpretGetResponseBody() {
 		assertThat(AbstractRuleTestBase.RAML, is(notNullValue()));
 		RamlResource managers = AbstractRuleTestBase.RAML.getResource("/managers");
-		RamlDataType managersGetType = managers.getAction(RamlActionType.GET).getResponses().get("200").getBody().get("application/json")
-				.getType();
+		RamlDataType managersGetType = managers.getAction(RamlActionType.GET).getResponses().get("200").getBody()
+				.get("application/json").getType();
 		assertThat(managersGetType, is(notNullValue()));
-		ApiBodyMetadata managersGetRequest = RamlTypeHelper.mapTypeToPojo(jCodeModel, AbstractRuleTestBase.RAML, managersGetType.getType());
+		ApiBodyMetadata managersGetRequest = RamlTypeHelper.mapTypeToPojo(jCodeModel, AbstractRuleTestBase.RAML,
+				managersGetType.getType());
 		assertThat(managersGetRequest, is(notNullValue()));
 		assertThat(managersGetRequest.getName(), is("Manager"));
 		assertThat(managersGetRequest.isArray(), is(true));
@@ -353,15 +363,16 @@ public class RamlInterpreterTest extends AbstractRuleTestBase {
 		RamlResource persons = AbstractRuleTestBase.RAML.getResource("/persons");
 		RamlResource personLists = AbstractRuleTestBase.RAML.getResource("/personLists");
 
-		RamlDataType personsGetType = persons.getAction(RamlActionType.GET).getResponses().get("200").getBody().get("application/json")
-				.getType();
+		RamlDataType personsGetType = persons.getAction(RamlActionType.GET).getResponses().get("200").getBody()
+				.get("application/json").getType();
 		RamlDataType personListsGetType = personLists.getAction(RamlActionType.GET).getResponses().get("200").getBody()
 				.get("application/json").getType();
 
 		assertThat(personsGetType, is(notNullValue()));
 		assertThat(personListsGetType, is(notNullValue()));
 
-		ApiBodyMetadata personsGetRequest = RamlTypeHelper.mapTypeToPojo(jCodeModel, AbstractRuleTestBase.RAML, personsGetType.getType());
+		ApiBodyMetadata personsGetRequest = RamlTypeHelper.mapTypeToPojo(jCodeModel, AbstractRuleTestBase.RAML,
+				personsGetType.getType());
 		assertThat(personsGetRequest, is(notNullValue()));
 		assertThat(personsGetRequest.getName(), is("Person"));
 		assertThat(personsGetRequest.isArray(), is(true));
@@ -396,7 +407,8 @@ public class RamlInterpreterTest extends AbstractRuleTestBase {
 	private void checkIntegration(JCodeModel codeModel) {
 		RamlParser defaultRamlParser = new RamlParser("/api");
 		Rule<JCodeModel, JDefinedClass, ApiResourceMetadata> rule = new Spring4ControllerDecoratorRule();
-		Set<ApiResourceMetadata> extractControllers = defaultRamlParser.extractControllers(codeModel, AbstractRuleTestBase.RAML);
+		Set<ApiResourceMetadata> extractControllers = defaultRamlParser.extractControllers(codeModel,
+				AbstractRuleTestBase.RAML);
 		for (ApiResourceMetadata controller : extractControllers) {
 			rule.apply(controller, codeModel);
 		}
@@ -423,11 +435,13 @@ public class RamlInterpreterTest extends AbstractRuleTestBase {
 		assertThat(AbstractRuleTestBase.RAML, is(notNullValue()));
 		RamlResource bigStuff = AbstractRuleTestBase.RAML.getResource("/bigStuff");
 
-		RamlDataType getType = bigStuff.getAction(RamlActionType.GET).getResponses().get("200").getBody().get("application/json").getType();
+		RamlDataType getType = bigStuff.getAction(RamlActionType.GET).getResponses().get("200").getBody()
+				.get("application/json").getType();
 		assertThat(getType, is(notNullValue()));
-		ApiBodyMetadata validationsGetRequest = RamlTypeHelper.mapTypeToPojo(jCodeModel, AbstractRuleTestBase.RAML, getType.getType());
-		JFieldVar field = getField(
-				(JDefinedClass) CodeModelHelper.findFirstClassBySimpleName(validationsGetRequest.getCodeModel(), "BigStuff"), "theDecimal");
+		ApiBodyMetadata validationsGetRequest = RamlTypeHelper.mapTypeToPojo(jCodeModel, AbstractRuleTestBase.RAML,
+				getType.getType());
+		JFieldVar field = getField((JDefinedClass) CodeModelHelper
+				.findFirstClassBySimpleName(validationsGetRequest.getCodeModel(), "BigStuff"), "theDecimal");
 		assertThat(field.type().fullName(), is(BigDecimal.class.getName()));
 	}
 
@@ -438,11 +452,13 @@ public class RamlInterpreterTest extends AbstractRuleTestBase {
 		assertThat(AbstractRuleTestBase.RAML, is(notNullValue()));
 		RamlResource bigStuff = AbstractRuleTestBase.RAML.getResource("/bigStuff");
 
-		RamlDataType getType = bigStuff.getAction(RamlActionType.GET).getResponses().get("200").getBody().get("application/json").getType();
+		RamlDataType getType = bigStuff.getAction(RamlActionType.GET).getResponses().get("200").getBody()
+				.get("application/json").getType();
 		assertThat(getType, is(notNullValue()));
-		ApiBodyMetadata validationsGetRequest = RamlTypeHelper.mapTypeToPojo(jCodeModel, AbstractRuleTestBase.RAML, getType.getType());
-		JFieldVar field = getField(
-				(JDefinedClass) CodeModelHelper.findFirstClassBySimpleName(validationsGetRequest.getCodeModel(), "BigStuff"), "theInteger");
+		ApiBodyMetadata validationsGetRequest = RamlTypeHelper.mapTypeToPojo(jCodeModel, AbstractRuleTestBase.RAML,
+				getType.getType());
+		JFieldVar field = getField((JDefinedClass) CodeModelHelper
+				.findFirstClassBySimpleName(validationsGetRequest.getCodeModel(), "BigStuff"), "theInteger");
 		assertThat(field.type().fullName(), is(BigInteger.class.getName()));
 	}
 
@@ -453,12 +469,13 @@ public class RamlInterpreterTest extends AbstractRuleTestBase {
 		assertThat(AbstractRuleTestBase.RAML, is(notNullValue()));
 		RamlResource bigStuff = AbstractRuleTestBase.RAML.getResource("/bigStuff");
 
-		RamlDataType getType = bigStuff.getAction(RamlActionType.GET).getResponses().get("200").getBody().get("application/json").getType();
+		RamlDataType getType = bigStuff.getAction(RamlActionType.GET).getResponses().get("200").getBody()
+				.get("application/json").getType();
 		assertThat(getType, is(notNullValue()));
-		ApiBodyMetadata validationsGetRequest = RamlTypeHelper.mapTypeToPojo(jCodeModel, AbstractRuleTestBase.RAML, getType.getType());
-		JMethod method = getMethod(
-				(JDefinedClass) CodeModelHelper.findFirstClassBySimpleName(validationsGetRequest.getCodeModel(), "BigStuff"),
-				"withTheInteger");
+		ApiBodyMetadata validationsGetRequest = RamlTypeHelper.mapTypeToPojo(jCodeModel, AbstractRuleTestBase.RAML,
+				getType.getType());
+		JMethod method = getMethod((JDefinedClass) CodeModelHelper
+				.findFirstClassBySimpleName(validationsGetRequest.getCodeModel(), "BigStuff"), "withTheInteger");
 		assertThat(method, is(notNullValue()));
 	}
 
@@ -507,7 +524,8 @@ public class RamlInterpreterTest extends AbstractRuleTestBase {
 	private void assertDateFormatAnnotation(JFieldVar field, String expectedPattern) throws Exception {
 		assertEquals(1, field.annotations().size());
 		Optional<JAnnotationUse> optionalAnnotation = field.annotations().stream().findFirst();
-		if (optionalAnnotation.isPresent() && JsonFormat.class.getName().equals(optionalAnnotation.get().getAnnotationClass().fullName())) {
+		if (optionalAnnotation.isPresent()
+				&& JsonFormat.class.getName().equals(optionalAnnotation.get().getAnnotationClass().fullName())) {
 			assertPatternValue(optionalAnnotation.get(), expectedPattern);
 		} else {
 			fail();

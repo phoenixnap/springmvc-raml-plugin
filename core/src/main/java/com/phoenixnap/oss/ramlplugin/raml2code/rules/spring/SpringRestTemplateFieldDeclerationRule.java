@@ -47,8 +47,8 @@ public class SpringRestTemplateFieldDeclerationRule implements Rule<JDefinedClas
 	@Override
 	public JFieldVar apply(ApiResourceMetadata controllerMetadata, JDefinedClass generatableType) {
 		if (!generatableType._implements().hasNext()) {
-			throw new RuleCanNotProcessModelException(
-					"The class " + generatableType.fullName() + " does not implement a super class that can be delegated to.");
+			throw new RuleCanNotProcessModelException("The class " + generatableType.fullName()
+					+ " does not implement a super class that can be delegated to.");
 		}
 		JClass controllerInterface = generatableType._implements().next();
 		JFieldVar field = generatableType.field(JMod.PRIVATE, controllerInterface, delegateFieldName);

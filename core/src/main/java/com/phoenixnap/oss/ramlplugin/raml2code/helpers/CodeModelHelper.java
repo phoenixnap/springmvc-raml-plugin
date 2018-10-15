@@ -60,12 +60,11 @@ public abstract class CodeModelHelper {
 	 *            The codemodels which we will look inside
 	 * @param simpleClassName
 	 *            The class name to search for
-	 * @return the first class in any package that matches the simple class
-	 *         name.
+	 * @return the first class in any package that matches the simple class name.
 	 */
 	public static JClass findFirstClassBySimpleName(JCodeModel codeModel, String simpleClassName) {
-		return findFirstClassBySimpleName(codeModel == null ? new JCodeModel[] { new JCodeModel() } : new JCodeModel[] { codeModel },
-				simpleClassName);
+		return findFirstClassBySimpleName(
+				codeModel == null ? new JCodeModel[]{new JCodeModel()} : new JCodeModel[]{codeModel}, simpleClassName);
 	}
 
 	/**
@@ -76,8 +75,7 @@ public abstract class CodeModelHelper {
 	 *            The codemodels which we will look inside
 	 * @param simpleClassName
 	 *            The class name to search for
-	 * @return the first class in any package that matches the simple class
-	 *         name.
+	 * @return the first class in any package that matches the simple class name.
 	 */
 	public static JClass findFirstClassBySimpleName(JCodeModel[] codeModels, String simpleClassName) {
 		if (codeModels != null && codeModels.length > 0) {

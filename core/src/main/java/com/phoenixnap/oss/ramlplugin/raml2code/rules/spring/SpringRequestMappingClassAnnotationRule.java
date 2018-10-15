@@ -37,7 +37,9 @@ import com.sun.codemodel.JDefinedClass;
  * @author armin.weisser
  * @since 0.4.1
  */
-public class SpringRequestMappingClassAnnotationRule implements Rule<JDefinedClass, JAnnotationUse, ApiResourceMetadata> {
+public class SpringRequestMappingClassAnnotationRule
+		implements
+			Rule<JDefinedClass, JAnnotationUse, ApiResourceMetadata> {
 	@Override
 	public JAnnotationUse apply(ApiResourceMetadata controllerMetadata, JDefinedClass generatableType) {
 		JAnnotationUse requestMapping = generatableType.annotate(RequestMapping.class);

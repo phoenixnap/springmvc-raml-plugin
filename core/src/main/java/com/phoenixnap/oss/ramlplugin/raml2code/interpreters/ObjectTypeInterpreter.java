@@ -18,6 +18,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import com.phoenixnap.oss.ramlplugin.raml2code.plugin.OverrideNamingLogicWith;
 import org.raml.v2.api.model.v10.datamodel.ObjectTypeDeclaration;
 import org.raml.v2.api.model.v10.datamodel.TypeDeclaration;
 import org.raml.v2.api.model.v10.declarations.AnnotationRef;
@@ -29,7 +30,6 @@ import org.springframework.util.StringUtils;
 import com.phoenixnap.oss.ramlplugin.raml2code.helpers.NamingHelper;
 import com.phoenixnap.oss.ramlplugin.raml2code.helpers.RamlTypeHelper;
 import com.phoenixnap.oss.ramlplugin.raml2code.plugin.Config;
-import com.phoenixnap.oss.ramlplugin.raml2code.plugin.SpringMvcEndpointGeneratorMojo.OverrideNamingLogicWith;
 import com.phoenixnap.oss.ramlplugin.raml2code.raml.RamlDataType;
 import com.phoenixnap.oss.ramlplugin.raml2code.raml.RamlRoot;
 import com.sun.codemodel.JClass;
@@ -52,7 +52,8 @@ public class ObjectTypeInterpreter extends BaseTypeInterpreter {
 	}
 
 	@Override
-	public RamlInterpretationResult interpret(RamlRoot document, TypeDeclaration type, JCodeModel builderModel, boolean property) {
+	public RamlInterpretationResult interpret(RamlRoot document, TypeDeclaration type, JCodeModel builderModel,
+			boolean property) {
 		RamlInterpretationResult result = new RamlInterpretationResult(type.required());
 		typeCheck(type);
 
@@ -108,7 +109,8 @@ public class ObjectTypeInterpreter extends BaseTypeInterpreter {
 
 		// Lets check if we've already handled this class before.
 		if (builderModel != null) {
-			JClass searchedClass = builderModel._getClass(Config.getPojoPackage() + "." + NamingHelper.convertToClassName(name));
+			JClass searchedClass = builderModel
+					._getClass(Config.getPojoPackage() + "." + NamingHelper.convertToClassName(name));
 			if (searchedClass != null) {
 				// we've already handled this pojo in the model, no need to
 				// re-interpret
@@ -147,8 +149,8 @@ public class ObjectTypeInterpreter extends BaseTypeInterpreter {
 																			// cyclic
 																			// dependency
 																			// check
-			RamlInterpretationResult childResult = RamlInterpreterFactory.getInterpreterForType(parent).interpret(document, parent,
-					builderModel, false);
+			RamlInterpretationResult childResult = RamlInterpreterFactory.getInterpreterForType(parent)
+					.interpret(document, parent, builderModel, false);
 			String childType = childResult.getResolvedClassOrBuiltOrObject().name();
 			builder.extendsClass(childType);
 		}
@@ -157,7 +159,8 @@ public class ObjectTypeInterpreter extends BaseTypeInterpreter {
 		for (TypeDeclaration objectProperty : objectType.properties()) {
 
 			String fieldName = null;
-			if (Config.getOverrideNamingLogicWith() == OverrideNamingLogicWith.DISPLAY_NAME && objectProperty.displayName() != null) {
+			if (Config.getOverrideNamingLogicWith() == OverrideNamingLogicWith.DISPLAY_NAME
+					&& objectProperty.displayName() != null) {
 				fieldName = NamingHelper.getParameterName(objectProperty.displayName().value());
 			} else if (Config.getOverrideNamingLogicWith() == OverrideNamingLogicWith.ANNOTATION) {
 				for (AnnotationRef annotation : objectProperty.annotations()) {
@@ -173,15 +176,16 @@ public class ObjectTypeInterpreter extends BaseTypeInterpreter {
 
 			List<AnnotationRef> annotations = objectProperty.annotations();
 			for (AnnotationRef annotation : annotations) {
-				if ("(isSensitive)".equals(annotation.name()) && Boolean.TRUE.equals(annotation.structuredValue().value())) {
+				if ("(isSensitive)".equals(annotation.name())
+						&& Boolean.TRUE.equals(annotation.structuredValue().value())) {
 					excludeFieldsFromToString.add(fieldName);
 				}
 			}
-			RamlInterpretationResult childResult = RamlInterpreterFactory.getInterpreterForType(objectProperty).interpret(document,
-					objectProperty, builderModel, true);
+			RamlInterpretationResult childResult = RamlInterpreterFactory.getInterpreterForType(objectProperty)
+					.interpret(document, objectProperty, builderModel, true);
 			String childType = childResult.getResolvedClassOrBuiltOrObject().fullName();
-			builder.withField(fieldName, childType, RamlTypeHelper.getDescription(objectProperty), childResult.getValidations(),
-					objectProperty);
+			builder.withField(fieldName, childType, RamlTypeHelper.getDescription(objectProperty),
+					childResult.getValidations(), objectProperty);
 
 		}
 

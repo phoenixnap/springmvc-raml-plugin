@@ -57,11 +57,13 @@ public abstract class SpringControllerStubRule extends SpringConfigurableRule {
 		GenericJavaClassRule generator = new GenericJavaClassRule().setPackageRule(new PackageRule())
 				.setClassCommentRule(new ClassCommentRule()).addClassAnnotationRule(getControllerAnnotationRule())
 				.addClassAnnotationRule(new SpringRequestMappingClassAnnotationRule())
-				.addClassAnnotationRule(new SpringValidatedClassAnnotationRule()).setClassRule(new ControllerClassDeclarationRule())
-				.setMethodCommentRule(new MethodCommentRule()).addMethodAnnotationRule(new SpringRequestMappingMethodAnnotationRule())
+				.addClassAnnotationRule(new SpringValidatedClassAnnotationRule())
+				.setClassRule(new ControllerClassDeclarationRule()).setMethodCommentRule(new MethodCommentRule())
+				.addMethodAnnotationRule(new SpringRequestMappingMethodAnnotationRule())
 				.addMethodAnnotationRule(getResponseBodyAnnotationRule())
-				.setMethodSignatureRule(new ControllerMethodSignatureRule(getReturnTypeRule(false), new SpringMethodParamsRule(
-						isAddParameterJavadoc(), isAllowArrayParameters(), !Config.isInjectHttpHeadersParameter())))
+				.setMethodSignatureRule(new ControllerMethodSignatureRule(getReturnTypeRule(false),
+						new SpringMethodParamsRule(isAddParameterJavadoc(), isAllowArrayParameters(),
+								!Config.isInjectHttpHeadersParameter())))
 				.setMethodBodyRule(new ImplementMeMethodBodyRule());
 
 		return generator.apply(metadata, generatableType);

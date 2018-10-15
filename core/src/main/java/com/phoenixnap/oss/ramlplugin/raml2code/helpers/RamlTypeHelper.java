@@ -71,8 +71,7 @@ public class RamlTypeHelper {
 	}
 
 	/**
-	 * Attempts to infer the type in the generic part of the declaration of the
-	 * type
+	 * Attempts to infer the type in the generic part of the declaration of the type
 	 * 
 	 * @param param
 	 *            The parameter to inspect
@@ -83,13 +82,11 @@ public class RamlTypeHelper {
 	}
 
 	/**
-	 * Maps a RAML Data Type to a JCodeModel using JSONSchema2Pojo and
-	 * encapsulates it along with some metadata into an {@link ApiBodyMetadata}
-	 * object.
+	 * Maps a RAML Data Type to a JCodeModel using JSONSchema2Pojo and encapsulates
+	 * it along with some metadata into an {@link ApiBodyMetadata} object.
 	 * 
 	 * @param pojoCodeModel
-	 *            The code model containing the classes generated during
-	 *            generation
+	 *            The code model containing the classes generated during generation
 	 * @param document
 	 *            The Raml document being parsed
 	 * @param type
@@ -97,8 +94,8 @@ public class RamlTypeHelper {
 	 * @return Object representing this Body
 	 */
 	public static ApiBodyMetadata mapTypeToPojo(JCodeModel pojoCodeModel, RamlRoot document, TypeDeclaration type) {
-		RamlInterpretationResult interpret = RamlInterpreterFactory.getInterpreterForType(type).interpret(document, type, pojoCodeModel,
-				false);
+		RamlInterpretationResult interpret = RamlInterpreterFactory.getInterpreterForType(type).interpret(document,
+				type, pojoCodeModel, false);
 
 		// here we expect that a new object is created i guess... we'd need to
 		// see how primitive arrays fit in
@@ -110,7 +107,8 @@ public class RamlTypeHelper {
 		}
 
 		if (pojo == null) {
-			throw new IllegalStateException("No Pojo created or resolved for type " + type.getClass().getSimpleName() + ":" + type.name());
+			throw new IllegalStateException(
+					"No Pojo created or resolved for type " + type.getClass().getSimpleName() + ":" + type.name());
 		}
 
 		if (pojo.name().equals("Void")) {
@@ -128,8 +126,8 @@ public class RamlTypeHelper {
 	}
 
 	/**
-	 * Check to determine if this is a RAML 1.0 data type or if an external
-	 * format such as JSON schema is used
+	 * Check to determine if this is a RAML 1.0 data type or if an external format
+	 * such as JSON schema is used
 	 * 
 	 * @param type
 	 *            The RAML TypeDeclaration to check
@@ -244,19 +242,19 @@ public class RamlTypeHelper {
 
 		String param = type.toUpperCase();
 		switch (param) {
-			case "DATE-ONLY":
+			case "DATE-ONLY" :
 				// example: 2013-09-29
 				jAnnotationUse.param("pattern", "yyyy-MM-dd");
 				break;
-			case "TIME-ONLY":
+			case "TIME-ONLY" :
 				// example: 19:46:19
 				jAnnotationUse.param("pattern", "HH:mm:ss");
 				break;
-			case "DATETIME-ONLY":
+			case "DATETIME-ONLY" :
 				// example: 2013-09-29T19:46:19
 				jAnnotationUse.param("pattern", "yyyy-MM-dd'T'HH:mm:ss");
 				break;
-			case "DATETIME":
+			case "DATETIME" :
 				if ("rfc2616".equalsIgnoreCase(format)) {
 					// example: Tue, 15 Nov 1994 12:45:26 GMT
 					jAnnotationUse.param("pattern", "EEE, dd MMM yyyy HH:mm:ss z");
@@ -264,7 +262,7 @@ public class RamlTypeHelper {
 					jAnnotationUse.param("pattern", "yyyy-MM-dd'T'HH:mm:ssXXX");
 				}
 				break;
-			default:
+			default :
 				jAnnotationUse.param("pattern", "yyyy-MM-dd'T'HH:mm:ss");
 		}
 	}

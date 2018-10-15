@@ -68,7 +68,8 @@ public class DelegatingMethodBodyRuleTest extends AbstractRuleTestBase {
 	}
 
 	@Test
-	public void applyRuleOnParametrizedEndpoint_shouldCreate_methodCall_onDelegate() throws JClassAlreadyExistsException {
+	public void applyRuleOnParametrizedEndpoint_shouldCreate_methodCall_onDelegate()
+			throws JClassAlreadyExistsException {
 
 		JDefinedClass jClass = jCodeModel.rootPackage()._class(JMod.PUBLIC, "TestClass");
 		JMethod jMethod = jClass.method(JMod.PUBLIC, Object.class, "getBaseById");

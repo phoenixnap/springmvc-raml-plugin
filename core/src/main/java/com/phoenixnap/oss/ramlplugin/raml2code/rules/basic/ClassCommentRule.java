@@ -34,7 +34,8 @@ public class ClassCommentRule implements Rule<JDefinedClass, JDocComment, ApiRes
 			comments = controllerMetadata.getDescription();
 		}
 		generatableType.javadoc().append(comments);
-		generatableType.javadoc().append("\n(Generated with springmvc-raml-parser v." + CodeModelHelper.getVersion() + ")");
+		generatableType.javadoc()
+				.append("\n(Generated with springmvc-raml-parser v." + CodeModelHelper.getVersion() + ")");
 		return generatableType.javadoc();
 	}
 }

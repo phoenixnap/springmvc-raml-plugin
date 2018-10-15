@@ -122,7 +122,8 @@ public class MethodParamsRule implements Rule<CodeModelHelper.JExtMethod, JMetho
 
 		if (addParameterJavadoc) {
 			String paramComment = "";
-			if (paramMetaData.getRamlParam() != null && StringUtils.hasText(paramMetaData.getRamlParam().getDescription())) {
+			if (paramMetaData.getRamlParam() != null
+					&& StringUtils.hasText(paramMetaData.getRamlParam().getDescription())) {
 				paramComment = NamingHelper.cleanForJavadoc(paramMetaData.getRamlParam().getDescription());
 			}
 			generatableType.get().javadoc().addParam(javaName + " " + paramComment);
@@ -156,7 +157,8 @@ public class MethodParamsRule implements Rule<CodeModelHelper.JExtMethod, JMetho
 			jVar.annotate(Pattern.class).param("regexp", paramMetaData.getRamlParam().getPattern());
 		}
 
-		if (paramMetaData.getRamlParam().getMinLength() != null || paramMetaData.getRamlParam().getMaxLength() != null) {
+		if (paramMetaData.getRamlParam().getMinLength() != null
+				|| paramMetaData.getRamlParam().getMaxLength() != null) {
 			JAnnotationUse jAnnotationUse = jVar.annotate(Size.class);
 			if (paramMetaData.getRamlParam().getMinLength() != null) {
 				jAnnotationUse.param("min", paramMetaData.getRamlParam().getMinLength());
@@ -196,16 +198,19 @@ public class MethodParamsRule implements Rule<CodeModelHelper.JExtMethod, JMetho
 			codeModels.add(generatableType.owner());
 		}
 
-		JClass requestBodyType = findFirstClassBySimpleName(codeModels.toArray(new JCodeModel[codeModels.size()]), requestBodyFullName);
+		JClass requestBodyType = findFirstClassBySimpleName(codeModels.toArray(new JCodeModel[codeModels.size()]),
+				requestBodyFullName);
 		if (allowArrayParameters && array) {
 			JClass arrayType = generatableType.owner().ref(List.class);
 			requestBodyType = arrayType.narrow(requestBodyType);
 		}
 		if (addParameterJavadoc) {
-			generatableType.get().javadoc().addParam(NamingHelper.getParameterName(requestBodyName) + " The Request Body Payload");
+			generatableType.get().javadoc()
+					.addParam(NamingHelper.getParameterName(requestBodyName) + " The Request Body Payload");
 		}
 		JVar param = generatableType.get().param(requestBodyType, NamingHelper.getParameterName(requestBodyName));
-		if (Config.getPojoConfig().isIncludeJsr303Annotations() && !RamlActionType.PATCH.equals(endpointMetadata.getActionType())) {
+		if (Config.getPojoConfig().isIncludeJsr303Annotations()
+				&& !RamlActionType.PATCH.equals(endpointMetadata.getActionType())) {
 			// skip Valid annotation for PATCH actions since it's a partial
 			// update so some required fields might be omitted
 			param.annotate(Valid.class);

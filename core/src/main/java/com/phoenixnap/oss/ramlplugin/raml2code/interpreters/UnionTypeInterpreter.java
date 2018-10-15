@@ -85,7 +85,8 @@ public class UnionTypeInterpreter extends BaseTypeInterpreter {
 	}
 
 	@Override
-	public RamlInterpretationResult interpret(RamlRoot document, TypeDeclaration type, JCodeModel builderModel, boolean property) {
+	public RamlInterpretationResult interpret(RamlRoot document, TypeDeclaration type, JCodeModel builderModel,
+			boolean property) {
 		RamlInterpretationResult result = new RamlInterpretationResult(type.required());
 		typeCheck(type);
 
@@ -117,20 +118,20 @@ public class UnionTypeInterpreter extends BaseTypeInterpreter {
 		if (parent != null && !(parent.name().equals(name))) { // add cyclic
 																// dependency
 																// check
-			RamlInterpretationResult childResult = RamlInterpreterFactory.getInterpreterForType(parent).interpret(document, parent,
-					builderModel, false);
+			RamlInterpretationResult childResult = RamlInterpreterFactory.getInterpreterForType(parent)
+					.interpret(document, parent, builderModel, false);
 			String childType = childResult.getResolvedClassOrBuiltOrObject().name();
 
 			builder.extendsClass(childType);
 		}
 
 		for (TypeDeclaration objectProperty : objectType.of()) {
-			RamlInterpretationResult childResult = RamlInterpreterFactory.getInterpreterForType(objectProperty).interpret(document,
-					objectProperty, builderModel, true);
+			RamlInterpretationResult childResult = RamlInterpreterFactory.getInterpreterForType(objectProperty)
+					.interpret(document, objectProperty, builderModel, true);
 
 			String childType = childResult.getResolvedClassOrBuiltOrObject().fullName();
-			builder.withField(objectProperty.name(), childType, RamlTypeHelper.getDescription(objectProperty), childResult.getValidations(),
-					objectProperty);
+			builder.withField(objectProperty.name(), childType, RamlTypeHelper.getDescription(objectProperty),
+					childResult.getValidations(), objectProperty);
 		}
 		// Add a constructor with all fields
 		builder.withCompleteConstructor();

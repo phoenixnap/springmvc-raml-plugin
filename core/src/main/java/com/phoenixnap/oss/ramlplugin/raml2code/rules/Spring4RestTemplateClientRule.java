@@ -83,7 +83,8 @@ public class Spring4RestTemplateClientRule implements ConfigurableRule<JCodeMode
 		List<String> grants = new ArrayList<>();
 		Set<ApiActionMetadata> apiCalls = metadata.getApiCalls();
 		for (ApiActionMetadata actionMetadata : apiCalls) {
-			String grant = RamlHelper.getFirstAuthorizationGrant(actionMetadata.getAction(), actionMetadata.getParent().getDocument());
+			String grant = RamlHelper.getFirstAuthorizationGrant(actionMetadata.getAction(),
+					actionMetadata.getParent().getDocument());
 			if (!StringUtils.isEmpty(grant)) {
 				grants.add(grant);
 			}
@@ -98,25 +99,29 @@ public class Spring4RestTemplateClientRule implements ConfigurableRule<JCodeMode
 				.apply(metadata, generatableType);
 
 		GenericJavaClassRule clientGenerator = new GenericJavaClassRule().setPackageRule(new PackageRule())
-				.setClassCommentRule(new ClassCommentRule()).addClassAnnotationRule(new ClassAnnotationRule(Component.class))
+				.setClassCommentRule(new ClassCommentRule())
+				.addClassAnnotationRule(new ClassAnnotationRule(Component.class))
 				.setClassRule(new ResourceClassDeclarationRule(ClientInterfaceDeclarationRule.CLIENT_SUFFIX + "Impl")) // MODIFIED
 				.setImplementsExtendsRule(new ImplementsControllerInterfaceRule(generatedInterface))
-				.addFieldDeclarationRule(new ClassFieldDeclarationRule(baseUrlFieldName, String.class, getBaseUrlConfigurationName())) //
+				.addFieldDeclarationRule(
+						new ClassFieldDeclarationRule(baseUrlFieldName, String.class, getBaseUrlConfigurationName())) //
 				.setMethodCommentRule(new MethodCommentRule())
 				.setMethodSignatureRule(new ControllerMethodSignatureRule(new SpringResponseEntityRule(),
 						new MethodParamsRule(false, allowArrayParameters, true)))
 				.setMethodBodyRule(new SpringRestClientMethodBodyRule(restTemplateFieldName, baseUrlFieldName));
 
 		if (grants.isEmpty()) {
-			clientGenerator.addFieldDeclarationRule(
-					new ClassFieldDeclarationRule(restTemplateFieldName, RestTemplate.class, true, restTemplateQualifierBeanName)); // Modified
+			clientGenerator.addFieldDeclarationRule(new ClassFieldDeclarationRule(restTemplateFieldName,
+					RestTemplate.class, true, restTemplateQualifierBeanName)); // Modified
 		} else {
 			for (String grant : grants) {
 				grant = CaseFormat.LOWER_UNDERSCORE.to(CaseFormat.LOWER_CAMEL, grant);
 
-				clientGenerator.addFieldDeclarationRule(
-						new ClassFieldDeclarationRule(grant + StringUtils.capitalize(restTemplateFieldName), RestTemplate.class, true,
-								StringUtils.isEmpty(restTemplateQualifierBeanName) ? null : restTemplateQualifierBeanName + grant)); // Modified
+				clientGenerator.addFieldDeclarationRule(new ClassFieldDeclarationRule(
+						grant + StringUtils.capitalize(restTemplateFieldName), RestTemplate.class, true,
+						StringUtils.isEmpty(restTemplateQualifierBeanName)
+								? null
+								: restTemplateQualifierBeanName + grant)); // Modified
 			}
 		}
 

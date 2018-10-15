@@ -14,6 +14,7 @@ package com.phoenixnap.oss.ramlplugin.raml2code.rules;
 
 import org.raml.v2.api.RamlModelBuilder;
 import org.raml.v2.api.RamlModelResult;
+import org.raml.v2.api.model.common.ValidationResult;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.util.StringUtils;
@@ -25,6 +26,8 @@ import com.phoenixnap.oss.ramlplugin.raml2code.raml.RamlModelFactory;
 import com.phoenixnap.oss.ramlplugin.raml2code.raml.RamlRoot;
 import com.phoenixnap.oss.ramlplugin.raml2code.raml.RamlVersion;
 import com.phoenixnap.oss.ramlplugin.raml2code.raml.raml10.RJP10V2RamlModelFactory;
+
+import java.util.stream.Collectors;
 
 /**
  * 
@@ -44,10 +47,9 @@ public class RamlLoader {
 	 * Loads a RAML document from a file. This method will
 	 * 
 	 * @param ramlFileUrl
-	 *            The path to the file, this can either be a resource on the
-	 *            class path (in which case the classpath: prefix should be
-	 *            omitted) or a file on disk (in which case the file: prefix
-	 *            should be included)
+	 *            The path to the file, this can either be a resource on the class
+	 *            path (in which case the classpath: prefix should be omitted) or a
+	 *            file on disk (in which case the file: prefix should be included)
 	 * @return Built Raml model
 	 * @throws InvalidRamlResourceException
 	 *             If the Raml Provided isnt correct for the required parser
@@ -66,8 +68,10 @@ public class RamlLoader {
 
 		if (ramlModelResult.hasErrors()) {
 			if (logger.isErrorEnabled()) {
+				String csvString = String.join(", ", ramlModelResult.getValidationResults()
+						.stream().map(Object::toString).collect(Collectors.toList()));
 				logger.error("Loaded RAML has validation errors: {}",
-						StringUtils.collectionToCommaDelimitedString(ramlModelResult.getValidationResults()));
+						csvString);
 			}
 			throw new InvalidRamlException(ramlURL, ramlModelResult.getValidationResults());
 		}

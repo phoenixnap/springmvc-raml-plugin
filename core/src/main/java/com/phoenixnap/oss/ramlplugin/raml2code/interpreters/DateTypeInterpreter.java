@@ -38,7 +38,8 @@ public class DateTypeInterpreter extends BaseTypeInterpreter {
 	}
 
 	@Override
-	public RamlInterpretationResult interpret(RamlRoot document, TypeDeclaration type, JCodeModel builderModel, boolean property) {
+	public RamlInterpretationResult interpret(RamlRoot document, TypeDeclaration type, JCodeModel builderModel,
+			boolean property) {
 
 		RamlInterpretationResult result = new RamlInterpretationResult(type.required());
 		result.setResolvedClass(builderModel.ref(SchemaHelper.mapDateFormat(type.type())));

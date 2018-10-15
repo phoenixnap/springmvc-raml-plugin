@@ -1,8 +1,10 @@
 package com.phoenixnap.oss.ramlplugin.raml2code.rules;
 
-import com.phoenixnap.oss.ramlplugin.raml2code.plugin.PojoGenerationConfig;
+import com.phoenixnap.oss.ramlplugin.raml2code.plugin.ExtendedGenerationConfig;
+import com.phoenixnap.oss.ramlplugin.raml2code.plugin.MojoConfig;
+import org.jsonschema2pojo.DefaultGenerationConfig;
 
-public class TestPojoConfig extends PojoGenerationConfig {
+public class TestPojoConfig extends ExtendedGenerationConfig {
 
 	public void setIncludeJsr303Annotations(boolean includeJsr303Annotations) {
 		this.includeJsr303Annotations = includeJsr303Annotations;

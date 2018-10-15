@@ -33,14 +33,13 @@ package com.phoenixnap.oss.ramlplugin.raml2code.rules;
 public interface Rule<T, R, M> {
 
 	/**
-	 * Add whatever Java source is required to the given generatable to
-	 * represent this rule.
+	 * Add whatever Java source is required to the given generatable to represent
+	 * this rule.
 	 *
 	 * @param metadata
 	 *            The meta data from which the code is build.
 	 * @param generatableType
-	 *            A code generation construct to which this rule should be
-	 *            applied
+	 *            A code generation construct to which this rule should be applied
 	 *
 	 * @return The newly generated source code item that was added/created as a
 	 *         result of applying this rule

@@ -86,7 +86,8 @@ public class SpringRequestMappingMethodAnnotationRule implements Rule<JMethod, J
 					String urlWithoutParam = url;
 					for (ApiParameterMetadata apiParameterMetadata : list) {
 						// and without it
-						urlWithoutParam = urlWithoutParam.replace(getApiParameterMetadataURLPart(apiParameterMetadata), "");
+						urlWithoutParam = urlWithoutParam.replace(getApiParameterMetadataURLPart(apiParameterMetadata),
+								"");
 						urlWithoutParam = urlWithoutParam.replaceAll("//", "/");
 					}
 					urls.add(urlWithoutParam);

@@ -11,7 +11,7 @@
     <artifactId>springmvc-raml-plugin-core</artifactId>
     <version>2.0.5</version>
 
-    <name>RAML to Spring MVC code generator</name>
+    <name>RAML to Spring MVC code generator core</name>
     <description>Component is Maven plugin that reads RAML documents and creates Spring MVC endpoints</description>
     <url>https://github.com/phoenixnap/springmvc-raml-plugin/tree/master/springmvc-raml-parser</url>
     <packaging>jar</packaging>
@@ -43,13 +43,6 @@
         <maven.compiler.source>1.8</maven.compiler.source>
         <maven.compiler.target>1.8</maven.compiler.target>
         <maven.compiler.parameters>true</maven.compiler.parameters>
-
-        <powermock.version>1.6.2</powermock.version>
-        <maven.core.version>3.3.9</maven.core.version>
-        <jsonschema2pojo.version>0.5.1</jsonschema2pojo.version>
-        <ramlparser2.version>1.0.26</ramlparser2.version>
-        <feign.client.version>1.1.6.RELEASE</feign.client.version>
-        <codemodel.version>2.6</codemodel.version>
     </properties>
 
     <dependencies>
@@ -67,13 +60,11 @@
         <dependency>
             <groupId>org.raml</groupId>
             <artifactId>raml-parser-2</artifactId>
-            <version>${ramlparser2.version}</version>
         </dependency>
 
         <dependency>
             <groupId>org.jsonschema2pojo</groupId>
             <artifactId>jsonschema2pojo-core</artifactId>
-            <version>${jsonschema2pojo.version}</version>
         </dependency>
 
         <dependency>
@@ -93,6 +84,13 @@
                     <artifactId>spring-boot-starter-logging</artifactId>
                 </exclusion>
             </exclusions>
+        </dependency>
+
+        <!--Only needed by SpringShortcutMappingMethodAnnotationRule -->
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-web</artifactId>
+            <version>5.1.0.RELEASE</version>
         </dependency>
 
 
@@ -115,13 +113,11 @@
         <dependency>
             <groupId>org.powermock</groupId>
             <artifactId>powermock-module-junit4</artifactId>
-            <version>${powermock.version}</version>
             <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>org.powermock</groupId>
             <artifactId>powermock-api-mockito</artifactId>
-            <version>${powermock.version}</version>
             <scope>test</scope>
         </dependency>
         <dependency>

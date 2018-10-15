@@ -1,14 +1,14 @@
-package com.phoenixnap.oss.ramlplugin.raml2code.plugin.plugin;
+package com.phoenixnap.oss.ramlplugin.raml2code.plugin;
 
 import com.phoenixnap.oss.ramlplugin.raml2code.helpers.NamingHelper;
-import com.phoenixnap.oss.ramlplugin.raml2code.plugin.SpringMvcEndpointGeneratorMojo.MethodsNamingLogic;
-import com.phoenixnap.oss.ramlplugin.raml2code.plugin.SpringMvcEndpointGeneratorMojo.OverrideNamingLogicWith;
+import org.jsonschema2pojo.DefaultGenerationConfig;
+import org.jsonschema2pojo.GenerationConfig;
 
 public class Config {
 
-	private static PojoGenerationConfig pojoGenerationConfig = new PojoGenerationConfig();
+	private static GenerationConfig pojoGenerationConfig = new DefaultGenerationConfig();
 
-	private static SpringMvcEndpointGeneratorMojo springMvcEndpointGeneratorMojo;
+	private static MojoConfig mojoConfig;
 
 	private static final Boolean DEFAULT_SEPERATE_METHODS_BY_CONTENTTYPE = Boolean.FALSE;
 	private static Boolean seperateMethodsByContentType = DEFAULT_SEPERATE_METHODS_BY_CONTENTTYPE;
@@ -40,20 +40,20 @@ public class Config {
 	Config() {
 	}
 
-	protected static void setMojo(SpringMvcEndpointGeneratorMojo springMvcEndpointGeneratorMojo) {
-		Config.springMvcEndpointGeneratorMojo = springMvcEndpointGeneratorMojo;
+	public static void setMojoConfig(MojoConfig springMvcEndpointGeneratorMojo) {
+		Config.mojoConfig = springMvcEndpointGeneratorMojo;
 		if (springMvcEndpointGeneratorMojo != null) {
-			Config.pojoGenerationConfig = springMvcEndpointGeneratorMojo.generationConfig;
+			Config.pojoGenerationConfig = springMvcEndpointGeneratorMojo.getGenerationConfig();
 		} else {
 			Config.pojoGenerationConfig = null;
 		}
 	}
 
-	protected static void setPojoConfig(PojoGenerationConfig pojoGenerationConfig) {
+	protected static void setPojoConfig(GenerationConfig pojoGenerationConfig) {
 		Config.pojoGenerationConfig = pojoGenerationConfig;
 	}
 
-	public static PojoGenerationConfig getPojoConfig() {
+	public static GenerationConfig getPojoConfig() {
 		return pojoGenerationConfig;
 	}
 
@@ -62,8 +62,8 @@ public class Config {
 	}
 
 	public static Boolean isSeperateMethodsByContentType() {
-		if (springMvcEndpointGeneratorMojo != null) {
-			return springMvcEndpointGeneratorMojo.seperateMethodsByContentType;
+		if (mojoConfig != null) {
+			return mojoConfig.getSeperateMethodsByContentType();
 		}
 		return seperateMethodsByContentType;
 	}
@@ -73,8 +73,8 @@ public class Config {
 	}
 
 	public static Boolean isInjectHttpHeadersParameter() {
-		if (springMvcEndpointGeneratorMojo != null) {
-			return springMvcEndpointGeneratorMojo.injectHttpHeadersParameter;
+		if (mojoConfig != null) {
+			return mojoConfig.getInjectHttpHeadersParameter();
 		}
 		return injectHttpHeadersParameter;
 	}
@@ -84,8 +84,8 @@ public class Config {
 	}
 
 	public static Integer getResourceDepthInClassNames() {
-		if (springMvcEndpointGeneratorMojo != null) {
-			return springMvcEndpointGeneratorMojo.resourceDepthInClassNames;
+		if (mojoConfig != null) {
+			return mojoConfig.getResourceDepthInClassNames();
 		}
 		return resourceDepthInClassNames;
 	}
@@ -95,8 +95,8 @@ public class Config {
 	}
 
 	public static Integer getResourceTopLevelInClassNames() {
-		if (springMvcEndpointGeneratorMojo != null) {
-			return springMvcEndpointGeneratorMojo.resourceTopLevelInClassNames;
+		if (mojoConfig != null) {
+			return mojoConfig.getResourceTopLevelInClassNames();
 		}
 		return resourceTopLevelInClassNames;
 	}
@@ -106,8 +106,8 @@ public class Config {
 	}
 
 	public static Boolean isReverseOrderInClassNames() {
-		if (springMvcEndpointGeneratorMojo != null) {
-			return springMvcEndpointGeneratorMojo.reverseOrderInClassNames;
+		if (mojoConfig != null) {
+			return mojoConfig.getReverseOrderInClassNames();
 		}
 		return reverseOrderInClassNames;
 	}
@@ -117,15 +117,15 @@ public class Config {
 	}
 
 	public static String getBasePackage() {
-		if (springMvcEndpointGeneratorMojo != null) {
-			return springMvcEndpointGeneratorMojo.basePackage;
+		if (mojoConfig != null) {
+			return mojoConfig.getBasePackage();
 		}
 		return basePackage;
 	}
 
 	public static MethodsNamingLogic getMethodsNamingLogic() {
-		if (springMvcEndpointGeneratorMojo != null) {
-			return springMvcEndpointGeneratorMojo.methodsNamingLogic;
+		if (mojoConfig != null) {
+			return mojoConfig.getMethodsNamingLogic();
 		}
 		if (methodsNamingLogic == null) {
 			return DEFAULT_METHODS_NAMING_LOGIC;
@@ -138,8 +138,8 @@ public class Config {
 	}
 
 	public static OverrideNamingLogicWith getOverrideNamingLogicWith() {
-		if (springMvcEndpointGeneratorMojo != null) {
-			return springMvcEndpointGeneratorMojo.overrideNamingLogicWith;
+		if (mojoConfig != null) {
+			return mojoConfig.getOverrideNamingLogicWith();
 		}
 		return overrideNamingLogicWith;
 	}
@@ -149,8 +149,8 @@ public class Config {
 	}
 
 	public static String getDontGenerateForAnnotation() {
-		if (springMvcEndpointGeneratorMojo != null) {
-			return springMvcEndpointGeneratorMojo.dontGenerateForAnnotation;
+		if (mojoConfig != null) {
+			return mojoConfig.getDontGenerateForAnnotation();
 		}
 		return dontGenerateForAnnotation;
 	}
@@ -164,7 +164,7 @@ public class Config {
 	}
 
 	protected static void resetFields() {
-		setMojo(null);
+		setMojoConfig(null);
 		setBasePackage(DEFAULT_BASE_PACKAGE);
 		setInjectHttpHeadersParameter(DEFAULT_INJECT_HTTP_HEADERS_PARAMETER);
 		setResourceDepthInClassNames(DEFAULT_RESOURCE_DEPTH_IN_CLASS_NAMES);

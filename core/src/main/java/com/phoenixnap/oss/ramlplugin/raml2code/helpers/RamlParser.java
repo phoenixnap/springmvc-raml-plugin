@@ -74,7 +74,8 @@ public class RamlParser {
 		// until we hit the first action.
 		// if an action is found we need to
 		for (Entry<String, RamlResource> resource : raml.getResources().entrySet()) {
-			Set<ApiResourceMetadata> resources = checkResource(bodyCodeModel, startUrl, resource.getValue(), null, raml);
+			Set<ApiResourceMetadata> resources = checkResource(bodyCodeModel, startUrl, resource.getValue(), null,
+					raml);
 			for (ApiResourceMetadata resourceMetadata : resources) {
 				if (names.contains(resourceMetadata.getResourceName())) {
 					// collision has occured, lets mark this for 2nd pass
@@ -107,7 +108,8 @@ public class RamlParser {
 		if (resource.getResources() != null && !resource.getResources().isEmpty()) {
 			for (RamlResource childResource : resource.getResources().values()) {
 				if (childResource.getUriParameters() != null && !childResource.getUriParameters().isEmpty()
-						|| (childResource.getResolvedUriParameters() != null && !childResource.getResolvedUriParameters().isEmpty())) {
+						|| (childResource.getResolvedUriParameters() != null
+								&& !childResource.getResolvedUriParameters().isEmpty())) {
 					return true;
 				}
 			}
@@ -117,9 +119,9 @@ public class RamlParser {
 	}
 
 	/**
-	 * Recursive method to parse resources in a Raml File. It tries to go as
-	 * deep as possible before creating the root Resource. Once this is done,
-	 * methods and child resources will be relative to the root resource
+	 * Recursive method to parse resources in a Raml File. It tries to go as deep as
+	 * possible before creating the root Resource. Once this is done, methods and
+	 * child resources will be relative to the root resource
 	 * 
 	 * @param bodyCodeModel
 	 *            The code model containing body pojos

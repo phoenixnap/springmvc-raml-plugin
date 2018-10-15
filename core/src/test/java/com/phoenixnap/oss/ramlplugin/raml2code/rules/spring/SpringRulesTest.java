@@ -29,7 +29,8 @@ import com.sun.codemodel.JPackage;
 public class SpringRulesTest extends AbstractRuleTestBase {
 
 	@Test
-	public void applyRestControllerAnnotationRule_shouldCreate_validClassAnnotation() throws JClassAlreadyExistsException {
+	public void applyRestControllerAnnotationRule_shouldCreate_validClassAnnotation()
+			throws JClassAlreadyExistsException {
 		SpringRestControllerAnnotationRule rule = new SpringRestControllerAnnotationRule();
 
 		JPackage jPackage = jCodeModel.rootPackage();
@@ -43,7 +44,8 @@ public class SpringRulesTest extends AbstractRuleTestBase {
 	}
 
 	@Test
-	public void applyRequestMappingAnnotationRule_shouldCreate_validClassAnnotation() throws JClassAlreadyExistsException {
+	public void applyRequestMappingAnnotationRule_shouldCreate_validClassAnnotation()
+			throws JClassAlreadyExistsException {
 		SpringRequestMappingClassAnnotationRule rule = new SpringRequestMappingClassAnnotationRule();
 
 		JPackage jPackage = jCodeModel.rootPackage();
@@ -53,11 +55,13 @@ public class SpringRulesTest extends AbstractRuleTestBase {
 		assertThat(jClass, is(notNullValue()));
 		assertThat(jClass.name(), equalTo("MyClass"));
 		assertThat(serializeModel(), containsString("import org.springframework.web.bind.annotation.RequestMapping;"));
-		assertThat(serializeModel(), containsString("@RequestMapping(value = \"/api/base\", produces = \"application/json\")"));
+		assertThat(serializeModel(),
+				containsString("@RequestMapping(value = \"/api/base\", produces = \"application/json\")"));
 	}
 
 	@Test
-	public void applyRequestMappingAnnotationRule_shouldCreate_validMethodAnnotation() throws JClassAlreadyExistsException {
+	public void applyRequestMappingAnnotationRule_shouldCreate_validMethodAnnotation()
+			throws JClassAlreadyExistsException {
 		SpringRequestMappingMethodAnnotationRule rule = new SpringRequestMappingMethodAnnotationRule();
 
 		JPackage jPackage = jCodeModel.rootPackage();
@@ -70,7 +74,8 @@ public class SpringRulesTest extends AbstractRuleTestBase {
 	}
 
 	@Test
-	public void applyDelegateFieldDeclarationRule_shouldCreate_validAutowiredField() throws JClassAlreadyExistsException {
+	public void applyDelegateFieldDeclarationRule_shouldCreate_validAutowiredField()
+			throws JClassAlreadyExistsException {
 		SpringDelegateFieldDeclerationRule rule = new SpringDelegateFieldDeclerationRule("delegate");
 
 		JPackage jPackage = jCodeModel.rootPackage();

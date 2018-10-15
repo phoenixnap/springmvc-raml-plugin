@@ -117,13 +117,16 @@ public class RJP10V2RamlActionTest extends AbstractRuleTestBase {
 		assertThat(securedBy.size(), equalTo(1));
 		assertThat(securedBy.get(0).getName(), is("oauth2"));
 
-		SecurityScheme securityScheme = ((RJP10V2RamlSecurityReference) securedBy.get(0)).getSecuritySchemeRef().securityScheme();
+		SecurityScheme securityScheme = ((RJP10V2RamlSecurityReference) securedBy.get(0)).getSecuritySchemeRef()
+				.securityScheme();
 
 		assertThat(securityScheme.type(), equalTo("OAuth 2.0"));
 		assertThat(securityScheme.description().value(), equalTo("OAuth 2.0 Authentication"));
 		assertThat(securityScheme.displayName().value(), equalTo("OAuth 2.0 Auth"));
-		assertThat(securityScheme.settings().accessTokenUri().value(), equalTo("https://accounts.google.com/o/oauth2/token"));
-		assertThat(securityScheme.settings().authorizationUri().value(), equalTo("https://accounts.google.com/o/oauth2/auth"));
+		assertThat(securityScheme.settings().accessTokenUri().value(),
+				equalTo("https://accounts.google.com/o/oauth2/token"));
+		assertThat(securityScheme.settings().authorizationUri().value(),
+				equalTo("https://accounts.google.com/o/oauth2/auth"));
 		assertThat(securityScheme.settings().authorizationGrants(), hasItem("authorization_code"));
 		assertThat(securityScheme.settings().authorizationGrants(), hasItem("client_credentials"));
 		assertThat(securityScheme.settings().authorizationGrants(), hasItem("password"));
@@ -145,7 +148,8 @@ public class RJP10V2RamlActionTest extends AbstractRuleTestBase {
 
 	@Test
 	public void ramlActionShouldReflectResolvedUriParameter() {
-		Map<String, RamlUriParameter> resolvedUriParameters = ramlGetSubresourceByIdAction.getResource().getResolvedUriParameters();
+		Map<String, RamlUriParameter> resolvedUriParameters = ramlGetSubresourceByIdAction.getResource()
+				.getResolvedUriParameters();
 
 		RamlUriParameter managerIdUriParameter = resolvedUriParameters.get("managerId");
 		assertThat(managerIdUriParameter.getType().toString(), equalTo("INTEGER"));

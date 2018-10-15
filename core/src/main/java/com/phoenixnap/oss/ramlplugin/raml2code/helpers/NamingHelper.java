@@ -27,6 +27,8 @@ import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import com.phoenixnap.oss.ramlplugin.raml2code.plugin.MethodsNamingLogic;
+import com.phoenixnap.oss.ramlplugin.raml2code.plugin.OverrideNamingLogicWith;
 import org.jsonschema2pojo.util.NameHelper;
 import org.raml.v2.api.model.v10.declarations.AnnotationRef;
 import org.raml.v2.internal.utils.Inflector;
@@ -37,8 +39,6 @@ import com.phoenixnap.oss.ramlplugin.raml2code.data.ApiActionMetadata;
 import com.phoenixnap.oss.ramlplugin.raml2code.data.ApiBodyMetadata;
 import com.phoenixnap.oss.ramlplugin.raml2code.data.ApiParameterMetadata;
 import com.phoenixnap.oss.ramlplugin.raml2code.plugin.Config;
-import com.phoenixnap.oss.ramlplugin.raml2code.plugin.SpringMvcEndpointGeneratorMojo.MethodsNamingLogic;
-import com.phoenixnap.oss.ramlplugin.raml2code.plugin.SpringMvcEndpointGeneratorMojo.OverrideNamingLogicWith;
 import com.phoenixnap.oss.ramlplugin.raml2code.raml.RamlActionType;
 import com.phoenixnap.oss.ramlplugin.raml2code.raml.RamlResource;
 
@@ -52,17 +52,19 @@ import com.phoenixnap.oss.ramlplugin.raml2code.raml.RamlResource;
  */
 public class NamingHelper {
 
-	private static final Pattern CONTENT_TYPE_VERSION = Pattern.compile("[^v]*(v[\\d\\.]*).*", Pattern.CASE_INSENSITIVE);
+	private static final Pattern CONTENT_TYPE_VERSION = Pattern.compile("[^v]*(v[\\d\\.]*).*",
+			Pattern.CASE_INSENSITIVE);
 
 	private static final Pattern SLASH = Pattern.compile("/");
 
 	private static final String ILLEGAL_CHARACTER_REGEX = "[^0-9a-zA-Z_$]";
 
-	private static final String KEYWORDS[] = { "abstract", "assert", "boolean", "break", "byte", "case", "catch", "char", "class", "const",
-			"continue", "default", "do", "double", "else", "extends", "false", "final", "finally", "float", "for", "goto", "if",
-			"implements", "import", "instanceof", "int", "interface", "long", "native", "new", "null", "package", "private", "protected",
-			"public", "return", "short", "static", "strictfp", "super", "switch", "synchronized", "this", "throw", "throws", "transient",
-			"true", "try", "void", "volatile", "while" };
+	private static final String KEYWORDS[] = {"abstract", "assert", "boolean", "break", "byte", "case", "catch", "char",
+			"class", "const", "continue", "default", "do", "double", "else", "extends", "false", "final", "finally",
+			"float", "for", "goto", "if", "implements", "import", "instanceof", "int", "interface", "long", "native",
+			"new", "null", "package", "private", "protected", "public", "return", "short", "static", "strictfp",
+			"super", "switch", "synchronized", "this", "throw", "throws", "transient", "true", "try", "void",
+			"volatile", "while"};
 
 	private static List<String> keywordsList;
 
@@ -79,8 +81,8 @@ public class NamingHelper {
 	}
 
 	/**
-	 * Converts an http contentType into a qualifier that can be used within a
-	 * Java method
+	 * Converts an http contentType into a qualifier that can be used within a Java
+	 * method
 	 * 
 	 * @param contentType
 	 *            The content type to convert application/json
@@ -190,8 +192,8 @@ public class NamingHelper {
 	}
 
 	/**
-	 * Utility method to clean New Line,Spaces and other highly useless
-	 * characters found (mainly in javadoc)
+	 * Utility method to clean New Line,Spaces and other highly useless characters
+	 * found (mainly in javadoc)
 	 * 
 	 * @param input
 	 *            The string to be cleaned
@@ -209,8 +211,8 @@ public class NamingHelper {
 			output = output.substring(1);
 		}
 
-		while (output.endsWith("/") || output.endsWith("\n") || output.endsWith(" ") || output.endsWith(",") || output.endsWith("\t")
-				|| output.endsWith("-") || output.endsWith("*")) {
+		while (output.endsWith("/") || output.endsWith("\n") || output.endsWith(" ") || output.endsWith(",")
+				|| output.endsWith("\t") || output.endsWith("-") || output.endsWith("*")) {
 			output = output.substring(0, output.length() - 1);
 		}
 		return output;
@@ -236,8 +238,7 @@ public class NamingHelper {
 	 *            The raml resource being parsed
 	 * @param singularize
 	 *            indicates if the resource name should be singularized or not
-	 * @return A name representing this resource or null if one cannot be
-	 *         inferred
+	 * @return A name representing this resource or null if one cannot be inferred
 	 */
 	public static String getResourceName(RamlResource resource, boolean singularize) {
 		String url = resource.getRelativeUri();
@@ -274,7 +275,8 @@ public class NamingHelper {
 					}
 					++lengthCounter;
 				}
-				if (Config.getResourceDepthInClassNames() > 0 && lengthCounter >= Config.getResourceDepthInClassNames()) {
+				if (Config.getResourceDepthInClassNames() > 0
+						&& lengthCounter >= Config.getResourceDepthInClassNames()) {
 					break;
 				}
 			}
@@ -290,8 +292,7 @@ public class NamingHelper {
 	 *            The Url representation of this object
 	 * @param singularize
 	 *            indicates if the resource name should be singularized or not
-	 * @return A name representing this resource or null if one cannot be
-	 *         inferred
+	 * @return A name representing this resource or null if one cannot be inferred
 	 */
 	public static String getResourceName(String resource, boolean singularize) {
 		if (StringUtils.hasText(resource)) {
@@ -331,8 +332,7 @@ public class NamingHelper {
 	}
 
 	/**
-	 * Converts the name of a parameter into a name suitable for a Java
-	 * parameter
+	 * Converts the name of a parameter into a name suitable for a Java parameter
 	 *
 	 * @param name
 	 *            The name of a RAML query parameter or request header
@@ -378,8 +378,7 @@ public class NamingHelper {
 	}
 
 	/**
-	 * Cleans a string with characters that are not valid as a java identifier
-	 * enum
+	 * Cleans a string with characters that are not valid as a java identifier enum
 	 * 
 	 * @param enumConstant
 	 *            The string to clean
@@ -429,8 +428,8 @@ public class NamingHelper {
 		}
 
 		if (Config.getMethodsNamingLogic() == MethodsNamingLogic.RESOURCES) {
-			return getActionNameFromResources(apiActionMetadata.getParent().getResource(), apiActionMetadata.getResource(),
-					apiActionMetadata.getActionType());
+			return getActionNameFromResources(apiActionMetadata.getParent().getResource(),
+					apiActionMetadata.getResource(), apiActionMetadata.getActionType());
 		}
 
 		return getActionNameFromObjects(apiActionMetadata);
@@ -510,8 +509,8 @@ public class NamingHelper {
 	}
 
 	/**
-	 * Attempts to infer the name of an action (intent) from a resource's
-	 * relative URL and action details
+	 * Attempts to infer the name of an action (intent) from a resource's relative
+	 * URL and action details
 	 * 
 	 * @param controllerizedResource
 	 *            The resource that is mapped to the root controller
@@ -529,7 +528,8 @@ public class NamingHelper {
 		// Since this will be part of a resource/controller, remove the parent
 		// portion of the URL if enough details remain
 		// to infer a meaningful method name
-		if (controllerizedResource != resource && StringUtils.countOccurrencesOf(url, "{") < StringUtils.countOccurrencesOf(url, "/") - 1) {
+		if (controllerizedResource != resource
+				&& StringUtils.countOccurrencesOf(url, "{") < StringUtils.countOccurrencesOf(url, "/") - 1) {
 			url = reduceToResourceNameAndId(url);
 		}
 
@@ -561,7 +561,8 @@ public class NamingHelper {
 						isIdInPath = true;
 						if (segment.startsWith("{") && segment.endsWith("}")) {
 							String peek = splitUrl[index - 1].toLowerCase();
-							name = "By" + StringUtils.capitalize(difference(peek, segment.substring(1, segment.length() - 1)));
+							name = "By" + StringUtils
+									.capitalize(difference(peek, segment.substring(1, segment.length() - 1)));
 						} else {
 							String[] split = segment.split("[{}]");
 							name = "By";
@@ -596,7 +597,8 @@ public class NamingHelper {
 			String prefix = convertActionTypeToIntent(actionType, isIdInPath);
 			// singularize name if it's a proper POST or PUT
 			if (!NamingHelper.singularize(tail).equals(tail) && !tail.endsWith("details")
-					&& (RamlActionType.POST.equals(actionType) || RamlActionType.PUT.equals(actionType) && isIdInPath)) {
+					&& (RamlActionType.POST.equals(actionType)
+							|| RamlActionType.PUT.equals(actionType) && isIdInPath)) {
 				name = NamingHelper.singularize(name);
 			}
 
@@ -631,26 +633,26 @@ public class NamingHelper {
 	 */
 	private static String convertActionTypeToIntent(RamlActionType actionType, boolean isIdInPath) {
 		switch (actionType) {
-			case DELETE:
+			case DELETE :
 				return "delete";
-			case GET:
+			case GET :
 				return "get";
-			case POST:
+			case POST :
 				if (!isIdInPath) {
 					return "create";
 				}
-			case PUT:
+			case PUT :
 				return "update";
-			case PATCH:
+			case PATCH :
 				return "modify";
-			default:
+			default :
 				return "do";
 		}
 	}
 
 	/**
-	 * Returns the default sub package that will be used for model objects used
-	 * in the Request/Response body
+	 * Returns the default sub package that will be used for model objects used in
+	 * the Request/Response body
 	 * 
 	 * @return the package suffix to be appended.
 	 */

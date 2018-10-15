@@ -40,24 +40,25 @@ public class SpringShortcutMappingMethodAnnotationRule implements Rule<JMethod, 
 	public JAnnotationUse apply(ApiActionMetadata endpointMetadata, JMethod generatableType) {
 		JAnnotationUse requestMappingAnnotation;
 		switch (RequestMethod.valueOf(endpointMetadata.getActionType().name())) {
-			case GET:
+			case GET :
 				requestMappingAnnotation = generatableType.annotate(GetMapping.class);
 				break;
-			case POST:
+			case POST :
 				requestMappingAnnotation = generatableType.annotate(PostMapping.class);
 				break;
-			case PUT:
+			case PUT :
 				requestMappingAnnotation = generatableType.annotate(PutMapping.class);
 				break;
-			case PATCH:
+			case PATCH :
 				requestMappingAnnotation = generatableType.annotate(PatchMapping.class);
 				break;
-			case DELETE:
+			case DELETE :
 				requestMappingAnnotation = generatableType.annotate(DeleteMapping.class);
 				break;
-			default:
+			default :
 				requestMappingAnnotation = generatableType.annotate(RequestMapping.class);
-				requestMappingAnnotation.param("method", RequestMethod.valueOf(endpointMetadata.getActionType().name()));
+				requestMappingAnnotation.param("method",
+						RequestMethod.valueOf(endpointMetadata.getActionType().name()));
 		}
 
 		if (StringUtils.isNotBlank(endpointMetadata.getUrl())) {
