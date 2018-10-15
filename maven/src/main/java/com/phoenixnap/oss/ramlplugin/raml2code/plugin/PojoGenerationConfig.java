@@ -52,16 +52,16 @@ public class PojoGenerationConfig extends ExtendedGenerationConfig {
 	protected Boolean usePrimitives = Boolean.FALSE;
 
 	/**
-	 * We will pass on this configuration to the jsonschema2pojo library for use
-	 * of commons-lang 3.x imports instead of commons-lang 2.x
+	 * We will pass on this configuration to the jsonschema2pojo library for use of
+	 * commons-lang 3.x imports instead of commons-lang 2.x
 	 */
 	@Parameter(required = false, readonly = true, defaultValue = "false")
 	protected Boolean useCommonsLang3 = Boolean.FALSE;
 
 	/**
 	 * We will pass on this configuration to the jsonschema2pojo library for
-	 * generation of builder-style methods of the form
-	 * <code>withXxx(value)</code> that return <code>this</code>
+	 * generation of builder-style methods of the form <code>withXxx(value)</code>
+	 * that return <code>this</code>
 	 */
 	@Parameter(required = false, readonly = true, defaultValue = "false")
 	protected Boolean generateBuilders = Boolean.FALSE;
@@ -73,8 +73,8 @@ public class PojoGenerationConfig extends ExtendedGenerationConfig {
 	protected Boolean includeAccessors = Boolean.TRUE;
 
 	/**
-	 * We will pass on this configuration to the jsonschema2pojo library for
-	 * support of additional properties
+	 * We will pass on this configuration to the jsonschema2pojo library for support
+	 * of additional properties
 	 */
 	@Parameter(required = false, readonly = true, defaultValue = "true")
 	protected Boolean includeAdditionalProperties = Boolean.TRUE;
@@ -131,16 +131,14 @@ public class PojoGenerationConfig extends ExtendedGenerationConfig {
 
 	/**
 	 * We will pass on this configuration to the jsonschema2pojo library for
-	 * defining the object type used to create string type fields with date
-	 * format
+	 * defining the object type used to create string type fields with date format
 	 */
 	@Parameter(required = false, readonly = true)
 	protected String dateType;
 
 	/**
 	 * We will pass on this configuration to the jsonschema2pojo library for
-	 * defining the object type used to create string type fields with time
-	 * format
+	 * defining the object type used to create string type fields with time format
 	 */
 	@Parameter(required = false, readonly = true)
 	protected String timeType;

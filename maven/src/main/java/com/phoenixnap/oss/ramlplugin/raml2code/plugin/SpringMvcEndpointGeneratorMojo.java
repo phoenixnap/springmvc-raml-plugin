@@ -77,8 +77,8 @@ public class SpringMvcEndpointGeneratorMojo extends AbstractMojo implements Mojo
 	protected String outputRelativePath;
 
 	/**
-	 * IF this is set to true, we will only parse methods that consume, produce
-	 * or accept the requested defaultMediaType
+	 * IF this is set to true, we will only parse methods that consume, produce or
+	 * accept the requested defaultMediaType
 	 */
 	@Parameter(required = false, readonly = true, defaultValue = "false")
 	protected Boolean addTimestampFolder;
@@ -97,23 +97,23 @@ public class SpringMvcEndpointGeneratorMojo extends AbstractMojo implements Mojo
 	protected String schemaLocation;
 
 	/**
-	 * A boolean indicating whether the POJOs for unreferenced objects (schemas
-	 * and data types) defined in the RAML file should be generated. By default,
-	 * such schemas/types are not generated.
+	 * A boolean indicating whether the POJOs for unreferenced objects (schemas and
+	 * data types) defined in the RAML file should be generated. By default, such
+	 * schemas/types are not generated.
 	 */
 	@Parameter(required = false, readonly = true, defaultValue = "false")
 	protected Boolean generateUnreferencedObjects;
 
 	/**
-	 * The explicit base path under which the rest endpoints should be located.
-	 * If overrules the baseUri setting in the raml spec.
+	 * The explicit base path under which the rest endpoints should be located. If
+	 * overrules the baseUri setting in the raml spec.
 	 */
 	@Parameter(required = false, readonly = true)
 	protected String baseUri;
 
 	/**
-	 * If set to true, we will generate seperate methods for different content
-	 * types in the RAML
+	 * If set to true, we will generate seperate methods for different content types
+	 * in the RAML
 	 */
 	@Parameter(required = false, readonly = true, defaultValue = "false")
 	protected Boolean seperateMethodsByContentType;
@@ -126,8 +126,7 @@ public class SpringMvcEndpointGeneratorMojo extends AbstractMojo implements Mojo
 	protected Boolean useJackson1xCompatibility;
 
 	/**
-	 * The full qualified name of the Rule that should be used for code
-	 * generation.
+	 * The full qualified name of the Rule that should be used for code generation.
 	 */
 	@Parameter(required = false, readonly = true, defaultValue = "com.phoenixnap.oss.ramlplugin.raml2code.rules.Spring4ControllerStubRule")
 	protected String rule;
@@ -152,17 +151,16 @@ public class SpringMvcEndpointGeneratorMojo extends AbstractMojo implements Mojo
 	protected Boolean injectHttpHeadersParameter;
 
 	/**
-	 * How many levels of uri will be included in generated class names. Default
-	 * is 1 which means that only current resource will be in included in
+	 * How many levels of uri will be included in generated class names. Default is
+	 * 1 which means that only current resource will be in included in
 	 * controller/decorator names.
 	 */
 	@Parameter(required = false, readonly = true, defaultValue = "1")
 	protected Integer resourceDepthInClassNames;
 
 	/**
-	 * Top level of URI included in generated class names. Default is 0 which
-	 * means that all resources will be in included in controller/decorator
-	 * names.
+	 * Top level of URI included in generated class names. Default is 0 which means
+	 * that all resources will be in included in controller/decorator names.
 	 */
 	@Parameter(required = false, readonly = true, defaultValue = "0")
 	protected Integer resourceTopLevelInClassNames;
@@ -176,19 +174,26 @@ public class SpringMvcEndpointGeneratorMojo extends AbstractMojo implements Mojo
 	protected Boolean reverseOrderInClassNames;
 
 	/**
-	 * Logic used for Java methods name generation. Possible values: <ul>
+	 * Logic used for Java methods name generation. Possible values:
+	 * <ul>
 	 * <li>OBJECTS - objects like request parameters and return types will be
-	 * used</li> <li>RESOURCES - resource path will be used</li> </ul> Default
-	 * is OBJECTS.
+	 * used</li>
+	 * <li>RESOURCES - resource path will be used</li>
+	 * </ul>
+	 * Default is OBJECTS.
 	 */
 	@Parameter(required = false, readonly = true, defaultValue = "OBJECTS")
 	protected MethodsNamingLogic methodsNamingLogic;
 
 	/**
 	 * The way to override naming logic for Java methods and arguments. Possible
-	 * values: <ul> <li>DISPLAY_NAME - "displayName" attribute (if found) will
-	 * be cleaned and used</li> <li>ANNOTATION - "javaName" annotation (if
-	 * found) will be used as is</li> </ul> No default.
+	 * values:
+	 * <ul>
+	 * <li>DISPLAY_NAME - "displayName" attribute (if found) will be cleaned and
+	 * used</li>
+	 * <li>ANNOTATION - "javaName" annotation (if found) will be used as is</li>
+	 * </ul>
+	 * No default.
 	 */
 	@Parameter(required = false, readonly = true)
 	protected OverrideNamingLogicWith overrideNamingLogicWith;
@@ -209,10 +214,11 @@ public class SpringMvcEndpointGeneratorMojo extends AbstractMojo implements Mojo
 		try {
 			generateEndpoints();
 		} catch (IOException e) {
-			throw new MojoExecutionException(e, "Unexpected exception while executing Spring MVC Endpoint Generation Plugin.",
-					e.toString());
+			throw new MojoExecutionException(e,
+					"Unexpected exception while executing Spring MVC Endpoint Generation Plugin.", e.toString());
 		} catch (InvalidRamlResourceException e) {
-			throw new MojoExecutionException(e, "Supplied RAML has failed validation and cannot be loaded.", e.toString());
+			throw new MojoExecutionException(e, "Supplied RAML has failed validation and cannot be loaded.",
+					e.toString());
 		}
 
 		this.getLog().info("Endpoint Generation Completed in:" + (System.currentTimeMillis() - startTime) + "ms");
@@ -238,18 +244,20 @@ public class SpringMvcEndpointGeneratorMojo extends AbstractMojo implements Mojo
 			project.setFile(pomFile);
 		}
 
-		CodeGenerator codeGenerator = new CodeGenerator(createRule(),this, project.getBasedir());
+		CodeGenerator codeGenerator = new CodeGenerator(createRule(), this, project.getBasedir());
 		codeGenerator.generateEndpoints();
 	}
-
 
 	@SuppressWarnings("unchecked")
 	private Rule<JCodeModel, JDefinedClass, ApiResourceMetadata> createRule() {
 		Rule<JCodeModel, JDefinedClass, ApiResourceMetadata> ruleInstance = new Spring4ControllerStubRule();
 		try {
-			ruleInstance = (Rule<JCodeModel, JDefinedClass, ApiResourceMetadata>) getClassRealm().loadClass(rule).newInstance();
+			ruleInstance = (Rule<JCodeModel, JDefinedClass, ApiResourceMetadata>) getClassRealm().loadClass(rule)
+					.newInstance();
 		} catch (Exception e) {
-			getLog().error("Could not instantiate Rule " + this.rule + ". The default Rule will be used for code generation.", e);
+			getLog().error(
+					"Could not instantiate Rule " + this.rule + ". The default Rule will be used for code generation.",
+					e);
 		}
 		return ruleInstance;
 	}
@@ -271,7 +279,6 @@ public class SpringMvcEndpointGeneratorMojo extends AbstractMojo implements Mojo
 		}
 		return classRealm;
 	}
-
 
 	@Override
 	public String getRamlPath() {

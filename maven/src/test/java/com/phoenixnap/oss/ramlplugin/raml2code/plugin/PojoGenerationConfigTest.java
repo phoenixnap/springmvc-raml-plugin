@@ -37,7 +37,8 @@ public class PojoGenerationConfigTest {
 
 	@Test
 	public void testDefaultConfig() throws Exception {
-		final SpringMvcEndpointGeneratorMojo mojo = (SpringMvcEndpointGeneratorMojo) loadMojo(DEFAULT_CONFIG, GOAL_NAME);
+		final SpringMvcEndpointGeneratorMojo mojo = (SpringMvcEndpointGeneratorMojo) loadMojo(DEFAULT_CONFIG,
+				GOAL_NAME);
 		final PojoGenerationConfig generationConfig = mojo.generationConfig;
 		Assert.assertNotNull(generationConfig);
 		Assert.assertEquals("1.6", generationConfig.getTargetVersion());
@@ -104,7 +105,8 @@ public class PojoGenerationConfigTest {
 	@Test(expected = ComponentConfigurationException.class)
 	public void testUnknownParameterConfig() throws Exception {
 		@SuppressWarnings("unused")
-		final SpringMvcEndpointGeneratorMojo mojo = (SpringMvcEndpointGeneratorMojo) configureMojo("unknown", "invalid");
+		final SpringMvcEndpointGeneratorMojo mojo = (SpringMvcEndpointGeneratorMojo) configureMojo("unknown",
+				"invalid");
 	}
 
 	private Mojo configureMojo(final String parameter, final String value) throws Exception {
