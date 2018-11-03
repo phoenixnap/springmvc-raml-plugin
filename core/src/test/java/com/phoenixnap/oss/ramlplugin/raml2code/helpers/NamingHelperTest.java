@@ -34,7 +34,7 @@ public class NamingHelperTest {
 
 		TestConfig.resetConfig();
 		assertEquals("Should deal with depth=1", "Things", NamingHelper.getAllResourcesNames(url, false));
- 		assertEquals("Should deal with depth=1 and singularization", "Thing", NamingHelper.getAllResourcesNames(url, true));
+		assertEquals("Should deal with depth=1 and singularization", "Thing", NamingHelper.getAllResourcesNames(url, true));
 
 		TestConfig.setResourceDepthInClassNames(-1);
 		assertEquals("Should deal with unlimited depth", "ServicesThings", NamingHelper.getAllResourcesNames(url, false));
