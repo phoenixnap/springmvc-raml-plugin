@@ -1,8 +1,6 @@
 package com.phoenixnap.oss.ramlplugin.raml2code.rules;
 
 import com.phoenixnap.oss.ramlplugin.raml2code.plugin.ExtendedGenerationConfig;
-import com.phoenixnap.oss.ramlplugin.raml2code.plugin.MojoConfig;
-import org.jsonschema2pojo.DefaultGenerationConfig;
 
 public class TestPojoConfig extends ExtendedGenerationConfig {
 
