@@ -69,8 +69,8 @@ public class RamlLoader {
 
 		if (ramlModelResult.hasErrors()) {
 			if (logger.isErrorEnabled()) {
-				String csvString = String.join(", ", ramlModelResult.getValidationResults().stream()
-						.map(Object::toString).collect(Collectors.toList()));
+				String csvString = String.join(", ",
+						ramlModelResult.getValidationResults().stream().map(Object::toString).collect(Collectors.toList()));
 				logger.error("Loaded RAML has validation errors: {}", csvString);
 			}
 			throw new InvalidRamlException(ramlURL, ramlModelResult.getValidationResults());
