@@ -4,12 +4,12 @@
 
     <parent>
         <groupId>com.phoenixnap.oss</groupId>
-        <artifactId>springmvc-raml-plugin</artifactId>
+        <artifactId>springmvc-raml-root</artifactId>
         <version>2.0.6-SNAPSHOT</version>
     </parent>
 
     <artifactId>springmvc-raml-plugin-core</artifactId>
-    <version>2.0.5</version>
+    <version>${project.parent.version}</version>
 
     <name>RAML to Spring MVC code generator core</name>
     <description>Component is Maven plugin that reads RAML documents and creates Spring MVC endpoints</description>

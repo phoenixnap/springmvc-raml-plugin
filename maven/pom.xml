@@ -4,12 +4,12 @@
 
     <parent>
         <groupId>com.phoenixnap.oss</groupId>
-        <artifactId>springmvc-raml-plugin</artifactId>
+        <artifactId>springmvc-raml-root</artifactId>
         <version>2.0.6-SNAPSHOT</version>
     </parent>
 
-    <artifactId>springmvc-raml-maven-plugin</artifactId>
-    <version>2.0.6-SNAPSHOT</version>
+    <artifactId>springmvc-raml-plugin</artifactId>
+    <version>${project.parent.version}</version>
 
     <name>RAML to Spring MVC Maven Plugin</name>
     <description>Component is Maven plugin that reads RAML documents and creates Spring MVC endpoints</description>
@@ -53,37 +53,6 @@
     </properties>
 
     <dependencies>
-
-        <!-- FIXME remove this -->
-        <dependency>
-            <groupId>org.springframework</groupId>
-            <artifactId>org.springframework.core</artifactId>
-            <version>3.0.6.RELEASE</version>
-        </dependency>
-        <dependency>
-            <groupId>commons-io</groupId>
-            <artifactId>commons-io</artifactId>
-        </dependency>
-
-        <dependency>
-            <groupId>commons-collections</groupId>
-            <artifactId>commons-collections</artifactId>
-        </dependency>
-
-        <dependency>
-            <groupId>org.raml</groupId>
-            <artifactId>raml-parser-2</artifactId>
-        </dependency>
-
-        <dependency>
-            <groupId>org.jsonschema2pojo</groupId>
-            <artifactId>jsonschema2pojo-core</artifactId>
-        </dependency>
-
-        <dependency>
-            <groupId>com.sun.codemodel</groupId>
-            <artifactId>codemodel</artifactId>
-        </dependency>
 
         <!-- Maven -->
         <dependency>
@@ -152,13 +121,7 @@
         <dependency>
             <groupId>com.phoenixnap.oss</groupId>
             <artifactId>springmvc-raml-plugin-core</artifactId>
-            <version>${project.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>com.phoenixnap.oss</groupId>
-            <artifactId>springmvc-raml-plugin-core</artifactId>
-            <version>2.0.5</version>
-            <scope>compile</scope>
+            <version>${project.parent.version}</version>
         </dependency>
     </dependencies>
 

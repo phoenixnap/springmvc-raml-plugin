@@ -3,7 +3,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	  
   	<groupId>com.phoenixnap.oss</groupId>
-	<artifactId>springmvc-raml-plugin</artifactId>
+	<artifactId>springmvc-raml-root</artifactId>
 	<version>2.0.6-SNAPSHOT</version>
 	
 	<name>RAML to Spring MVC code generator</name>
@@ -147,38 +147,6 @@
 					<groupId>org.apache.maven.plugins</groupId>
 					<artifactId>maven-compiler-plugin</artifactId>
 					<version>3.7.0</version>
-				</plugin>
-				<plugin>
-					<groupId>org.apache.maven.plugins</groupId>
-					<artifactId>maven-plugin-plugin</artifactId>
-					<version>3.5</version>
-					<configuration>
-						<goalPrefix>springmvc-raml</goalPrefix>
-						<skipErrorNoDescriptorsFound>true</skipErrorNoDescriptorsFound>
-					</configuration>
-					<executions>
-						<execution>
-							<id>mojo-descriptor</id>
-							<phase>process-classes</phase>
-							<goals>
-								 <goal>descriptor</goal>
-							</goals>
-					   </execution>
-						<execution>
-							<id>default-descriptor</id>
-							<goals>
-								<goal>descriptor</goal>
-							</goals>
-							<phase>process-classes</phase>
-						</execution>
-						<execution>
-							<id>help-descriptor</id>
-							<goals>
-								<goal>helpmojo</goal>
-							</goals>
-							<phase>process-classes</phase>
-						</execution>
-					</executions>
 				</plugin>
 				<plugin>
 					<groupId>org.apache.maven.plugins</groupId>
