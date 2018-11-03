@@ -16,7 +16,6 @@ import java.lang.reflect.Array;
 import java.util.List;
 import java.util.Set;
 
-import com.phoenixnap.oss.ramlplugin.raml2code.plugin.OverrideNamingLogicWith;
 import org.apache.commons.lang.NullArgumentException;
 import org.raml.v2.api.model.v10.declarations.AnnotationRef;
 import org.springframework.util.StringUtils;
@@ -24,6 +23,7 @@ import org.springframework.util.StringUtils;
 import com.phoenixnap.oss.ramlplugin.raml2code.helpers.NamingHelper;
 import com.phoenixnap.oss.ramlplugin.raml2code.helpers.SchemaHelper;
 import com.phoenixnap.oss.ramlplugin.raml2code.plugin.Config;
+import com.phoenixnap.oss.ramlplugin.raml2code.plugin.OverrideNamingLogicWith;
 import com.phoenixnap.oss.ramlplugin.raml2code.raml.RamlAbstractParam;
 import com.phoenixnap.oss.ramlplugin.raml2code.raml.RamlUriParameter;
 import com.sun.codemodel.JCodeModel;
@@ -145,8 +145,8 @@ public class ApiParameterMetadata {
 	 * Is this parameter the identifying parameter to the rest resource. If true
 	 * then this parameter should end up as part of the URL
 	 * 
-	 * @return a boolean which if true implies that this parameter is part of the
-	 *         url/id of the resource
+	 * @return a boolean which if true implies that this parameter is part of
+	 *         the url/id of the resource
 	 */
 	public boolean isResourceId() {
 		return resourceId;
@@ -216,8 +216,7 @@ public class ApiParameterMetadata {
 
 	public String getJavaName() {
 		String javaName = null;
-		if (Config.getOverrideNamingLogicWith() == OverrideNamingLogicWith.DISPLAY_NAME
-				&& !StringUtils.isEmpty(this.getDisplayName())) {
+		if (Config.getOverrideNamingLogicWith() == OverrideNamingLogicWith.DISPLAY_NAME && !StringUtils.isEmpty(this.getDisplayName())) {
 			javaName = NamingHelper.getParameterName(this.getDisplayName());
 		} else if (Config.getOverrideNamingLogicWith() == OverrideNamingLogicWith.ANNOTATION) {
 			for (AnnotationRef annotation : this.getAnnotations()) {
