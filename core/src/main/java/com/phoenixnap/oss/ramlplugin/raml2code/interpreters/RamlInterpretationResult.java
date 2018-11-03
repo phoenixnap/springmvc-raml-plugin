@@ -25,7 +25,8 @@ import com.sun.codemodel.JCodeModel;
 public class RamlInterpretationResult {
 
 	/**
-	 * The Object responsible for any generated POJOs following this interpretation
+	 * The Object responsible for any generated POJOs following this
+	 * interpretation
 	 */
 	private AbstractBuilder builder;
 

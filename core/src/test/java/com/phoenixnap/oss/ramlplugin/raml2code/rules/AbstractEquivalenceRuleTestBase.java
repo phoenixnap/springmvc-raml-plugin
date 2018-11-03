@@ -60,8 +60,7 @@ public abstract class AbstractEquivalenceRuleTestBase extends AbstractRuleTestBa
 
 	protected void initControllerMetadata(RamlParser par, RamlParser equivalencePar) {
 		initControllerMetadata(par);
-		equivalenceControllerMetadata = equivalencePar.extractControllers(equivalenceJCodeModel, RAML_10).iterator()
-				.next();
+		equivalenceControllerMetadata = equivalencePar.extractControllers(equivalenceJCodeModel, RAML_10).iterator().next();
 	}
 
 	protected ApiResourceMetadata getEquivalenceControllerMetadata() {

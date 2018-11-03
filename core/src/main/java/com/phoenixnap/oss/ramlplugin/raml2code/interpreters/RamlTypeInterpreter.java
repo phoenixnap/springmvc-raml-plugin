@@ -46,11 +46,10 @@ public interface RamlTypeInterpreter {
 	 * @param builderModel
 	 *            The JCodeModel where code is being stored
 	 * @param property
-	 *            When parsing properties inside a type this should be flagged to
-	 *            true
+	 *            When parsing properties inside a type this should be flagged
+	 *            to true
 	 * @return a {@link RamlInterpretationResult}
 	 */
-	RamlInterpretationResult interpret(RamlRoot document, TypeDeclaration type, JCodeModel builderModel,
-			boolean property);
+	RamlInterpretationResult interpret(RamlRoot document, TypeDeclaration type, JCodeModel builderModel, boolean property);
 
 }

@@ -47,9 +47,10 @@ public class RamlLoader {
 	 * Loads a RAML document from a file. This method will
 	 * 
 	 * @param ramlFileUrl
-	 *            The path to the file, this can either be a resource on the class
-	 *            path (in which case the classpath: prefix should be omitted) or a
-	 *            file on disk (in which case the file: prefix should be included)
+	 *            The path to the file, this can either be a resource on the
+	 *            class path (in which case the classpath: prefix should be
+	 *            omitted) or a file on disk (in which case the file: prefix
+	 *            should be included)
 	 * @return Built Raml model
 	 * @throws InvalidRamlResourceException
 	 *             If the Raml Provided isnt correct for the required parser

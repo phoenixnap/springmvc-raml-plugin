@@ -102,8 +102,7 @@ public class AbstractBuilder {
 		JDocComment javadoc = this.pojo.javadoc();
 		// javadoc.add
 		javadoc.add(toJavaComment(classComment));
-		javadoc.add("\n\nGenerated using springmvc-raml-plugin on "
-				+ new SimpleDateFormat("MM/dd/yyyy HH:mm:ss").format(new Date()));
+		javadoc.add("\n\nGenerated using springmvc-raml-plugin on " + new SimpleDateFormat("MM/dd/yyyy HH:mm:ss").format(new Date()));
 		return this;
 	}
 
@@ -116,8 +115,8 @@ public class AbstractBuilder {
 	}
 
 	/**
-	 * Convenience method to check if the pojo has been created before applying any
-	 * operators to it
+	 * Convenience method to check if the pojo has been created before applying
+	 * any operators to it
 	 */
 	protected void pojoCreationCheck() {
 		if (this.pojo == null) {

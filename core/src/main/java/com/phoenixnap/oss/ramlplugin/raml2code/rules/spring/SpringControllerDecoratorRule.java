@@ -70,8 +70,7 @@ public abstract class SpringControllerDecoratorRule extends SpringConfigurableRu
 				.setClassCommentRule(new ClassCommentRule()).setClassRule(new ControllerInterfaceDeclarationRule())
 				.setMethodCommentRule(new MethodCommentRule())
 				.setMethodSignatureRule(new ControllerMethodSignatureRule(getReturnTypeRule(false),
-						new MethodParamsRule(isAddParameterJavadoc(), isAllowArrayParameters(),
-								!Config.isInjectHttpHeadersParameter())))
+						new MethodParamsRule(isAddParameterJavadoc(), isAllowArrayParameters(), !Config.isInjectHttpHeadersParameter())))
 				.apply(metadata, generatableType);
 
 		String delegateFieldName = StringUtils.uncapitalize(generatedInterface.name() + "Delegate");
@@ -83,8 +82,7 @@ public abstract class SpringControllerDecoratorRule extends SpringConfigurableRu
 				.setClassRule(new ControllerClassDeclarationRule("Decorator"))
 				.setImplementsExtendsRule(new ImplementsControllerInterfaceRule(generatedInterface))
 				.addFieldDeclarationRule(new SpringDelegateFieldDeclerationRule(delegateFieldName))
-				.setMethodCommentRule(new MethodCommentRule())
-				.addMethodAnnotationRule(new SpringRequestMappingMethodAnnotationRule())
+				.setMethodCommentRule(new MethodCommentRule()).addMethodAnnotationRule(new SpringRequestMappingMethodAnnotationRule())
 				.addMethodAnnotationRule(getResponseBodyAnnotationRule())
 				.setMethodSignatureRule(new ControllerMethodSignatureRule(getReturnTypeRule(false),
 						new SpringMethodParamsRule(isAddParameterJavadoc(), isAllowArrayParameters(),

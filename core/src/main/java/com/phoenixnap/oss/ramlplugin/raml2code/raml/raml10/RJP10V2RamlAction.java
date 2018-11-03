@@ -75,8 +75,8 @@ public class RJP10V2RamlAction implements RamlAction {
 
 	@Override
 	public Map<String, RamlResponse> getResponses() {
-		return ramlModelFactory.transformToUnmodifiableMap(method.responses(), responses,
-				ramlModelFactory::createRamlResponse, r -> r.code().value());
+		return ramlModelFactory.transformToUnmodifiableMap(method.responses(), responses, ramlModelFactory::createRamlResponse,
+				r -> r.code().value());
 	}
 
 	@Override
@@ -86,8 +86,8 @@ public class RJP10V2RamlAction implements RamlAction {
 
 	@Override
 	public Map<String, RamlHeader> getHeaders() {
-		return ramlModelFactory.transformToUnmodifiableMap(method.headers(), headers,
-				ramlModelFactory::createRamlHeader, RamlTypeHelper::getName);
+		return ramlModelFactory.transformToUnmodifiableMap(method.headers(), headers, ramlModelFactory::createRamlHeader,
+				RamlTypeHelper::getName);
 	}
 
 	@Override

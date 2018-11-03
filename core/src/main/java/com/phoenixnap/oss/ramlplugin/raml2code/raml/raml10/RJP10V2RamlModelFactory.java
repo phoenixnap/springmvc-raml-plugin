@@ -40,8 +40,8 @@ public class RJP10V2RamlModelFactory implements RamlModelFactory {
 	public RamlRoot buildRamlRoot(String ramlFileUrl) {
 		RamlModelResult ramlModelResult = new RamlModelBuilder().buildApi(ramlFileUrl);
 		if (ramlModelResult.hasErrors()) {
-			List<String> errors = ramlModelResult.getValidationResults().stream()
-					.map(validationResult -> validationResult.getMessage()).collect(Collectors.toList());
+			List<String> errors = ramlModelResult.getValidationResults().stream().map(validationResult -> validationResult.getMessage())
+					.collect(Collectors.toList());
 			throw new InvalidRamlResourceException(ramlFileUrl, errors);
 		}
 
@@ -144,23 +144,23 @@ public class RJP10V2RamlModelFactory implements RamlModelFactory {
 
 		String param = ((String) paramType).toUpperCase();
 		switch (param) {
-			case "DATE" :
-			case "DATE-ONLY" :
-			case "TIME-ONLY" :
-			case "DATETIME-ONLY" :
-			case "DATETIME" :
+			case "DATE":
+			case "DATE-ONLY":
+			case "TIME-ONLY":
+			case "DATETIME-ONLY":
+			case "DATETIME":
 				return RamlParamType.DATE;
-			case "STRING" :
+			case "STRING":
 				return RamlParamType.STRING;
-			case "NUMBER" :
+			case "NUMBER":
 				return RamlParamType.NUMBER;
-			case "INTEGER" :
+			case "INTEGER":
 				return RamlParamType.INTEGER;
-			case "FILE" :
+			case "FILE":
 				return RamlParamType.FILE;
-			case "BOOLEAN" :
+			case "BOOLEAN":
 				return RamlParamType.BOOLEAN;
-			default :
+			default:
 				return RamlParamType.DATA_TYPE;
 		}
 	}

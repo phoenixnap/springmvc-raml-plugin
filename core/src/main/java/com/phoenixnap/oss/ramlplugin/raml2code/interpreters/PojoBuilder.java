@@ -210,17 +210,14 @@ public class PojoBuilder extends AbstractBuilder {
 				jExpression = JExpr.lit(typeDeclaration.defaultValue());
 			} else if (type.contains(".") && resolvedType instanceof JDefinedClass
 					&& ((JDefinedClass) resolvedType).getClassType().equals(ClassType.ENUM)) {
-				jExpression = JExpr.direct(
-						resolvedType.name() + "." + NamingHelper.cleanNameForJavaEnum(typeDeclaration.defaultValue()));
+				jExpression = JExpr.direct(resolvedType.name() + "." + NamingHelper.cleanNameForJavaEnum(typeDeclaration.defaultValue()));
 			}
 		} else if (resolvedType.fullName().startsWith(List.class.getName() + "<")) {
-			JClass narrowedListClass = this.pojoModel.ref(ArrayList.class)
-					.narrow(resolvedType.getTypeParameters().get(0));
+			JClass narrowedListClass = this.pojoModel.ref(ArrayList.class).narrow(resolvedType.getTypeParameters().get(0));
 			jExpression = JExpr._new(narrowedListClass);
 		}
 
-		if (resolveType(Collection.class.getName()).isAssignableFrom(resolvedType)
-				&& !Config.getPojoConfig().isInitializeCollections()) {
+		if (resolveType(Collection.class.getName()).isAssignableFrom(resolvedType) && !Config.getPojoConfig().isInitializeCollections()) {
 			jExpression = null;
 		}
 
@@ -314,9 +311,9 @@ public class PojoBuilder extends AbstractBuilder {
 	}
 
 	/**
-	 * Adds a constructor with all the fields in the POJO. If no fields are present
-	 * it will not create an empty constructor because default constructor (without
-	 * fields) is already present.
+	 * Adds a constructor with all the fields in the POJO. If no fields are
+	 * present it will not create an empty constructor because default
+	 * constructor (without fields) is already present.
 	 * 
 	 * @return This builder instance
 	 */
@@ -402,8 +399,8 @@ public class PojoBuilder extends AbstractBuilder {
 	}
 
 	/**
-	 * Generates implementations for hashCode(), equals() and toString() methods if
-	 * the plugin has been configured to do so.
+	 * Generates implementations for hashCode(), equals() and toString() methods
+	 * if the plugin has been configured to do so.
 	 * 
 	 * @param excludeFieldsFromToString
 	 *            list of parameters to exclude from toString() method
@@ -430,8 +427,8 @@ public class PojoBuilder extends AbstractBuilder {
 				// default value for discriminator is the name of the type
 				discriminatorValue = childType.getType().name();
 			}
-			jAnnotationArrayMember.annotate(JsonSubTypes.Type.class)
-					.param("value", resolveType(childType.getType().name())).param("name", discriminatorValue);
+			jAnnotationArrayMember.annotate(JsonSubTypes.Type.class).param("value", resolveType(childType.getType().name())).param("name",
+					discriminatorValue);
 		}
 	}
 
@@ -450,14 +447,12 @@ public class PojoBuilder extends AbstractBuilder {
 		Map<String, JFieldVar> nonTransientAndNonStaticFields = getNonTransientAndNonStaticFields();
 		nonTransientAndNonStaticFields.keySet().removeAll(excludeFieldsFromToString);
 
-		JInvocation toStringBuilderInvocation = appendFieldsToString(nonTransientAndNonStaticFields,
-				toStringBuilderRef);
+		JInvocation toStringBuilderInvocation = appendFieldsToString(nonTransientAndNonStaticFields, toStringBuilderRef);
 
 		toString.body()._return(toStringBuilderInvocation.invoke("toString"));
 	}
 
-	private JInvocation appendFieldsToString(Map<String, JFieldVar> nonTransientAndNonStaticFields,
-			JClass toStringBuilderRef) {
+	private JInvocation appendFieldsToString(Map<String, JFieldVar> nonTransientAndNonStaticFields, JClass toStringBuilderRef) {
 		JInvocation invocation = JExpr._new(toStringBuilderRef).arg(JExpr._this());
 		Iterator<Map.Entry<String, JFieldVar>> iterator = nonTransientAndNonStaticFields.entrySet().iterator();
 
@@ -494,14 +489,12 @@ public class PojoBuilder extends AbstractBuilder {
 
 		JClass hashCodeBuilderRef = this.pojo.owner().ref(hashCodeBuilderClass);
 
-		JInvocation hashCodeBuilderInvocation = appendFieldsToHashCode(getNonTransientAndNonStaticFields(),
-				hashCodeBuilderRef);
+		JInvocation hashCodeBuilderInvocation = appendFieldsToHashCode(getNonTransientAndNonStaticFields(), hashCodeBuilderRef);
 
 		hashCode.body()._return(hashCodeBuilderInvocation.invoke("toHashCode"));
 	}
 
-	private JInvocation appendFieldsToHashCode(Map<String, JFieldVar> nonTransientAndNonStaticFields,
-			JClass hashCodeBuilderRef) {
+	private JInvocation appendFieldsToHashCode(Map<String, JFieldVar> nonTransientAndNonStaticFields, JClass hashCodeBuilderRef) {
 		JInvocation invocation = JExpr._new(hashCodeBuilderRef);
 		Iterator<Map.Entry<String, JFieldVar>> iterator = nonTransientAndNonStaticFields.entrySet().iterator();
 
@@ -546,8 +539,7 @@ public class PojoBuilder extends AbstractBuilder {
 
 		JClass equalsBuilderRef = this.pojo.owner().ref(equalsBuilderClass);
 
-		JInvocation equalsBuilderInvocation = appendFieldsToEquals(getNonTransientAndNonStaticFields(), otherObjectVar,
-				equalsBuilderRef);
+		JInvocation equalsBuilderInvocation = appendFieldsToEquals(getNonTransientAndNonStaticFields(), otherObjectVar, equalsBuilderRef);
 
 		body._return(equalsBuilderInvocation.invoke("isEquals"));
 	}

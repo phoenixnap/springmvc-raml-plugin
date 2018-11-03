@@ -34,19 +34,15 @@ public class NamingHelperTest {
 
 		TestConfig.resetConfig();
 		assertEquals("Should deal with depth=1", "Things", NamingHelper.getAllResourcesNames(url, false));
-		assertEquals("Should deal with depth=1 and singularization", "Thing",
-				NamingHelper.getAllResourcesNames(url, true));
+ 		assertEquals("Should deal with depth=1 and singularization", "Thing", NamingHelper.getAllResourcesNames(url, true));
 
 		TestConfig.setResourceDepthInClassNames(-1);
-		assertEquals("Should deal with unlimited depth", "ServicesThings",
-				NamingHelper.getAllResourcesNames(url, false));
-		assertEquals("Should deal with unlimited depth and singularization", "ServiceThing",
-				NamingHelper.getAllResourcesNames(url, true));
+		assertEquals("Should deal with unlimited depth", "ServicesThings", NamingHelper.getAllResourcesNames(url, false));
+		assertEquals("Should deal with unlimited depth and singularization", "ServiceThing", NamingHelper.getAllResourcesNames(url, true));
 
 		TestConfig.setResourceDepthInClassNames(2);
 		assertEquals("Should deal with depth=2", "ServicesThings", NamingHelper.getAllResourcesNames(url, false));
-		assertEquals("Should deal with depth=2 and singularization", "ServiceThing",
-				NamingHelper.getAllResourcesNames(url, true));
+		assertEquals("Should deal with depth=2 and singularization", "ServiceThing", NamingHelper.getAllResourcesNames(url, true));
 
 		TestConfig.setResourceDepthInClassNames(-1);
 		TestConfig.setReverseOrderInClassNames(Boolean.TRUE);
@@ -56,14 +52,11 @@ public class NamingHelperTest {
 				NamingHelper.getAllResourcesNames(url, true));
 
 		TestConfig.setResourceDepthInClassNames(1);
-		assertEquals("Should deal with depth=1 and reversed order", "Things",
-				NamingHelper.getAllResourcesNames(url, false));
-		assertEquals("Should deal with depth=1, singularization and reversed order", "Thing",
-				NamingHelper.getAllResourcesNames(url, true));
+		assertEquals("Should deal with depth=1 and reversed order", "Things", NamingHelper.getAllResourcesNames(url, false));
+		assertEquals("Should deal with depth=1, singularization and reversed order", "Thing", NamingHelper.getAllResourcesNames(url, true));
 
 		TestConfig.setResourceDepthInClassNames(2);
-		assertEquals("Should deal with depth=2 and reversed order", "ThingsServices",
-				NamingHelper.getAllResourcesNames(url, false));
+		assertEquals("Should deal with depth=2 and reversed order", "ThingsServices", NamingHelper.getAllResourcesNames(url, false));
 		assertEquals("Should deal with depth=2, singularization and reversed order", "ThingService",
 				NamingHelper.getAllResourcesNames(url, true));
 
@@ -73,14 +66,12 @@ public class NamingHelperTest {
 		TestConfig.setResourceTopLevelInClassNames(1);
 		TestConfig.setReverseOrderInClassNames(Boolean.FALSE);
 
-		assertEquals("Should deal with unlimited depth and top-level=1", "ThingsQuotes",
-				NamingHelper.getAllResourcesNames(url, false));
+		assertEquals("Should deal with unlimited depth and top-level=1", "ThingsQuotes", NamingHelper.getAllResourcesNames(url, false));
 		assertEquals("Should deal with unlimited depth, top-level=1 and singularization", "ThingQuote",
 				NamingHelper.getAllResourcesNames(url, true));
 
 		TestConfig.setResourceDepthInClassNames(2);
-		assertEquals("Should deal with depth=2 and top-level=1", "ThingsQuotes",
-				NamingHelper.getAllResourcesNames(url, false));
+		assertEquals("Should deal with depth=2 and top-level=1", "ThingsQuotes", NamingHelper.getAllResourcesNames(url, false));
 		assertEquals("Should deal with depth=2, top-level=1 and singularization", "ThingQuote",
 				NamingHelper.getAllResourcesNames(url, true));
 
@@ -114,34 +105,26 @@ public class NamingHelperTest {
 
 	@Test
 	public void test_cleanLeadingAndTrailingNewLineAndChars_Cleanup() {
-		assertEquals("Clean Leading", "asdasd",
-				NamingHelper.cleanLeadingAndTrailingNewLineAndChars("   -*\n\t     asdasd"));
-		assertEquals("Clean Trailing", "asdasd",
-				NamingHelper.cleanLeadingAndTrailingNewLineAndChars("asdasd   -*\n\t     "));
-		assertEquals("Clean Both", "asdasd",
-				NamingHelper.cleanLeadingAndTrailingNewLineAndChars("   -*\n\t     asdasd   -*\n\t     "));
+		assertEquals("Clean Leading", "asdasd", NamingHelper.cleanLeadingAndTrailingNewLineAndChars("   -*\n\t     asdasd"));
+		assertEquals("Clean Trailing", "asdasd", NamingHelper.cleanLeadingAndTrailingNewLineAndChars("asdasd   -*\n\t     "));
+		assertEquals("Clean Both", "asdasd", NamingHelper.cleanLeadingAndTrailingNewLineAndChars("   -*\n\t     asdasd   -*\n\t     "));
 	}
 
 	@Test
 	public void test_convertTypeToQualifier_Success() {
-		assertEquals("Should deal with simple standards cleanly", "AsJson",
-				NamingHelper.convertContentTypeToQualifier("application/json"));
+		assertEquals("Should deal with simple standards cleanly", "AsJson", NamingHelper.convertContentTypeToQualifier("application/json"));
 		assertEquals("Should deal with simple standards cleanly", "AsBinary",
 				NamingHelper.convertContentTypeToQualifier("application/octet-stream"));
-		assertEquals("Should deal with simple standards cleanly", "AsText",
-				NamingHelper.convertContentTypeToQualifier("text/plain"));
-		assertEquals("Should deal with simple standards cleanly", "AsText",
-				NamingHelper.convertContentTypeToQualifier("text/html"));
+		assertEquals("Should deal with simple standards cleanly", "AsText", NamingHelper.convertContentTypeToQualifier("text/plain"));
+		assertEquals("Should deal with simple standards cleanly", "AsText", NamingHelper.convertContentTypeToQualifier("text/html"));
 
-		assertEquals("Should deal extract versions", "V1",
-				NamingHelper.convertContentTypeToQualifier("application/v1+json"));
+		assertEquals("Should deal extract versions", "V1", NamingHelper.convertContentTypeToQualifier("application/v1+json"));
 		assertEquals("Should deal extract versions", "V1",
 				NamingHelper.convertContentTypeToQualifier("application/asdasdasdv1asdsad+json"));
 		assertEquals("Should deal extract versions", "V1_2",
 				NamingHelper.convertContentTypeToQualifier("application/asdasdasdv1.2asdsad+json"));
 
-		assertEquals("Should deal extract versions", "_StuffAsJson",
-				NamingHelper.convertContentTypeToQualifier("application/stuff+json"));
+		assertEquals("Should deal extract versions", "_StuffAsJson", NamingHelper.convertContentTypeToQualifier("application/stuff+json"));
 
 	}
 

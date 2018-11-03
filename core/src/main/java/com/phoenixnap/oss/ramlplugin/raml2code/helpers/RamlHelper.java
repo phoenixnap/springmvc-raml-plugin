@@ -39,10 +39,9 @@ public class RamlHelper {
 	 * @return The Successful response or null if not found
 	 */
 	public static RamlResponse getSuccessfulResponse(RamlAction action) {
-		String[] successfulResponses = new String[]{"200", "201", "202"};
+		String[] successfulResponses = new String[] { "200", "201", "202" };
 		for (String code : successfulResponses) {
-			if (action != null && !CollectionUtils.isEmpty(action.getResponses())
-					&& action.getResponses().containsKey(code)) {
+			if (action != null && !CollectionUtils.isEmpty(action.getResponses()) && action.getResponses().containsKey(code)) {
 				return action.getResponses().get(code);
 			}
 		}
@@ -51,9 +50,9 @@ public class RamlHelper {
 
 	/**
 	 * Returns authorization grant for provided action. It searches for
-	 * authorization grants defined for provided action, some of parent resources or
-	 * the root of the document. If authorization grants found is a list - the
-	 * method will return the first grant in the list.
+	 * authorization grants defined for provided action, some of parent
+	 * resources or the root of the document. If authorization grants found is a
+	 * list - the method will return the first grant in the list.
 	 * 
 	 * @param action
 	 *            action to find grant for

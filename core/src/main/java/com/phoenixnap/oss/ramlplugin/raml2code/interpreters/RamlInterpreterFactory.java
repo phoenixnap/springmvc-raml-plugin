@@ -31,10 +31,9 @@ public class RamlInterpreterFactory {
 	protected static final Logger logger = LoggerFactory.getLogger(RamlInterpreterFactory.class);
 
 	static RamlTypeInterpreter DEFAULT_INTERPRETER = new StringTypeInterpreter();
-	static RamlTypeInterpreter[] SUPPORTED_INTERPRETERS = {new ObjectTypeInterpreter(), new BooleanTypeInterpreter(),
-			new NullTypeInterpreter(), new NumberTypeInterpreter(), new ArrayTypeInterpreter(),
-			new AnyTypeInterpreter(), new FileTypeInterpreter(), new DateTypeInterpreter(), new UnionTypeInterpreter(),
-			DEFAULT_INTERPRETER};
+	static RamlTypeInterpreter[] SUPPORTED_INTERPRETERS = { new ObjectTypeInterpreter(), new BooleanTypeInterpreter(),
+			new NullTypeInterpreter(), new NumberTypeInterpreter(), new ArrayTypeInterpreter(), new AnyTypeInterpreter(),
+			new FileTypeInterpreter(), new DateTypeInterpreter(), new UnionTypeInterpreter(), DEFAULT_INTERPRETER };
 
 	private static Map<Class<? extends TypeDeclaration>, RamlTypeInterpreter> interpreters = new LinkedHashMap<>();
 	private static Map<Class<? extends TypeDeclaration>, RamlTypeInterpreter> interpreterCache = new LinkedHashMap<>();
@@ -43,8 +42,8 @@ public class RamlInterpreterFactory {
 		for (RamlTypeInterpreter interpreter : SUPPORTED_INTERPRETERS) {
 			for (Class<? extends TypeDeclaration> type : interpreter.getSupportedTypes()) {
 				if (interpreters.containsKey(type)) {
-					logger.warn("Overwriting Interpreter " + interpreters.get(type) + " with "
-							+ identifyByClass(interpreter) + " for type " + type.getSimpleName());
+					logger.warn("Overwriting Interpreter " + interpreters.get(type) + " with " + identifyByClass(interpreter) + " for type "
+							+ type.getSimpleName());
 				}
 
 				interpreters.put(type, interpreter);

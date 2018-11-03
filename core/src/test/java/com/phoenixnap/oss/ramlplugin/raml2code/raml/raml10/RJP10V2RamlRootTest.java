@@ -46,10 +46,8 @@ public class RJP10V2RamlRootTest extends AbstractRuleTestBase {
 	@BeforeClass
 	public static void initRamlRoot() throws InvalidRamlResourceException {
 		ramlRoot = RamlLoader.loadRamlFromFile(AbstractRuleTestBase.RESOURCE_BASE + "raml-root-test-v10.raml");
-		ramlRootEmptyValues = RamlLoader
-				.loadRamlFromFile(AbstractRuleTestBase.RESOURCE_BASE + "raml-root-test-emptyValues-v10.raml");
-		ramlSchemaRoot = RamlLoader
-				.loadRamlFromFile(AbstractRuleTestBase.RESOURCE_BASE + "raml-root-schemas-test-v10.raml");
+		ramlRootEmptyValues = RamlLoader.loadRamlFromFile(AbstractRuleTestBase.RESOURCE_BASE + "raml-root-test-emptyValues-v10.raml");
+		ramlSchemaRoot = RamlLoader.loadRamlFromFile(AbstractRuleTestBase.RESOURCE_BASE + "raml-root-schemas-test-v10.raml");
 	}
 
 	@Test
@@ -189,8 +187,7 @@ public class RJP10V2RamlRootTest extends AbstractRuleTestBase {
 		Iterable<Object> topLevelItems = ramlRoot.getResources().values().stream().collect(Collectors.toList());
 		assertThat(topLevelItems, everyItem(is(anything())));
 
-		Iterable<RamlResource> topLevelRamlResources = ramlRoot.getResources().values().stream()
-				.collect(Collectors.toList());
+		Iterable<RamlResource> topLevelRamlResources = ramlRoot.getResources().values().stream().collect(Collectors.toList());
 		assertThat(topLevelRamlResources, everyItem(isA(RamlResource.class)));
 	}
 
@@ -209,8 +206,8 @@ public class RJP10V2RamlRootTest extends AbstractRuleTestBase {
 	@Test
 	public void ramlRootShouldReflectBodyWhenDefaultMediaTypeSet() {
 		assertThat(ramlRoot.getResource("/defaultType"), is(notNullValue()));
-		Map<String, RamlMimeType> body = ramlRoot.getResource("/defaultType").getAction(RamlActionType.GET)
-				.getResponses().get("200").getBody();
+		Map<String, RamlMimeType> body = ramlRoot.getResource("/defaultType").getAction(RamlActionType.GET).getResponses().get("200")
+				.getBody();
 		assertThat(body.isEmpty(), is(false));
 	}
 
@@ -223,13 +220,11 @@ public class RJP10V2RamlRootTest extends AbstractRuleTestBase {
 	public void factoryShouldReflectDocumentation() {
 		List<RamlDocumentationItem> documentation = ((RJP10V2RamlRoot) ramlRoot).getDocumentation();
 
-		assertThat(((RJP10V2RamlDocumentationItem) documentation.get(0)).getDocumentationItem().title().value(),
-				equalTo("Home"));
+		assertThat(((RJP10V2RamlDocumentationItem) documentation.get(0)).getDocumentationItem().title().value(), equalTo("Home"));
 		assertThat(((RJP10V2RamlDocumentationItem) documentation.get(0)).getDocumentationItem().content().value(),
 				startsWith("Welcome to the _Sample API_ Documentation."));
 
-		assertThat(((RJP10V2RamlDocumentationItem) documentation.get(1)).getDocumentationItem().title().value(),
-				equalTo("Legal"));
+		assertThat(((RJP10V2RamlDocumentationItem) documentation.get(1)).getDocumentationItem().title().value(), equalTo("Legal"));
 		assertThat(((RJP10V2RamlDocumentationItem) documentation.get(1)).getDocumentationItem().content().value(),
 				startsWith("CWIE (c) All Rights Reserved"));
 

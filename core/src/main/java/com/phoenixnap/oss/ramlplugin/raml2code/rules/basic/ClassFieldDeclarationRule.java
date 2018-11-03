@@ -69,8 +69,7 @@ public class ClassFieldDeclarationRule implements Rule<JDefinedClass, JFieldVar,
 		this.autowire = autowire;
 	}
 
-	public ClassFieldDeclarationRule(String restTemplateFieldName, Class<?> fieldClazz, boolean autowire,
-			String qualifierBeanName) {
+	public ClassFieldDeclarationRule(String restTemplateFieldName, Class<?> fieldClazz, boolean autowire, String qualifierBeanName) {
 		this(restTemplateFieldName, fieldClazz);
 		if (qualifierBeanName != null) {
 			this.qualifierAnnotation = true;

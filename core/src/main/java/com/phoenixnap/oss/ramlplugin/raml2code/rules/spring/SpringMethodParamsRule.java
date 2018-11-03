@@ -126,8 +126,7 @@ public class SpringMethodParamsRule extends MethodParamsRule {
 				RJP10V2RamlQueryParameter queryParameter = (RJP10V2RamlQueryParameter) paramMetaData.getRamlParam();
 				if (StringUtils.hasText(queryParameter.getRawType())) {
 					jAnnotationUse = jVar.annotate(DateTimeFormat.class);
-					RamlTypeHelper.annotateDateWithPattern(jAnnotationUse, queryParameter.getRawType(),
-							queryParameter.getFormat());
+					RamlTypeHelper.annotateDateWithPattern(jAnnotationUse, queryParameter.getRawType(), queryParameter.getFormat());
 				}
 			}
 			// In most cases will be JReferencedClass - for a primitive/boxed

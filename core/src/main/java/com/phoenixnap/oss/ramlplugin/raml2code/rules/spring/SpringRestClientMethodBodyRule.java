@@ -144,8 +144,8 @@ public class SpringRestClientMethodBodyRule implements Rule<CodeModelHelper.JExt
 		for (ApiParameterMetadata parameter : endpointMetadata.getRequestHeaders()) {
 
 			JVar param = methodParamMap.get(parameter.getJavaName());
-			body._if(methodParamMap.get(parameter.getJavaName()).ne(JExpr._null()))._then().block()
-					.invoke(httpHeaders, "add").arg(parameter.getName()).arg(JExpr.invoke(param, "toString"));
+			body._if(methodParamMap.get(parameter.getJavaName()).ne(JExpr._null()))._then().block().invoke(httpHeaders, "add")
+					.arg(parameter.getName()).arg(JExpr.invoke(param, "toString"));
 		}
 
 		// Build the Http Entity object
@@ -180,9 +180,8 @@ public class SpringRestClientMethodBodyRule implements Rule<CodeModelHelper.JExt
 				// we need to check if param is not null in order to prevent
 				// client for sending that param (that will be read as empty
 				// string instead of null)
-				body._if(methodParamMap.get(parameter.getJavaName()).ne(JExpr._null()))._then().block()
-						.invoke(uriBuilderVar, "queryParam").arg(parameter.getName())
-						.arg(methodParamMap.get(parameter.getJavaName()));
+				body._if(methodParamMap.get(parameter.getJavaName()).ne(JExpr._null()))._then().block().invoke(uriBuilderVar, "queryParam")
+						.arg(parameter.getName()).arg(methodParamMap.get(parameter.getJavaName()));
 			}
 		}
 
@@ -209,8 +208,8 @@ public class SpringRestClientMethodBodyRule implements Rule<CodeModelHelper.JExt
 			JExpression uriParamMapInit = JExpr._new(owner.ref(HashMap.class));
 			JVar uriParamMapVar = body.decl(uriParamMap, "uriParamMap", uriParamMapInit);
 
-			endpointMetadata.getPathVariables().forEach(
-					p -> body.invoke(uriParamMapVar, "put").arg(p.getName()).arg(methodParamMap.get(p.getJavaName())));
+			endpointMetadata.getPathVariables()
+					.forEach(p -> body.invoke(uriParamMapVar, "put").arg(p.getName()).arg(methodParamMap.get(p.getJavaName())));
 			JInvocation expandInvocation = uriComponentVar.invoke("expand").arg(uriParamMapVar);
 
 			body.assign(uriComponentVar, expandInvocation);
@@ -241,8 +240,7 @@ public class SpringRestClientMethodBodyRule implements Rule<CodeModelHelper.JExt
 		}
 
 		String restTemplateName = restTemplateFieldName;
-		String grant = RamlHelper.getFirstAuthorizationGrant(endpointMetadata.getAction(),
-				endpointMetadata.getParent().getDocument());
+		String grant = RamlHelper.getFirstAuthorizationGrant(endpointMetadata.getAction(), endpointMetadata.getParent().getDocument());
 		if (!StringUtils.isEmpty(grant)) {
 			grant = CaseFormat.LOWER_UNDERSCORE.to(CaseFormat.LOWER_CAMEL, grant);
 			restTemplateName = grant + StringUtils.capitalize(restTemplateFieldName);

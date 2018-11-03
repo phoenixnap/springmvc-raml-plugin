@@ -120,8 +120,7 @@ public class RJP10V2RamlResource implements RamlResource {
 				}
 			}
 			if (!contains) {
-				uriParameters.put(missingParam,
-						new RJP10V2RamlUriParameter(RamlTypeHelper.createDefaultStringDeclaration(missingParam)));
+				uriParameters.put(missingParam, new RJP10V2RamlUriParameter(RamlTypeHelper.createDefaultStringDeclaration(missingParam)));
 			}
 		}
 		return uriParameters;
@@ -192,9 +191,7 @@ public class RJP10V2RamlResource implements RamlResource {
 
 	@Override
 	public RamlResource getParentResource() {
-		return (this.delegate.parentResource() == null)
-				? null
-				: new RJP10V2RamlResource(this.delegate.parentResource());
+		return (this.delegate.parentResource() == null) ? null : new RJP10V2RamlResource(this.delegate.parentResource());
 	}
 
 	@Override

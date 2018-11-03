@@ -22,8 +22,7 @@ import com.sun.codemodel.JMod;
  */
 public class ControllerMethodSignatureRuleTest extends AbstractRuleTestBase {
 
-	private ControllerMethodSignatureRule rule = new ControllerMethodSignatureRule(new SpringResponseEntityRule(),
-			new MethodParamsRule());
+	private ControllerMethodSignatureRule rule = new ControllerMethodSignatureRule(new SpringResponseEntityRule(), new MethodParamsRule());
 
 	@Test
 	public void applyMethodRule_shouldCreate_validMethodSignatureWithEmptyBody() throws JClassAlreadyExistsException {

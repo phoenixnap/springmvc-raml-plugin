@@ -32,9 +32,7 @@ import com.sun.codemodel.JType;
  * @since 0.9.1
  *
  */
-public abstract class SpringConfigurableRule
-		implements
-			ConfigurableRule<JCodeModel, JDefinedClass, ApiResourceMetadata> {
+public abstract class SpringConfigurableRule implements ConfigurableRule<JCodeModel, JDefinedClass, ApiResourceMetadata> {
 
 	public static final String CALLABLE_RESPONSE_CONFIGURATION = "callableResponse";
 
@@ -53,7 +51,8 @@ public abstract class SpringConfigurableRule
 	private boolean addParameterJavadoc = false;
 	private boolean allowArrayParameters = true;
 	/**
-	 * Can only be set to true if <b>SpringControllerInterface</b> is used for now
+	 * Can only be set to true if <b>SpringControllerInterface</b> is used for
+	 * now
 	 */
 	private boolean simpleReturnTypes = false;
 	private boolean useShortcutMethodMappings = false;
@@ -65,8 +64,7 @@ public abstract class SpringConfigurableRule
 				setCallableResponse(BooleanUtils.toBoolean(configuration.get(CALLABLE_RESPONSE_CONFIGURATION)));
 			}
 			if (configuration.containsKey(DEFERRED_RESULT_RESPONSE_CONFIGURATION)) {
-				setDeferredResultResponse(
-						BooleanUtils.toBoolean(configuration.get(DEFERRED_RESULT_RESPONSE_CONFIGURATION)));
+				setDeferredResultResponse(BooleanUtils.toBoolean(configuration.get(DEFERRED_RESULT_RESPONSE_CONFIGURATION)));
 			}
 			if (configuration.containsKey(PARAMETER_JAVADOC_CONFIGURATION)) {
 				setAddParameterJavadoc(BooleanUtils.toBoolean(configuration.get(PARAMETER_JAVADOC_CONFIGURATION)));
