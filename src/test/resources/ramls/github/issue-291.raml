@@ -1,0 +1,15 @@
+#%RAML 1.0
+title: Deeper imports not considered #291
+version: 1.0
+baseUri: /
+
+uses:
+  sales: issue-291-1.raml
+
+/sales:
+  get:
+    responses:
+      200:
+        body:
+          application/json:
+            type: sales.Sales[]

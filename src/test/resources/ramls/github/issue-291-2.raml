@@ -1,0 +1,12 @@
+#%RAML 1.0 Library
+
+uses:
+  price: issue-291-3.raml
+
+types:
+  ProductConfiguration:
+    properties:
+      id: string
+      productName: string
+      productPrice:
+        type: price.Price

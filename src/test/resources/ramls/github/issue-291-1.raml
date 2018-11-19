@@ -1,0 +1,12 @@
+#%RAML 1.0 Library
+
+uses:
+  productConfiguration: issue-291-2.raml
+
+types:
+  Sales:
+    properties:
+      id: string
+      contractNumber?: string
+      productConfiguration:
+        type: productConfiguration.ProductConfiguration[]

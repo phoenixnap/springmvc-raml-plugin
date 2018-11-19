@@ -71,15 +71,25 @@ public class RJP10V2RamlRoot implements RamlRoot {
 		return api.schemas().stream().map(this::typeDeclarationToMap).collect(Collectors.toList());
 	}
 
-	@Override
-	public Map<String, RamlDataType> getTypes() {
+	private Map<String, RamlDataType> getAllTypes(Api api) {
+
 		Map<String, RamlDataType> types = api.types().stream()
 				.collect(Collectors.toMap(this::nameType, this::typeDeclarationToRamlDataType));
 
-		Map<String, RamlDataType> libTypes = api.uses().stream().flatMap(x -> x.types().stream())
-				.collect(Collectors.toMap(this::nameType, this::typeDeclarationToRamlDataType));
+		api.uses().forEach(lib -> this.getTypesFromLib(types, lib));
+		return types;
+	}
 
-		types.putAll(libTypes);
+	private void getTypesFromLib(Map<String, RamlDataType> types, Library lib) {
+
+		lib.types().forEach(type -> types.put(type.name(), new RJP10V2RamlDataType(type)));
+		lib.uses().forEach(inLib -> getTypesFromLib(types, inLib));
+	}
+
+	@Override
+	public Map<String, RamlDataType> getTypes() {
+
+		Map<String, RamlDataType> types = getAllTypes(api);
 
 		// When searching for all libraries that other libraries use it's
 		// possible to pull in same library multiple times.

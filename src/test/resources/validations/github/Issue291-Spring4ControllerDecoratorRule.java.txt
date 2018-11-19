@@ -1,0 +1,411 @@
+-----------------------------------com.gen.test.model.Price.java-----------------------------------
+
+package com.gen.test.model;
+
+import java.io.Serializable;
+import javax.validation.constraints.NotNull;
+import org.apache.commons.lang.builder.EqualsBuilder;
+import org.apache.commons.lang.builder.HashCodeBuilder;
+import org.apache.commons.lang.builder.ToStringBuilder;
+
+public class Price implements Serializable
+{
+
+    protected Double basePrice;
+    protected Double salePrice;
+
+    /**
+     * Creates a new Price.
+     * 
+     */
+    public Price() {
+        super();
+    }
+
+    /**
+     * Creates a new Price.
+     * 
+     */
+    public Price(Double basePrice, Double salePrice) {
+        super();
+        this.basePrice = basePrice;
+        this.salePrice = salePrice;
+    }
+
+    /**
+     * Returns the basePrice.
+     * 
+     * @return
+     *     basePrice
+     */
+    @NotNull
+    public Double getBasePrice() {
+        return basePrice;
+    }
+
+    /**
+     * Set the basePrice.
+     * 
+     * @param basePrice
+     *     the new basePrice
+     */
+    public void setBasePrice(Double basePrice) {
+        this.basePrice = basePrice;
+    }
+
+    /**
+     * Returns the salePrice.
+     * 
+     * @return
+     *     salePrice
+     */
+    @NotNull
+    public Double getSalePrice() {
+        return salePrice;
+    }
+
+    /**
+     * Set the salePrice.
+     * 
+     * @param salePrice
+     *     the new salePrice
+     */
+    public void setSalePrice(Double salePrice) {
+        this.salePrice = salePrice;
+    }
+
+    public int hashCode() {
+        return new HashCodeBuilder().append(basePrice).append(salePrice).toHashCode();
+    }
+
+    public boolean equals(Object other) {
+        if (other == null) {
+            return false;
+        }
+        if (other == this) {
+            return true;
+        }
+        if (this.getClass()!= other.getClass()) {
+            return false;
+        }
+        Price otherObject = ((Price) other);
+        return new EqualsBuilder().append(basePrice, otherObject.basePrice).append(salePrice, otherObject.salePrice).isEquals();
+    }
+
+    public String toString() {
+        return new ToStringBuilder(this).append("basePrice", basePrice).append("salePrice", salePrice).toString();
+    }
+
+}
+-----------------------------------com.gen.test.model.ProductConfiguration.java-----------------------------------
+
+package com.gen.test.model;
+
+import java.io.Serializable;
+import javax.validation.Valid;
+import javax.validation.constraints.NotNull;
+import org.apache.commons.lang.builder.EqualsBuilder;
+import org.apache.commons.lang.builder.HashCodeBuilder;
+import org.apache.commons.lang.builder.ToStringBuilder;
+
+public class ProductConfiguration implements Serializable
+{
+
+    protected String id;
+    protected String productName;
+    protected Price productPrice;
+
+    /**
+     * Creates a new ProductConfiguration.
+     * 
+     */
+    public ProductConfiguration() {
+        super();
+    }
+
+    /**
+     * Creates a new ProductConfiguration.
+     * 
+     */
+    public ProductConfiguration(String id, String productName, Price productPrice) {
+        super();
+        this.id = id;
+        this.productName = productName;
+        this.productPrice = productPrice;
+    }
+
+    /**
+     * Returns the id.
+     * 
+     * @return
+     *     id
+     */
+    @NotNull
+    public String getId() {
+        return id;
+    }
+
+    /**
+     * Set the id.
+     * 
+     * @param id
+     *     the new id
+     */
+    public void setId(String id) {
+        this.id = id;
+    }
+
+    /**
+     * Returns the productName.
+     * 
+     * @return
+     *     productName
+     */
+    @NotNull
+    public String getProductName() {
+        return productName;
+    }
+
+    /**
+     * Set the productName.
+     * 
+     * @param productName
+     *     the new productName
+     */
+    public void setProductName(String productName) {
+        this.productName = productName;
+    }
+
+    /**
+     * Returns the productPrice.
+     * 
+     * @return
+     *     productPrice
+     */
+    @NotNull
+    @Valid
+    public Price getProductPrice() {
+        return productPrice;
+    }
+
+    /**
+     * Set the productPrice.
+     * 
+     * @param productPrice
+     *     the new productPrice
+     */
+    public void setProductPrice(Price productPrice) {
+        this.productPrice = productPrice;
+    }
+
+    public int hashCode() {
+        return new HashCodeBuilder().append(id).append(productName).append(productPrice).toHashCode();
+    }
+
+    public boolean equals(Object other) {
+        if (other == null) {
+            return false;
+        }
+        if (other == this) {
+            return true;
+        }
+        if (this.getClass()!= other.getClass()) {
+            return false;
+        }
+        ProductConfiguration otherObject = ((ProductConfiguration) other);
+        return new EqualsBuilder().append(id, otherObject.id).append(productName, otherObject.productName).append(productPrice, otherObject.productPrice).isEquals();
+    }
+
+    public String toString() {
+        return new ToStringBuilder(this).append("id", id).append("productName", productName).append("productPrice", productPrice).toString();
+    }
+
+}
+-----------------------------------com.gen.test.model.Sales.java-----------------------------------
+
+package com.gen.test.model;
+
+import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
+import javax.validation.Valid;
+import javax.validation.constraints.NotNull;
+import org.apache.commons.lang.builder.EqualsBuilder;
+import org.apache.commons.lang.builder.HashCodeBuilder;
+import org.apache.commons.lang.builder.ToStringBuilder;
+
+public class Sales implements Serializable
+{
+
+    protected String id;
+    protected String contractNumber;
+    protected List<ProductConfiguration> productConfiguration = new ArrayList<ProductConfiguration>();
+
+    /**
+     * Creates a new Sales.
+     * 
+     */
+    public Sales() {
+        super();
+    }
+
+    /**
+     * Creates a new Sales.
+     * 
+     */
+    public Sales(String id, String contractNumber, List<ProductConfiguration> productConfiguration) {
+        super();
+        this.id = id;
+        this.contractNumber = contractNumber;
+        this.productConfiguration = productConfiguration;
+    }
+
+    /**
+     * Returns the id.
+     * 
+     * @return
+     *     id
+     */
+    @NotNull
+    public String getId() {
+        return id;
+    }
+
+    /**
+     * Set the id.
+     * 
+     * @param id
+     *     the new id
+     */
+    public void setId(String id) {
+        this.id = id;
+    }
+
+    /**
+     * Returns the contractNumber.
+     * 
+     * @return
+     *     contractNumber
+     */
+    public String getContractNumber() {
+        return contractNumber;
+    }
+
+    /**
+     * Set the contractNumber.
+     * 
+     * @param contractNumber
+     *     the new contractNumber
+     */
+    public void setContractNumber(String contractNumber) {
+        this.contractNumber = contractNumber;
+    }
+
+    /**
+     * Returns the productConfiguration.
+     * 
+     * @return
+     *     productConfiguration
+     */
+    @NotNull
+    @Valid
+    public List<ProductConfiguration> getProductConfiguration() {
+        return productConfiguration;
+    }
+
+    /**
+     * Set the productConfiguration.
+     * 
+     * @param productConfiguration
+     *     the new productConfiguration
+     */
+    public void setProductConfiguration(List<ProductConfiguration> productConfiguration) {
+        this.productConfiguration = productConfiguration;
+    }
+
+    public int hashCode() {
+        return new HashCodeBuilder().append(id).append(contractNumber).append(productConfiguration).toHashCode();
+    }
+
+    public boolean equals(Object other) {
+        if (other == null) {
+            return false;
+        }
+        if (other == this) {
+            return true;
+        }
+        if (this.getClass()!= other.getClass()) {
+            return false;
+        }
+        Sales otherObject = ((Sales) other);
+        return new EqualsBuilder().append(id, otherObject.id).append(contractNumber, otherObject.contractNumber).append(productConfiguration, otherObject.productConfiguration).isEquals();
+    }
+
+    public String toString() {
+        return new ToStringBuilder(this).append("id", id).append("contractNumber", contractNumber).append("productConfiguration", productConfiguration).toString();
+    }
+
+}
+-----------------------------------com.gen.test.SaleController.java-----------------------------------
+
+package com.gen.test;
+
+import java.util.List;
+import com.gen.test.model.Sales;
+import org.springframework.http.ResponseEntity;
+
+
+/**
+ * No description
+ * (Generated with springmvc-raml-parser v.2.0.5)
+ * 
+ */
+public interface SaleController {
+
+
+    /**
+     * No description
+     * 
+     */
+    public ResponseEntity<List<Sales>> getSales();
+
+}
+-----------------------------------com.gen.test.SaleControllerDecorator.java-----------------------------------
+
+package com.gen.test;
+
+import java.util.List;
+import com.gen.test.model.Sales;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RestController;
+
+
+/**
+ * No description
+ * (Generated with springmvc-raml-parser v.2.0.5)
+ * 
+ */
+@RestController
+@RequestMapping("/api/sales")
+@Validated
+public class SaleControllerDecorator
+    implements SaleController
+{
+
+    @Autowired
+    private SaleController saleControllerDelegate;
+
+    /**
+     * No description
+     * 
+     */
+    @RequestMapping(value = "", method = RequestMethod.GET)
+    public ResponseEntity<List<Sales>> getSales() {
+        return this.saleControllerDelegate.getSales();
+    }
+
+}
