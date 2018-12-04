@@ -1,0 +1,113 @@
+-----------------------------------com.gen.test.model.BrandN.java-----------------------------------
+
+package com.gen.test.model;
+
+import java.util.HashMap;
+import java.util.Map;
+import com.fasterxml.jackson.annotation.JsonProperty;
+
+public enum BrandN {
+
+    @JsonProperty("Volvo")
+    VOLVO("Volvo"),
+    @JsonProperty("Scania")
+    SCANIA("Scania");
+    private final String value;
+    private final static Map<String, BrandN> VALUE_CACHE = new HashMap<String, BrandN>();
+
+    static {
+        for (BrandN c: values()) {
+            VALUE_CACHE.put(c.value, c);
+        }
+    }
+
+    private BrandN(String value) {
+        this.value = value;
+    }
+
+    public String value() {
+        return this.value;
+    }
+
+    public static BrandN fromValue(String value) {
+        return VALUE_CACHE.get(value);
+    }
+
+    @Override
+    public String toString() {
+        return this.value;
+    }
+
+}
+-----------------------------------com.gen.test.BusController.java-----------------------------------
+
+package com.gen.test;
+
+import org.springframework.http.ResponseEntity;
+
+
+/**
+ * No description
+ * (Generated with springmvc-raml-parser v.@project.version@)
+ * 
+ */
+public interface BusController {
+
+
+    /**
+     * No description
+     * 
+     */
+    public ResponseEntity<String> getString(java.lang.String brandN, java.lang.String color, java.lang.String brandName, Long beginIndex, Long maxElements, java.lang.String oneMoreOptinal);
+
+}
+-----------------------------------com.gen.test.BusControllerDecorator.java-----------------------------------
+
+package com.gen.test;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
+
+
+/**
+ * No description
+ * (Generated with springmvc-raml-parser v.@project.version@)
+ * 
+ */
+@RestController
+@RequestMapping("/api/bus")
+@Validated
+public class BusControllerDecorator
+    implements BusController
+{
+
+    @Autowired
+    private BusController busControllerDelegate;
+
+    /**
+     * No description
+     * 
+     */
+    @RequestMapping(value = "", method = RequestMethod.GET)
+    public ResponseEntity<String> getString(
+        @RequestParam
+        java.lang.String brandN,
+        @RequestParam
+        java.lang.String color,
+        @RequestParam(name = "brand-name")
+        java.lang.String brandName,
+        @RequestParam(name = "begin-index", required = false)
+        Long beginIndex,
+        @RequestParam(name = "max-elements", required = false)
+        Long maxElements,
+        @RequestParam(name = "one-more-optinal", required = false)
+        java.lang.String oneMoreOptinal) {
+        return this.busControllerDelegate.getString(brandN, color, brandName, beginIndex, maxElements, oneMoreOptinal);
+    }
+
+}

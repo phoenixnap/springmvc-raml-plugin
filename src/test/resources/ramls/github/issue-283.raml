@@ -1,0 +1,31 @@
+#%RAML 1.0
+title: Missing query parameters from traits #411
+
+traits:
+    metaQuery:
+      queryParameters:
+        color: string
+        brand-name: string
+    
+    paginationParameters:
+      queryParameters:
+        begin-index?:
+          type: integer
+        max-elements?:
+          type: integer
+        one-more-optinal:
+          type: string
+          required: false        	
+
+/bus:
+  get:
+    is: [metaQuery, paginationParameters]
+    queryParameters:
+      brandN:
+        type: string
+        enum: [Volvo, Scania]
+    responses:
+      200:
+        body:
+          application/json:
+            type: string
