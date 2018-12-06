@@ -1,4 +1,4 @@
------------------------------------com.gen.test.model.BrandN.java-----------------------------------
+-----------------------------------com.gen.test.model.Vehicle.java-----------------------------------
 
 package com.gen.test.model;
 
@@ -6,22 +6,28 @@ import java.util.HashMap;
 import java.util.Map;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-public enum BrandN {
+public enum Vehicle {
 
     @JsonProperty("Volvo")
     VOLVO("Volvo"),
     @JsonProperty("Scania")
-    SCANIA("Scania");
+    SCANIA("Scania"),
+    @JsonProperty("Opel")
+    OPEL("Opel"),
+    @JsonProperty("Reno")
+    RENO("Reno"),
+    @JsonProperty("Ford")
+    FORD("Ford");
     private final String value;
-    private final static Map<String, BrandN> VALUE_CACHE = new HashMap<String, BrandN>();
+    private final static Map<String, Vehicle> VALUE_CACHE = new HashMap<String, Vehicle>();
 
     static {
-        for (BrandN c: values()) {
+        for (Vehicle c: values()) {
             VALUE_CACHE.put(c.value, c);
         }
     }
 
-    private BrandN(String value) {
+    private Vehicle(String value) {
         this.value = value;
     }
 
@@ -29,7 +35,7 @@ public enum BrandN {
         return this.value;
     }
 
-    public static BrandN fromValue(String value) {
+    public static Vehicle fromValue(String value) {
         return VALUE_CACHE.get(value);
     }
 
@@ -44,7 +50,7 @@ public enum BrandN {
 package com.gen.test;
 
 import javax.validation.Valid;
-import com.gen.test.model.BrandN;
+import com.gen.test.model.Vehicle;
 import org.springframework.http.ResponseEntity;
 
 
@@ -60,9 +66,17 @@ public interface BusController {
      * No description
      * 
      */
-    public ResponseEntity<String> getString(
+    public ResponseEntity<?> getObjectByVehicle(
         @Valid
-        BrandN brandN, java.lang.String color, java.lang.String brandName, Long beginIndex, Long maxElements, java.lang.String oneMoreOptinal);
+        Vehicle vehicle);
+
+    /**
+     * No description
+     * 
+     */
+    public ResponseEntity<?> getObjectByType(
+        @Valid
+        Vehicle type);
 
 }
 -----------------------------------com.gen.test.BusControllerDecorator.java-----------------------------------
@@ -70,7 +84,7 @@ public interface BusController {
 package com.gen.test;
 
 import javax.validation.Valid;
-import com.gen.test.model.BrandN;
+import com.gen.test.model.Vehicle;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
@@ -100,21 +114,23 @@ public class BusControllerDecorator
      * 
      */
     @RequestMapping(value = "", method = RequestMethod.GET)
-    public ResponseEntity<String> getString(
+    public ResponseEntity<?> getObjectByVehicle(
         @Valid
         @RequestParam
-        BrandN brandN,
+        Vehicle vehicle) {
+        return this.busControllerDelegate.getObjectByVehicle(vehicle);
+    }
+
+    /**
+     * No description
+     * 
+     */
+    @RequestMapping(value = "/new", method = RequestMethod.GET)
+    public ResponseEntity<?> getObjectByType(
+        @Valid
         @RequestParam
-        java.lang.String color,
-        @RequestParam(name = "brand-name")
-        java.lang.String brandName,
-        @RequestParam(name = "begin-index", required = false)
-        Long beginIndex,
-        @RequestParam(name = "max-elements", required = false)
-        Long maxElements,
-        @RequestParam(name = "one-more-optinal", required = false)
-        java.lang.String oneMoreOptinal) {
-        return this.busControllerDelegate.getString(brandN, color, brandName, beginIndex, maxElements, oneMoreOptinal);
+        Vehicle type) {
+        return this.busControllerDelegate.getObjectByType(type);
     }
 
 }

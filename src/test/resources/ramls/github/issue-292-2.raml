@@ -1,0 +1,17 @@
+#%RAML 1.0
+title: Query parameter enums are generated as Strings #292
+
+types:
+  Vehicle:
+    type: string
+    enum: [Opel, Reno, Ford]
+
+/bus:
+  get:
+    queryParameters:
+      vehicle:
+        enum: [Volvo, Scania]
+  /new:
+    get:
+      queryParameters:
+        type: Vehicle

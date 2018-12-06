@@ -56,7 +56,8 @@ public class StringTypeInterpreter extends BaseTypeInterpreter {
 				if ("string".equalsIgnoreCase(enumName)) {
 					enumName = stringType.name();
 				}
-				if ("string".equalsIgnoreCase(enumName)) {
+				if ("string".equalsIgnoreCase(enumName) || enumName.contains("/")) {
+					// enumName is either a string or media type
 					enumName = DEFAULT_ENUM_NAME;
 				}
 				EnumBuilder builder = new EnumBuilder(builderModel, enumName);

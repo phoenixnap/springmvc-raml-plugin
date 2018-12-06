@@ -1,4 +1,4 @@
------------------------------------com.gen.test.model.BrandN.java-----------------------------------
+-----------------------------------com.gen.test.model.BrandName.java-----------------------------------
 
 package com.gen.test.model;
 
@@ -6,22 +6,22 @@ import java.util.HashMap;
 import java.util.Map;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-public enum BrandN {
+public enum BrandName {
 
     @JsonProperty("Volvo")
     VOLVO("Volvo"),
     @JsonProperty("Scania")
     SCANIA("Scania");
     private final String value;
-    private final static Map<String, BrandN> VALUE_CACHE = new HashMap<String, BrandN>();
+    private final static Map<String, BrandName> VALUE_CACHE = new HashMap<String, BrandName>();
 
     static {
-        for (BrandN c: values()) {
+        for (BrandName c: values()) {
             VALUE_CACHE.put(c.value, c);
         }
     }
 
-    private BrandN(String value) {
+    private BrandName(String value) {
         this.value = value;
     }
 
@@ -29,7 +29,7 @@ public enum BrandN {
         return this.value;
     }
 
-    public static BrandN fromValue(String value) {
+    public static BrandName fromValue(String value) {
         return VALUE_CACHE.get(value);
     }
 
@@ -44,7 +44,7 @@ public enum BrandN {
 package com.gen.test;
 
 import javax.validation.Valid;
-import com.gen.test.model.BrandN;
+import com.gen.test.model.BrandName;
 import org.springframework.http.ResponseEntity;
 
 
@@ -60,9 +60,9 @@ public interface BusController {
      * No description
      * 
      */
-    public ResponseEntity<String> getString(
+    public ResponseEntity<?> getObjectByBrandName(
         @Valid
-        BrandN brandN, java.lang.String color, java.lang.String brandName, Long beginIndex, Long maxElements, java.lang.String oneMoreOptinal);
+        BrandName brandName);
 
 }
 -----------------------------------com.gen.test.BusControllerDecorator.java-----------------------------------
@@ -70,7 +70,7 @@ public interface BusController {
 package com.gen.test;
 
 import javax.validation.Valid;
-import com.gen.test.model.BrandN;
+import com.gen.test.model.BrandName;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
@@ -100,21 +100,11 @@ public class BusControllerDecorator
      * 
      */
     @RequestMapping(value = "", method = RequestMethod.GET)
-    public ResponseEntity<String> getString(
+    public ResponseEntity<?> getObjectByBrandName(
         @Valid
         @RequestParam
-        BrandN brandN,
-        @RequestParam
-        java.lang.String color,
-        @RequestParam(name = "brand-name")
-        java.lang.String brandName,
-        @RequestParam(name = "begin-index", required = false)
-        Long beginIndex,
-        @RequestParam(name = "max-elements", required = false)
-        Long maxElements,
-        @RequestParam(name = "one-more-optinal", required = false)
-        java.lang.String oneMoreOptinal) {
-        return this.busControllerDelegate.getString(brandN, color, brandName, beginIndex, maxElements, oneMoreOptinal);
+        BrandName brandName) {
+        return this.busControllerDelegate.getObjectByBrandName(brandName);
     }
 
 }

@@ -13,7 +13,6 @@
 package com.phoenixnap.oss.ramlplugin.raml2code.rules.basic;
 
 import static com.phoenixnap.oss.ramlplugin.raml2code.helpers.CodeModelHelper.findFirstClassBySimpleName;
-import static org.springframework.util.StringUtils.uncapitalize;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;
@@ -44,6 +43,7 @@ import com.phoenixnap.oss.ramlplugin.raml2code.rules.Rule;
 import com.sun.codemodel.JAnnotationUse;
 import com.sun.codemodel.JClass;
 import com.sun.codemodel.JCodeModel;
+import com.sun.codemodel.JDefinedClass;
 import com.sun.codemodel.JMethod;
 import com.sun.codemodel.JVar;
 
@@ -144,14 +144,27 @@ public class MethodParamsRule implements Rule<CodeModelHelper.JExtMethod, JMetho
 			// TODO should this be blank?
 		}
 
+		JVar jVar = null;
+
 		// data types as query parameters
 		RamlAbstractParam ramlParam = paramMetaData.getRamlParam();
 		if (ramlParam.getType() == RamlParamType.DATA_TYPE && ramlParam instanceof RJP10V2RamlQueryParameter) {
 			JClass jc = findFirstClassBySimpleName(paramMetaData.getCodeModel(), ramlParam.getRawType());
-			return generatableType.get().param(jc, paramMetaData.getName());
+			jVar = generatableType.get().param(jc, paramMetaData.getName());
+
+			if (Config.getPojoConfig().isIncludeJsr303Annotations() && !RamlActionType.PATCH.equals(endpointMetadata.getActionType())
+					&& jVar.type() instanceof JDefinedClass) {
+				// skip Valid annotation for PATCH actions since it's a partial
+				// update so some required fields might be omitted
+				boolean isPOJO = ((JDefinedClass) jVar.type())._package().name().startsWith(Config.getBasePackage());
+				if (isPOJO) {
+					jVar.annotate(Valid.class);
+				}
+			}
+			return jVar;
 		}
 
-		JVar jVar = generatableType.get().param(type, javaName);
+		jVar = generatableType.get().param(type, javaName);
 		if (paramMetaData.getRamlParam().getPattern() != null) {
 			jVar.annotate(Pattern.class).param("regexp", paramMetaData.getRamlParam().getPattern());
 		}
@@ -172,6 +185,7 @@ public class MethodParamsRule implements Rule<CodeModelHelper.JExtMethod, JMetho
 		if (paramMetaData.getRamlParam().getMaximum() != null) {
 			jVar.annotate(Max.class).param("value", paramMetaData.getRamlParam().getMaximum().longValue());
 		}
+
 		return jVar;
 	}
 

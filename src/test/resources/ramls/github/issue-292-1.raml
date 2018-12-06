@@ -1,0 +1,8 @@
+#%RAML 1.0
+title: Query parameter enums are generated as Strings #292
+
+/bus:
+  get:
+    queryParameters:
+      brandName:
+        enum: [Volvo, Scania]

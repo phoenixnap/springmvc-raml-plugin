@@ -21,6 +21,7 @@ import org.raml.v2.api.model.v10.datamodel.StringTypeDeclaration;
 import org.raml.v2.api.model.v10.datamodel.TypeDeclaration;
 import org.raml.v2.api.model.v10.declarations.AnnotationRef;
 
+import com.phoenixnap.oss.ramlplugin.raml2code.helpers.NamingHelper;
 import com.phoenixnap.oss.ramlplugin.raml2code.helpers.RamlTypeHelper;
 import com.phoenixnap.oss.ramlplugin.raml2code.raml.RamlDataType;
 import com.phoenixnap.oss.ramlplugin.raml2code.raml.RamlParamType;
@@ -63,11 +64,23 @@ public class RJP10V2RamlQueryParameter extends RamlQueryParameter {
 			TypeDeclaration items = ((ArrayTypeDeclaration) queryParameter).items();
 			return ramlModelFactory.createRamlParamType(items.type());
 		}
+		if (queryParameter instanceof StringTypeDeclaration) {
+			List<String> items = ((StringTypeDeclaration) queryParameter).enumValues();
+			if (!items.isEmpty()) {
+				return ramlModelFactory.createRamlParamType("DATA_TYPE");
+			}
+		}
 		return ramlModelFactory.createRamlParamType(queryParameter.type());
 	}
 
 	@Override
 	public String getRawType() {
+		if (queryParameter instanceof StringTypeDeclaration && "string".equalsIgnoreCase(queryParameter.type())) {
+			List<String> items = ((StringTypeDeclaration) queryParameter).enumValues();
+			if (!items.isEmpty()) {
+				return NamingHelper.convertToClassName(queryParameter.name());
+			}
+		}
 		return queryParameter.type();
 	}
 

@@ -228,8 +228,8 @@ public interface BookingController {
      */
     @RequestMapping(value = "", method = RequestMethod.GET)
     public ResponseEntity<Booking> getBookingByBookingQuery(
-        @RequestParam
         @Valid
+        @RequestParam
         BookingQuery bookingQuery);
 
 }
