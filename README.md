@@ -106,6 +106,9 @@ Then simply include the following code in the POM of the project you wish to gen
 ### injectHttpHeadersParameter
 (optional, default: `false`) If set to true, we will generate a `HttpHeaders` parameter for each method to allow using request HTTP headers directly.
 
+### injectHttpRequestParameter
+(optional, default: `false`) If set to true, we will generate a `HttpServletRequest` parameter for each method to allow using request HTTP request directly.
+
 ### seperateMethodsByContentType
 (optional, default: `false`) Should we generate separate API methods for endpoints which define multiple content types in their 200 response.
 
@@ -130,7 +133,7 @@ NOTE: This is different from a previous default. Use `RESOURCES` to get `0.x` be
 (optional, default: "") The way to override naming logic for Java methods and arguments. Possible values:
  - `DISPLAY_NAME` (`displayName` attribute (if found) will be cleaned and used. `displayName` key is natively supported by RAML spec)
  - `ANNOTATION` (`javaName` annotation (if found) will be used as is). Refer to RAML [Annotation](https://github.com/raml-org/raml-spec/blob/master/versions/raml-10/raml-10.md#annotations) for more details.
- 
+
 ### dontGenerateForAnnotation
 (optional, default: "") When defined, code generation will be skipped for resources and methods annotated with this [Annotation](https://github.com/raml-org/raml-spec/blob/master/versions/raml-10/raml-10.md#annotations). When annotation is set on resource - all methods in the resource and all sub-resources will be ignored. Value of the annotation is not important.
 

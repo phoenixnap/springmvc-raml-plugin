@@ -1,0 +1,22 @@
+#%RAML 1.0
+title: Access HttpServletRequest in Spring Controller that implements generated interface #163
+
+/test:
+  get:
+    queryParameters:
+      color: string
+  post:
+    body:
+      application/json:
+        type: string
+  /{testId}:
+    uriParameters:
+      testId: number
+    put:
+      body:
+        application/json:
+          type: string
+    delete:
+      responses:
+        201:
+          

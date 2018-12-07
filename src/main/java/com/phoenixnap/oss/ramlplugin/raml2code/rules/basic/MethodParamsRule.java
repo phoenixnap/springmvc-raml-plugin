@@ -20,6 +20,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
@@ -110,6 +111,10 @@ public class MethodParamsRule implements Rule<CodeModelHelper.JExtMethod, JMetho
 
 		if (Config.isInjectHttpHeadersParameter()) {
 			paramHttpHeaders(generatableType);
+		}
+
+		if (Config.isInjectHttpRequestParameter()) {
+			paramHttpRequest(generatableType);
 		}
 
 		return generatableType.get();
@@ -233,6 +238,14 @@ public class MethodParamsRule implements Rule<CodeModelHelper.JExtMethod, JMetho
 			generatableType.get().javadoc().addParam("httpHeaders The HTTP headers for the request");
 		}
 		return paramHttpHeaders;
+	}
+
+	protected JVar paramHttpRequest(CodeModelHelper.JExtMethod generatableType) {
+		JVar paramHttpRequest = generatableType.get().param(HttpServletRequest.class, "httpRequest");
+		if (addParameterJavadoc) {
+			generatableType.get().javadoc().addParam("httpRequest The HTTP request");
+		}
+		return paramHttpRequest;
 	}
 
 }

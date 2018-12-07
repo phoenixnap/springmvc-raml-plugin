@@ -37,6 +37,9 @@ public class Config {
 	private static final String DEFAULT_DONT_GENERATE_FOR_ANNOTATION = null;
 	private static String dontGenerateForAnnotation = DEFAULT_DONT_GENERATE_FOR_ANNOTATION;
 
+	private static final Boolean DEFAULT_INJECT_HTTP_REQUEST_PARAMETER = Boolean.FALSE;
+	private static Boolean injectHttpRequestParameter = DEFAULT_INJECT_HTTP_REQUEST_PARAMETER;
+
 	Config() {
 	}
 
@@ -159,6 +162,17 @@ public class Config {
 		Config.dontGenerateForAnnotation = dontGenerateForAnnotation;
 	}
 
+	public static Boolean isInjectHttpRequestParameter() {
+		if (springMvcEndpointGeneratorMojo != null) {
+			return springMvcEndpointGeneratorMojo.injectHttpRequestParameter;
+		}
+		return injectHttpRequestParameter;
+	}
+
+	public static void setInjectHttpRequestParameter(Boolean injectHttpRequestParameter) {
+		Config.injectHttpRequestParameter = injectHttpRequestParameter;
+	}
+
 	public static String getPojoPackage() {
 		return getBasePackage() + NamingHelper.getDefaultModelPackage();
 	}
@@ -174,6 +188,7 @@ public class Config {
 		setMethodsNamingLogic(DEFAULT_METHODS_NAMING_LOGIC);
 		setOverrideNamingLogicWith(DEFAULT_OVERRIDE_NAMING_LOGIC_WITH);
 		setDontGenerateForAnnotation(DEFAULT_DONT_GENERATE_FOR_ANNOTATION);
+		setInjectHttpRequestParameter(DEFAULT_INJECT_HTTP_REQUEST_PARAMETER);
 	}
 
 }

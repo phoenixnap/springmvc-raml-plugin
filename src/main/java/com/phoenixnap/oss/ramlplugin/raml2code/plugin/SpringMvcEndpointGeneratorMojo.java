@@ -220,6 +220,12 @@ public class SpringMvcEndpointGeneratorMojo extends AbstractMojo {
 	@Parameter(required = false, readonly = true)
 	protected String dontGenerateForAnnotation;
 
+	/**
+	 * If set to true, we will generate methods with HttpRequest as a parameter
+	 */
+	@Parameter(required = false, readonly = true, defaultValue = "false")
+	protected Boolean injectHttpRequestParameter;
+
 	private ClassRealm classRealm;
 
 	private String resolvedSchemaLocation;
