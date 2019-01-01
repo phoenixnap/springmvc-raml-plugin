@@ -231,14 +231,12 @@ public class SpringMvcEndpointGeneratorMojo extends AbstractMojo {
 	private String resolvedSchemaLocation;
 
 	protected void generateEndpoints() throws IOException {
-
-		File pomFile = null;
 		if (!pomPath.equals("NA")) {
 
 			Model model = null;
 			FileReader reader = null;
 			MavenXpp3Reader mavenreader = new MavenXpp3Reader();
-			pomFile = new File(pomPath);
+			File pomFile = new File(pomPath);
 			try {
 				reader = new FileReader(pomFile);
 				model = mavenreader.read(reader);
@@ -249,13 +247,16 @@ public class SpringMvcEndpointGeneratorMojo extends AbstractMojo {
 			project = new MavenProject(model);
 			project.setFile(pomFile);
 		}
+		generateEndpoints(project.getBasedir());
+	}
 
-		String resolvedPath = project.getBasedir().getAbsolutePath();
+	protected void generateEndpoints(File projectBaseDir) throws IOException {
+		String resolvedPath = projectBaseDir.getAbsolutePath();
 		if (resolvedPath.endsWith(File.separator) || resolvedPath.endsWith("/")) {
 			resolvedPath = resolvedPath.substring(0, resolvedPath.length() - 1);
 		}
 
-		String resolvedRamlPath = project.getBasedir().getAbsolutePath();
+		String resolvedRamlPath = projectBaseDir.getAbsolutePath();
 
 		if (!ramlPath.startsWith(File.separator) && !ramlPath.startsWith("/")) {
 			resolvedRamlPath += File.separator + ramlPath;
