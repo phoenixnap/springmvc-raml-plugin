@@ -12,24 +12,18 @@
  */
 package com.phoenixnap.oss.ramlplugin.raml2code.interpreters;
 
+import java.io.ObjectStreamClass;
 import java.io.Serializable;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.LinkedHashMap;
-import java.util.Random;
 
+import com.sun.codemodel.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.phoenixnap.oss.ramlplugin.raml2code.helpers.CodeModelHelper;
 import com.phoenixnap.oss.ramlplugin.raml2code.helpers.NamingHelper;
-import com.sun.codemodel.JClass;
-import com.sun.codemodel.JCodeModel;
-import com.sun.codemodel.JDefinedClass;
-import com.sun.codemodel.JDocComment;
-import com.sun.codemodel.JExpr;
-import com.sun.codemodel.JMod;
-import com.sun.codemodel.JPackage;
 
 /**
  * Builder pattern for POJO generation using jCodeModel. Provides basic utility
@@ -79,9 +73,13 @@ public class AbstractBuilder {
 		// Implement Serializable
 		this.pojo._implements(Serializable.class);
 
-		// Add constant serializable id
-		this.pojo.field(JMod.STATIC | JMod.FINAL, this.pojoModel.LONG, "serialVersionUID",
-				JExpr.lit(new Random(System.currentTimeMillis()).nextLong()));
+		// Add standardized serialVersionUID, generates the following:
+		// final static serialVersionUID =
+		// ObjectStreamClass.lookup(Pojo.class).getSerialVersionUID();
+		JClass objectStreamClass = this.pojoModel.ref(ObjectStreamClass.class);
+		JExpression pojoClassRef = JExpr.dotclass(this.pojoModel._getClass(this.pojo.fullName()));
+		JInvocation forName = objectStreamClass.staticInvoke("lookup").arg(pojoClassRef).invoke("getSerialVersionUID");
+		this.pojo.field(JMod.STATIC | JMod.FINAL, this.pojoModel.LONG, "serialVersionUID", forName);
 	}
 
 	public AbstractBuilder withPackage(String pojoPackage) {
