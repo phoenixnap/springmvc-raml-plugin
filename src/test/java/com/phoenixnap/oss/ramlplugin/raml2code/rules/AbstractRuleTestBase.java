@@ -5,12 +5,7 @@ import static org.hamcrest.CoreMatchers.nullValue;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertThat;
 
-import java.io.BufferedReader;
-import java.io.BufferedWriter;
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.io.StringReader;
-import java.io.StringWriter;
+import java.io.*;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
@@ -21,9 +16,7 @@ import java.util.Set;
 
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.text.IsEqualIgnoringWhiteSpace;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.BeforeClass;
+import org.junit.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -174,9 +167,12 @@ public abstract class AbstractRuleTestBase {
 		BufferedWriter bufWriter = new BufferedWriter(stringWriter);
 		String line = null;
 		while ((line = bufReader.readLine()) != null) {
-			if (!line.contains("serialVersionUID = ")) {
-				bufWriter.write(line + LINE_END);
+			// See
+			// https://github.com/phoenixnap/springmvc-raml-plugin/issues/264
+			if (line.contains("serialVersionUID = ") || line.contains("import " + ObjectStreamClass.class.getName())) {
+				continue;
 			}
+			bufWriter.write(line + LINE_END);
 		}
 		bufWriter.flush();
 		bufWriter.close();
