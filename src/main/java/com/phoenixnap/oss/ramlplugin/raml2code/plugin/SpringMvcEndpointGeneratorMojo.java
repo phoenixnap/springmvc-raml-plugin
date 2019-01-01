@@ -535,12 +535,4 @@ public class SpringMvcEndpointGeneratorMojo extends AbstractMojo {
 		this.getLog().info("Endpoint Generation Completed in:" + (System.currentTimeMillis() - startTime) + "ms");
 	}
 
-	public enum MethodsNamingLogic {
-		OBJECTS, RESOURCES
-	}
-
-	public enum OverrideNamingLogicWith {
-		DISPLAY_NAME, ANNOTATION
-	}
-
 }

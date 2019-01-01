@@ -23,7 +23,7 @@ import org.springframework.util.StringUtils;
 import com.phoenixnap.oss.ramlplugin.raml2code.helpers.NamingHelper;
 import com.phoenixnap.oss.ramlplugin.raml2code.helpers.SchemaHelper;
 import com.phoenixnap.oss.ramlplugin.raml2code.plugin.Config;
-import com.phoenixnap.oss.ramlplugin.raml2code.plugin.SpringMvcEndpointGeneratorMojo.OverrideNamingLogicWith;
+import com.phoenixnap.oss.ramlplugin.raml2code.plugin.OverrideNamingLogicWith;
 import com.phoenixnap.oss.ramlplugin.raml2code.raml.RamlAbstractParam;
 import com.phoenixnap.oss.ramlplugin.raml2code.raml.RamlUriParameter;
 import com.sun.codemodel.JCodeModel;

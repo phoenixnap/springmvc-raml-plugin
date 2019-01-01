@@ -1,8 +1,6 @@
 package com.phoenixnap.oss.ramlplugin.raml2code.plugin;
 
 import com.phoenixnap.oss.ramlplugin.raml2code.helpers.NamingHelper;
-import com.phoenixnap.oss.ramlplugin.raml2code.plugin.SpringMvcEndpointGeneratorMojo.MethodsNamingLogic;
-import com.phoenixnap.oss.ramlplugin.raml2code.plugin.SpringMvcEndpointGeneratorMojo.OverrideNamingLogicWith;
 
 public class Config {
 

@@ -37,8 +37,8 @@ import com.phoenixnap.oss.ramlplugin.raml2code.data.ApiActionMetadata;
 import com.phoenixnap.oss.ramlplugin.raml2code.data.ApiBodyMetadata;
 import com.phoenixnap.oss.ramlplugin.raml2code.data.ApiParameterMetadata;
 import com.phoenixnap.oss.ramlplugin.raml2code.plugin.Config;
-import com.phoenixnap.oss.ramlplugin.raml2code.plugin.SpringMvcEndpointGeneratorMojo.MethodsNamingLogic;
-import com.phoenixnap.oss.ramlplugin.raml2code.plugin.SpringMvcEndpointGeneratorMojo.OverrideNamingLogicWith;
+import com.phoenixnap.oss.ramlplugin.raml2code.plugin.MethodsNamingLogic;
+import com.phoenixnap.oss.ramlplugin.raml2code.plugin.OverrideNamingLogicWith;
 import com.phoenixnap.oss.ramlplugin.raml2code.raml.RamlActionType;
 import com.phoenixnap.oss.ramlplugin.raml2code.raml.RamlResource;
 

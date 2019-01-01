@@ -5,7 +5,7 @@ import java.util.Set;
 import org.junit.Test;
 
 import com.phoenixnap.oss.ramlplugin.raml2code.data.ApiResourceMetadata;
-import com.phoenixnap.oss.ramlplugin.raml2code.plugin.SpringMvcEndpointGeneratorMojo.OverrideNamingLogicWith;
+import com.phoenixnap.oss.ramlplugin.raml2code.plugin.OverrideNamingLogicWith;
 import com.phoenixnap.oss.ramlplugin.raml2code.plugin.TestConfig;
 import com.phoenixnap.oss.ramlplugin.raml2code.rules.GitHubAbstractRuleTestBase;
 import com.phoenixnap.oss.ramlplugin.raml2code.rules.Spring4ControllerStubRule;

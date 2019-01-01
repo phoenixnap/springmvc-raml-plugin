@@ -1,7 +1,5 @@
 package com.phoenixnap.oss.ramlplugin.raml2code.plugin;
 
-import com.phoenixnap.oss.ramlplugin.raml2code.plugin.SpringMvcEndpointGeneratorMojo.MethodsNamingLogic;
-import com.phoenixnap.oss.ramlplugin.raml2code.plugin.SpringMvcEndpointGeneratorMojo.OverrideNamingLogicWith;
 import com.phoenixnap.oss.ramlplugin.raml2code.rules.TestPojoConfig;
 
 public class TestConfig {
