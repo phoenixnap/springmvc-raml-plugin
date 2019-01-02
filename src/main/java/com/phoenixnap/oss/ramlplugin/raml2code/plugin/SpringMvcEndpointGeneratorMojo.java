@@ -279,7 +279,7 @@ public class SpringMvcEndpointGeneratorMojo extends AbstractMojo {
 		}
 
 		// init configuration
-		Config.setMojo(this);
+		Config.setInstance(new MavenDefaultConfig(this));
 
 		RamlParser par = new RamlParser(getBasePath(loadRamlFromFile));
 		Set<ApiResourceMetadata> controllers = par.extractControllers(codeModel, loadRamlFromFile);

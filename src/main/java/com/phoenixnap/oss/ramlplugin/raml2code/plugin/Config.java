@@ -4,11 +4,11 @@ public class Config {
 
 	private static DefaultConfig CURRENT_CONFIGURATION = new DefaultConfig();
 
-	Config() {
+	static synchronized void setInstance(DefaultConfig config) {
+		CURRENT_CONFIGURATION = config;
 	}
 
-	protected static void setMojo(SpringMvcEndpointGeneratorMojo springMvcEndpointGeneratorMojo) {
-		CURRENT_CONFIGURATION.setMojo(springMvcEndpointGeneratorMojo);
+	Config() {
 	}
 
 	protected static void setPojoConfig(PojoGenerationConfig pojoGenerationConfig) {
@@ -101,10 +101,6 @@ public class Config {
 
 	public static String getPojoPackage() {
 		return CURRENT_CONFIGURATION.getPojoPackage();
-	}
-
-	protected static void resetFields() {
-		CURRENT_CONFIGURATION = new DefaultConfig();
 	}
 
 }

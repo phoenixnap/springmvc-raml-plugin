@@ -7,8 +7,6 @@ class DefaultConfig {
 
 	private PojoGenerationConfig pojoGenerationConfig = new PojoGenerationConfig();
 
-	private SpringMvcEndpointGeneratorMojo springMvcEndpointGeneratorMojo;
-
 	private static final Boolean DEFAULT_SEPERATE_METHODS_BY_CONTENTTYPE = Boolean.FALSE;
 	private Boolean seperateMethodsByContentType = DEFAULT_SEPERATE_METHODS_BY_CONTENTTYPE;
 
@@ -39,16 +37,7 @@ class DefaultConfig {
 	private static final Boolean DEFAULT_INJECT_HTTP_REQUEST_PARAMETER = Boolean.FALSE;
 	private Boolean injectHttpRequestParameter = DEFAULT_INJECT_HTTP_REQUEST_PARAMETER;
 
-	protected void setMojo(SpringMvcEndpointGeneratorMojo springMvcEndpointGeneratorMojo) {
-		this.springMvcEndpointGeneratorMojo = springMvcEndpointGeneratorMojo;
-		if (springMvcEndpointGeneratorMojo != null) {
-			this.pojoGenerationConfig = springMvcEndpointGeneratorMojo.generationConfig;
-		} else {
-			this.pojoGenerationConfig = null;
-		}
-	}
-
-	protected void setPojoConfig(PojoGenerationConfig pojoGenerationConfig) {
+	public void setPojoConfig(PojoGenerationConfig pojoGenerationConfig) {
 		this.pojoGenerationConfig = pojoGenerationConfig;
 	}
 
@@ -56,112 +45,82 @@ class DefaultConfig {
 		return pojoGenerationConfig;
 	}
 
-	protected void setSeperateMethodsByContentType(Boolean seperateMethodsByContentType) {
+	public void setSeperateMethodsByContentType(Boolean seperateMethodsByContentType) {
 		this.seperateMethodsByContentType = seperateMethodsByContentType;
 	}
 
 	public Boolean isSeperateMethodsByContentType() {
-		if (springMvcEndpointGeneratorMojo != null) {
-			return springMvcEndpointGeneratorMojo.seperateMethodsByContentType;
-		}
 		return seperateMethodsByContentType;
 	}
 
-	protected void setInjectHttpHeadersParameter(Boolean injectHttpHeadersParameter) {
+	public void setInjectHttpHeadersParameter(Boolean injectHttpHeadersParameter) {
 		this.injectHttpHeadersParameter = injectHttpHeadersParameter;
 	}
 
 	public Boolean isInjectHttpHeadersParameter() {
-		if (springMvcEndpointGeneratorMojo != null) {
-			return springMvcEndpointGeneratorMojo.injectHttpHeadersParameter;
-		}
 		return injectHttpHeadersParameter;
 	}
 
-	protected void setResourceDepthInClassNames(Integer resourceDepthInClassNames) {
+	public void setResourceDepthInClassNames(Integer resourceDepthInClassNames) {
 		this.resourceDepthInClassNames = resourceDepthInClassNames;
 	}
 
 	public Integer getResourceDepthInClassNames() {
-		if (springMvcEndpointGeneratorMojo != null) {
-			return springMvcEndpointGeneratorMojo.resourceDepthInClassNames;
-		}
 		return resourceDepthInClassNames;
 	}
 
-	protected void setResourceTopLevelInClassNames(Integer resourceTopLevelInClassNames) {
+	public void setResourceTopLevelInClassNames(Integer resourceTopLevelInClassNames) {
 		this.resourceTopLevelInClassNames = resourceTopLevelInClassNames;
 	}
 
 	public Integer getResourceTopLevelInClassNames() {
-		if (springMvcEndpointGeneratorMojo != null) {
-			return springMvcEndpointGeneratorMojo.resourceTopLevelInClassNames;
-		}
 		return resourceTopLevelInClassNames;
 	}
 
-	protected void setReverseOrderInClassNames(Boolean reverseOrderInClassNames) {
+	public void setReverseOrderInClassNames(Boolean reverseOrderInClassNames) {
 		this.reverseOrderInClassNames = reverseOrderInClassNames;
 	}
 
 	public Boolean isReverseOrderInClassNames() {
-		if (springMvcEndpointGeneratorMojo != null) {
-			return springMvcEndpointGeneratorMojo.reverseOrderInClassNames;
-		}
 		return reverseOrderInClassNames;
 	}
 
-	protected void setBasePackage(String basePackage) {
+	public void setBasePackage(String basePackage) {
 		this.basePackage = basePackage;
 	}
 
 	public String getBasePackage() {
-		if (springMvcEndpointGeneratorMojo != null) {
-			return springMvcEndpointGeneratorMojo.basePackage;
-		}
 		return basePackage;
 	}
 
 	public MethodsNamingLogic getMethodsNamingLogic() {
-		if (springMvcEndpointGeneratorMojo != null) {
-			return springMvcEndpointGeneratorMojo.methodsNamingLogic;
-		}
 		if (methodsNamingLogic == null) {
 			return DEFAULT_METHODS_NAMING_LOGIC;
 		}
 		return methodsNamingLogic;
 	}
 
-	protected void setMethodsNamingLogic(MethodsNamingLogic methodsNamingLogic) {
+	public void setMethodsNamingLogic(MethodsNamingLogic methodsNamingLogic) {
 		this.methodsNamingLogic = methodsNamingLogic;
 	}
 
 	public OverrideNamingLogicWith getOverrideNamingLogicWith() {
-		if (springMvcEndpointGeneratorMojo != null) {
-			return springMvcEndpointGeneratorMojo.overrideNamingLogicWith;
-		}
 		return overrideNamingLogicWith;
 	}
 
-	protected void setOverrideNamingLogicWith(OverrideNamingLogicWith overrideNamingLogicWith) {
+	public void setOverrideNamingLogicWith(OverrideNamingLogicWith overrideNamingLogicWith) {
 		this.overrideNamingLogicWith = overrideNamingLogicWith;
 	}
 
 	public String getDontGenerateForAnnotation() {
-		if (springMvcEndpointGeneratorMojo != null) {
-			return springMvcEndpointGeneratorMojo.dontGenerateForAnnotation;
-		}
 		return dontGenerateForAnnotation;
 	}
 
-	protected void setDontGenerateForAnnotation(String dontGenerateForAnnotation) {
+	public void setDontGenerateForAnnotation(String dontGenerateForAnnotation) {
 		this.dontGenerateForAnnotation = dontGenerateForAnnotation;
 	}
 
 	public Boolean isInjectHttpRequestParameter() {
-		if (springMvcEndpointGeneratorMojo != null) {
-			return springMvcEndpointGeneratorMojo.injectHttpRequestParameter;
-		}
 		return injectHttpRequestParameter;
 	}
 
