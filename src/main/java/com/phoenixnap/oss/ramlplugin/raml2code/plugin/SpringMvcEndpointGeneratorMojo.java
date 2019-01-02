@@ -461,11 +461,15 @@ public class SpringMvcEndpointGeneratorMojo extends AbstractMojo {
 	}
 
 	private String getSchemaLocation() {
+		return getSchemaLocation(project.getBasedir());
+	}
+
+	private String getSchemaLocation(File projectBaseDir) {
 
 		if (StringUtils.hasText(schemaLocation)) {
 
 			if (!schemaLocation.contains(":")) {
-				String resolvedPath = project.getBasedir().getAbsolutePath();
+				String resolvedPath = projectBaseDir.getAbsolutePath();
 				if (resolvedPath.endsWith(File.separator) || resolvedPath.endsWith("/")) {
 					resolvedPath = resolvedPath.substring(0, resolvedPath.length() - 1);
 				}
