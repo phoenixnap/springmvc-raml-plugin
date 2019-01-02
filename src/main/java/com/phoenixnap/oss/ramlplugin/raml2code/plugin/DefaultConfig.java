@@ -1,9 +1,6 @@
 package com.phoenixnap.oss.ramlplugin.raml2code.plugin;
 
-import com.phoenixnap.oss.ramlplugin.raml2code.helpers.NamingHelper;
-
-// TODO Extract interface
-class DefaultConfig {
+class DefaultConfig implements ConfigSource {
 
 	private PojoGenerationConfig pojoGenerationConfig = new PojoGenerationConfig();
 
@@ -41,6 +38,7 @@ class DefaultConfig {
 		this.pojoGenerationConfig = pojoGenerationConfig;
 	}
 
+	@Override
 	public PojoGenerationConfig getPojoConfig() {
 		return pojoGenerationConfig;
 	}
@@ -49,6 +47,7 @@ class DefaultConfig {
 		this.seperateMethodsByContentType = seperateMethodsByContentType;
 	}
 
+	@Override
 	public Boolean isSeperateMethodsByContentType() {
 		return seperateMethodsByContentType;
 	}
@@ -57,6 +56,7 @@ class DefaultConfig {
 		this.injectHttpHeadersParameter = injectHttpHeadersParameter;
 	}
 
+	@Override
 	public Boolean isInjectHttpHeadersParameter() {
 		return injectHttpHeadersParameter;
 	}
@@ -65,6 +65,7 @@ class DefaultConfig {
 		this.resourceDepthInClassNames = resourceDepthInClassNames;
 	}
 
+	@Override
 	public Integer getResourceDepthInClassNames() {
 		return resourceDepthInClassNames;
 	}
@@ -73,6 +74,7 @@ class DefaultConfig {
 		this.resourceTopLevelInClassNames = resourceTopLevelInClassNames;
 	}
 
+	@Override
 	public Integer getResourceTopLevelInClassNames() {
 		return resourceTopLevelInClassNames;
 	}
@@ -81,6 +83,7 @@ class DefaultConfig {
 		this.reverseOrderInClassNames = reverseOrderInClassNames;
 	}
 
+	@Override
 	public Boolean isReverseOrderInClassNames() {
 		return reverseOrderInClassNames;
 	}
@@ -89,10 +92,12 @@ class DefaultConfig {
 		this.basePackage = basePackage;
 	}
 
+	@Override
 	public String getBasePackage() {
 		return basePackage;
 	}
 
+	@Override
 	public MethodsNamingLogic getMethodsNamingLogic() {
 		if (methodsNamingLogic == null) {
 			return DEFAULT_METHODS_NAMING_LOGIC;
@@ -104,6 +109,7 @@ class DefaultConfig {
 		this.methodsNamingLogic = methodsNamingLogic;
 	}
 
+	@Override
 	public OverrideNamingLogicWith getOverrideNamingLogicWith() {
 		return overrideNamingLogicWith;
 	}
@@ -112,6 +118,7 @@ class DefaultConfig {
 		this.overrideNamingLogicWith = overrideNamingLogicWith;
 	}
 
+	@Override
 	public String getDontGenerateForAnnotation() {
 		return dontGenerateForAnnotation;
 	}
@@ -120,6 +127,7 @@ class DefaultConfig {
 		this.dontGenerateForAnnotation = dontGenerateForAnnotation;
 	}
 
+	@Override
 	public Boolean isInjectHttpRequestParameter() {
 		return injectHttpRequestParameter;
 	}
@@ -127,9 +135,4 @@ class DefaultConfig {
 	public void setInjectHttpRequestParameter(Boolean injectHttpRequestParameter) {
 		this.injectHttpRequestParameter = injectHttpRequestParameter;
 	}
-
-	public String getPojoPackage() {
-		return getBasePackage() + NamingHelper.getDefaultModelPackage();
-	}
-
 }

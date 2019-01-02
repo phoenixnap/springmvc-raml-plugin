@@ -1,93 +1,91 @@
 package com.phoenixnap.oss.ramlplugin.raml2code.plugin;
 
-import com.phoenixnap.oss.ramlplugin.raml2code.helpers.NamingHelper;
+/**
+ * A {@link ConfigSource} which allows overriding the default configuration with
+ * values from a delegate {@link ConfigSource}.
+ */
+class MavenDefaultConfig extends DefaultConfig implements ConfigSource {
 
-class MavenDefaultConfig extends DefaultConfig {
+	private final ConfigSource delegate;
 
-	private final SpringMvcEndpointGeneratorMojo springMvcEndpointGeneratorMojo;
+	MavenDefaultConfig(ConfigSource delegate) {
+		this.delegate = delegate;
 
-	MavenDefaultConfig(SpringMvcEndpointGeneratorMojo springMvcEndpointGeneratorMojo) {
-		this.springMvcEndpointGeneratorMojo = springMvcEndpointGeneratorMojo;
-
-		if (springMvcEndpointGeneratorMojo != null) {
-			setPojoConfig(springMvcEndpointGeneratorMojo.generationConfig);
+		if (delegate != null) {
+			setPojoConfig(delegate.getPojoConfig());
 		} else {
 			setPojoConfig(null);
 		}
 	}
 
 	public Boolean isSeperateMethodsByContentType() {
-		if (springMvcEndpointGeneratorMojo != null) {
-			return springMvcEndpointGeneratorMojo.seperateMethodsByContentType;
+		if (delegate != null) {
+			return delegate.isSeperateMethodsByContentType();
 		}
 		return super.isSeperateMethodsByContentType();
 	}
 
 	public Boolean isInjectHttpHeadersParameter() {
-		if (springMvcEndpointGeneratorMojo != null) {
-			return springMvcEndpointGeneratorMojo.injectHttpHeadersParameter;
+		if (delegate != null) {
+			return delegate.isInjectHttpHeadersParameter();
 		}
 		return super.isInjectHttpHeadersParameter();
 	}
 
 	public Integer getResourceDepthInClassNames() {
-		if (springMvcEndpointGeneratorMojo != null) {
-			return springMvcEndpointGeneratorMojo.resourceDepthInClassNames;
+		if (delegate != null) {
+			return delegate.getResourceDepthInClassNames();
 		}
 		return super.getResourceDepthInClassNames();
 	}
 
 	public Integer getResourceTopLevelInClassNames() {
-		if (springMvcEndpointGeneratorMojo != null) {
-			return springMvcEndpointGeneratorMojo.resourceTopLevelInClassNames;
+		if (delegate != null) {
+			return delegate.getResourceTopLevelInClassNames();
 		}
 		return super.getResourceTopLevelInClassNames();
 	}
 
 	public Boolean isReverseOrderInClassNames() {
-		if (springMvcEndpointGeneratorMojo != null) {
-			return springMvcEndpointGeneratorMojo.reverseOrderInClassNames;
+		if (delegate != null) {
+			return delegate.isReverseOrderInClassNames();
 		}
 		return super.isReverseOrderInClassNames();
 	}
 
 	public String getBasePackage() {
-		if (springMvcEndpointGeneratorMojo != null) {
-			return springMvcEndpointGeneratorMojo.basePackage;
+		if (delegate != null) {
+			return delegate.getBasePackage();
 		}
 		return super.getBasePackage();
 	}
 
 	public MethodsNamingLogic getMethodsNamingLogic() {
-		if (springMvcEndpointGeneratorMojo != null) {
-			return springMvcEndpointGeneratorMojo.methodsNamingLogic;
+		if (delegate != null) {
+			return delegate.getMethodsNamingLogic();
 		}
 		return super.getMethodsNamingLogic();
 	}
 
 	public OverrideNamingLogicWith getOverrideNamingLogicWith() {
-		if (springMvcEndpointGeneratorMojo != null) {
-			return springMvcEndpointGeneratorMojo.overrideNamingLogicWith;
+		if (delegate != null) {
+			return delegate.getOverrideNamingLogicWith();
 		}
 		return super.getOverrideNamingLogicWith();
 	}
 
 	public String getDontGenerateForAnnotation() {
-		if (springMvcEndpointGeneratorMojo != null) {
-			return springMvcEndpointGeneratorMojo.dontGenerateForAnnotation;
+		if (delegate != null) {
+			return delegate.getDontGenerateForAnnotation();
 		}
 		return super.getDontGenerateForAnnotation();
 	}
 
 	public Boolean isInjectHttpRequestParameter() {
-		if (springMvcEndpointGeneratorMojo != null) {
-			return springMvcEndpointGeneratorMojo.injectHttpRequestParameter;
+		if (delegate != null) {
+			return delegate.isInjectHttpRequestParameter();
 		}
 		return super.isInjectHttpRequestParameter();
-	}
-
-	public String getPojoPackage() {
-		return getBasePackage() + NamingHelper.getDefaultModelPackage();
 	}
 
 }

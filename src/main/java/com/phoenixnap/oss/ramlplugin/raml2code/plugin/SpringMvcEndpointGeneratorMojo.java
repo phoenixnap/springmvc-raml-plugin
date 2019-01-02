@@ -67,7 +67,7 @@ import com.sun.codemodel.JDefinedClass;
  * @since 0.2.1
  */
 @Mojo(name = "generate-springmvc-endpoints", requiresDependencyResolution = ResolutionScope.COMPILE_PLUS_RUNTIME, threadSafe = true, requiresProject = false)
-public class SpringMvcEndpointGeneratorMojo extends AbstractMojo {
+public class SpringMvcEndpointGeneratorMojo extends AbstractMojo implements ConfigSource {
 
 	/**
 	 * Maven project - required for project info
@@ -538,6 +538,61 @@ public class SpringMvcEndpointGeneratorMojo extends AbstractMojo {
 		}
 
 		this.getLog().info("Endpoint Generation Completed in:" + (System.currentTimeMillis() - startTime) + "ms");
+	}
+
+	@Override
+	public PojoGenerationConfig getPojoConfig() {
+		return generationConfig;
+	}
+
+	@Override
+	public Boolean isSeperateMethodsByContentType() {
+		return seperateMethodsByContentType;
+	}
+
+	@Override
+	public Boolean isInjectHttpHeadersParameter() {
+		return injectHttpHeadersParameter;
+	}
+
+	@Override
+	public Integer getResourceDepthInClassNames() {
+		return resourceDepthInClassNames;
+	}
+
+	@Override
+	public Integer getResourceTopLevelInClassNames() {
+		return resourceTopLevelInClassNames;
+	}
+
+	@Override
+	public Boolean isReverseOrderInClassNames() {
+		return reverseOrderInClassNames;
+	}
+
+	@Override
+	public String getBasePackage() {
+		return basePackage;
+	}
+
+	@Override
+	public MethodsNamingLogic getMethodsNamingLogic() {
+		return methodsNamingLogic;
+	}
+
+	@Override
+	public OverrideNamingLogicWith getOverrideNamingLogicWith() {
+		return overrideNamingLogicWith;
+	}
+
+	@Override
+	public String getDontGenerateForAnnotation() {
+		return dontGenerateForAnnotation;
+	}
+
+	@Override
+	public Boolean isInjectHttpRequestParameter() {
+		return injectHttpRequestParameter;
 	}
 
 }
