@@ -9,3 +9,4 @@ target
 .idea
 /.recommenders
 .sts4-cache/
+/.factorypath
