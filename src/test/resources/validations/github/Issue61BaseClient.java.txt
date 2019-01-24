@@ -16,7 +16,7 @@ public class SampleUnit implements Serializable
      * The type string.
      * 
      */
-    @JsonProperty("t_String")
+    @JsonProperty("t_string")
     protected String tString;
 
     /**
