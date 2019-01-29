@@ -21,9 +21,9 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.Set;
 
-import org.apache.commons.collections.MapUtils;
 import org.raml.v2.api.model.v10.datamodel.DateTimeTypeDeclaration;
 import org.raml.v2.api.model.v10.datamodel.TypeDeclaration;
 import org.slf4j.Logger;
@@ -324,7 +324,8 @@ public class PojoBuilder extends AbstractBuilder {
 		// because default constructor (without fields) is already present
 		Map<String, JFieldVar> nonTransientAndNonStaticFields = getNonTransientAndNonStaticFields();
 
-		if (MapUtils.isNotEmpty(nonTransientAndNonStaticFields)) {
+		// if nonTransientAndNonStaticFields is not empty
+		if (!Optional.ofNullable(nonTransientAndNonStaticFields).map(Map::isEmpty).orElse(true)) {
 			// Create complete constructor
 			JMethod constructor = this.pojo.constructor(JMod.PUBLIC);
 			Map<String, JVar> superParametersToAdd = getSuperParametersToAdd(this.pojo);
