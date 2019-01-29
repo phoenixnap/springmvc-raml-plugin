@@ -20,7 +20,7 @@ import java.nio.file.Paths;
 import java.util.Set;
 
 import org.hamcrest.MatcherAssert;
-import org.hamcrest.text.IsEqualCompressingWhiteSpace;
+import org.hamcrest.text.IsEqualIgnoringWhiteSpace;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.BeforeClass;
@@ -146,20 +146,19 @@ public abstract class AbstractRuleTestBase {
 		return resource.toURI();
 	}
 
-	public static class IsEqualIgnoringLeadingAndEndingWhiteSpaces extends IsEqualCompressingWhiteSpace {
+	public static class IsEqualIgnoringLeadingAndEndingWhiteSpaces extends IsEqualIgnoringWhiteSpace {
 
 		public IsEqualIgnoringLeadingAndEndingWhiteSpaces(String string) {
 			super(string);
 		}
 
-		@Override
-		public String stripSpaces(String toBeStripped) {
+		public String stripSpace(String toBeStripped) {
 			String result = "";
 			BufferedReader bufReader = new BufferedReader(new StringReader(toBeStripped));
 			String line;
 			try {
 				while ((line = bufReader.readLine()) != null) {
-					result += super.stripSpaces(line);
+					result += super.stripSpace(line);
 				}
 			} catch (IOException e) {
 				return e.getMessage();

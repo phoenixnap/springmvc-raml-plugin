@@ -12,7 +12,7 @@
  */
 package com.phoenixnap.oss.ramlplugin.raml2code.rules.spring;
 
-import org.springframework.cloud.openfeign.FeignClient;
+import org.springframework.cloud.netflix.feign.FeignClient;
 
 import com.phoenixnap.oss.ramlplugin.raml2code.data.ApiResourceMetadata;
 import com.phoenixnap.oss.ramlplugin.raml2code.rules.Rule;
