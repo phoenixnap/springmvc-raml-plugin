@@ -1,5 +1,5 @@
 /*
- * Copyright 2002-2017 the original author or authors.
+ * Copyright 2002-2019 the original author or authors.
  * 
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with
  * the License. You may obtain a copy of the License at
@@ -15,14 +15,19 @@ package com.phoenixnap.oss.ramlplugin.raml2code.interpreters;
 import java.io.Serializable;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.Random;
+
+import javax.annotation.Generated;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.phoenixnap.oss.ramlplugin.raml2code.helpers.CodeModelHelper;
 import com.phoenixnap.oss.ramlplugin.raml2code.helpers.NamingHelper;
+import com.phoenixnap.oss.ramlplugin.raml2code.plugin.Config;
+import com.sun.codemodel.JAnnotationUse;
 import com.sun.codemodel.JClass;
 import com.sun.codemodel.JCodeModel;
 import com.sun.codemodel.JDefinedClass;
@@ -82,6 +87,24 @@ public class AbstractBuilder {
 		// Add constant serializable id
 		this.pojo.field(JMod.STATIC | JMod.FINAL, this.pojoModel.LONG, "serialVersionUID",
 				JExpr.lit(new Random(System.currentTimeMillis()).nextLong()));
+	}
+
+	protected void implementsGeneratedAnnotation() {
+
+		if (!Config.isGeneratedAnnotation()) {
+			return;
+		}
+
+		// check if POJO already has the annotation
+		Iterator<JAnnotationUse> iterator = this.pojo.annotations().iterator();
+		while (iterator.hasNext()) {
+			String fullName = iterator.next().getAnnotationClass().fullName();
+			if (Generated.class.getName().equals(fullName)) {
+				return;
+			}
+		}
+
+		this.pojo.annotate(Generated.class).param("value", Config.DEFAULT_GENERATED_ANNOTATION_VALUE);
 	}
 
 	public AbstractBuilder withPackage(String pojoPackage) {

@@ -40,6 +40,11 @@ public class Config {
 	private static final Boolean DEFAULT_INJECT_HTTP_REQUEST_PARAMETER = Boolean.FALSE;
 	private static Boolean injectHttpRequestParameter = DEFAULT_INJECT_HTTP_REQUEST_PARAMETER;
 
+	private static final Boolean DEFAULT_GENERATED_ANNOTATION = Boolean.FALSE;
+	private static Boolean generatedAnnotation = DEFAULT_GENERATED_ANNOTATION;
+
+	public static final String DEFAULT_GENERATED_ANNOTATION_VALUE = "com.phoenixnap.oss.ramlplugin";
+
 	Config() {
 	}
 
@@ -173,6 +178,17 @@ public class Config {
 		Config.injectHttpRequestParameter = injectHttpRequestParameter;
 	}
 
+	public static Boolean isGeneratedAnnotation() {
+		if (springMvcEndpointGeneratorMojo != null) {
+			return springMvcEndpointGeneratorMojo.generatedAnnotation;
+		}
+		return generatedAnnotation;
+	}
+
+	public static void setGeneratedAnnotation(Boolean generatedAnnotation) {
+		Config.generatedAnnotation = generatedAnnotation;
+	}
+
 	public static String getPojoPackage() {
 		return getBasePackage() + NamingHelper.getDefaultModelPackage();
 	}
@@ -189,6 +205,7 @@ public class Config {
 		setOverrideNamingLogicWith(DEFAULT_OVERRIDE_NAMING_LOGIC_WITH);
 		setDontGenerateForAnnotation(DEFAULT_DONT_GENERATE_FOR_ANNOTATION);
 		setInjectHttpRequestParameter(DEFAULT_INJECT_HTTP_REQUEST_PARAMETER);
+		setGeneratedAnnotation(DEFAULT_GENERATED_ANNOTATION);
 	}
 
 }

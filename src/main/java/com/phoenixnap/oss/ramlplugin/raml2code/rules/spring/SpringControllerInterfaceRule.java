@@ -1,5 +1,5 @@
 /*
- * Copyright 2002-2017 the original author or authors.
+ * Copyright 2002-2019 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with
  * the License. You may obtain a copy of the License at
@@ -25,6 +25,7 @@ import com.phoenixnap.oss.ramlplugin.raml2code.rules.Rule;
 import com.phoenixnap.oss.ramlplugin.raml2code.rules.basic.ClassCommentRule;
 import com.phoenixnap.oss.ramlplugin.raml2code.rules.basic.ControllerInterfaceDeclarationRule;
 import com.phoenixnap.oss.ramlplugin.raml2code.rules.basic.ControllerMethodSignatureRule;
+import com.phoenixnap.oss.ramlplugin.raml2code.rules.basic.GeneratedClassAnnotationRule;
 import com.phoenixnap.oss.ramlplugin.raml2code.rules.basic.MethodCommentRule;
 import com.phoenixnap.oss.ramlplugin.raml2code.rules.basic.PackageRule;
 import com.sun.codemodel.JAnnotationUse;
@@ -59,7 +60,8 @@ public abstract class SpringControllerInterfaceRule extends SpringConfigurableRu
 				.setClassCommentRule(new ClassCommentRule()).addClassAnnotationRule(getControllerAnnotationRule())
 				.addClassAnnotationRule(new SpringValidatedClassAnnotationRule())
 				.addClassAnnotationRule(new SpringRequestMappingClassAnnotationRule())
-				.setClassRule(new ControllerInterfaceDeclarationRule()).setMethodCommentRule(new MethodCommentRule())
+				.addClassAnnotationRule(new GeneratedClassAnnotationRule()).setClassRule(new ControllerInterfaceDeclarationRule())
+				.setMethodCommentRule(new MethodCommentRule())
 				.addMethodAnnotationRule(isUseShortcutMethodMappings() ? new SpringShortcutMappingMethodAnnotationRule()
 						: new SpringRequestMappingMethodAnnotationRule())
 				.addMethodAnnotationRule(getResponseBodyAnnotationRule()).setMethodSignatureRule(

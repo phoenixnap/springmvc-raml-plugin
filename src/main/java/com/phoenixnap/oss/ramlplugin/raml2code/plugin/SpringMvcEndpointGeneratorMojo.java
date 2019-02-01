@@ -1,5 +1,5 @@
 /*
- * Copyright 2002-2017 the original author or authors.
+ * Copyright 2002-2019 the original author or authors.
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except
  * in compliance with
  * the License. You may obtain a copy of the License at
@@ -24,6 +24,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
+
+import javax.annotation.Generated;
 
 import org.apache.maven.artifact.DependencyResolutionRequiredException;
 import org.apache.maven.model.Model;
@@ -225,6 +227,13 @@ public class SpringMvcEndpointGeneratorMojo extends AbstractMojo {
 	 */
 	@Parameter(required = false, readonly = true, defaultValue = "false")
 	protected Boolean injectHttpRequestParameter;
+
+	/**
+	 * If set to true, we will generate class level {@link Generated} annotation
+	 * on all generated classes
+	 */
+	@Parameter(required = false, readonly = true, defaultValue = "false")
+	protected Boolean generatedAnnotation;
 
 	private ClassRealm classRealm;
 

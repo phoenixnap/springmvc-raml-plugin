@@ -137,6 +137,9 @@ NOTE: This is different from a previous default. Use `RESOURCES` to get `0.x` be
 ### dontGenerateForAnnotation
 (optional, default: "") When defined, code generation will be skipped for resources and methods annotated with this [Annotation](https://github.com/raml-org/raml-spec/blob/master/versions/raml-10/raml-10.md#annotations). When annotation is set on resource - all methods in the resource and all sub-resources will be ignored. Value of the annotation is not important.
 
+### generatedAnnotation
+(optional, default: `false`) Should `javax.annotation.Generated` annotation be set on all generated classes. The value of the annotation will be `com.phoenixnap.oss.ramlplugin`.
+
 ### ruleConfiguration
 (optional) This is a key/value map for configuration of individual rules. Not all rules support configuration.
 

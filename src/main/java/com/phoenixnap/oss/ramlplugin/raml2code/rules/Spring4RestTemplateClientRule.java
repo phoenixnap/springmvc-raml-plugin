@@ -1,5 +1,5 @@
 /*
- * Copyright 2002-2017 the original author or authors.
+ * Copyright 2002-2019 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with
  * the License. You may obtain a copy of the License at
@@ -32,6 +32,7 @@ import com.phoenixnap.oss.ramlplugin.raml2code.rules.basic.ClassCommentRule;
 import com.phoenixnap.oss.ramlplugin.raml2code.rules.basic.ClassFieldDeclarationRule;
 import com.phoenixnap.oss.ramlplugin.raml2code.rules.basic.ClientInterfaceDeclarationRule;
 import com.phoenixnap.oss.ramlplugin.raml2code.rules.basic.ControllerMethodSignatureRule;
+import com.phoenixnap.oss.ramlplugin.raml2code.rules.basic.GeneratedClassAnnotationRule;
 import com.phoenixnap.oss.ramlplugin.raml2code.rules.basic.ImplementsControllerInterfaceRule;
 import com.phoenixnap.oss.ramlplugin.raml2code.rules.basic.MethodCommentRule;
 import com.phoenixnap.oss.ramlplugin.raml2code.rules.basic.MethodParamsRule;
@@ -99,6 +100,7 @@ public class Spring4RestTemplateClientRule implements ConfigurableRule<JCodeMode
 
 		GenericJavaClassRule clientGenerator = new GenericJavaClassRule().setPackageRule(new PackageRule())
 				.setClassCommentRule(new ClassCommentRule()).addClassAnnotationRule(new ClassAnnotationRule(Component.class))
+				.addClassAnnotationRule(new GeneratedClassAnnotationRule())
 				.setClassRule(new ResourceClassDeclarationRule(ClientInterfaceDeclarationRule.CLIENT_SUFFIX + "Impl")) // MODIFIED
 				.setImplementsExtendsRule(new ImplementsControllerInterfaceRule(generatedInterface))
 				.addFieldDeclarationRule(new ClassFieldDeclarationRule(baseUrlFieldName, String.class, getBaseUrlConfigurationName())) //

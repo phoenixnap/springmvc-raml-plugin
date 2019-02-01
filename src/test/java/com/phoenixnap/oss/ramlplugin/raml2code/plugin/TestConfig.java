@@ -66,4 +66,8 @@ public class TestConfig {
 	public static void setInjectHttpRequestParameter(boolean injectHttpRequestParameter) {
 		Config.setInjectHttpRequestParameter(injectHttpRequestParameter);
 	}
+
+	public static void setGeneratedAnnotation(boolean generatedAnnotation) {
+		Config.setGeneratedAnnotation(generatedAnnotation);
+	}
 }
