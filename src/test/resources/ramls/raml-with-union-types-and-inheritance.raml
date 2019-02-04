@@ -1,0 +1,32 @@
+#%RAML 1.0
+title: API wih Union Types and Inheritance
+mediaType: application/json
+baseUri: /api
+
+types:
+  Manufactured:
+    type: object
+    properties:
+      manufacturer:
+        type: string
+  Phone:
+    type: Manufactured
+    properties:
+      numberOfSIMCards:
+        type: number
+  Notebook:
+    type: Manufactured
+    properties:
+      numberOfUSBPorts:
+        type: number
+  Device:
+    type: Phone | Notebook
+
+/devices:
+  description: "Api for devices"
+  /{id}:
+    get:
+      responses:
+        200:
+          body:
+            type: Device

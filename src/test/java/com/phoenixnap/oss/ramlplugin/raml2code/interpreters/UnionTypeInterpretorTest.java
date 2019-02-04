@@ -23,4 +23,12 @@ public class UnionTypeInterpretorTest extends AbstractRuleTestBase {
 		rule.apply(getControllerMetadata(), jCodeModel);
 		verifyGeneratedCode("RamlWithUnionTypeSpring4ControllerInterface");
 	}
+
+	@Test
+	public void shouldCreateValidCodeWhenUsingUnionTypesAndInheritance() throws Exception {
+		loadRaml("raml-with-union-types-and-inheritance.raml");
+		rule = new Spring4ControllerInterfaceRule();
+		rule.apply(getControllerMetadata(), jCodeModel);
+		verifyGeneratedCode("RamlWithUnionTypeAndInheritanceSpring4ControllerInterface");
+	}
 }

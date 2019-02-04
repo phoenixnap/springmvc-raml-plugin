@@ -126,7 +126,7 @@ public class UnionTypeInterpreter extends BaseTypeInterpreter {
 
 		for (TypeDeclaration objectProperty : objectType.of()) {
 			RamlInterpretationResult childResult = RamlInterpreterFactory.getInterpreterForType(objectProperty).interpret(document,
-					objectProperty, builderModel, true);
+					objectProperty, builderModel, false);
 
 			String childType = childResult.getResolvedClassOrBuiltOrObject().fullName();
 			builder.withField(objectProperty.name(), childType, RamlTypeHelper.getDescription(objectProperty), childResult.getValidations(),
