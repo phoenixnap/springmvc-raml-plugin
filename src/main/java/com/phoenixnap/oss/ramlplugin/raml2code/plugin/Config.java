@@ -1,44 +1,12 @@
 package com.phoenixnap.oss.ramlplugin.raml2code.plugin;
 
-import com.phoenixnap.oss.ramlplugin.raml2code.helpers.NamingHelper;
-import com.phoenixnap.oss.ramlplugin.raml2code.plugin.SpringMvcEndpointGeneratorMojo.MethodsNamingLogic;
-import com.phoenixnap.oss.ramlplugin.raml2code.plugin.SpringMvcEndpointGeneratorMojo.OverrideNamingLogicWith;
-
 public class Config {
 
-	private static PojoGenerationConfig pojoGenerationConfig = new PojoGenerationConfig();
+	private static DefaultConfig CURRENT_CONFIGURATION = new DefaultConfig();
 
-	private static SpringMvcEndpointGeneratorMojo springMvcEndpointGeneratorMojo;
-
-	private static final Boolean DEFAULT_SEPERATE_METHODS_BY_CONTENTTYPE = Boolean.FALSE;
-	private static Boolean seperateMethodsByContentType = DEFAULT_SEPERATE_METHODS_BY_CONTENTTYPE;
-
-	private static final Boolean DEFAULT_INJECT_HTTP_HEADERS_PARAMETER = Boolean.FALSE;
-	private static Boolean injectHttpHeadersParameter = DEFAULT_INJECT_HTTP_HEADERS_PARAMETER;
-
-	private static final Integer DEFAULT_RESOURCE_DEPTH_IN_CLASS_NAMES = 1;
-	private static Integer resourceDepthInClassNames = DEFAULT_RESOURCE_DEPTH_IN_CLASS_NAMES;
-
-	private static final Integer DEFAULT_RESOURCE_TOP_LEVEL_IN_CLASS_NAMES = 0;
-	private static Integer resourceTopLevelInClassNames = DEFAULT_RESOURCE_TOP_LEVEL_IN_CLASS_NAMES;
-
-	private static final Boolean DEFAULT_REVERSE_ORDER_IN_CLASS_NAMES = Boolean.FALSE;
-	private static Boolean reverseOrderInClassNames = DEFAULT_REVERSE_ORDER_IN_CLASS_NAMES;
-
-	private static final String DEFAULT_BASE_PACKAGE = "com.gen.test";
-	private static String basePackage = DEFAULT_BASE_PACKAGE;
-
-	private static final MethodsNamingLogic DEFAULT_METHODS_NAMING_LOGIC = MethodsNamingLogic.OBJECTS;
-	private static MethodsNamingLogic methodsNamingLogic = DEFAULT_METHODS_NAMING_LOGIC;
-
-	private static final OverrideNamingLogicWith DEFAULT_OVERRIDE_NAMING_LOGIC_WITH = null;
-	private static OverrideNamingLogicWith overrideNamingLogicWith = DEFAULT_OVERRIDE_NAMING_LOGIC_WITH;
-
-	private static final String DEFAULT_DONT_GENERATE_FOR_ANNOTATION = null;
-	private static String dontGenerateForAnnotation = DEFAULT_DONT_GENERATE_FOR_ANNOTATION;
-
-	private static final Boolean DEFAULT_INJECT_HTTP_REQUEST_PARAMETER = Boolean.FALSE;
-	private static Boolean injectHttpRequestParameter = DEFAULT_INJECT_HTTP_REQUEST_PARAMETER;
+	static synchronized void setInstance(DefaultConfig config) {
+		CURRENT_CONFIGURATION = config;
+	}
 
 	private static final Boolean DEFAULT_GENERATED_ANNOTATION = Boolean.FALSE;
 	private static Boolean generatedAnnotation = DEFAULT_GENERATED_ANNOTATION;
@@ -48,164 +16,104 @@ public class Config {
 	Config() {
 	}
 
-	protected static void setMojo(SpringMvcEndpointGeneratorMojo springMvcEndpointGeneratorMojo) {
-		Config.springMvcEndpointGeneratorMojo = springMvcEndpointGeneratorMojo;
-		if (springMvcEndpointGeneratorMojo != null) {
-			Config.pojoGenerationConfig = springMvcEndpointGeneratorMojo.generationConfig;
-		} else {
-			Config.pojoGenerationConfig = null;
-		}
-	}
-
 	protected static void setPojoConfig(PojoGenerationConfig pojoGenerationConfig) {
-		Config.pojoGenerationConfig = pojoGenerationConfig;
+		CURRENT_CONFIGURATION.setPojoConfig(pojoGenerationConfig);
 	}
 
 	public static PojoGenerationConfig getPojoConfig() {
-		return pojoGenerationConfig;
+		return CURRENT_CONFIGURATION.getPojoConfig();
 	}
 
 	protected static void setSeperateMethodsByContentType(Boolean seperateMethodsByContentType) {
-		Config.seperateMethodsByContentType = seperateMethodsByContentType;
+		CURRENT_CONFIGURATION.setSeperateMethodsByContentType(seperateMethodsByContentType);
 	}
 
 	public static Boolean isSeperateMethodsByContentType() {
-		if (springMvcEndpointGeneratorMojo != null) {
-			return springMvcEndpointGeneratorMojo.seperateMethodsByContentType;
-		}
-		return seperateMethodsByContentType;
+		return CURRENT_CONFIGURATION.isSeperateMethodsByContentType();
 	}
 
 	protected static void setInjectHttpHeadersParameter(Boolean injectHttpHeadersParameter) {
-		Config.injectHttpHeadersParameter = injectHttpHeadersParameter;
+		CURRENT_CONFIGURATION.setInjectHttpHeadersParameter(injectHttpHeadersParameter);
 	}
 
 	public static Boolean isInjectHttpHeadersParameter() {
-		if (springMvcEndpointGeneratorMojo != null) {
-			return springMvcEndpointGeneratorMojo.injectHttpHeadersParameter;
-		}
-		return injectHttpHeadersParameter;
+		return CURRENT_CONFIGURATION.isInjectHttpHeadersParameter();
 	}
 
 	protected static void setResourceDepthInClassNames(Integer resourceDepthInClassNames) {
-		Config.resourceDepthInClassNames = resourceDepthInClassNames;
+		CURRENT_CONFIGURATION.setResourceDepthInClassNames(resourceDepthInClassNames);
 	}
 
 	public static Integer getResourceDepthInClassNames() {
-		if (springMvcEndpointGeneratorMojo != null) {
-			return springMvcEndpointGeneratorMojo.resourceDepthInClassNames;
-		}
-		return resourceDepthInClassNames;
+		return CURRENT_CONFIGURATION.getResourceDepthInClassNames();
 	}
 
 	protected static void setResourceTopLevelInClassNames(Integer resourceTopLevelInClassNames) {
-		Config.resourceTopLevelInClassNames = resourceTopLevelInClassNames;
+		CURRENT_CONFIGURATION.setResourceTopLevelInClassNames(resourceTopLevelInClassNames);
 	}
 
 	public static Integer getResourceTopLevelInClassNames() {
-		if (springMvcEndpointGeneratorMojo != null) {
-			return springMvcEndpointGeneratorMojo.resourceTopLevelInClassNames;
-		}
-		return resourceTopLevelInClassNames;
+		return CURRENT_CONFIGURATION.getResourceTopLevelInClassNames();
 	}
 
 	protected static void setReverseOrderInClassNames(Boolean reverseOrderInClassNames) {
-		Config.reverseOrderInClassNames = reverseOrderInClassNames;
+		CURRENT_CONFIGURATION.setReverseOrderInClassNames(reverseOrderInClassNames);
 	}
 
 	public static Boolean isReverseOrderInClassNames() {
-		if (springMvcEndpointGeneratorMojo != null) {
-			return springMvcEndpointGeneratorMojo.reverseOrderInClassNames;
-		}
-		return reverseOrderInClassNames;
+		return CURRENT_CONFIGURATION.isReverseOrderInClassNames();
 	}
 
 	protected static void setBasePackage(String basePackage) {
-		Config.basePackage = basePackage;
+		CURRENT_CONFIGURATION.setBasePackage(basePackage);
 	}
 
 	public static String getBasePackage() {
-		if (springMvcEndpointGeneratorMojo != null) {
-			return springMvcEndpointGeneratorMojo.basePackage;
-		}
-		return basePackage;
+		return CURRENT_CONFIGURATION.getBasePackage();
 	}
 
 	public static MethodsNamingLogic getMethodsNamingLogic() {
-		if (springMvcEndpointGeneratorMojo != null) {
-			return springMvcEndpointGeneratorMojo.methodsNamingLogic;
-		}
-		if (methodsNamingLogic == null) {
-			return DEFAULT_METHODS_NAMING_LOGIC;
-		}
-		return methodsNamingLogic;
+		return CURRENT_CONFIGURATION.getMethodsNamingLogic();
 	}
 
 	protected static void setMethodsNamingLogic(MethodsNamingLogic methodsNamingLogic) {
-		Config.methodsNamingLogic = methodsNamingLogic;
+		CURRENT_CONFIGURATION.setMethodsNamingLogic(methodsNamingLogic);
 	}
 
 	public static OverrideNamingLogicWith getOverrideNamingLogicWith() {
-		if (springMvcEndpointGeneratorMojo != null) {
-			return springMvcEndpointGeneratorMojo.overrideNamingLogicWith;
-		}
-		return overrideNamingLogicWith;
+		return CURRENT_CONFIGURATION.getOverrideNamingLogicWith();
 	}
 
 	protected static void setOverrideNamingLogicWith(OverrideNamingLogicWith overrideNamingLogicWith) {
-		Config.overrideNamingLogicWith = overrideNamingLogicWith;
+		CURRENT_CONFIGURATION.setOverrideNamingLogicWith(overrideNamingLogicWith);
 	}
 
 	public static String getDontGenerateForAnnotation() {
-		if (springMvcEndpointGeneratorMojo != null) {
-			return springMvcEndpointGeneratorMojo.dontGenerateForAnnotation;
-		}
-		return dontGenerateForAnnotation;
+		return CURRENT_CONFIGURATION.getDontGenerateForAnnotation();
 	}
 
 	protected static void setDontGenerateForAnnotation(String dontGenerateForAnnotation) {
-		Config.dontGenerateForAnnotation = dontGenerateForAnnotation;
+		CURRENT_CONFIGURATION.setDontGenerateForAnnotation(dontGenerateForAnnotation);
 	}
 
 	public static Boolean isInjectHttpRequestParameter() {
-		if (springMvcEndpointGeneratorMojo != null) {
-			return springMvcEndpointGeneratorMojo.injectHttpRequestParameter;
-		}
-		return injectHttpRequestParameter;
+		return CURRENT_CONFIGURATION.isInjectHttpRequestParameter();
 	}
 
 	public static void setInjectHttpRequestParameter(Boolean injectHttpRequestParameter) {
-		Config.injectHttpRequestParameter = injectHttpRequestParameter;
+		CURRENT_CONFIGURATION.setInjectHttpRequestParameter(injectHttpRequestParameter);
 	}
 
 	public static Boolean isGeneratedAnnotation() {
-		if (springMvcEndpointGeneratorMojo != null) {
-			return springMvcEndpointGeneratorMojo.generatedAnnotation;
-		}
-		return generatedAnnotation;
+		return CURRENT_CONFIGURATION.isGeneratedAnnotation();
 	}
 
 	public static void setGeneratedAnnotation(Boolean generatedAnnotation) {
-		Config.generatedAnnotation = generatedAnnotation;
+		CURRENT_CONFIGURATION.setGeneratedAnnotation(generatedAnnotation);
 	}
 
 	public static String getPojoPackage() {
-		return getBasePackage() + NamingHelper.getDefaultModelPackage();
-	}
-
-	protected static void resetFields() {
-		setMojo(null);
-		setBasePackage(DEFAULT_BASE_PACKAGE);
-		setInjectHttpHeadersParameter(DEFAULT_INJECT_HTTP_HEADERS_PARAMETER);
-		setResourceDepthInClassNames(DEFAULT_RESOURCE_DEPTH_IN_CLASS_NAMES);
-		setResourceTopLevelInClassNames(DEFAULT_RESOURCE_TOP_LEVEL_IN_CLASS_NAMES);
-		setReverseOrderInClassNames(DEFAULT_REVERSE_ORDER_IN_CLASS_NAMES);
-		setSeperateMethodsByContentType(DEFAULT_SEPERATE_METHODS_BY_CONTENTTYPE);
-		setMethodsNamingLogic(DEFAULT_METHODS_NAMING_LOGIC);
-		setOverrideNamingLogicWith(DEFAULT_OVERRIDE_NAMING_LOGIC_WITH);
-		setDontGenerateForAnnotation(DEFAULT_DONT_GENERATE_FOR_ANNOTATION);
-		setInjectHttpRequestParameter(DEFAULT_INJECT_HTTP_REQUEST_PARAMETER);
-		setGeneratedAnnotation(DEFAULT_GENERATED_ANNOTATION);
+		return CURRENT_CONFIGURATION.getPojoPackage();
 	}
 
 }

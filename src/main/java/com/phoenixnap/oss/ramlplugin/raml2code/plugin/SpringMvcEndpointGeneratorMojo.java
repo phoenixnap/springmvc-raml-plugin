@@ -69,13 +69,13 @@ import com.sun.codemodel.JDefinedClass;
  * @since 0.2.1
  */
 @Mojo(name = "generate-springmvc-endpoints", requiresDependencyResolution = ResolutionScope.COMPILE_PLUS_RUNTIME, threadSafe = true, requiresProject = false)
-public class SpringMvcEndpointGeneratorMojo extends AbstractMojo {
+public class SpringMvcEndpointGeneratorMojo extends AbstractMojo implements ConfigSource {
 
 	/**
 	 * Maven project - required for project info
 	 */
 	@Parameter(defaultValue = "${project}", required = true, readonly = true)
-	protected MavenProject project;
+	private MavenProject project;
 
 	@Parameter(defaultValue = "${plugin}", readonly = true)
 	private PluginDescriptor descriptor;
@@ -84,39 +84,39 @@ public class SpringMvcEndpointGeneratorMojo extends AbstractMojo {
 	 * Path to the raml document to be verified
 	 */
 	@Parameter(property = "ramlPath", required = true, readonly = true, defaultValue = "")
-	protected String ramlPath;
+	private String ramlPath;
 
 	/**
 	 * Path to the pom document to be verified
 	 */
 	@Parameter(property = "pomPath", required = false, readonly = true, defaultValue = "NA")
-	protected String pomPath;
+	private String pomPath;
 
 	/**
 	 * Relative file path where the Java files will be saved to
 	 */
 	@Parameter(property = "outputRelativePath", required = false, readonly = true, defaultValue = "")
-	protected String outputRelativePath;
+	private String outputRelativePath;
 
 	/**
 	 * IF this is set to true, we will only parse methods that consume, produce
 	 * or accept the requested defaultMediaType
 	 */
 	@Parameter(required = false, readonly = true, defaultValue = "false")
-	protected Boolean addTimestampFolder;
+	private Boolean addTimestampFolder;
 
 	/**
 	 * Java package to be applied to the generated files
 	 */
 	@Parameter(property = "basePackage", required = true, readonly = true, defaultValue = "")
-	protected String basePackage;
+	private String basePackage;
 
 	/**
 	 * The URI or relative path to the folder/network location containing JSON
 	 * Schemas
 	 */
 	@Parameter(required = false, readonly = true, defaultValue = "")
-	protected String schemaLocation;
+	private String schemaLocation;
 
 	/**
 	 * A boolean indicating whether the POJOs for unreferenced objects (schemas
@@ -124,42 +124,42 @@ public class SpringMvcEndpointGeneratorMojo extends AbstractMojo {
 	 * such schemas/types are not generated.
 	 */
 	@Parameter(required = false, readonly = true, defaultValue = "false")
-	protected Boolean generateUnreferencedObjects;
+	private Boolean generateUnreferencedObjects;
 
 	/**
 	 * The explicit base path under which the rest endpoints should be located.
 	 * If overrules the baseUri setting in the raml spec.
 	 */
 	@Parameter(required = false, readonly = true)
-	protected String baseUri;
+	private String baseUri;
 
 	/**
 	 * If set to true, we will generate seperate methods for different content
 	 * types in the RAML
 	 */
 	@Parameter(required = false, readonly = true, defaultValue = "false")
-	protected Boolean seperateMethodsByContentType;
+	private Boolean seperateMethodsByContentType;
 
 	/**
 	 * If set to true, we will generate Jackson 1 annotations inside the model
 	 * objects
 	 */
 	@Parameter(required = false, readonly = true, defaultValue = "false")
-	protected Boolean useJackson1xCompatibility;
+	private Boolean useJackson1xCompatibility;
 
 	/**
 	 * The full qualified name of the Rule that should be used for code
 	 * generation.
 	 */
 	@Parameter(required = false, readonly = true, defaultValue = "com.phoenixnap.oss.ramlplugin.raml2code.rules.Spring4ControllerStubRule")
-	protected String rule;
+	private String rule;
 
 	/**
 	 * Map of key/value configuration parameters that can be used to modify
 	 * behaviour or certain rules
 	 */
 	@Parameter(required = false, readonly = true)
-	protected Map<String, String> ruleConfiguration = new LinkedHashMap<>();
+	private Map<String, String> ruleConfiguration = new LinkedHashMap<>();
 
 	/**
 	 * Configuration passed to JSONSchema2Pojo for generation of pojos.
@@ -171,7 +171,7 @@ public class SpringMvcEndpointGeneratorMojo extends AbstractMojo {
 	 * If set to true, we will generate methods with HttpHeaders as a parameter
 	 */
 	@Parameter(required = false, readonly = true, defaultValue = "false")
-	protected Boolean injectHttpHeadersParameter;
+	private Boolean injectHttpHeadersParameter;
 
 	/**
 	 * How many levels of uri will be included in generated class names. Default
@@ -179,7 +179,7 @@ public class SpringMvcEndpointGeneratorMojo extends AbstractMojo {
 	 * controller/decorator names.
 	 */
 	@Parameter(required = false, readonly = true, defaultValue = "1")
-	protected Integer resourceDepthInClassNames;
+	private Integer resourceDepthInClassNames;
 
 	/**
 	 * Top level of URI included in generated class names. Default is 0 which
@@ -187,7 +187,7 @@ public class SpringMvcEndpointGeneratorMojo extends AbstractMojo {
 	 * names.
 	 */
 	@Parameter(required = false, readonly = true, defaultValue = "0")
-	protected Integer resourceTopLevelInClassNames;
+	private Integer resourceTopLevelInClassNames;
 
 	/**
 	 * Reverse order of resource path that will be included in generated class
@@ -195,7 +195,7 @@ public class SpringMvcEndpointGeneratorMojo extends AbstractMojo {
 	 * controller/decorator names from left to right.
 	 */
 	@Parameter(required = false, readonly = true, defaultValue = "false")
-	protected Boolean reverseOrderInClassNames;
+	private Boolean reverseOrderInClassNames;
 
 	/**
 	 * Logic used for Java methods name generation. Possible values: <ul>
@@ -204,7 +204,7 @@ public class SpringMvcEndpointGeneratorMojo extends AbstractMojo {
 	 * is OBJECTS.
 	 */
 	@Parameter(required = false, readonly = true, defaultValue = "OBJECTS")
-	protected MethodsNamingLogic methodsNamingLogic;
+	private MethodsNamingLogic methodsNamingLogic;
 
 	/**
 	 * The way to override naming logic for Java methods and arguments. Possible
@@ -213,20 +213,20 @@ public class SpringMvcEndpointGeneratorMojo extends AbstractMojo {
 	 * found) will be used as is</li> </ul> No default.
 	 */
 	@Parameter(required = false, readonly = true)
-	protected OverrideNamingLogicWith overrideNamingLogicWith;
+	private OverrideNamingLogicWith overrideNamingLogicWith;
 
 	/**
 	 * Skip code generation for endpoints (resources and methods) annotated with
 	 * this annotation.
 	 */
 	@Parameter(required = false, readonly = true)
-	protected String dontGenerateForAnnotation;
+	private String dontGenerateForAnnotation;
 
 	/**
 	 * If set to true, we will generate methods with HttpRequest as a parameter
 	 */
 	@Parameter(required = false, readonly = true, defaultValue = "false")
-	protected Boolean injectHttpRequestParameter;
+	private Boolean injectHttpRequestParameter;
 
 	/**
 	 * If set to true, we will generate class level {@link Generated} annotation
@@ -240,14 +240,12 @@ public class SpringMvcEndpointGeneratorMojo extends AbstractMojo {
 	private String resolvedSchemaLocation;
 
 	protected void generateEndpoints() throws IOException {
-
-		File pomFile = null;
-		if (!pomPath.equals("NA")) {
+		if (!getPomPath().equals("NA")) {
 
 			Model model = null;
 			FileReader reader = null;
 			MavenXpp3Reader mavenreader = new MavenXpp3Reader();
-			pomFile = new File(pomPath);
+			File pomFile = new File(getPomPath());
 			try {
 				reader = new FileReader(pomFile);
 				model = mavenreader.read(reader);
@@ -258,22 +256,25 @@ public class SpringMvcEndpointGeneratorMojo extends AbstractMojo {
 			project = new MavenProject(model);
 			project.setFile(pomFile);
 		}
+		generateEndpoints(project.getBasedir());
+	}
 
-		String resolvedPath = project.getBasedir().getAbsolutePath();
+	protected void generateEndpoints(File projectBaseDir) throws IOException {
+		String resolvedPath = projectBaseDir.getAbsolutePath();
 		if (resolvedPath.endsWith(File.separator) || resolvedPath.endsWith("/")) {
 			resolvedPath = resolvedPath.substring(0, resolvedPath.length() - 1);
 		}
 
-		String resolvedRamlPath = project.getBasedir().getAbsolutePath();
+		String resolvedRamlPath = projectBaseDir.getAbsolutePath();
 
-		if (!ramlPath.startsWith(File.separator) && !ramlPath.startsWith("/")) {
-			resolvedRamlPath += File.separator + ramlPath;
+		if (!getRamlPath().startsWith(File.separator) && !getRamlPath().startsWith("/")) {
+			resolvedRamlPath += File.separator + getRamlPath();
 		} else {
-			resolvedRamlPath += ramlPath;
+			resolvedRamlPath += getRamlPath();
 		}
 
 		// Resolve schema location and add to classpath
-		resolvedSchemaLocation = getSchemaLocation();
+		setResolvedSchemaLocation(getSchemaLocation());
 
 		RamlRoot loadRamlFromFile = RamlLoader.loadRamlFromFile(new File(resolvedRamlPath).toURI().toString());
 
@@ -287,28 +288,28 @@ public class SpringMvcEndpointGeneratorMojo extends AbstractMojo {
 		}
 
 		// init configuration
-		Config.setMojo(this);
+		Config.setInstance(new MavenDefaultConfig(this));
 
 		RamlParser par = new RamlParser(getBasePath(loadRamlFromFile));
 		Set<ApiResourceMetadata> controllers = par.extractControllers(codeModel, loadRamlFromFile);
 
-		if (StringUtils.hasText(outputRelativePath)) {
-			if (!outputRelativePath.startsWith(File.separator) && !outputRelativePath.startsWith("/")) {
+		if (StringUtils.hasText(getOutputRelativePath())) {
+			if (!getOutputRelativePath().startsWith(File.separator) && !getOutputRelativePath().startsWith("/")) {
 				resolvedPath += File.separator;
 			}
-			resolvedPath += outputRelativePath;
+			resolvedPath += getOutputRelativePath();
 		} else {
 			resolvedPath += "/target/generated-sources/spring-mvc";
 		}
 
-		File rootDir = new File(resolvedPath + (addTimestampFolder == true ? System.currentTimeMillis() : "") + "/");
+		File rootDir = new File(resolvedPath + (getAddTimestampFolder() == true ? System.currentTimeMillis() : "") + "/");
 
 		if (!rootDir.exists() && !rootDir.mkdirs()) {
 			throw new IOException("Could not create directory:" + rootDir.getAbsolutePath());
 		}
 
 		generateCode(null, controllers, rootDir);
-		if (this.generateUnreferencedObjects) {
+		if (this.getGenerateUnreferencedObjects()) {
 			generateUnreferencedObjects(codeModel, loadRamlFromFile, resolvedRamlPath, rootDir, controllers);
 		}
 
@@ -355,7 +356,7 @@ public class SpringMvcEndpointGeneratorMojo extends AbstractMojo {
 				for (String schemaName : map.keySet()) {
 					this.getLog().info("Generating POJO for unreferenced schema " + schemaName);
 					ApiBodyMetadata tempBodyMetadata = SchemaHelper.mapSchemaToPojo(loadRamlFromFile, schemaName, resolvedRamlPath,
-							schemaName, this.resolvedSchemaLocation);
+							schemaName, this.getResolvedSchemaLocation());
 					generateModelSources(null, tempBodyMetadata, rootDir);
 				}
 			}
@@ -398,8 +399,8 @@ public class SpringMvcEndpointGeneratorMojo extends AbstractMojo {
 
 		// If the baseUri is explicitly set by the plugin configuration we take
 		// it.
-		if (baseUri != null) {
-			basePath = baseUri;
+		if (getBaseUri() != null) {
+			basePath = getBaseUri();
 		}
 
 		// Because we can't load an empty string parameter value from maven
@@ -419,16 +420,16 @@ public class SpringMvcEndpointGeneratorMojo extends AbstractMojo {
 	private Rule<JCodeModel, JDefinedClass, ApiResourceMetadata> loadRule() {
 		Rule<JCodeModel, JDefinedClass, ApiResourceMetadata> ruleInstance = new Spring4ControllerStubRule();
 		try {
-			ruleInstance = (Rule<JCodeModel, JDefinedClass, ApiResourceMetadata>) getClassRealm().loadClass(rule).newInstance();
-			this.getLog().debug(StringUtils.collectionToCommaDelimitedString(ruleConfiguration.keySet()));
-			this.getLog().debug(StringUtils.collectionToCommaDelimitedString(ruleConfiguration.values()));
+			ruleInstance = (Rule<JCodeModel, JDefinedClass, ApiResourceMetadata>) getClassRealm().loadClass(getRule()).newInstance();
+			this.getLog().debug(StringUtils.collectionToCommaDelimitedString(getRuleConfiguration().keySet()));
+			this.getLog().debug(StringUtils.collectionToCommaDelimitedString(getRuleConfiguration().values()));
 
-			if (ruleInstance instanceof ConfigurableRule<?, ?, ?> && !CollectionUtils.isEmpty(ruleConfiguration)) {
+			if (ruleInstance instanceof ConfigurableRule<?, ?, ?> && !CollectionUtils.isEmpty(getRuleConfiguration())) {
 				this.getLog().debug("SETTING CONFIG");
-				((ConfigurableRule<?, ?, ?>) ruleInstance).applyConfiguration(ruleConfiguration);
+				((ConfigurableRule<?, ?, ?>) ruleInstance).applyConfiguration(getRuleConfiguration());
 			}
 		} catch (Exception e) {
-			getLog().error("Could not instantiate Rule " + this.rule + ". The default Rule will be used for code generation.", e);
+			getLog().error("Could not instantiate Rule " + this.getRule() + ". The default Rule will be used for code generation.", e);
 		}
 		return ruleInstance;
 	}
@@ -454,13 +455,14 @@ public class SpringMvcEndpointGeneratorMojo extends AbstractMojo {
 	private void generateModelSources(JCodeModel codeModel, ApiBodyMetadata body, File rootDir) {
 		boolean build = false;
 		if (codeModel == null) {
-			Annotator annotator = this.useJackson1xCompatibility ? new Jackson1Annotator(this.generationConfig) : null;
+			Annotator annotator = this.getUseJackson1xCompatibility() ? new Jackson1Annotator(this.generationConfig) : null;
 			this.getLog().info("Generating Model object for: " + body.getName());
 			build = true;
 			if (this.generationConfig == null && annotator == null) {
 				codeModel = body.getCodeModel();
 			} else {
-				codeModel = body.getCodeModel(resolvedSchemaLocation, basePackage + NamingHelper.getDefaultModelPackage(), annotator);
+				codeModel = body.getCodeModel(getResolvedSchemaLocation(), getBasePackage() + NamingHelper.getDefaultModelPackage(),
+						annotator);
 			}
 		}
 		if (build && codeModel != null) {
@@ -468,23 +470,27 @@ public class SpringMvcEndpointGeneratorMojo extends AbstractMojo {
 		}
 	}
 
-	private String getSchemaLocation() {
+	private String calculateSchemaLocation() {
+		return calculateSchemaLocation(project.getBasedir());
+	}
 
-		if (StringUtils.hasText(schemaLocation)) {
+	private String calculateSchemaLocation(File projectBaseDir) {
 
-			if (!schemaLocation.contains(":")) {
-				String resolvedPath = project.getBasedir().getAbsolutePath();
+		if (StringUtils.hasText(getSchemaLocation())) {
+
+			if (!getSchemaLocation().contains(":")) {
+				String resolvedPath = projectBaseDir.getAbsolutePath();
 				if (resolvedPath.endsWith(File.separator) || resolvedPath.endsWith("/")) {
 					resolvedPath = resolvedPath.substring(0, resolvedPath.length() - 1);
 				}
 
-				if (!schemaLocation.startsWith(File.separator) && !schemaLocation.startsWith("/")) {
+				if (!getSchemaLocation().startsWith(File.separator) && !getSchemaLocation().startsWith("/")) {
 					resolvedPath += File.separator;
 				}
 
-				resolvedPath += schemaLocation;
+				resolvedPath += getSchemaLocation();
 
-				if (!schemaLocation.endsWith(File.separator) && !schemaLocation.endsWith("/")) {
+				if (!getSchemaLocation().endsWith(File.separator) && !getSchemaLocation().endsWith("/")) {
 					resolvedPath += File.separator;
 				}
 				resolvedPath = resolvedPath.replace(File.separator, "/").replace("\\", "/");
@@ -502,7 +508,7 @@ public class SpringMvcEndpointGeneratorMojo extends AbstractMojo {
 					return new File(resolvedPath).toURI().toString();
 				}
 			}
-			return schemaLocation;
+			return getSchemaLocation();
 		}
 		return null;
 	}
@@ -544,12 +550,138 @@ public class SpringMvcEndpointGeneratorMojo extends AbstractMojo {
 		this.getLog().info("Endpoint Generation Completed in:" + (System.currentTimeMillis() - startTime) + "ms");
 	}
 
-	public enum MethodsNamingLogic {
-		OBJECTS, RESOURCES
+	@Override
+	public PojoGenerationConfig getPojoConfig() {
+		return generationConfig;
 	}
 
-	public enum OverrideNamingLogicWith {
-		DISPLAY_NAME, ANNOTATION
+	@Override
+	public Boolean isSeperateMethodsByContentType() {
+		return getSeperateMethodsByContentType();
 	}
 
+	@Override
+	public Boolean isInjectHttpHeadersParameter() {
+		return getInjectHttpHeadersParameter();
+	}
+
+	@Override
+	public Integer getResourceDepthInClassNames() {
+		return resourceDepthInClassNames;
+	}
+
+	@Override
+	public Integer getResourceTopLevelInClassNames() {
+		return resourceTopLevelInClassNames;
+	}
+
+	@Override
+	public Boolean isReverseOrderInClassNames() {
+		return getReverseOrderInClassNames();
+	}
+
+	@Override
+	public String getBasePackage() {
+		return basePackage;
+	}
+
+	@Override
+	public MethodsNamingLogic getMethodsNamingLogic() {
+		return methodsNamingLogic;
+	}
+
+	@Override
+	public OverrideNamingLogicWith getOverrideNamingLogicWith() {
+		return overrideNamingLogicWith;
+	}
+
+	@Override
+	public String getDontGenerateForAnnotation() {
+		return dontGenerateForAnnotation;
+	}
+
+	@Override
+	public Boolean isInjectHttpRequestParameter() {
+		return getInjectHttpRequestParameter();
+	}
+
+	public String getRamlPath() {
+		return ramlPath;
+	}
+
+	public String getPomPath() {
+		return pomPath;
+	}
+
+	public String getOutputRelativePath() {
+		return outputRelativePath;
+	}
+
+	public Boolean getAddTimestampFolder() {
+		return addTimestampFolder;
+	}
+
+	private String getSchemaLocation() {
+		return schemaLocation;
+	}
+
+	public Boolean getGenerateUnreferencedObjects() {
+		return generateUnreferencedObjects;
+	}
+
+	public String getBaseUri() {
+		return baseUri;
+	}
+
+	public void setBaseUri(String baseUri) {
+		this.baseUri = baseUri;
+	}
+
+	public Boolean getSeperateMethodsByContentType() {
+		return seperateMethodsByContentType;
+	}
+
+	public Boolean getUseJackson1xCompatibility() {
+		return useJackson1xCompatibility;
+	}
+
+	public String getRule() {
+		return rule;
+	}
+
+	public void setRule(String rule) {
+		this.rule = rule;
+	}
+
+	public Map<String, String> getRuleConfiguration() {
+		return ruleConfiguration;
+	}
+
+	public Boolean getInjectHttpHeadersParameter() {
+		return injectHttpHeadersParameter;
+	}
+
+	public Boolean getReverseOrderInClassNames() {
+		return reverseOrderInClassNames;
+	}
+
+	public Boolean getInjectHttpRequestParameter() {
+		return injectHttpRequestParameter;
+	}
+
+	public String getResolvedSchemaLocation() {
+		return resolvedSchemaLocation;
+	}
+
+	public void setResolvedSchemaLocation(String resolvedSchemaLocation) {
+		this.resolvedSchemaLocation = resolvedSchemaLocation;
+	}
+
+	public Boolean isGeneratedAnnotation() {
+		return generatedAnnotation;
+	}
+
+	public void setGeneratedAnnotation(Boolean generatedAnnotation) {
+		this.generatedAnnotation = generatedAnnotation;
+	}
 }

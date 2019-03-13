@@ -1,14 +1,16 @@
 package com.phoenixnap.oss.ramlplugin.raml2code.plugin;
 
-import com.phoenixnap.oss.ramlplugin.raml2code.plugin.SpringMvcEndpointGeneratorMojo.MethodsNamingLogic;
-import com.phoenixnap.oss.ramlplugin.raml2code.plugin.SpringMvcEndpointGeneratorMojo.OverrideNamingLogicWith;
 import com.phoenixnap.oss.ramlplugin.raml2code.rules.TestPojoConfig;
 
 public class TestConfig {
 
 	public static void resetConfig() {
-		Config.resetFields();
-		Config.setPojoConfig(new TestPojoConfig());
+		DefaultConfig testConfig = new DefaultConfig();
+		testConfig.setPojoConfig(new TestPojoConfig());
+		// Instead of setting properties in multiple steps, which is prone to
+		// race conditions,
+		// set the new object at once
+		Config.setInstance(testConfig);
 	}
 
 	public static void setResourceDepthInClassNames(int resourceDepthInClassNames) {
