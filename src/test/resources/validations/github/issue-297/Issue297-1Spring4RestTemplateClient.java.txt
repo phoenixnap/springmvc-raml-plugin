@@ -1,0 +1,206 @@
+-----------------------------------com.gen.test.model.Bus.java-----------------------------------
+
+package com.gen.test.model;
+
+import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
+import javax.annotation.Generated;
+import javax.validation.Valid;
+import javax.validation.constraints.NotNull;
+import org.apache.commons.lang.builder.EqualsBuilder;
+import org.apache.commons.lang.builder.HashCodeBuilder;
+import org.apache.commons.lang.builder.ToStringBuilder;
+
+@Generated("com.phoenixnap.oss.ramlplugin")
+public class Bus implements Serializable
+{
+
+    protected List<DefaultEnum> metadata = new ArrayList<DefaultEnum>();
+
+    /**
+     * Creates a new Bus.
+     * 
+     */
+    public Bus() {
+        super();
+    }
+
+    /**
+     * Creates a new Bus.
+     * 
+     */
+    public Bus(List<DefaultEnum> metadata) {
+        super();
+        this.metadata = metadata;
+    }
+
+    /**
+     * Returns the metadata.
+     * 
+     * @return
+     *     metadata
+     */
+    @NotNull
+    @Valid
+    public List<DefaultEnum> getMetadata() {
+        return metadata;
+    }
+
+    /**
+     * Set the metadata.
+     * 
+     * @param metadata
+     *     the new metadata
+     */
+    public void setMetadata(List<DefaultEnum> metadata) {
+        this.metadata = metadata;
+    }
+
+    public int hashCode() {
+        return new HashCodeBuilder().append(metadata).toHashCode();
+    }
+
+    public boolean equals(Object other) {
+        if (other == null) {
+            return false;
+        }
+        if (other == this) {
+            return true;
+        }
+        if (this.getClass()!= other.getClass()) {
+            return false;
+        }
+        Bus otherObject = ((Bus) other);
+        return new EqualsBuilder().append(metadata, otherObject.metadata).isEquals();
+    }
+
+    public String toString() {
+        return new ToStringBuilder(this).append("metadata", metadata).toString();
+    }
+
+}
+-----------------------------------com.gen.test.model.DefaultEnum.java-----------------------------------
+
+package com.gen.test.model;
+
+import java.util.HashMap;
+import java.util.Map;
+import javax.annotation.Generated;
+import com.fasterxml.jackson.annotation.JsonProperty;
+
+@Generated("com.phoenixnap.oss.ramlplugin")
+public enum DefaultEnum {
+
+    @JsonProperty("ac")
+    AC("ac"),
+    @JsonProperty("multi-axle")
+    MULTI_AXLE("multi-axle"),
+    @JsonProperty("reading-light")
+    READING_LIGHT("reading-light"),
+    @JsonProperty("sleeper")
+    SLEEPER("sleeper");
+    private final String value;
+    private final static Map<String, DefaultEnum> VALUE_CACHE = new HashMap<String, DefaultEnum>();
+
+    static {
+        for (DefaultEnum c: values()) {
+            VALUE_CACHE.put(c.value, c);
+        }
+    }
+
+    private DefaultEnum(String value) {
+        this.value = value;
+    }
+
+    public String value() {
+        return this.value;
+    }
+
+    public static DefaultEnum fromValue(String value) {
+        return VALUE_CACHE.get(value);
+    }
+
+    @Override
+    public String toString() {
+        return this.value;
+    }
+
+}
+-----------------------------------com.gen.test.BusClient.java-----------------------------------
+
+package com.gen.test;
+
+import com.gen.test.model.Bus;
+import org.springframework.http.ResponseEntity;
+
+
+/**
+ * No description
+ * (Generated with springmvc-raml-parser v.@project.version@)
+ * 
+ */
+public interface BusClient {
+
+
+    /**
+     * Get a bus.
+     * 
+     */
+    public ResponseEntity<Bus> getBus();
+
+}
+-----------------------------------com.gen.test.BusClientImpl.java-----------------------------------
+
+package com.gen.test;
+
+import java.util.ArrayList;
+import javax.annotation.Generated;
+import com.gen.test.model.Bus;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpMethod;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Component;
+import org.springframework.web.client.RestTemplate;
+import org.springframework.web.util.UriComponents;
+import org.springframework.web.util.UriComponentsBuilder;
+
+
+/**
+ * No description
+ * (Generated with springmvc-raml-parser v.@project.version@)
+ * 
+ */
+@Component
+@Generated("com.phoenixnap.oss.ramlplugin")
+public class BusClientImpl
+    implements BusClient
+{
+
+    @Value("${client.url}")
+    private String baseUrl;
+    @Autowired
+    private RestTemplate restTemplate;
+
+    /**
+     * Get a bus.
+     * 
+     */
+    public ResponseEntity<Bus> getBus() {
+        HttpHeaders httpHeaders = new HttpHeaders();
+        //  Add Accepts Headers and Body Content-Type
+        ArrayList<MediaType> acceptsList = new ArrayList<MediaType>();
+        acceptsList.add(MediaType.valueOf("application/json"));
+        httpHeaders.setAccept(acceptsList);
+        String url = baseUrl.concat("/bus");
+        UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl(url);
+        UriComponents uriComponents = builder.build();
+        HttpEntity httpEntity = new HttpEntity(httpHeaders);
+        return this.restTemplate.exchange(uriComponents.encode().toUri(), HttpMethod.GET, httpEntity, Bus.class);
+    }
+
+}

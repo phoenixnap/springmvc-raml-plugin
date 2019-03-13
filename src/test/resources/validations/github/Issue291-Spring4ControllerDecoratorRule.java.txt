@@ -357,7 +357,7 @@ import org.springframework.http.ResponseEntity;
 
 /**
  * No description
- * (Generated with springmvc-raml-parser v.2.0.5)
+ * (Generated with springmvc-raml-parser v.@project.version@)
  * 
  */
 public interface SaleController {
@@ -386,7 +386,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 /**
  * No description
- * (Generated with springmvc-raml-parser v.2.0.5)
+ * (Generated with springmvc-raml-parser v.@project.version@)
  * 
  */
 @RestController

@@ -8,6 +8,11 @@ public class Config {
 		CURRENT_CONFIGURATION = config;
 	}
 
+	private static final Boolean DEFAULT_GENERATED_ANNOTATION = Boolean.FALSE;
+	private static Boolean generatedAnnotation = DEFAULT_GENERATED_ANNOTATION;
+
+	public static final String DEFAULT_GENERATED_ANNOTATION_VALUE = "com.phoenixnap.oss.ramlplugin";
+
 	Config() {
 	}
 
@@ -97,6 +102,14 @@ public class Config {
 
 	public static void setInjectHttpRequestParameter(Boolean injectHttpRequestParameter) {
 		CURRENT_CONFIGURATION.setInjectHttpRequestParameter(injectHttpRequestParameter);
+	}
+
+	public static Boolean isGeneratedAnnotation() {
+		return CURRENT_CONFIGURATION.isGeneratedAnnotation();
+	}
+
+	public static void setGeneratedAnnotation(Boolean generatedAnnotation) {
+		CURRENT_CONFIGURATION.setGeneratedAnnotation(generatedAnnotation);
 	}
 
 	public static String getPojoPackage() {

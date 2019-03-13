@@ -34,6 +34,9 @@ class DefaultConfig implements ConfigSource {
 	private static final Boolean DEFAULT_INJECT_HTTP_REQUEST_PARAMETER = Boolean.FALSE;
 	private Boolean injectHttpRequestParameter = DEFAULT_INJECT_HTTP_REQUEST_PARAMETER;
 
+	private static final Boolean DEFAULT_GENERATED_ANNOTATION = Boolean.FALSE;
+	private Boolean generatedAnnotation = DEFAULT_GENERATED_ANNOTATION;
+
 	public void setPojoConfig(PojoGenerationConfig pojoGenerationConfig) {
 		this.pojoGenerationConfig = pojoGenerationConfig;
 	}
@@ -134,5 +137,13 @@ class DefaultConfig implements ConfigSource {
 
 	public void setInjectHttpRequestParameter(Boolean injectHttpRequestParameter) {
 		this.injectHttpRequestParameter = injectHttpRequestParameter;
+	}
+
+	public Boolean isGeneratedAnnotation() {
+		return generatedAnnotation;
+	}
+
+	public void setGeneratedAnnotation(Boolean generatedAnnotation) {
+		this.generatedAnnotation = generatedAnnotation;
 	}
 }

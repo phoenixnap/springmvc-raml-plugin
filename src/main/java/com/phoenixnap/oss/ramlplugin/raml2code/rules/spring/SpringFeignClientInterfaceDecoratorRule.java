@@ -1,5 +1,5 @@
 /*
- * Copyright 2002-2017 the original author or authors.
+ * Copyright 2002-2019 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with
  * the License. You may obtain a copy of the License at
@@ -12,13 +12,14 @@
  */
 package com.phoenixnap.oss.ramlplugin.raml2code.rules.spring;
 
-import org.springframework.cloud.netflix.feign.FeignClient;
+import org.springframework.cloud.openfeign.FeignClient;
 
 import com.phoenixnap.oss.ramlplugin.raml2code.data.ApiResourceMetadata;
 import com.phoenixnap.oss.ramlplugin.raml2code.rules.GenericJavaClassRule;
 import com.phoenixnap.oss.ramlplugin.raml2code.rules.Rule;
 import com.phoenixnap.oss.ramlplugin.raml2code.rules.basic.ClassCommentRule;
 import com.phoenixnap.oss.ramlplugin.raml2code.rules.basic.ControllerMethodSignatureRule;
+import com.phoenixnap.oss.ramlplugin.raml2code.rules.basic.GeneratedClassAnnotationRule;
 import com.phoenixnap.oss.ramlplugin.raml2code.rules.basic.MethodCommentRule;
 import com.phoenixnap.oss.ramlplugin.raml2code.rules.basic.PackageRule;
 import com.phoenixnap.oss.ramlplugin.raml2code.rules.basic.SpringFeignClientInterfaceDeclarationRule;
@@ -43,8 +44,8 @@ public class SpringFeignClientInterfaceDecoratorRule implements Rule<JCodeModel,
 
 		GenericJavaClassRule generator = new GenericJavaClassRule().setPackageRule(new PackageRule())
 				.setClassCommentRule(new ClassCommentRule()).addClassAnnotationRule(new SpringFeignClientClassAnnotationRule())
-				.setClassRule(new SpringFeignClientInterfaceDeclarationRule()).setMethodCommentRule(new MethodCommentRule())
-				.addMethodAnnotationRule(new SpringRequestMappingMethodAnnotationRule())
+				.addClassAnnotationRule(new GeneratedClassAnnotationRule()).setClassRule(new SpringFeignClientInterfaceDeclarationRule())
+				.setMethodCommentRule(new MethodCommentRule()).addMethodAnnotationRule(new SpringRequestMappingMethodAnnotationRule())
 				.setMethodSignatureRule(new ControllerMethodSignatureRule(new SpringFeignClientResponseTypeRule(),
 						new SpringFeignClientMethodParamsRule()));
 		return generator.apply(metadata, generatableType);

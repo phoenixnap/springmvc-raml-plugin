@@ -1,5 +1,5 @@
 /*
- * Copyright 2002-2017 the original author or authors.
+ * Copyright 2002-2019 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with
  * the License. You may obtain a copy of the License at
@@ -24,6 +24,7 @@ import com.phoenixnap.oss.ramlplugin.raml2code.rules.basic.ControllerClassDeclar
 import com.phoenixnap.oss.ramlplugin.raml2code.rules.basic.ControllerInterfaceDeclarationRule;
 import com.phoenixnap.oss.ramlplugin.raml2code.rules.basic.ControllerMethodSignatureRule;
 import com.phoenixnap.oss.ramlplugin.raml2code.rules.basic.DelegatingMethodBodyRule;
+import com.phoenixnap.oss.ramlplugin.raml2code.rules.basic.GeneratedClassAnnotationRule;
 import com.phoenixnap.oss.ramlplugin.raml2code.rules.basic.ImplementsControllerInterfaceRule;
 import com.phoenixnap.oss.ramlplugin.raml2code.rules.basic.MethodCommentRule;
 import com.phoenixnap.oss.ramlplugin.raml2code.rules.basic.MethodParamsRule;
@@ -68,7 +69,7 @@ public abstract class SpringControllerDecoratorRule extends SpringConfigurableRu
 
 		JDefinedClass generatedInterface = new GenericJavaClassRule().setPackageRule(new PackageRule())
 				.setClassCommentRule(new ClassCommentRule()).setClassRule(new ControllerInterfaceDeclarationRule())
-				.setMethodCommentRule(new MethodCommentRule())
+				.addClassAnnotationRule(new GeneratedClassAnnotationRule()).setMethodCommentRule(new MethodCommentRule())
 				.setMethodSignatureRule(new ControllerMethodSignatureRule(getReturnTypeRule(false),
 						new MethodParamsRule(isAddParameterJavadoc(), isAllowArrayParameters(), !Config.isInjectHttpHeadersParameter())))
 				.apply(metadata, generatableType);
@@ -78,7 +79,7 @@ public abstract class SpringControllerDecoratorRule extends SpringConfigurableRu
 		GenericJavaClassRule delegateGenerator = new GenericJavaClassRule().setPackageRule(new PackageRule())
 				.setClassCommentRule(new ClassCommentRule()).addClassAnnotationRule(getControllerAnnotationRule())
 				.addClassAnnotationRule(new SpringRequestMappingClassAnnotationRule())
-				.addClassAnnotationRule(new SpringValidatedClassAnnotationRule())
+				.addClassAnnotationRule(new SpringValidatedClassAnnotationRule()).addClassAnnotationRule(new GeneratedClassAnnotationRule())
 				.setClassRule(new ControllerClassDeclarationRule("Decorator"))
 				.setImplementsExtendsRule(new ImplementsControllerInterfaceRule(generatedInterface))
 				.addFieldDeclarationRule(new SpringDelegateFieldDeclerationRule(delegateFieldName))

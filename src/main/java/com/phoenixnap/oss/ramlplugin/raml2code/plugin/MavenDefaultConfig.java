@@ -88,4 +88,11 @@ class MavenDefaultConfig extends DefaultConfig implements ConfigSource {
 		return super.isInjectHttpRequestParameter();
 	}
 
+	@Override
+	public Boolean isGeneratedAnnotation() {
+		if (delegate != null) {
+			return delegate.isGeneratedAnnotation();
+		}
+		return super.isGeneratedAnnotation();
+	}
 }

@@ -25,6 +25,8 @@ public interface ConfigSource {
 
 	Boolean isInjectHttpRequestParameter();
 
+	Boolean isGeneratedAnnotation();
+
 	default String getPojoPackage() {
 		return getBasePackage() + NamingHelper.getDefaultModelPackage();
 	}

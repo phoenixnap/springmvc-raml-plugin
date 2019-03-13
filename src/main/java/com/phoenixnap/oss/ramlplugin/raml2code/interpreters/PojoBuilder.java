@@ -1,5 +1,5 @@
 /*
- * Copyright 2002-2017 the original author or authors.
+ * Copyright 2002-2019 the original author or authors.
  * 
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with
  * the License. You may obtain a copy of the License at
@@ -21,9 +21,9 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.Set;
 
-import org.apache.commons.collections.MapUtils;
 import org.raml.v2.api.model.v10.datamodel.DateTimeTypeDeclaration;
 import org.raml.v2.api.model.v10.datamodel.TypeDeclaration;
 import org.slf4j.Logger;
@@ -126,7 +126,7 @@ public class PojoBuilder extends AbstractBuilder {
 
 		try {
 			// create the class
-			logger.debug("Creating class " + fullyQualifiedClassName);
+			logger.debug("Creating class {}", fullyQualifiedClassName);
 			this.pojo = this.pojoModel._class(fullyQualifiedClassName);
 
 			// Always add default constructor
@@ -134,6 +134,8 @@ public class PojoBuilder extends AbstractBuilder {
 
 			// Handle Serialization
 			implementsSerializable();
+
+			implementsGeneratedAnnotation();
 
 			// Add to shortcuts
 			this.codeModels.put(fullyQualifiedClassName, this.pojo);
@@ -175,7 +177,10 @@ public class PojoBuilder extends AbstractBuilder {
 	public PojoBuilder withField(String name, String type, String comment, RamlTypeValidations validations,
 			TypeDeclaration typeDeclaration) {
 		pojoCreationCheck();
-		logger.debug("Adding field: " + name + " to " + this.pojo.name());
+
+		if (logger.isDebugEnabled()) {
+			logger.debug("Adding field: {} to {}", name, this.pojo.name());
+		}
 
 		JClass resolvedType = resolveType(type);
 
@@ -324,7 +329,8 @@ public class PojoBuilder extends AbstractBuilder {
 		// because default constructor (without fields) is already present
 		Map<String, JFieldVar> nonTransientAndNonStaticFields = getNonTransientAndNonStaticFields();
 
-		if (MapUtils.isNotEmpty(nonTransientAndNonStaticFields)) {
+		// if nonTransientAndNonStaticFields is not empty
+		if (!Optional.ofNullable(nonTransientAndNonStaticFields).map(Map::isEmpty).orElse(true)) {
 			// Create complete constructor
 			JMethod constructor = this.pojo.constructor(JMod.PUBLIC);
 			Map<String, JVar> superParametersToAdd = getSuperParametersToAdd(this.pojo);

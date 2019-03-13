@@ -1,5 +1,5 @@
 /*
- * Copyright 2002-2017 the original author or authors.
+ * Copyright 2002-2019 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with
  * the License. You may obtain a copy of the License at
@@ -20,6 +20,7 @@ import com.phoenixnap.oss.ramlplugin.raml2code.rules.Rule;
 import com.phoenixnap.oss.ramlplugin.raml2code.rules.basic.ClassCommentRule;
 import com.phoenixnap.oss.ramlplugin.raml2code.rules.basic.ControllerClassDeclarationRule;
 import com.phoenixnap.oss.ramlplugin.raml2code.rules.basic.ControllerMethodSignatureRule;
+import com.phoenixnap.oss.ramlplugin.raml2code.rules.basic.GeneratedClassAnnotationRule;
 import com.phoenixnap.oss.ramlplugin.raml2code.rules.basic.ImplementMeMethodBodyRule;
 import com.phoenixnap.oss.ramlplugin.raml2code.rules.basic.MethodCommentRule;
 import com.phoenixnap.oss.ramlplugin.raml2code.rules.basic.PackageRule;
@@ -57,8 +58,9 @@ public abstract class SpringControllerStubRule extends SpringConfigurableRule {
 		GenericJavaClassRule generator = new GenericJavaClassRule().setPackageRule(new PackageRule())
 				.setClassCommentRule(new ClassCommentRule()).addClassAnnotationRule(getControllerAnnotationRule())
 				.addClassAnnotationRule(new SpringRequestMappingClassAnnotationRule())
-				.addClassAnnotationRule(new SpringValidatedClassAnnotationRule()).setClassRule(new ControllerClassDeclarationRule())
-				.setMethodCommentRule(new MethodCommentRule()).addMethodAnnotationRule(new SpringRequestMappingMethodAnnotationRule())
+				.addClassAnnotationRule(new SpringValidatedClassAnnotationRule()).addClassAnnotationRule(new GeneratedClassAnnotationRule())
+				.setClassRule(new ControllerClassDeclarationRule()).setMethodCommentRule(new MethodCommentRule())
+				.addMethodAnnotationRule(new SpringRequestMappingMethodAnnotationRule())
 				.addMethodAnnotationRule(getResponseBodyAnnotationRule())
 				.setMethodSignatureRule(new ControllerMethodSignatureRule(getReturnTypeRule(false), new SpringMethodParamsRule(
 						isAddParameterJavadoc(), isAllowArrayParameters(), !Config.isInjectHttpHeadersParameter())))
