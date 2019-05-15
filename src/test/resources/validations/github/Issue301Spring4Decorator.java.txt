@@ -1,0 +1,62 @@
+-----------------------------------com.gen.test.ListController.java-----------------------------------
+
+package com.gen.test;
+
+import org.springframework.http.ResponseEntity;
+
+
+/**
+ * No description
+ * (Generated with springmvc-raml-parser v.2.1.0)
+ * 
+ */
+public interface ListController {
+
+
+    /**
+     * No description
+     * 
+     */
+    public ResponseEntity<?> getObjectBySomekey(String somekey);
+
+}
+-----------------------------------com.gen.test.ListControllerDecorator.java-----------------------------------
+
+package com.gen.test;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RestController;
+
+
+/**
+ * No description
+ * (Generated with springmvc-raml-parser v.2.1.0)
+ * 
+ */
+@RestController
+@RequestMapping("/v1/{somekey}/common/list")
+@Validated
+public class ListControllerDecorator
+    implements ListController
+{
+
+    @Autowired
+    private ListController listControllerDelegate;
+
+    /**
+     * No description
+     * 
+     */
+    @RequestMapping(value = "", method = RequestMethod.GET)
+    public ResponseEntity<?> getObjectBySomekey(
+        @PathVariable
+        String somekey) {
+        return this.listControllerDelegate.getObjectBySomekey(somekey);
+    }
+
+}

@@ -33,6 +33,7 @@ import com.phoenixnap.oss.ramlplugin.raml2code.raml.RamlDocumentationItem;
 import com.phoenixnap.oss.ramlplugin.raml2code.raml.RamlMimeType;
 import com.phoenixnap.oss.ramlplugin.raml2code.raml.RamlResource;
 import com.phoenixnap.oss.ramlplugin.raml2code.raml.RamlRoot;
+import com.phoenixnap.oss.ramlplugin.raml2code.raml.RamlUriParameter;
 import com.phoenixnap.oss.ramlplugin.raml2code.rules.AbstractRuleTestBase;
 import com.phoenixnap.oss.ramlplugin.raml2code.rules.RamlLoader;
 
@@ -41,13 +42,14 @@ import com.phoenixnap.oss.ramlplugin.raml2code.rules.RamlLoader;
  */
 public class RJP10V2RamlRootTest extends AbstractRuleTestBase {
 
-	private static RamlRoot ramlRoot, ramlRootEmptyValues, ramlSchemaRoot;
+	private static RamlRoot ramlRoot, ramlRootEmptyValues, ramlSchemaRoot, ramlRootBaseUriParams;
 
 	@BeforeClass
 	public static void initRamlRoot() throws InvalidRamlResourceException {
 		ramlRoot = RamlLoader.loadRamlFromFile(AbstractRuleTestBase.RESOURCE_BASE + "raml-root-test-v10.raml");
 		ramlRootEmptyValues = RamlLoader.loadRamlFromFile(AbstractRuleTestBase.RESOURCE_BASE + "raml-root-test-emptyValues-v10.raml");
 		ramlSchemaRoot = RamlLoader.loadRamlFromFile(AbstractRuleTestBase.RESOURCE_BASE + "raml-root-schemas-test-v10.raml");
+		ramlRootBaseUriParams = RamlLoader.loadRamlFromFile(AbstractRuleTestBase.RESOURCE_BASE + "raml-root-test-baseuriparam-v10.raml");
 	}
 
 	@Test
@@ -228,6 +230,13 @@ public class RJP10V2RamlRootTest extends AbstractRuleTestBase {
 		assertThat(((RJP10V2RamlDocumentationItem) documentation.get(1)).getDocumentationItem().content().value(),
 				startsWith("CWIE (c) All Rights Reserved"));
 
+	}
+
+	@Test
+	public void ramlRootShouldHaveBaseUriParameters() {
+		List<RamlUriParameter> baseUriParameters = ramlRootBaseUriParams.getBaseUriParameters();
+		assertThat(baseUriParameters.get(0).getName(), equalTo("key"));
+		assertThat(baseUriParameters.get(0).getRawType(), equalTo("string"));
 	}
 
 }

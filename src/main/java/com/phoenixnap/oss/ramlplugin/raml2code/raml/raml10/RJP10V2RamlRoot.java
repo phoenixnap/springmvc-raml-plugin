@@ -18,6 +18,7 @@ import com.phoenixnap.oss.ramlplugin.raml2code.raml.RamlResource;
 import com.phoenixnap.oss.ramlplugin.raml2code.raml.RamlRoot;
 import com.phoenixnap.oss.ramlplugin.raml2code.raml.RamlSecurityReference;
 import com.phoenixnap.oss.ramlplugin.raml2code.raml.RamlSecurityScheme;
+import com.phoenixnap.oss.ramlplugin.raml2code.raml.RamlUriParameter;
 
 /**
  * @author aweisser
@@ -139,4 +140,10 @@ public class RJP10V2RamlRoot implements RamlRoot {
 	public List<RamlSecurityScheme> getSecuritySchemes() {
 		return ramlModelFactory.createRamlSecuritySchemes(this.api.securitySchemes());
 	}
+
+	@Override
+	public List<RamlUriParameter> getBaseUriParameters() {
+		return ramlModelFactory.createRamlUriParameters(this.api.baseUriParameters());
+	}
+
 }
