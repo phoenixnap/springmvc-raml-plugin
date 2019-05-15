@@ -28,6 +28,7 @@ import com.phoenixnap.oss.ramlplugin.raml2code.raml.RamlResponse;
 import com.phoenixnap.oss.ramlplugin.raml2code.raml.RamlRoot;
 import com.phoenixnap.oss.ramlplugin.raml2code.raml.RamlSecurityReference;
 import com.phoenixnap.oss.ramlplugin.raml2code.raml.RamlSecurityScheme;
+import com.phoenixnap.oss.ramlplugin.raml2code.raml.RamlUriParameter;
 
 /**
  * @author aweisser
@@ -134,6 +135,16 @@ public class RJP10V2RamlModelFactory implements RamlModelFactory {
 	@Override
 	public RamlSecurityScheme createRamlSecurityScheme(Object securityReference) {
 		return new RJP10V2RamlSecurityScheme((SecurityScheme) securityReference);
+	}
+
+	@Override
+	public List<RamlUriParameter> createRamlUriParameters(List<? extends Object> uriParameters) {
+		return uriParameters.stream().map(this::createRamlUriParameter).collect(Collectors.toList());
+	}
+
+	@Override
+	public RamlUriParameter createRamlUriParameter(Object uriParameter) {
+		return new RJP10V2RamlUriParameter((TypeDeclaration) uriParameter);
 	}
 
 	@Override

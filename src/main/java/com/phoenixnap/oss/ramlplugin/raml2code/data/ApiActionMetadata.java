@@ -91,6 +91,10 @@ public class ApiActionMetadata {
 	public Set<ApiParameterMetadata> getPathVariables() {
 		pathVariables = new LinkedHashSet<>();
 
+		// Add any Base Uri Parameters
+		parent.getDocument().getBaseUriParameters().stream()
+				.forEach(param -> pathVariables.add(new ApiParameterMetadata(param.getName(), param, null)));
+
 		RamlResource targetResource = action.getResource();
 
 		do {

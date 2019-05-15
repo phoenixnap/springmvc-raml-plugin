@@ -1,0 +1,12 @@
+#%RAML 1.0
+title: Amazon S3 REST API
+version: 1
+baseUri: /v1/{somekey}
+baseUriParameters:
+  somekey:
+    description: The name of the bucket
+    type: string
+
+/common:
+  /list:
+    get:

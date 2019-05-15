@@ -52,6 +52,10 @@ public interface RamlModelFactory {
 
 	RamlSecurityReference createRamlSecurityReference(Object securityReference);
 
+	List<RamlUriParameter> createRamlUriParameters(List<? extends Object> uriParameters);
+
+	RamlUriParameter createRamlUriParameter(Object uriParameters);
+
 	RamlParamType createRamlParamType(Object paramType);
 
 	default <SK, TK, SV, TV> Map<TK, TV> transformToUnmodifiableMap(Collection<SV> source, Map<TK, TV> target,

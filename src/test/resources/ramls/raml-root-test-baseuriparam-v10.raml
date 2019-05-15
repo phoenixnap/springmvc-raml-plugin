@@ -1,0 +1,10 @@
+#%RAML 1.0
+title: myapi
+baseUri: api/{key}
+baseUriParameters:
+  key: string
+/songs:
+  get:
+    responses: 
+      200:
+        body:

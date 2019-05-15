@@ -34,4 +34,6 @@ public interface RamlRoot extends RamlResourceRoot {
 	List<RamlSecurityReference> getSecuredBy();
 
 	List<RamlSecurityScheme> getSecuritySchemes();
+
+	List<RamlUriParameter> getBaseUriParameters();
 }
